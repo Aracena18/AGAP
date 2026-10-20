@@ -44,7 +44,7 @@ const snapshot = z.object({
 const record: z.ZodType<CaseRecord> = z.object({
   id: z.string(), member: z.object({ name: z.string(), initials: z.string(), occupation: z.string(), memberSince: z.string() }),
   purpose: z.string(), createdAt: z.string(), periodStart: date, periodEnd: date, version: z.number().int().positive(),
-  facts: z.array(fact), sources: z.array(source), offers: z.array(offer),
+  facts: z.array(fact), sources: z.array(source), offers: z.array(offer).min(1),
   corrections: z.array(z.object({ id: z.string(), factId: z.string(), before: fact, after: fact, reason: z.string(), actor, at: z.string() })),
   recommendation: recommendation.nullable(), decisions: z.array(snapshot),
   followUp: z.object({ reviewDate: date, note: z.string(), updatedAt: z.string() }).nullable(),

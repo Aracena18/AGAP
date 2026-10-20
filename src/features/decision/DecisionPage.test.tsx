@@ -47,6 +47,7 @@ describe('decision page workflow', () => {
     expect(screen.getByLabelText(/I reviewed the template explanation/i)).not.toBeChecked();
     await user.click(screen.getByRole('button', { name: 'Record decision' }));
     expect(await screen.findByText(/Review the template explanation and confirm it before recording/i)).toBeVisible();
+    expect(screen.getByLabelText(/I reviewed the template explanation/i)).toHaveFocus();
     expect(screen.queryByRole('article', { name: 'Saved member brief' })).not.toBeInTheDocument();
   });
   it('prints saved explanation and source titles while later follow-up stays separate', async () => {

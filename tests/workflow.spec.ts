@@ -107,6 +107,12 @@ test('Ben retains the monthly shortfall after a date change; Cora can be returne
   await expect(page.getByRole('region', { name: 'Monthly remaining', exact: true })).toContainText('−₱4,000');
   await page.getByRole('radio', { name: /After-payday schedule/ }).check();
   await expect(page.getByRole('region', { name: 'Monthly remaining', exact: true })).toContainText('−₱4,000');
+  await page.getByRole('link', { name: 'Decision & explanation', exact: true }).click();
+  await page.getByLabel('Demo role').selectOption('reviewer');
+  await page.getByLabel('Clarification needed and next step').fill('Discuss the monthly shortfall and clarify household circumstances.');
+  await page.getByLabel(/I reviewed the template explanation/).check();
+  await page.getByRole('button', { name: 'Record decision', exact: true }).click();
+  await expect(page.getByRole('article', { name: 'Saved member brief' })).toContainText('−₱4,000');
   await page.goto('/#/applications/AG-003/comparison');
   await expect(page.getByRole('heading', { name: 'Evidence needs clarification' })).toBeVisible();
   await expect(page.getByRole('region', { name: 'Monthly remaining', exact: true })).toHaveCount(0);

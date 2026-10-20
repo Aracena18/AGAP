@@ -97,6 +97,15 @@ describe('human decision rules', () => {
 });
 
 describe('saved explanation and follow-up', () => {
+  it('retains the checked shortfall concerns when a complete case is returned without choosing an offer', () => {
+    const ben = createDemoCases()[1];
+    const snapshot = recordDecision(ben, input({ outcome: 'return', offerId: null, rationale: 'Discuss the monthly shortfall and clarify household circumstances.' }), reviewer, at).decisions[0];
+    const concerns = snapshot.explanation!.sections.find(section => section.title === 'Remaining concerns')!;
+    expect(concerns.body).toContain('−₱4,000');
+    expect(concerns.body).toContain('Requested schedule');
+    expect(concerns.body).toContain('After-payday schedule');
+    expect(concerns.body).not.toContain('No failed check');
+  });
   it('includes full costs, monthly versus timing, concerns, review date and resolvable sources', () => {
     const snapshot = recordDecision(ready(), input(), reviewer, at).decisions[0];
     const explanation = buildExplanation(snapshot); const text = JSON.stringify(explanation);

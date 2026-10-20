@@ -27,6 +27,17 @@ describe('fictional case repository', () => {
     expect(warning).toHaveBeenCalled();
     expect(localStorage.getItem(STORAGE_KEY)).toBe(original);
   });
+  it('preserves structurally incomplete offer data instead of loading it into the workspace', async () => {
+    const records = await createBrowserRepository(localStorage).list();
+    records[0].offers = [];
+    const original = JSON.stringify({ schemaVersion: 1, records });
+    localStorage.setItem(STORAGE_KEY, original);
+    const warning = vi.fn();
+    const restored = await createBrowserRepository(localStorage, warning).list();
+    expect(warning).toHaveBeenCalled();
+    expect(restored[0].offers).toHaveLength(2);
+    expect(localStorage.getItem(STORAGE_KEY)).toBe(original);
+  });
   it('recovers explicitly through reset after malformed data', async () => {
     localStorage.setItem(STORAGE_KEY, '{broken');
     const repository = createBrowserRepository(localStorage, () => {});

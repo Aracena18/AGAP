@@ -6,6 +6,12 @@ export function buildExplanation(snapshot: DecisionSnapshot): ExplanationDraft {
   const { input, assessment } = snapshot;
   const offer = snapshot.offers.find(item => item.id === input.offerId);
   const scenario = assessment.status === 'complete' ? assessment.scenarios.find(item => item.offerId === input.offerId) : undefined;
+  const checkedScenarios = assessment.status === 'complete' ? (scenario ? [scenario] : assessment.scenarios) : [];
+  const failedChecks = checkedScenarios.flatMap(checked => checked.policyChecks.filter(check => !check.passed).map(check =>
+    `${snapshot.offers.find(item => item.id === checked.offerId)?.label ?? 'Recorded scenario'} — ${check.label}: ${check.detail}`));
+  const checkConcerns = failedChecks.join(' ') || (scenario
+    ? 'No failed demo check is recorded for the selected option.'
+    : 'No failing demo check appears across the recorded scenarios. No offer was selected for a decision; the clarification above still needs attention.');
   const sourceIds = [...new Set(snapshot.facts.flatMap(fact => fact.sourceId && snapshot.sources.some(source => source.id === fact.sourceId) ? [fact.sourceId] : []))];
   const outcomeText = input.outcome === 'approve' ? 'approved' : input.outcome === 'decline' ? 'declined' : 'returned for clarification';
   const sections: ExplanationDraft['sections'] = [{ title: 'Decision and reason', body: input.rationale.trim() || 'A reviewer rationale is required before recording.', sourceIds: [] }];
@@ -17,7 +23,7 @@ export function buildExplanation(snapshot: DecisionSnapshot): ExplanationDraft {
   sections.push({ title: 'Assumptions and sources', sourceIds, body: `This review uses the recorded evidence for ${dateLabel(snapshot.periodStart)} to ${dateLabel(snapshot.periodEnd)}. Opening spendable cash: ${opening?.value !== null && opening?.value !== undefined && !['missing', 'conflicting'].includes(opening.status) ? money(opening.value) : 'unavailable'}. Opening cash is excluded from monthly remaining money. Loan proceeds are reserved for the financed purchase and excluded from household spendable cash. Obligations already deducted from take-home pay are counted only once. Dates represent end-of-day balances, not intraday spending or future cycles. Member-reported circumstances are statements, not independently verified documents.` });
   const concerns = assessment.status === 'incomplete'
     ? `The assessment is incomplete: ${assessment.issues.map(issue => issue.message).join(' ')} No complete affordability result is available. Clarification does not imply an adverse judgment about the member.`
-    : `${scenario?.policyChecks.filter(check => !check.passed).map(check => `${check.label}: ${check.detail}`).join(' ') || 'No failed check is recorded for the selected option.'} ${assessment.warnings.join(' ')} These modeled figures are not a guarantee of affordability or future wellbeing; unreported events and changing circumstances may affect household needs.`;
+    : `${checkConcerns} ${assessment.warnings.join(' ')} These modeled figures are not a guarantee of affordability or future wellbeing; unreported events and changing circumstances may affect household needs.`;
   sections.push({ title: 'Remaining concerns', sourceIds, body: concerns.trim() });
   if (input.departureReason.trim()) sections.push({ title: 'Departure from the officer recommendation', sourceIds: [], body: input.departureReason.trim() });
   if (input.outcome === 'approve' && input.exceptions.length) sections.push({ title: 'Recorded policy exceptions', sourceIds: [], body: input.exceptions.map(exception => `${scenario?.policyChecks.find(check => check.policyId === exception.policyId)?.label ?? exception.policyId} (${exception.policyId}): ${exception.reason.trim()}`).join(' ') });

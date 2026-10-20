@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Calendar, DocumentView, Printer, RecentlyViewed } from '@carbon/icons-react';
 import { useWorkspace } from '../../app/WorkspaceContext';
 import { assessCase } from '../../domain/assessment';
@@ -35,6 +35,14 @@ export default function DecisionPage({ record }: { record: CaseRecord }) {
     rationale: '', departureReason: '', exceptions: [], reviewDate: record.periodEnd, explanationReviewed: false,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const formRef = useRef<HTMLFormElement>(null);
+  const errorSummary = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (Object.keys(errors).length) {
+      const invalid = formRef.current?.querySelector<HTMLElement>('input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="true"]');
+      (invalid ?? errorSummary.current)?.focus();
+    }
+  }, [errors]);
   const [status, setStatus] = useState('');
   const [saving, setSaving] = useState(false);
   const [selectedId, setSelectedId] = useState(record.decisions.at(-1)?.id ?? '');
@@ -82,14 +90,14 @@ export default function DecisionPage({ record }: { record: CaseRecord }) {
     } catch (error) { setFollowError(error instanceof Error ? error.message : 'The follow-up could not be saved.'); }
     finally { setSaving(false); }
   }
-  const decisionForm = <form onSubmit={submitDecision} className={styles.form} noValidate>
+  const decisionForm = <form ref={formRef} onSubmit={submitDecision} className={styles.form} noValidate>
     <fieldset><legend>Review outcome</legend><div className={styles.outcomes}>
       {(['approve', 'decline', 'return'] as const).map(outcome => <label key={outcome} className={styles.choice}>
         <input type="radio" name="outcome" value={outcome} checked={input.outcome === outcome} onChange={() => updateInput({ outcome, exceptions: [] })} />
         {outcome === 'approve' ? 'Approve' : outcome === 'decline' ? 'Decline' : 'Return for clarification'}
       </label>)}
     </div></fieldset>
-    {Object.keys(errors).length > 0 && <Notice tone="danger" role="alert">The decision was not recorded. Check the messages below.</Notice>}
+    {Object.keys(errors).length > 0 && <div ref={errorSummary} tabIndex={-1}><Notice tone="danger" role="alert">The decision was not recorded. Check the messages below.</Notice></div>}
     {['outcome', 'assessment', 'recommendation', 'form', 'exceptions'].map(name => <FieldError key={name} name={name} errors={errors} />)}
     {input.outcome !== 'return' && <div className="field">
       <label htmlFor="decision-offer">Offer considered</label>
