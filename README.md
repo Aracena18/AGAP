@@ -66,7 +66,7 @@ Use **Reset demo** to restore all three original cases. If saved data cannot be 
 
 ## Review status
 
-Implementation and automated verification are tracked in the delivery PR. Visual acceptance and representative staff evaluation remain separate, pending activities. Backend planning starts only after the frontend workflow is accepted.
+Implementation and automated verification are tracked in the [draft delivery PR](https://github.com/Aracena18/AGAP/pull/4). Local checks pass; [GitHub Actions startup](https://github.com/Aracena18/AGAP/issues/5) requires follow-up because remote jobs have not executed. Visual acceptance and representative staff evaluation remain separate, pending activities. Backend planning starts only after the frontend workflow is accepted.
 
 Typography and icons are locally bundled. See [third-party notices](THIRD_PARTY_NOTICES.md).
 

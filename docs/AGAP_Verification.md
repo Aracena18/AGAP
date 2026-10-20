@@ -26,3 +26,9 @@ Additional corrections preserve structurally incomplete saved data for explicit 
 - [Backend planning gate](https://github.com/Aracena18/AGAP/issues/3): database, authentication and AI gateway decisions follow frontend acceptance.
 
 No real member records, live AI calls, core-system connections or payment operations were used.
+
+## Remote CI limitation
+
+GitHub Actions currently returns `startup_failure` before creating jobs, with an empty workflow name, `BuildFailed` path, and no job logs. Local checks above are verified; remote checks have not executed. The workflow passes actionlint, Actions is enabled, and the referenced action versions resolve. The supplied metadata does not establish the cause.
+
+Track the observed runs and required administrator follow-up in [issue #5](https://github.com/Aracena18/AGAP/issues/5). The draft PR must not be described as having green remote checks until an actual job runs successfully.
