@@ -1,5 +1,5 @@
 name: Verify frontend
-on:
+'on':
   push:
     branches: [main, 'feat/**']
   pull_request:
