@@ -28,7 +28,7 @@ The actual values live in `src/styles/tokens.css`; components must consume them.
 
 Type: titles 28/36, sections 18/26, body/input 16/24, tables 14/20, metadata 13/18.
 Spacing: 4,8,12,16,24,32,48. Controls at least 44px. Main design viewport 1366×768.
-At narrow widths supporting panels stack; only actual two-dimensional tables scroll.
+At narrow widths supporting panels stack. Two-dimensional tables and the cash-flow diagram scroll locally to preserve readable labels; the page itself reflows.
 Icon vocabulary: Document (application), DocumentView (source), Compare (offers), Edit (correction), Calendar (dates), RecentlyViewed (history), Printer (brief), WarningAlt (issue). Approval icon only indicates an actual recorded approval.
 Screenshots under `docs/screenshots/` are implementation evidence, not evidence of user acceptance.
 

@@ -1,0 +1,27 @@
+name: Implementation work card
+description: A bounded task with explicit ownership and verification
+body:
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome and product reference
+    validations:
+      required: true
+  - type: textarea
+    id: ownership
+    attributes:
+      label: Owner, branch, and permitted directories
+    validations:
+      required: true
+  - type: textarea
+    id: contracts
+    attributes:
+      label: Consumes, produces, and dependencies
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance checks and evidence
+    validations:
+      required: true

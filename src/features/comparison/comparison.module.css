@@ -15,7 +15,11 @@
 .chartContext { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-6); font-size: 13px; color: var(--muted); }
 .chartContext p span { margin-left: var(--space-2); color: var(--ink); font-weight: 500; }
 .chartContext a { margin-left: auto; }
+.textLink { padding: 0; border: 0; background: transparent; color: var(--teal); text-decoration: underline; text-underline-offset: 4px; text-align: left; font-size: inherit; min-height: 44px; }
+.chartContext .textLink { margin-left: auto; }
+.continueLink { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px; font-size: 14px; font-weight: 500; }
 .chart { display: block; width: 100%; height: auto; margin-top: var(--space-4); overflow: visible; }
+.chartScroll { overflow-x: auto; }
 .axisText { fill: var(--muted); font-size: 12px; }
 .lineLabel { fill: var(--teal); font-size: 14px; font-weight: 600; }
 .minimumLabel { fill: var(--ink); font-size: 12px; font-weight: 500; }
@@ -50,6 +54,8 @@
 .scheduleAmount { display: block; }
 .policyList { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-3); }
 .policyList li { display: flex; align-items: flex-start; gap: var(--space-3); }
+.assumptionDetails > summary { cursor: pointer; list-style: none; margin-bottom: -1px; }
+.assumptionDetails[open] > summary svg { transform: rotate(180deg); }
 .incomplete { padding: var(--space-6); display: grid; justify-items: start; gap: var(--space-4); }
 .incomplete > svg { color: var(--warning); }
 .incomplete p, .incomplete li { max-width: 66ch; font-size: 14px; color: var(--muted); }
@@ -62,7 +68,7 @@
   .metric p { min-height: 0; }
   .amount { font-size: 34px; line-height: 42px; }
   .chartContext a { margin-left: 0; }
-  .chart { min-height: 180px; }
+  .chart { min-width: 680px; }
   .movements summary, .tableNote { padding: var(--space-4); }
   .movements summary > span { display: block; margin: var(--space-1) 0 0; }
   .policyList li { flex-direction: column; gap: var(--space-2); }

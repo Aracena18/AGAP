@@ -29,7 +29,10 @@ Run lint, TypeScript/build, Vitest, Playwright, automated accessibility plus man
 
 ## Progress and implementation decisions
 
-- Foundation in progress.
+- Foundation complete: shared contracts, fictional fixtures, tokens, browser repository, documentation and CI.
+- Evidence, comparison, recommendation, decision, print and follow-up are integrated on `feat/frontend-workspace`.
+- Private GitHub repository: https://github.com/Aracena18/AGAP. Active review/evaluation/backend-gate issues: #1, #2 and #3.
+- Readable financial diagrams use local scrolling on small screens; dated movements and policy details use progressive disclosure.
 - GitHub issues will be the active task tracker once the private repository exists.
 - User authorized isolated parallel feature work. Shared contracts are established before dispatch.
 - Implement the full authorized frontend; distinguish implementation screenshots from user acceptance. Backend remains gated on user acceptance.

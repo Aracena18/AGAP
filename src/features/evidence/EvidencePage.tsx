@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { ArrowRight, Calendar, DocumentView, Edit, RecentlyViewed } from '@carbon/icons-react';
 import type { CaseRecord, EvidenceFact, EvidenceStatus } from '../../domain/types';
 import { dateLabel } from '../../domain/format';
@@ -24,15 +24,17 @@ function FactValue({ fact }: { fact: EvidenceFact }) {
 }
 
 export default function EvidencePage({ record }: { record: CaseRecord }) {
-  return <EvidenceWorkspace key={record.id} record={record} />;
+  const { hash } = useLocation();
+  const requestedSource = hash.startsWith('#source-') ? hash.slice(8) : '';
+  return <EvidenceWorkspace key={`${record.id}-${requestedSource}`} record={record} requestedSource={requestedSource} />;
 }
 
-function EvidenceWorkspace({ record }: { record: CaseRecord }) {
+function EvidenceWorkspace({ record, requestedSource }: { record: CaseRecord; requestedSource: string }) {
   const { role } = useWorkspace();
   const pending = record.facts.filter(fact => fact.critical && (
     fact.status === 'missing' || fact.status === 'conflicting' || fact.value === null || !fact.sourceId
   ));
-  const firstFact = pending[0] ?? record.facts[0];
+  const firstFact = record.facts.find(fact => fact.sourceId === requestedSource) ?? pending[0] ?? record.facts[0];
   const [selectedFactId, setSelectedFactId] = useState(firstFact?.id);
   const [sourceId, setSourceId] = useState<string | null>(firstFact?.sourceId ?? null);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -40,6 +42,10 @@ function EvidenceWorkspace({ record }: { record: CaseRecord }) {
   const source = record.sources.find(item => item.id === sourceId);
   const selectedFact = record.facts.find(fact => fact.id === selectedFactId);
   const unresolvedIncome = pending.some(fact => fact.category === 'income' && fact.status === 'conflicting');
+  const sourcePanel = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (requestedSource) { sourcePanel.current?.focus(); sourcePanel.current?.scrollIntoView?.({ block: 'nearest' }); }
+  }, [requestedSource]);
 
   function inspect(fact: EvidenceFact) {
     setSelectedFactId(fact.id);
@@ -128,7 +134,7 @@ function EvidenceWorkspace({ record }: { record: CaseRecord }) {
             : <p className="small subtle"><strong>Next:</strong> {pending[0].status === 'conflicting' ? 'Resolve' : 'Clarify'} {pending[0].label.toLowerCase()} to complete the repayment assessment. You can still move between review screens.</p>}
         </div>
       </div>
-      <aside aria-label="Source details" className={`panel ${styles.sourcePanel}`}>
+      <aside ref={sourcePanel} id={source ? `source-${source.id}` : undefined} tabIndex={-1} aria-label="Source details" className={`panel ${styles.sourcePanel}`}>
         <div className="panel-header"><h2>Source details</h2><DocumentView size={20} aria-hidden="true" /></div>
         <div className={`panel-body ${styles.sourceBody}`}>
           <Badge tone="teal">Fictional source</Badge>

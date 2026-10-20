@@ -21,6 +21,16 @@ function renderPage(record = resolvedAna()) {
 }
 
 describe('Repayment comparison', () => {
+  it('records the selected schedule and officer reasoning for the reviewer handoff', async () => {
+    localStorage.clear();
+    const user = userEvent.setup();
+    renderPage();
+    await user.click(screen.getByRole('radio', { name: /After-payday schedule/ }));
+    await user.type(screen.getByLabelText('Recommendation reason'), 'Payment follows payday without changing the full cost.');
+    await user.click(screen.getByRole('button', { name: 'Save recommendation' }));
+    expect(await screen.findByRole('status')).toHaveTextContent('Recommendation saved');
+    expect(screen.getByRole('link', { name: /Continue to decision/ })).toHaveAttribute('href', '/applications/AG-001/decision');
+  });
   it('pairs monthly remaining with dated cash and updates the dated result when the schedule changes', async () => {
     const user = userEvent.setup();
     renderPage();
@@ -31,19 +41,23 @@ describe('Repayment comparison', () => {
     expect(within(screen.getByRole('region', { name: 'Monthly remaining' })).getByText('₱2,000')).toBeInTheDocument();
     expect(within(screen.getByRole('region', { name: 'Lowest dated cash balance' })).getByText('₱1,000')).toBeInTheDocument();
     expect(screen.getByRole('img', { name: /After-payday schedule cash balance/ })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'View dated movements' }));
     expect(within(screen.getByRole('table', { name: /Dated cash movements/ })).getByText('Nov 16, 2026')).toBeInTheDocument();
   });
 
-  it('shows full cost and source-linked movements without adding reserved proceeds', () => {
+  it('shows full cost and source-linked movements without adding reserved proceeds', async () => {
+    const user = userEvent.setup();
     renderPage();
     const costs = screen.getByRole('table', { name: /Full offer costs/ });
     expect(within(costs).getAllByText('₱36,000')).toHaveLength(2);
     expect(within(costs).getAllByText('₱6,000')).toHaveLength(2);
     expect(within(costs).getByText('Net amount received')).toBeInTheDocument();
+    await user.click(screen.getByText('Dated cash movements', { exact: false, selector: 'summary' }));
     const movements = screen.getByRole('table', { name: /Dated cash movements/ });
     expect(within(movements).getByRole('link', { name: /Current payslip/ }))
       .toHaveAttribute('href', '/applications/AG-001/evidence#source-payslip');
-    expect(screen.getByText(/Loan proceeds are reserved/)).toBeInTheDocument();
+    await user.click(screen.getByText('Calculation assumptions & demo policy', { exact: true }));
+    expect(screen.getByText(/Loan proceeds are reserved/)).toBeVisible();
   });
 
   it('keeps Ben’s overall shortfall visible when switching the repayment date', async () => {

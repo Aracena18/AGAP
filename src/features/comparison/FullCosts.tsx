@@ -9,12 +9,9 @@ export default function FullCosts({ offers, scenarios, selectedId }: { offers: L
     { label: 'Principal', value: offer => <Money value={offer.principal} /> },
     { label: 'Net amount received', value: offer => <Money value={offer.netReceived} /> },
     { label: 'Fees paid separately', value: offer => <Money value={offer.feesPaidSeparately} /> },
-    { label: 'Term', value: offer => `${offer.termMonths} months` },
-    { label: 'Number of payments', value: offer => offer.payments.length },
+    { label: 'Term', value: offer => `${offer.termMonths} months · ${offer.payments.length} payments` },
     { label: 'Payment day', value: offer => [...new Set(offer.payments.map(payment => Number(payment.date.slice(8))))].map(day => `Day ${day}`).join(', ') },
     { label: 'Payment amount', value: offer => [...new Set(offer.payments.map(payment => payment.amount))].map(amount => <span className={styles.scheduleAmount} key={amount}><Money value={amount} /></span>) },
-    { label: 'First payment', value: offer => dateLabel(offer.payments[0].date) },
-    { label: 'Final payment', value: offer => dateLabel(offer.payments.at(-1)!.date) },
     { label: 'Total repayment', value: (_offer, scenario) => <strong><Money value={scenario.totalRepayment} /></strong> },
     { label: 'Total financing cost', value: (_offer, scenario) => <strong><Money value={scenario.financingCost} /></strong> },
   ];

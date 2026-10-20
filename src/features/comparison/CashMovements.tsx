@@ -11,7 +11,7 @@ export default function CashMovements({ record, scenario }: { record: CaseRecord
     return <Link className={styles.sourceLink} to={`/applications/${record.id}/evidence#source-${sourceId}`}>{source.title}</Link>;
   }
   const changedDays = scenario.dailyBalances.filter(day => day.movements.length > 0 || day.date === record.periodEnd);
-  return <details className={styles.movements} open id="cash-movements">
+  return <details className={styles.movements} id="cash-movements">
     <summary>Dated cash movements <span className="small subtle">Source-linked values behind the chart</span></summary>
     <div className="table-scroll" role="region" aria-label="Cash movement table" tabIndex={0}>
       <table>
@@ -24,7 +24,7 @@ export default function CashMovements({ record, scenario }: { record: CaseRecord
           {changedDays.map(day => <tr key={day.date} className={day.balance < 0 ? styles.shortageRow : ''}>
             <th scope="row">{dateLabel(day.date)}</th>
             <td>{day.movements.length ? <ul className={styles.movementList}>{day.movements.map((movement, index) => <li key={index}>
-              {movement.label}{movement.sourceId ? sourceLink(movement.sourceId) : <a className={styles.sourceLink} href="#offer-costs">Fictional offer schedule</a>}
+              {movement.label}{movement.sourceId ? sourceLink(movement.sourceId) : <button type="button" className={`${styles.sourceLink} ${styles.textLink}`} onClick={() => document.getElementById('offer-costs')?.scrollIntoView({ block: 'start' })}>Fictional offer schedule</button>}
             </li>)}</ul> : 'Closing balance · no movement'}</td>
             <td className="numeric">{day.movements.length ? <ul className={styles.movementAmounts}>{day.movements.map((movement, index) => <li key={index}>
               <Money value={movement.amount} /><span className={styles.cellNote}>{movement.amount < 0 ? 'Out' : 'In'}</span>

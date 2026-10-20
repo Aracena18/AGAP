@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Compare, DocumentView } from '@carbon/icons-react';
+import { ArrowRight, ChevronDown, Compare, DocumentView } from '@carbon/icons-react';
 import { assessCase } from '../../domain/assessment';
 import { dateLabel } from '../../domain/format';
 import type { CaseRecord } from '../../domain/types';
@@ -8,6 +8,7 @@ import { Badge, Money, Notice } from '../../shared/ui';
 import CashFlowChart from './CashFlowChart';
 import FullCosts from './FullCosts';
 import CashMovements from './CashMovements';
+import RecommendationForm from './RecommendationForm';
 import styles from './comparison.module.css';
 
 export default function ComparisonPage({ record }: { record: CaseRecord }) {
@@ -55,13 +56,11 @@ export default function ComparisonPage({ record }: { record: CaseRecord }) {
         <h2 id="monthly-heading">Monthly remaining</h2>
         <Money value={scenario.monthlyRemaining} className={`${styles.amount} ${scenario.monthlyRemaining < 0 ? styles.negative : ''}`} />
         <p>After essentials, existing obligations and this schedule’s payments.</p>
-        <Badge tone={scenario.monthlyRemaining < 0 ? 'danger' : 'neutral'}>{scenario.monthlyRemaining < 0 ? 'Monthly shortfall' : 'Monthly total is nonnegative'}</Badge>
       </section>
       <section className={`panel ${styles.metric}`} aria-labelledby="lowest-heading">
         <h2 id="lowest-heading">Lowest dated cash balance</h2>
         <Money value={scenario.lowestBalance} className={`${styles.amount} ${scenario.lowestBalance < 0 ? styles.negative : ''}`} />
         <p>First reached {dateLabel(firstLowestDay)}. Includes opening cash.</p>
-        <Badge tone={scenario.lowestBalance < 0 ? 'danger' : 'neutral'}>{scenario.lowestBalance < 0 ? 'Modeled cash shortage' : 'No modeled cash shortage'}</Badge>
       </section>
     </div>
     {overallShortfall
@@ -75,16 +74,18 @@ export default function ComparisonPage({ record }: { record: CaseRecord }) {
         <div className={styles.chartContext}>
           <p>Opening spendable cash <Money value={opening.value!} /></p>
           <p>Closing cash <Money value={scenario.closingBalance} /></p>
-          <a href="#cash-movements">View dated movements</a>
+          <button type="button" className={styles.textLink} onClick={() => { const details = document.getElementById('cash-movements') as HTMLDetailsElement | null; if (details) { details.open = true; details.scrollIntoView({ block: 'start' }); } }}>View dated movements</button>
         </div>
-        <CashFlowChart scenario={scenario} offer={offer} opening={opening.value!} periodStart={record.periodStart} />
+        <div className={styles.chartScroll} role="region" aria-label="Cash balance chart" tabIndex={0}><CashFlowChart scenario={scenario} offer={offer} opening={opening.value!} periodStart={record.periodStart} /></div>
       </div>
       <CashMovements record={record} scenario={scenario} />
     </section>
     <FullCosts offers={offers} scenarios={assessment.scenarios} selectedId={offer.id} />
-    <section className="panel" aria-labelledby="assumptions-heading">
-      <div className="panel-header"><h2 id="assumptions-heading">Calculation assumptions &amp; demo policy</h2><Link to={evidencePath}>Review sources</Link></div>
+    <RecommendationForm key={offer.id} record={record} offer={offer} />
+    <details className={`panel ${styles.assumptionDetails}`}>
+      <summary className="panel-header"><h2>Calculation assumptions &amp; demo policy</h2><ChevronDown size={20} aria-hidden="true" /></summary>
       <div className={`panel-body ${styles.assumptions}`}>
+        <Link to={evidencePath}>Review sources</Link>
         {assessment.warnings.map(warning => <p key={warning}>{warning}</p>)}
         <p>Opening cash is excluded from monthly remaining. Obligations already deducted from take-home pay are shown in evidence and are not deducted again. Separate fees are charged on the first scheduled payment date.</p>
         <p>The modeled period is one repayment cycle. Full-term costs use every payment in the recorded offer schedule.</p>
@@ -92,6 +93,6 @@ export default function ComparisonPage({ record }: { record: CaseRecord }) {
           <Badge tone={check.passed ? 'neutral' : 'warning'}>{check.passed ? 'Meets demo check' : 'Does not meet demo check'}</Badge><span>{check.detail}</span>
         </li>)}</ul>
       </div>
-    </section>
+    </details>
   </div>;
 }
