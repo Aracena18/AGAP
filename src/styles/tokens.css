@@ -1,0 +1,32 @@
+:root {
+  font-family: 'IBM Plex Sans', sans-serif;
+  color: #172d35;
+  background: #f6f8f8;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --canvas: #f6f8f8;
+  --surface: #ffffff;
+  --ink: #172d35;
+  --muted: #52636b;
+  --teal: #1d5d60;
+  --teal-hover: #164b4e;
+  --teal-soft: #eaf3f2;
+  --line: #d9e1e3;
+  --input-line: #778991;
+  --focus: #2563eb;
+  --warning: #8a4b08;
+  --warning-bg: #fff5e6;
+  --danger: #b42318;
+  --danger-bg: #fff0ee;
+  --success: #276749;
+  --success-bg: #eef7f0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --radius: 8px;
+}
