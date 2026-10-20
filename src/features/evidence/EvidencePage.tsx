@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ArrowRight, Calendar, DocumentView, Edit, RecentlyViewed } from '@carbon/icons-react';
+import { ArrowForward, CalendarToday, FindInPage, Edit, History } from '../../shared/icons';
 import type { CaseRecord, EvidenceFact, EvidenceStatus } from '../../domain/types';
 import { dateLabel } from '../../domain/format';
 import { useWorkspace } from '../../app/WorkspaceContext';
@@ -91,9 +91,9 @@ function EvidenceWorkspace({ record, requestedSource }: { record: CaseRecord; re
                 <div className={styles.factBottom}>
                   <div className={styles.provenance}>
                     {factSource ? <Button variant="quiet" className={styles.sourceButton} aria-label={`View source for ${fact.label}`} onClick={() => inspect(fact)}>
-                      <DocumentView size={16} aria-hidden="true" />{factSource.title}
+                      <FindInPage size={16} aria-hidden="true" />{factSource.title}
                     </Button> : <span className="small subtle">No source recorded</span>}
-                    <span className={`${styles.cashDate} small subtle`}><Calendar size={16} aria-hidden="true" />{fact.category === 'opening' ? 'Opening on' : 'Cash date'} {dateLabel(fact.cashDate)}</span>
+                    <span className={`${styles.cashDate} small subtle`}><CalendarToday size={16} aria-hidden="true" />{fact.category === 'opening' ? 'Opening on' : 'Cash date'} {dateLabel(fact.cashDate)}</span>
                   </div>
                   {role === 'officer' && editingId !== fact.id && <Button variant={fact.status === 'conflicting' || fact.status === 'missing' ? 'primary' : 'quiet'}
                     aria-label={`${action}${fact.status === 'conflicting' ? ' for' : ''} ${fact.label}`}
@@ -111,12 +111,12 @@ function EvidenceWorkspace({ record, requestedSource }: { record: CaseRecord; re
         </div>
         <section className="panel" aria-label="Evidence correction history">
           {record.corrections.length === 0 ? <div className={styles.emptyHistory}>
-            <RecentlyViewed size={20} aria-hidden="true" /><div><h2>Correction history</h2><p className="small subtle">No corrections recorded. Earlier values and reasons will appear here.</p></div>
+            <History size={20} aria-hidden="true" /><div><h2>Correction history</h2><p className="small subtle">No corrections recorded. Earlier values and reasons will appear here.</p></div>
           </div> : <details className={styles.history}>
             <summary>Correction history <span className="subtle">({record.corrections.length})</span></summary>
             <div className={styles.historyList}>{[...record.corrections].reverse().map(correction => <article key={correction.id} className={styles.historyEntry}>
               <div className={styles.factTop}><h3>{correction.after.label}</h3><span className="small subtle">{dateLabel(correction.at)}</span></div>
-              <p className={styles.change}><FactValue fact={correction.before} /><ArrowRight size={16} aria-label="changed to" /><FactValue fact={correction.after} /></p>
+              <p className={styles.change}><FactValue fact={correction.before} /><ArrowForward size={16} aria-label="changed to" /><FactValue fact={correction.after} /></p>
               <p>{correction.reason}</p>
               <dl className={styles.historySources}>
                 {[['Previous', correction.before], ['Updated', correction.after]].map(([label, item]) => {
@@ -130,14 +130,14 @@ function EvidenceWorkspace({ record, requestedSource }: { record: CaseRecord; re
           </details>}
         </section>
         <div className={styles.nextStep}>
-          {pending.length === 0 ? <><p className="small subtle">Evidence is ready for a dated repayment comparison.</p><Link to="../comparison" relative="path" className={styles.nextLink}>Compare repayments<ArrowRight size={20} aria-hidden="true" /></Link></>
+          {pending.length === 0 ? <><p className="small subtle">Evidence is ready for a dated repayment comparison.</p><Link to="../comparison" relative="path" className={styles.nextLink}>Compare repayments<ArrowForward size={20} aria-hidden="true" /></Link></>
             : <p className="small subtle"><strong>Next:</strong> {pending[0].status === 'conflicting' ? 'Resolve' : 'Clarify'} {pending[0].label.toLowerCase()} to complete the repayment assessment. You can still move between review screens.</p>}
         </div>
       </div>
       <aside ref={sourcePanel} id={source ? `source-${source.id}` : undefined} tabIndex={-1} aria-label="Source details" className={`panel ${styles.sourcePanel}`}>
-        <div className="panel-header"><h2>Source details</h2><DocumentView size={20} aria-hidden="true" /></div>
+        <div className="panel-header"><h2>Source details</h2><FindInPage size={20} aria-hidden="true" /></div>
         <div className={`panel-body ${styles.sourceBody}`}>
-          <Badge tone="teal">Fictional source</Badge>
+          <Badge tone="brand">Fictional source</Badge>
           <div aria-live="polite">
             <h3>{source?.title ?? 'No source recorded'}</h3>
             {source && <p className="small subtle">{source.kind === 'statement' ? 'Member statement' : source.kind === 'worksheet' ? 'Assessment worksheet' : 'Document'} · {dateLabel(source.date)}</p>}

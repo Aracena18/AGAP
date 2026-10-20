@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ChevronDown, Compare, DocumentView } from '@carbon/icons-react';
+import { ArrowForward, ExpandMore, CompareArrows, FindInPage } from '../../shared/icons';
 import { assessCase } from '../../domain/assessment';
 import { dateLabel } from '../../domain/format';
 import type { CaseRecord } from '../../domain/types';
@@ -24,11 +24,11 @@ export default function ComparisonPage({ record }: { record: CaseRecord }) {
     return <div className="stack">
       {heading}
       <section className={`panel ${styles.incomplete}`} aria-labelledby="incomplete-heading">
-        <DocumentView size={32} aria-hidden="true" />
+        <FindInPage size={32} aria-hidden="true" />
         <h2 id="incomplete-heading">Evidence needs clarification</h2>
         <p>A complete comparison needs the following information. Missing or conflicting values remain unavailable.</p>
         <ul>{assessment.issues.map((issue, index) => <li key={`${issue.factId}-${index}`}>{issue.message}</li>)}</ul>
-        <Link className={styles.primaryLink} to={evidencePath}>Review evidence <ArrowRight size={20} aria-hidden="true" /></Link>
+        <Link className={styles.primaryLink} to={evidencePath}>Review evidence <ArrowForward size={20} aria-hidden="true" /></Link>
       </section>
     </div>;
   }
@@ -43,7 +43,7 @@ export default function ComparisonPage({ record }: { record: CaseRecord }) {
   return <div className="stack">
     {heading}
     <fieldset>
-      <legend className={styles.legend}><Compare size={20} aria-hidden="true" /> Choose a schedule to examine</legend>
+      <legend className={styles.legend}><CompareArrows size={20} aria-hidden="true" /> Choose a schedule to examine</legend>
       <div className={styles.options}>
         {offers.map(item => <label className={`${styles.option} ${item.id === scenario.offerId ? styles.selected : ''}`} key={item.id}>
           <input type="radio" name="comparison-offer" value={item.id} checked={item.id === scenario.offerId} onChange={() => setSelectedId(item.id)} />
@@ -83,7 +83,7 @@ export default function ComparisonPage({ record }: { record: CaseRecord }) {
     <FullCosts offers={offers} scenarios={assessment.scenarios} selectedId={offer.id} />
     <RecommendationForm key={offer.id} record={record} offer={offer} />
     <details className={`panel ${styles.assumptionDetails}`}>
-      <summary className="panel-header"><h2>Calculation assumptions &amp; demo policy</h2><ChevronDown size={20} aria-hidden="true" /></summary>
+      <summary className="panel-header"><h2>Calculation assumptions &amp; demo policy</h2><ExpandMore size={20} aria-hidden="true" /></summary>
       <div className={`panel-body ${styles.assumptions}`}>
         <Link to={evidencePath}>Review sources</Link>
         {assessment.warnings.map(warning => <p key={warning}>{warning}</p>)}

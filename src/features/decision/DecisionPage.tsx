@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { Calendar, DocumentView, Printer, RecentlyViewed } from '@carbon/icons-react';
+import { CalendarToday, FindInPage, Print, History } from '../../shared/icons';
 import { useWorkspace } from '../../app/WorkspaceContext';
 import { assessCase } from '../../domain/assessment';
 import { buildExplanation } from '../../domain/explanation';
@@ -131,7 +131,7 @@ export default function DecisionPage({ record }: { record: CaseRecord }) {
       <input id="review-date" type="date" min={record.periodEnd} value={input.reviewDate} onChange={event => updateInput({ reviewDate: event.target.value })} required aria-invalid={Boolean(errors.reviewDate)} aria-describedby={errors.reviewDate ? 'error-reviewDate' : 'review-date-help'} />
       <p id="review-date-help" className="small subtle">On or after {dateLabel(record.periodEnd)}.</p><FieldError name="reviewDate" errors={errors} />
     </div>
-    <div className={styles.preview}><div className={styles.sectionTitle}><DocumentView size={20} aria-hidden="true" /><h3>Template explanation preview</h3><Badge>Deterministic template</Badge></div>
+    <div className={styles.preview}><div className={styles.sectionTitle}><FindInPage size={20} aria-hidden="true" /><h3>Template explanation preview</h3><Badge>Deterministic template</Badge></div>
       <p className="small subtle">Review the words, costs, assumptions, and next step before saving. Your edits update this preview.</p>
       {preview ? <details><summary>Read the explanation to be recorded</summary><Explanation draft={preview} snapshot={previewSnapshot} /></details> : <Notice tone="warning">Choose a valid review date to view the explanation.</Notice>}
     </div>
@@ -140,7 +140,7 @@ export default function DecisionPage({ record }: { record: CaseRecord }) {
   </form>;
   return <div className={styles.page}>
     <div className="page-heading no-print"><div><p className="eyebrow">Human review · Step 3 of 3</p><h1>Decision and explanation</h1><p>Carry the evidence, costs, and reasoning into a recorded decision.</p></div><Badge>Version {record.version}</Badge></div>
-    <section className="panel no-print" aria-labelledby="assessment-summary"><div className="panel-header"><h2 id="assessment-summary">Ready for human review</h2><Badge tone={assessment.status === 'complete' ? 'teal' : 'warning'}>{assessment.status === 'complete' ? 'Assessment complete' : 'Evidence incomplete'}</Badge></div>
+    <section className="panel no-print" aria-labelledby="assessment-summary"><div className="panel-header"><h2 id="assessment-summary">Ready for human review</h2><Badge tone={assessment.status === 'complete' ? 'brand' : 'warning'}>{assessment.status === 'complete' ? 'Assessment complete' : 'Evidence incomplete'}</Badge></div>
       <div className={`panel-body ${styles.assessment}`}>
         <div><h3>Officer recommendation</h3>{record.recommendation ? <><p>{record.offers.find(offer => offer.id === record.recommendation?.offerId)?.label ?? 'Offer unavailable'}</p><p className="small subtle">{record.recommendation.note}</p><p className="small subtle">{record.recommendation.actor.name} · {dateLabel(record.recommendation.at)} · version {record.recommendation.caseVersion}</p>{!currentRecommendation && <Badge tone="warning">Recommendation needs renewed review</Badge>}</> : <p className="subtle">No officer recommendation recorded.</p>}</div>
         {assessment.status === 'incomplete' ? <Notice tone="warning"><p>Approval and decline are unavailable until the critical evidence is complete and an officer recommendation is recorded. Return for clarification is available.</p><ul>{assessment.issues.map(issue => <li key={`${issue.factId}-${issue.message}`}>{issue.message}</li>)}</ul></Notice> : <div className={styles.metrics}>
@@ -154,7 +154,7 @@ export default function DecisionPage({ record }: { record: CaseRecord }) {
       {status && <div className={styles.feedback}><Notice tone="success" role="status">{status}</Notice></div>}
     </div></section>
     {selectedSnapshot && <section className={`panel ${styles.saved}`} aria-labelledby="saved-brief-title">
-      <div className="panel-header no-print"><h2 id="saved-brief-title">Saved member brief</h2><Button variant="secondary" onClick={() => window.print()}><Printer size={20} aria-hidden="true" />Print saved brief</Button></div>
+      <div className="panel-header no-print"><h2 id="saved-brief-title">Saved member brief</h2><Button variant="secondary" onClick={() => window.print()}><Print size={20} aria-hidden="true" />Print saved brief</Button></div>
       {record.decisions.length > 1 && <div className={`${styles.historySelect} no-print`}><label htmlFor="decision-history">Recorded decision</label><select id="decision-history" value={selectedSnapshot.id} onChange={event => setSelectedId(event.target.value)}>{[...record.decisions].reverse().map((decision, index) => <option key={decision.id} value={decision.id}>{dateLabel(decision.recordedAt)} · {decision.input.outcome} · evidence version {decision.caseVersion}{index === 0 ? ' · latest' : ' · historical'}</option>)}</select></div>}
       <article aria-label="Saved member brief" className={`panel-body ${styles.brief}`}>
         <div className={styles.briefHeader}><p className="eyebrow">AGAP · Fictional member explanation</p><h2>{selectedSnapshot.memberName}</h2><p>{selectedSnapshot.caseId} · Recorded {dateLabel(selectedSnapshot.recordedAt)} · Evidence version {selectedSnapshot.caseVersion}</p><Badge>Deterministic template · reviewed by staff</Badge></div>
@@ -163,14 +163,14 @@ export default function DecisionPage({ record }: { record: CaseRecord }) {
         {selectedSnapshot.explanation ? <Explanation draft={selectedSnapshot.explanation} snapshot={selectedSnapshot} /> : <Notice tone="warning">The saved explanation is unavailable in this historical record.</Notice>}
         <p className={styles.signoff}>Recorded by {selectedSnapshot.reviewer.name}, demo reviewer · Review date {dateLabel(selectedSnapshot.input.reviewDate)}. All people, records, offers, and policies shown are fictional.</p>
       </article>
-      <details className={`${styles.staffDetails} no-print`}><summary><RecentlyViewed size={20} aria-hidden="true" />Staff details and frozen evidence</summary><div className={styles.form}>
+      <details className={`${styles.staffDetails} no-print`}><summary><History size={20} aria-hidden="true" />Staff details and frozen evidence</summary><div className={styles.form}>
         <p className="small subtle">Case version {selectedSnapshot.caseVersion} · Calculation {selectedSnapshot.assessment.calculationVersion} · Recorded {selectedSnapshot.recordedAt}. Browser recordkeeping demonstrates the workflow and is not a secure audit service.</p>
         {selectedSnapshot.recommendation && <p>Officer recommendation: {selectedSnapshot.offers.find(offer => offer.id === selectedSnapshot.recommendation?.offerId)?.label} · {selectedSnapshot.recommendation.note} · {selectedSnapshot.recommendation.actor.name}</p>}
         <div className="table-scroll"><table><caption>Evidence preserved with this decision</caption><thead><tr><th scope="col">Recorded fact</th><th scope="col" className="numeric">Amount</th><th scope="col">Status and source</th></tr></thead><tbody>{selectedSnapshot.facts.map(fact => <tr key={fact.id}><th scope="row">{fact.label}</th><td className="numeric">{fact.value === null ? 'Unavailable' : <Money value={fact.value} />}</td><td>{fact.status} · {selectedSnapshot.sources.find(source => source.id === fact.sourceId)?.title ?? 'Source unavailable'} · {dateLabel(fact.effectiveDate)}</td></tr>)}</tbody></table></div>
         {selectedSnapshot.sources.map(source => <section key={source.id}><h3>{source.title} · {dateLabel(source.date)}</h3><p>{source.excerpt}</p></section>)}
       </div></details>
     </section>}
-    {selectedSnapshot && <section className="panel no-print" aria-labelledby="followup-title"><div className="panel-header"><h2 id="followup-title"><Calendar size={20} aria-hidden="true" />Follow-up checkpoint</h2></div><form onSubmit={submitFollowUp} className={`panel-body ${styles.form}`} noValidate>
+    {selectedSnapshot && <section className="panel no-print" aria-labelledby="followup-title"><div className="panel-header"><h2 id="followup-title"><CalendarToday size={20} aria-hidden="true" />Follow-up checkpoint</h2></div><form onSubmit={submitFollowUp} className={`panel-body ${styles.form}`} noValidate>
       <p className="small subtle">Record a short fictional check-in. The saved decision and its original review date stay preserved.</p>
       <div className={`field ${styles.dateField}`}><label htmlFor="followup-date">Follow-up date</label><input id="followup-date" type="date" value={followDate} min={record.periodEnd} onChange={event => setFollowDate(event.target.value)} /></div>
       <div className="field"><label htmlFor="followup-note">Follow-up note</label><textarea id="followup-note" value={followNote} maxLength={500} onChange={event => setFollowNote(event.target.value)} aria-describedby="followup-note-help" /><p id="followup-note-help" className="small subtle">Up to 500 characters. Add material evidence changes on the Evidence screen for renewed review.</p></div>

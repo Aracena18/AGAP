@@ -4,6 +4,8 @@
 
 This frontend uses fictional people, records, offers and policies. Demo roles illustrate a workflow; they are not authentication. Browser storage is local to this browser. There are no backend, payment, core-system, or live AI connections.
 
+The visual direction follows the user's Google-inspired preference: Google Sans, Material Symbols Rounded, blue actions, white surfaces, soft selection states, and clear hierarchy. Shared tokens and contributor rules keep that direction consistent across features.
+
 ## Start locally
 
 Use Node 24 and npm.

@@ -21,7 +21,7 @@ export default function FullCosts({ offers, scenarios, selectedId }: { offers: L
       <table className={styles.costTable}>
         <caption className="sr-only">Full offer costs · all scheduled payments</caption>
         <thead><tr><th scope="col">Offer detail</th>{offers.map(offer => <th scope="col" className="numeric" key={offer.id}>
-          {offer.label}{offer.id === selectedId && <span className={styles.cellNote}><Badge tone="teal">Viewing</Badge></span>}
+          {offer.label}{offer.id === selectedId && <span className={styles.cellNote}><Badge tone="brand">Viewing</Badge></span>}
         </th>)}</tr></thead>
         <tbody>{rows.map(row => <tr key={row.label}><th scope="row">{row.label}</th>{offers.map(offer => <td className="numeric" key={offer.id}>
           {row.value(offer, scenarios.find(scenario => scenario.offerId === offer.id)!)}

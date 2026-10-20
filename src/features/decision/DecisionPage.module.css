@@ -13,14 +13,14 @@
 .choice { display: flex; align-items: flex-start; gap: var(--space-3); min-height: 44px; padding: var(--space-3) 0; cursor: pointer; }
 .choice input { flex-shrink: 0; margin: 2px 0 0; }
 .outcomes .choice { padding: var(--space-3) var(--space-4); border: 1px solid var(--line); border-radius: var(--radius); }
-.outcomes .choice:has(input:checked) { background: var(--teal-soft); border-color: var(--teal); }
+.outcomes .choice:has(input:checked) { background: var(--primary-soft); border-color: var(--primary); }
 .exceptionPanel { padding: var(--space-4); border: 1px solid var(--line); background: var(--warning-bg); border-radius: var(--radius); }
 .exceptionPanel legend { padding: 0 var(--space-2); }
 .exception { margin-top: var(--space-4); }
 .dateField { max-width: 320px; }
 .preview { border: 1px solid var(--line); border-radius: var(--radius); padding: var(--space-5); display: grid; gap: var(--space-3); background: var(--canvas); }
 .sectionTitle { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2); }
-.preview summary, .newReview > summary, .staffDetails > summary { min-height: 44px; cursor: pointer; padding: var(--space-3) 0; font-weight: 500; color: var(--teal); }
+.preview summary, .newReview > summary, .staffDetails > summary { min-height: 44px; cursor: pointer; padding: var(--space-3) 0; font-weight: 500; color: var(--primary); }
 .newReview[open] > summary { margin-bottom: var(--space-4); }
 .explanation { display: grid; gap: var(--space-5); }
 .preview .explanation { padding-top: var(--space-4); }

@@ -16,20 +16,23 @@ Use source panels and inline editing; concise hints only when needed. Status wor
 
 ## Researched visual direction
 
+The user's updated direction supersedes the initial IBM-based styling: use a clean Google Workspace / Material-inspired interface. Keep AGAP's identity and financial-review workflow.
+
 The actual values live in `src/styles/tokens.css`; components must consume them.
 
 | Choice | Rationale and primary source |
 | --- | --- |
-| Self-hosted IBM Plex Sans 400/500/600 | Designed for UI; OFL licensed. [IBM Plex](https://github.com/IBM/plex). Retain bundled license; verify peso/minus/diacritics and print rendering. |
-| Carbon icons 16/20px | Designed to pair with 14/16px Plex. [Guidelines](https://www.carbondesignsystem.com/building-blocks/foundations/icons/guidelines). One family; icons accompany consequential action labels. |
-| Neutral surfaces, dark petrol text, restrained teal action | Project design choice, evaluated by measured contrast and actual screen review. [WCAG 2.2](https://www.w3.org/TR/WCAG22/). No claim that a color guarantees trust. |
+| Self-hosted Google Sans variable, weights 400/500/600 | Google's typeface is available under OFL through the [official Google Fonts repository](https://github.com/google/fonts/tree/main/ofl/googlesans). Bundle locally and retain its license; verify peso/minus/diacritics and print rendering. |
+| Google Material Symbols Rounded, 16/20/24px | Use one consistent rounded symbol family. [Official guidance](https://developers.google.com/fonts/docs/material_symbols). The selected SVGs are vendored from a pinned revision; consequential actions retain text labels. |
+| White surfaces, cool neutral canvas, blue primary actions, soft blue selection | Apply semantic [Material color roles](https://m3.material.io/styles/color/roles). Preserve readable contrast and distinguish status using words as well as color. |
+| Softer panels, pill-shaped actions/navigation, restrained borders and feedback | Adapt [Material button guidance](https://m3.material.io/components/buttons/overview) to this staff workflow. Keep controls clear and compact; no heavy component framework is required. |
 | Semantic right-aligned numeric tables | Comparison and scanning. [GOV.UK tables](https://design-system.service.gov.uk/components/table/). |
 | Visible input labels and associated errors | [GOV.UK text inputs](https://design-system.service.gov.uk/components/text-input/). |
 
-Type: titles 28/36, sections 18/26, body/input 16/24, tables 14/20, metadata 13/18.
+Type: titles 28/36 at 400, sections 18/26 at 500, body/input 16/24 at 400, tables 14/20, metadata 13/18. Financial values use tabular numerals. Use sentence case and avoid widely spaced uppercase overlines.
 Spacing: 4,8,12,16,24,32,48. Controls at least 44px. Main design viewport 1366×768.
 At narrow widths supporting panels stack. Two-dimensional tables and the cash-flow diagram scroll locally to preserve readable labels; the page itself reflows.
-Icon vocabulary: Document (application), DocumentView (source), Compare (offers), Edit (correction), Calendar (dates), RecentlyViewed (history), Printer (brief), WarningAlt (issue). Approval icon only indicates an actual recorded approval.
+Icon vocabulary: Description (application), FindInPage (source), CompareArrows (offers), Edit (correction), CalendarToday (dates), History (history), Print (brief), Warning (issue). Approval icon only indicates an actual recorded approval.
 Screenshots under `docs/screenshots/` are implementation evidence, not evidence of user acceptance.
 
 ## Architecture and contracts

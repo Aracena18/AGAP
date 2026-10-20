@@ -10,7 +10,7 @@
 - Independent arithmetic tests cover Ana's ₱2,000 monthly remaining, −₱2,000 requested minimum, ₱1,000 alternative minimum, ₱11,000 closing, ₱36,000 total repayment and ₱6,000 financing cost. Ben stays −₱4,000 monthly; Cora stays incomplete.
 - Browser tests exercise refresh, source tracing, explicit reset, preserved incompatible storage, deep decision history, renewed-review status and retained historical print figures.
 - Automated axe checks found no violations in the tested screen states against WCAG 2 A/AA, 2.1 AA and 2.2 AA tags. This is automated coverage, not a claim of complete accessibility certification.
-- Font binary inspection confirmed the bundled Latin + Latin Extended subsets contain ₱, −, ñ, 0/1/I/l for weights 400/500/600. All ten digits have equal advance widths (600 units). Browser font files are served locally; licenses are included.
+- Following the user's Google-inspired visual direction, font binary inspection confirmed bundled Google Sans contains ₱, −, ñ and 0/1/I/l, supports weights 400–700, and provides the `tnum` tabular-numeral feature used for financial values. Browser inspection confirmed Google Sans is applied. Font files and selected Material Symbols Rounded SVGs are served locally; their OFL/Apache licenses are included.
 - Generated and text-inspected the two-page A4 fictional member brief: costs, assumptions, sources, decision and review date are present. Visual screenshots are in `docs/screenshots/`; they document implementation, not acceptance.
 
 ## Independent review and corrections

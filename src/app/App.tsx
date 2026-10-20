@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowUpRight, Document, Reset } from '@carbon/icons-react';
+import { ArrowBack, NorthEast, Description, RestartAlt } from '../shared/icons';
 import { useWorkspace } from './WorkspaceContext';
 import { caseStatus } from './caseStatus';
 import { Badge, Button, Money, Notice } from '../shared/ui';
@@ -18,7 +18,7 @@ function CasePage({ screen }: { screen: 'evidence' | 'comparison' | 'decision' }
   const status = caseStatus(record);
   return <>
     <div className={`${styles.caseHeader} no-print`}>
-      <Link to="/applications" className={styles.back}><ArrowLeft size={16} aria-hidden="true" /> Applications</Link>
+      <Link to="/applications" className={styles.back}><ArrowBack size={16} aria-hidden="true" /> Applications</Link>
       <div className={styles.caseIdentity}><div className={styles.member}><span className={styles.avatar} aria-hidden="true">{record.member.initials}</span><div><p className={styles.memberName}>{record.member.name}</p><p className="small subtle">{record.id} <span className={styles.separator}>/</span> {record.member.occupation}</p></div><Badge tone={status.tone}>{status.label}</Badge></div><div className={styles.request}><p className="small subtle">Requested loan</p><p><Money value={record.offers[0].principal} /><span>{record.offers[0].termMonths} months</span></p></div></div>
       <nav className={styles.steps} aria-label="Application review">
         {[['evidence', 'Evidence'], ['comparison', 'Repayment comparison'], ['decision', 'Decision & explanation']].map(([path, label], index) => <NavLink key={path} to={`/applications/${record.id}/${path}`} className={({ isActive }) => `${styles.step} ${isActive ? styles.active : ''}`}><span className={styles.stepNumber} aria-hidden="true">{index + 1}</span>{label}</NavLink>)}
@@ -47,8 +47,8 @@ export default function App() {
     <a className={`${styles.skip} no-print`} href="#main-content" onClick={event => { event.preventDefault(); document.getElementById('main-content')?.focus(); }}>Skip to main content</a>
     <header className={`${styles.header} no-print`}>
       <div className={styles.headerInner}>
-        <Link to="/applications" className={styles.brand} aria-label="AGAP home"><span className={styles.brandMark} aria-hidden="true"><ArrowUpRight size={24} /></span>AGAP<span className={styles.brandSubtitle}>Financial health loan review</span></Link>
-        <div className={styles.headerActions}><Badge tone="teal">Fictional demo</Badge><div className={styles.role}><label htmlFor="demo-role">Demo role</label><select id="demo-role" value={role} onChange={event => setRole(event.target.value as 'officer' | 'reviewer')}><option value="officer">Loan officer</option><option value="reviewer">Reviewer</option></select></div><span className={styles.userAvatar} title={`${actor.name} · fictional staff member`} aria-label={`${actor.name}, fictional staff member`}>{actor.name.split(' ').map(part => part[0]).join('')}</span></div>
+        <Link to="/applications" className={styles.brand} aria-label="AGAP home"><span className={styles.brandMark} aria-hidden="true"><NorthEast size={24} /></span>AGAP<span className={styles.brandSubtitle}>Financial health loan review</span></Link>
+        <div className={styles.headerActions}><Badge tone="brand">Fictional demo</Badge><div className={styles.role}><label htmlFor="demo-role">Demo role</label><select id="demo-role" value={role} onChange={event => setRole(event.target.value as 'officer' | 'reviewer')}><option value="officer">Loan officer</option><option value="reviewer">Reviewer</option></select></div><span className={styles.userAvatar} title={`${actor.name} · fictional staff member`} aria-label={`${actor.name}, fictional staff member`}>{actor.name.split(' ').map(part => part[0]).join('')}</span></div>
       </div>
     </header>
     <main id="main-content" className={styles.main} tabIndex={-1}>
@@ -63,7 +63,7 @@ export default function App() {
         <Route path="*" element={<section className="panel panel-body stack"><h1>Page not found</h1><Link to="/applications">Return to applications</Link></section>} />
       </Routes>}
     </main>
-    <footer className={`${styles.footer} no-print`}><span><Document size={16} aria-hidden="true" /> AGAP <span className={styles.separator}>/</span> Fictional data. Human decisions.</span><Button variant="quiet" onClick={() => dialog.current?.showModal()}><Reset size={16} aria-hidden="true" /> Reset demo</Button></footer>
+    <footer className={`${styles.footer} no-print`}><span><Description size={16} aria-hidden="true" /> AGAP <span className={styles.separator}>/</span> Fictional data. Human decisions.</span><Button variant="quiet" onClick={() => dialog.current?.showModal()}><RestartAlt size={16} aria-hidden="true" /> Reset demo</Button></footer>
     <dialog ref={dialog} className={`${styles.dialog} no-print`} aria-labelledby="reset-heading">
       <h2 id="reset-heading">Reset this demo?</h2><p>Your changes and recorded decisions in this browser will be replaced with the original three fictional cases.</p>
       <div className="actions"><Button variant="secondary" autoFocus onClick={() => dialog.current?.close()}>Keep changes</Button><Button onClick={async () => { await resetDemo(); dialog.current?.close(); }}>Reset demo</Button></div>

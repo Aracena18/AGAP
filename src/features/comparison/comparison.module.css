@@ -4,29 +4,29 @@
 .option input { flex: 0 0 auto; margin: 3px 0 0; }
 .option strong { display: block; font-size: 16px; font-weight: 500; }
 .optionDetail { display: block; margin-top: var(--space-1); color: var(--muted); font-size: 13px; font-weight: 400; }
-.selected { border-color: var(--teal); background: var(--teal-soft); box-shadow: inset 0 0 0 1px var(--teal); }
+.selected { border-color: var(--primary); background: var(--primary-soft); box-shadow: inset 0 0 0 1px var(--primary); }
 .metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
 .metric { padding: var(--space-5); display: flex; align-items: flex-start; flex-direction: column; gap: var(--space-3); }
 .metric h2 { font-size: 16px; font-weight: 500; }
 .metric p { font-size: 13px; line-height: 20px; color: var(--muted); min-height: 40px; }
-.amount { font-size: 38px; line-height: 46px; font-weight: 600; letter-spacing: -1px; }
+.amount { font-size: 38px; line-height: 46px; font-weight: 500; letter-spacing: -.7px; }
 .negative { color: var(--danger); }
 .chartBody { padding-bottom: var(--space-3); }
 .chartContext { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-6); font-size: 13px; color: var(--muted); }
 .chartContext p span { margin-left: var(--space-2); color: var(--ink); font-weight: 500; }
 .chartContext a { margin-left: auto; }
-.textLink { padding: 0; border: 0; background: transparent; color: var(--teal); text-decoration: underline; text-underline-offset: 4px; text-align: left; font-size: inherit; min-height: 44px; }
+.textLink { padding: 0; border: 0; background: transparent; color: var(--primary); text-decoration: underline; text-underline-offset: 4px; text-align: left; font-size: inherit; min-height: 44px; }
 .chartContext .textLink { margin-left: auto; }
 .continueLink { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px; font-size: 14px; font-weight: 500; }
 .chart { display: block; width: 100%; height: auto; margin-top: var(--space-4); overflow: visible; }
 .chartScroll { overflow-x: auto; }
 .axisText { fill: var(--muted); font-size: 12px; }
-.lineLabel { fill: var(--teal); font-size: 14px; font-weight: 600; }
+.lineLabel { fill: var(--primary); font-size: 14px; font-weight: 600; }
 .minimumLabel { fill: var(--ink); font-size: 12px; font-weight: 500; }
 .gridLine { stroke: var(--line); stroke-width: 1; }
 .zeroLine { stroke: var(--input-line); stroke-width: 1; stroke-dasharray: 4 4; }
-.balanceLine { stroke: var(--teal); stroke-width: 3; fill: none; stroke-linejoin: round; }
-.balanceDot { fill: var(--teal); }
+.balanceLine { stroke: var(--primary); stroke-width: 3; fill: none; stroke-linejoin: round; }
+.balanceDot { fill: var(--primary); }
 .shortageDot { fill: var(--danger); stroke: var(--surface); stroke-width: 2; }
 .shortageArea { fill: var(--danger-bg); }
 .movements { border-top: 1px solid var(--line); }
@@ -45,7 +45,7 @@
 .costTable th, .costTable td { padding-block: var(--space-3); }
 .costNotes, .assumptions { font-size: 14px; display: grid; gap: var(--space-4); color: var(--muted); }
 .costNotes { border-top: 1px solid var(--line); }
-.costNotes summary { padding: var(--space-3) 0; color: var(--teal); }
+.costNotes summary { padding: var(--space-3) 0; color: var(--primary); }
 .offerSchedules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
 .offerSchedules h3 { color: var(--ink); margin-bottom: var(--space-2); }
 .offerSchedules ol { padding-left: 22px; }
@@ -60,8 +60,8 @@
 .incomplete > svg { color: var(--warning); }
 .incomplete p, .incomplete li { max-width: 66ch; font-size: 14px; color: var(--muted); }
 .incomplete ul { margin: 0 0 var(--space-2); padding-left: 20px; display: grid; gap: var(--space-2); }
-.primaryLink { display: inline-flex; align-items: center; gap: var(--space-3); min-height: 44px; padding: 10px 16px; background: var(--teal); color: var(--surface); text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 500; }
-.primaryLink:hover { background: var(--teal-hover); }
+.primaryLink { display: inline-flex; align-items: center; gap: var(--space-3); min-height: 44px; padding: 10px 20px; background: var(--primary); color: var(--surface); text-decoration: none; border-radius: var(--button-radius); font-size: 14px; font-weight: 500; }
+.primaryLink:hover { background: var(--primary-hover); }
 @media (max-width: 767px) {
   .options, .metrics, .offerSchedules { grid-template-columns: 1fr; }
   .metric { padding: var(--space-4); }

@@ -3,12 +3,12 @@
 .notices { display: grid; gap: var(--space-3); margin-bottom: var(--space-5); }
 .notices:empty { display: none; }
 .group + .group { border-top: 1px solid var(--line); }
-.groupHeading { padding: var(--space-4) var(--space-5); background: var(--canvas); display: grid; gap: var(--space-1); }
+.groupHeading { padding: var(--space-4) var(--space-5); background: var(--surface); display: grid; gap: var(--space-1); }
 .fact { display: grid; gap: var(--space-2); padding: var(--space-4) var(--space-5); }
 .fact + .fact { border-top: 1px solid var(--line); }
 .factTop, .factBottom { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); }
 .factTop { align-items: baseline; }
-.amount { text-align: right; font-weight: 600; white-space: nowrap; font-size: 18px; }
+.amount { text-align: right; font-weight: 500; white-space: nowrap; font-size: 18px; }
 .factMetadata { display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }
 .provenance { display: grid; gap: var(--space-1); min-width: 0; }
 .sourceButton { justify-content: flex-start; padding: var(--space-2) 0; min-height: 44px; text-align: left; }
@@ -37,8 +37,8 @@
 .historySources dt { font-weight: 500; }
 .historySources dd { margin: 0; }
 .nextStep { display: flex; justify-content: space-between; align-items: center; gap: var(--space-5); }
-.nextLink { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-3); white-space: nowrap; padding: 10px var(--space-4); min-height: 44px; border-radius: 6px; background: var(--teal); color: var(--surface); font-size: 14px; font-weight: 500; text-decoration: none; }
-.nextLink:hover { background: var(--teal-hover); }
+.nextLink { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-3); white-space: nowrap; padding: 10px var(--space-5); min-height: 44px; border-radius: var(--button-radius); background: var(--primary); color: var(--surface); font-size: 14px; font-weight: 500; text-decoration: none; }
+.nextLink:hover { background: var(--primary-hover); }
 @media (max-width: 1100px) {
   .workspace { grid-template-columns: minmax(0, 1fr); }
   .sourcePanel { position: static; }

@@ -18,7 +18,7 @@ Stack: React, TypeScript, Vite, React Router, CSS Modules, Context/reducer; npm.
 ## Global requirements
 
 Use shared types/tokens/fixtures. Integer centavos; calendar dates; end-of-day balances. Only fictional data. Missing is not zero. One source-linked case record; immutable recorded snapshots; explicit human decisions. No backend or live AI.
-Native semantic controls; IBM Plex Sans; Carbon icons; concise copy. Review primary screens at 1366×768 and reflow at 320 CSS px.
+Native semantic controls; self-hosted Google Sans; Google Material Symbols Rounded; concise copy. The user's Google-inspired visual direction supersedes the initial IBM-based choices. Review primary screens at 1366×768 and reflow at 320 CSS px.
 
 ## Acceptance
 

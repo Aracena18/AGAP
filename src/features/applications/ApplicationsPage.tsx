@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Search, Document } from '@carbon/icons-react';
+import { ArrowForward, Search, Description } from '../../shared/icons';
 import { useWorkspace } from '../../app/WorkspaceContext';
 import { caseStatus } from '../../app/caseStatus';
 import { Badge, Button, Money } from '../../shared/ui';
@@ -39,12 +39,12 @@ export default function ApplicationsPage() {
               <td className="numeric"><Money value={record.offers[0].principal} /></td>
               <td><Badge tone={state.tone}>{state.label}</Badge></td>
               <td className="subtle">{dateLabel(record.createdAt)}</td>
-              <td><Link className={styles.review} to={`/applications/${record.id}/evidence`} aria-label={`Review ${record.member.name}`}>Review <ArrowRight size={16} aria-hidden="true" /></Link></td>
+              <td><Link className={styles.review} to={`/applications/${record.id}/evidence`} aria-label={`Review ${record.member.name}`}>Review <ArrowForward size={16} aria-hidden="true" /></Link></td>
             </tr>;
           })}</tbody>
         </table>
       </div>
-      {visible.length === 0 && <div className={styles.empty}><Document size={32} aria-hidden="true" /><h2>No matching applications</h2><p className="subtle">Try another name or review status.</p><Button variant="secondary" onClick={() => { setSearch(''); setStatus('all'); }}>Clear filters</Button></div>}
+      {visible.length === 0 && <div className={styles.empty}><Description size={32} aria-hidden="true" /><h2>No matching applications</h2><p className="subtle">Try another name or review status.</p><Button variant="secondary" onClick={() => { setSearch(''); setStatus('all'); }}>Clear filters</Button></div>}
       <div className={styles.tableFooter}><span>Fictional member records</span><span>Changes are saved in this browser</span></div>
     </section>
     <aside className={styles.demoGuide} aria-label="Demonstration cases"><span className="eyebrow">Three different reviews</span><p><strong>Ana</strong> · conflicting income <span aria-hidden="true">/</span> <strong>Ben</strong> · monthly shortfall <span aria-hidden="true">/</span> <strong>Cora</strong> · missing information</p></aside>
