@@ -1,0 +1,53 @@
+.workspace { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: var(--space-5); align-items: start; }
+.main { display: grid; gap: var(--space-5); min-width: 0; }
+.notices { display: grid; gap: var(--space-3); margin-bottom: var(--space-5); }
+.notices:empty { display: none; }
+.group + .group { border-top: 1px solid var(--line); }
+.groupHeading { padding: var(--space-4) var(--space-5); background: var(--canvas); display: grid; gap: var(--space-1); }
+.fact { display: grid; gap: var(--space-2); padding: var(--space-4) var(--space-5); }
+.fact + .fact { border-top: 1px solid var(--line); }
+.factTop, .factBottom { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); }
+.factTop { align-items: baseline; }
+.amount { text-align: right; font-weight: 600; white-space: nowrap; font-size: 18px; }
+.factMetadata { display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }
+.provenance { display: grid; gap: var(--space-1); min-width: 0; }
+.sourceButton { justify-content: flex-start; padding: var(--space-2) 0; min-height: 44px; text-align: left; }
+.sourceButton svg { flex: 0 0 auto; }
+.cashDate { display: flex; gap: var(--space-2); align-items: center; }
+.sourcePanel { position: sticky; top: var(--space-5); }
+.sourceBody { display: grid; gap: var(--space-5); }
+.sourceBody > :first-child { justify-self: start; }
+.sourceBody h3 + p { margin-top: var(--space-2); }
+.sourceExcerpt { line-height: 1.65; overflow-wrap: anywhere; }
+.sourceContext { display: grid; gap: var(--space-1); padding-top: var(--space-4); border-top: 1px solid var(--line); }
+.editor { display: grid; gap: var(--space-4); border-top: 1px solid var(--line); margin-top: var(--space-3); padding-top: var(--space-5); }
+.formFields { display: grid; gap: var(--space-4); }
+.formGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+.candidates { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); margin-top: var(--space-3); }
+.candidate { display: grid; align-content: start; gap: var(--space-2); padding: var(--space-4); background: var(--canvas); border: 1px solid var(--line); border-radius: var(--radius); }
+.candidate strong { font-size: 20px; }
+.emptyHistory { padding: var(--space-5); display: flex; align-items: flex-start; gap: var(--space-3); }
+.emptyHistory svg { flex: 0 0 auto; margin-top: var(--space-1); }
+.history summary { padding: var(--space-4) var(--space-5); min-height: 56px; cursor: pointer; font-weight: 500; }
+.historyList { padding: 0 var(--space-5); }
+.historyEntry { display: grid; gap: var(--space-3); padding: var(--space-5) 0; border-top: 1px solid var(--line); }
+.change { display: flex; align-items: center; gap: var(--space-3); font-weight: 500; }
+.historySources { margin: 0; display: grid; gap: var(--space-2); font-size: 13px; color: var(--muted); }
+.historySources > div { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: var(--space-3); }
+.historySources dt { font-weight: 500; }
+.historySources dd { margin: 0; }
+.nextStep { display: flex; justify-content: space-between; align-items: center; gap: var(--space-5); }
+.nextLink { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-3); white-space: nowrap; padding: 10px var(--space-4); min-height: 44px; border-radius: 6px; background: var(--teal); color: var(--surface); font-size: 14px; font-weight: 500; text-decoration: none; }
+.nextLink:hover { background: var(--teal-hover); }
+@media (max-width: 1100px) {
+  .workspace { grid-template-columns: minmax(0, 1fr); }
+  .sourcePanel { position: static; }
+}
+@media (max-width: 600px) {
+  .fact, .groupHeading { padding: var(--space-4); }
+  .factTop { flex-wrap: wrap; gap: var(--space-2); }
+  .factTop .amount { margin-left: auto; }
+  .factBottom { align-items: flex-start; flex-direction: column; gap: var(--space-2); }
+  .formGrid, .candidates { grid-template-columns: minmax(0, 1fr); }
+  .nextStep { align-items: flex-start; flex-direction: column; }
+}
