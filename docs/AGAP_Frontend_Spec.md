@@ -2,38 +2,13 @@
 
 Status: implementation baseline; visual acceptance and representative staff evaluation are pending.
 
-## Product and experience
+Production planning now follows the [product solution](AGAP_Product_Solution.md), [production architecture](AGAP_Production_Architecture.md) and [four-person delivery plan](AGAP_Delivery_Plan.md). This file describes what the existing browser implementation actually does; planned server contracts are not implemented by documenting them.
 
-The product authority is [AGAP_Product_Freeze.md](AGAP_Product_Freeze.md).
-Desktop-first, English, PHP, single browser, three fictional cases. Four screens:
-Applications → Evidence → Repayment comparison → Decision and explanation.
-One primary action per screen. Officer prepares; demo reviewer records the decision.
+## Authority and design
 
-Evidence uses visible source dates, provenance and human corrections. Missing/conflicting critical facts block a complete assessment, not clarification. Correcting evidence retains the previous fact and reason.
-Comparison gives monthly remaining and lowest dated balance equal weight, with full offer costs, a directly labeled chart, and the underlying dated table.
-Decision records rationale, recommendation departures, configured policy exceptions, reviewed template explanation, and follow-up date. Historical decisions remain printable after edits.
-Use source panels and inline editing; concise hints only when needed. Status words supplement color. No unexplained risk scores, autonomous decisions, or new product terms.
+The [product solution](AGAP_Product_Solution.md) governs target scope and behavior. The earlier [product freeze](AGAP_Product_Freeze.md) preserves the historical problem and independent fictional arithmetic. The root [UI/UX design system](../design.md) governs visual foundations, layouts, shared component behavior, screen blueprints, accessibility, printing, and design review. This specification governs the implemented browser architecture, contracts, calculation rules, and persistence; production changes follow the linked architecture and migration plan.
 
-## Researched visual direction
-
-The user's updated direction supersedes the initial IBM-based styling: use a clean Google Workspace / Material-inspired interface. Keep AGAP's identity and financial-review workflow.
-
-The actual values live in `src/styles/tokens.css`; components must consume them.
-
-| Choice | Rationale and primary source |
-| --- | --- |
-| Self-hosted Google Sans variable, weights 400/500/600 | Google's typeface is available under OFL through the [official Google Fonts repository](https://github.com/google/fonts/tree/main/ofl/googlesans). Bundle locally and retain its license; verify peso/minus/diacritics and print rendering. |
-| Google Material Symbols Rounded, 16/20/24px | Use one consistent rounded symbol family. [Official guidance](https://developers.google.com/fonts/docs/material_symbols). The selected SVGs are vendored from a pinned revision; consequential actions retain text labels. |
-| White surfaces, cool neutral canvas, blue primary actions, soft blue selection | Apply semantic [Material color roles](https://m3.material.io/styles/color/roles). Preserve readable contrast and distinguish status using words as well as color. |
-| Softer panels, pill-shaped actions/navigation, restrained borders and feedback | Adapt [Material button guidance](https://m3.material.io/components/buttons/overview) to this staff workflow. Keep controls clear and compact; no heavy component framework is required. |
-| Semantic right-aligned numeric tables | Comparison and scanning. [GOV.UK tables](https://design-system.service.gov.uk/components/table/). |
-| Visible input labels and associated errors | [GOV.UK text inputs](https://design-system.service.gov.uk/components/text-input/). |
-
-Type: titles 28/36 at 400, sections 18/26 at 500, body/input 16/24 at 400, tables 14/20, metadata 13/18. Financial values use tabular numerals. Use sentence case and avoid widely spaced uppercase overlines.
-Spacing: 4,8,12,16,24,32,48. Controls at least 44px. Main design viewport 1366×768.
-At narrow widths supporting panels stack. Two-dimensional tables and the cash-flow diagram scroll locally to preserve readable labels; the page itself reflows.
-Icon vocabulary: Description (application), FindInPage (source), CompareArrows (offers), Edit (correction), CalendarToday (dates), History (history), Print (brief), Warning (issue). Approval icon only indicates an actual recorded approval.
-Screenshots under `docs/screenshots/` are implementation evidence, not evidence of user acceptance.
+Use the design system for the Google-inspired direction and primary research references. Its baseline examples and pending refinements are distinct from accepted designs. Executable visual definitions remain in [tokens](../src/styles/tokens.css), [global styles](../src/styles/global.css), and [shared UI](../src/shared/ui/index.tsx); do not maintain parallel definitions here.
 
 ## Architecture and contracts
 
@@ -59,9 +34,9 @@ Demo policies: nonnegative monthly remaining (`monthly-capacity`) and nonnegativ
 Evidence changes and recommendation changes increase case version. A recommendation carries its resulting case version. Decisions preserve their referenced version; recording a decision and recording follow-up notes do not revise its evidence.
 Recommendation and evidence editing are officer actions. Final decisions are reviewer actions. These browser checks demonstrate workflow, not security.
 
-## Verification and later backend boundary
+## Verification and production migration boundary
 
 Independent arithmetic oracles are in the product freeze. Test them alongside double deductions, unavailable offers, missing evidence, required reasons, stale versions, immutable print content, persistence/recovery, keyboard interaction and print output.
 Frontend explanation uses a deterministic template and is labeled as such. No fake AI requests or browser API keys.
-User acceptance and representative staff evaluation must be recorded separately from automated tests.
-Only after frontend acceptance: plan a server-owned case repository, authentication, version validation, and constrained explanation gateway. No backend/provider commitment in this milestone.
+Use the [design acceptance checklist](../design.md#acceptance-checklist) for visual and interaction review. User acceptance and representative staff evaluation must be recorded separately from automated tests. Documentation-only changes require reference and consistency checks; feature integration still requires the contributor contract's application checks.
+The user's subsequent direction authorizes production architecture and backend planning before frontend acceptance. The target includes a server-owned repository, scoped identity, command/version validation, disbursement, repayments, accounting and health reviews. Retain this fictional workflow while A introduces canonical API contracts and server adapters. Production commands replace whole-record `saveCase` writes; the existing browser role checks/storage are not reused as security or ledger controls. UI acceptance, meaningful financial/workflow tests and operational deployment evidence remain required for their respective release gates.

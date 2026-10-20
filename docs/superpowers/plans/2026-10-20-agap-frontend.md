@@ -1,5 +1,7 @@
 # AGAP frontend implementation plan
 
+> Historical implementation plan. Subsequent user direction expands the target to a complete lending product and authorizes production planning now. Use the current [product solution](../../AGAP_Product_Solution.md), [production architecture](../../AGAP_Production_Architecture.md) and [delivery plan](../../AGAP_Delivery_Plan.md) for new work. The prototype-only backend gate below is retained as history, not a current restriction.
+
 Spec: `docs/AGAP_Product_Freeze.md` and `docs/AGAP_Frontend_Spec.md`.
 Goal: a complete fictional browser loan-review workflow; reviewed UI precedes any backend build.
 Stack: React, TypeScript, Vite, React Router, CSS Modules, Context/reducer; npm.

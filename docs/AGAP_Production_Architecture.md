@@ -1,0 +1,229 @@
+# AGAP production architecture
+
+**Baseline:** 20 October 2026, Asia/Manila.
+
+**Status:** target design for a four-person team; no production backend, payment integration or accounting implementation is claimed.
+
+**Scope authority:** [product solution and priorities](AGAP_Product_Solution.md). Named owners and task progress are in [Assignment.md](../Assignment.md); exact path ownership and delivery gates are in the [delivery plan](AGAP_Delivery_Plan.md). A–D map to Robert, Aaron, Benedict and Earl respectively.
+
+## 1. Architecture decisions
+
+Build a **modular monolith**: one application backend, one PostgreSQL database, and a worker using the same domain modules. A financial operation can then update the loan subledger and general ledger in one database transaction. Modules have separate owners and public interfaces; they do not need separate services to support parallel development.
+
+| Layer | Selected design baseline | Reason and boundary |
+| --- | --- | --- |
+| Web application | Retain React, TypeScript, Vite and the existing shared design system | Reuse the working review screens; feature teams do not create another component or token system |
+| Backend | Node.js 24 LTS baseline; TypeScript; NestJS modules with its standard HTTP adapter | Keep one implementation language; module boundaries, dependency injection and authorization can be explicit. Pin supported package releases during foundation work rather than inventing version numbers here |
+| Database | PostgreSQL 18; SQL migrations; server-side transactions | Relational constraints and transaction integrity for loan and accounting data; no browser-authoritative financial records |
+| Identity | Keycloak through OpenID Connect; backend-managed sessions | Free, self-hostable identity service; application permissions and segregation of duties remain server responsibilities |
+| Files | Private filesystem adapter for local/single-host deployment; an interchangeable object-storage adapter for later hosting | Original versions, checksums, access control and independent backups; never serve document paths as public assets |
+| Background work | PostgreSQL-backed outbox/inbox and jobs, processed by a separate worker process | No extra paid queue required; retry, deduplication and operator-visible failures are part of the contract |
+| Documents and explanations | Deterministic templates and saved-snapshot rendering; optional constrained AI adapter | Core operation remains available without an AI provider |
+| Deployment | Docker Engine/Compose on Linux; HTTPS reverse proxy; separate development, staging and production configurations | No software subscription is required. Hardware, backups, connectivity, domains and provider transactions can still cost money |
+
+These are project choices, not a claim that a framework supplies financial correctness. Nest's module model supports explicit exports/imports; transaction isolation and row-security behavior must be implemented and tested as designed. [Nest modules](https://docs.nestjs.com/modules), [PostgreSQL transactions](https://www.postgresql.org/docs/18/transaction-iso.html)
+
+## 2. System boundaries
+
+```mermaid
+flowchart TB
+  Staff[Cooperative staff web application] --> Edge[HTTPS reverse proxy]
+  Edge --> API[AGAP API and session backend]
+  API <--> IdP[Keycloak identity service]
+  API --> Members[Members and applications]
+  API --> Evidence[Evidence and verification]
+  API --> Credit[Products, scenarios and policy checks]
+  API --> Loans[Decisions, origination and loan servicing]
+  API --> Accounting[Accounting and reconciliation]
+  API --> Health[Financial-health reviews]
+  Members --> DB[(PostgreSQL)]
+  Evidence --> DB
+  Credit --> DB
+  Loans --> DB
+  Accounting --> DB
+  Health --> DB
+  Evidence --> Files[Private document storage]
+  DB <--> Worker[Jobs, inbox and outbox worker]
+  Worker --> Adapters[Payment, notification and optional AI adapters]
+  Adapters <--> External[External providers]
+```
+
+The module boxes belong to the same backend. They are not independently deployed microservices. Identity uses a separate database/schema and credentials; its records are not loan or accounting tables. The worker does not become a second implementation of business rules.
+
+The browser submits commands and displays server results. It cannot set its own actor, organization, reviewer, verified status, policy exception authority, payment settlement or journal balance. Browser storage remains a demo facility; production drafts are saved to the server with visible saved/unsaved state. No real financial payloads or identity tokens are persisted in browser localStorage.
+
+The first deployment serves one cooperative. Organization IDs and branch/assignment scopes remain explicit to prevent accidental cross-context access; this is not a promise of a multi-tenant SaaS release.
+
+## 3. Modules, data ownership and interfaces
+
+Each module owns its tables and writes them through its public application service. Other modules use a typed port or a published read model; they do not issue writes against another module's tables. Financial orchestration receives a transaction context so module services share the same commit.
+
+| Module | Authoritative data | Public responsibilities |
+| --- | --- | --- |
+| Identity/platform | Organization, branch, user membership, scoped permissions, sessions, audit events, jobs and idempotency records | Establish actor context, authorize actions, provide transaction and infrastructure adapters |
+| Members/applications | Member identifiers, contact/identity references, notices/consents, application metadata, assignment and aggregate revisions | Open and assign applications; preserve member/application history; return authorized workspace views |
+| Evidence | Source metadata, file versions, fact revisions, verification attempts and clarification tasks | Record facts and verification outcomes; retain provenance; invalidate affected assessment inputs |
+| Credit | Versioned product/policy configuration, available offers, contractual schedules and assessment runs | Generate allowed offers; calculate schedule/cost/cash-flow results; return eligibility and policy checks with reasons |
+| Decisions/origination | Recommendations, decisions, approval steps, member acceptance and approved contract snapshots | Enforce authority and prerequisite checks; produce a signed-off release basis and saved explanation |
+| Servicing/payments | Loan accounts, immutable schedule versions, disbursement/payment/refund commands, allocations, receipts, settlement events and adjustment proposals | Execute controlled financial workflows; maintain the loan subledger; invoke accounting synchronously for every financial posting |
+| Accounting | Chart and posting-rule versions, journals/lines, share-capital subledger, periods and reconciliation records | Validate and post balanced journals; enforce period rules; reconcile cash/bank; produce financial reports |
+| Monitoring/reporting | Review schedule, dated member responses, task/action history and read-model freshness | Show repayment facts alongside household circumstances; support staff review without inferring character or automatically changing a loan |
+
+Important cross-module interfaces:
+
+- `ActorContext`: server-established user, organization, allowed scopes, correlation ID and authentication strength; never accepted from request JSON.
+- `Credit.assess(inputSnapshot)`: immutable checked input → complete or incomplete result plus engine/configuration versions. Reuse the existing pure domain rules through a deliberate extraction, not a copied calculator.
+- `Decisions.authorizeRelease(loanBasis)`: confirms approved, current, accepted and unexpired terms plus the authorized preparer/checker identities.
+- `Accounting.post(tx, postingRequest)`: validates source-event uniqueness, approved account mapping, open period and balanced entries; returns the journal ID in the caller's transaction.
+- `Servicing.getPosition(loanId, asOfDate)`: principal, accrued components, due/paid amounts and freshness from posted events, not a browser total.
+- `PaymentProvider.submit(command, idempotencyKey)` and `getStatus(providerReference)`: distinguish confirmed success, confirmed failure and unknown outcome.
+- `DocumentStore`: immutable version put/read/delete-under-retention-policy; no public-path exposure.
+
+The integration owner encodes request/response schemas and these ports in the foundation task. Proposed interfaces here do not replace the existing executable `src/domain/types.ts` until the migration is implemented.
+
+## 4. Data model and versioning
+
+Use normalized tables for operational records and append-only historical records for decisions and financial events. A workspace response is a projection, not a single mutable JSON record that a client can overwrite.
+
+| Record family | Required references and invariants |
+| --- | --- |
+| Member/application | Stable IDs, organization, branch, assignment, concurrency version, assessment-input version and recorded timestamps |
+| Evidence/source | Application, fact category, nullable value, currency when monetary, effective/cash dates, original source/file version, evidence status and verification status |
+| Product/policy/offer | Immutable published version, validity/effective dates, approved formula and rounding configuration, permitted terms, authority/verification requirements and account mappings |
+| Assessment | Exact input snapshot, assessment-input version, policy/offer/engine versions, modeled horizon, checked results, unresolved issues and calculation hash |
+| Decision/acceptance | Assessment/recommendation references, actual approvers and authority, rationale, exceptions, snapshot, member acknowledgment and document versions |
+| Loan/schedule | Approved contractual basis, disbursement condition, schedule version, status and concurrency version; historical schedules retained |
+| Financial event | Unique business-event identity, amount/currency, actual instrument/provider reference, effective date, recorded time, authorizations, allocations and reversal references |
+| Journal | Source financial event, posting-rule version, effective/recorded dates, period and balanced immutable lines |
+| Health review | Loan/member reference, review/as-of dates, recorded responses and explicit unavailable values, source, staff action and next review; separate from credit decision snapshots |
+
+Concurrency version and assessment-input version have different jobs. Every application mutation changes its concurrency version. Only changes affecting evidence, verification readiness, policy applicability or available terms change the assessment-input version. Saving a reminder must not invalidate a valid assessment; changing verified income must.
+
+Recommendations reference the assessment-input version and assessment ID. At decision time the server checks both against the current inputs, current authorization and applicable policy. Publishing a policy creates a new version; it never edits old snapshots. A material policy/offer change requires an explicit rebind and renewed assessment when applicable, not silent recalculation of a recorded decision.
+
+Material changes after approval hold an unreleased loan for renewed review. Changes after disbursement do not rewrite the contract or historic decision: create a health-review, dispute or authorized amendment/restructure workflow.
+
+Missing, conflicting, stale and unknown values remain distinguishable from zero. Document provenance and independent verification are separate dimensions. A scan result or successful OCR extraction does not prove authenticity.
+
+## 5. Financial invariants and transaction boundaries
+
+### Money and dates
+
+- Currency is explicitly PHP for the first product family. Money is integer centavos with validated safe-integer limits at every API/domain boundary and compatible database constraints. PostgreSQL `bigint` conversion must be checked; do not silently coerce an arbitrary database integer into JavaScript Number.
+- Interest/rate calculations use exact fixed-point or rational intermediate values and an approved rounding convention. Binary floating-point operations must not decide a posted centavo. Schedule generation tests cover final-instalment residuals and principal conservation.
+- Products specify rate method, day-count basis, grace/holiday handling, fees, prepayment treatment, penalties and allocation order. Unconfigured rules block that product's activation.
+- Calendar cash dates use the cooperative's business timezone, initially Asia/Manila. Recorded-at values are UTC instants. Keep contractual due date, value date, posting date and event-received time distinct.
+- Preserve the existing monthly/daily calculation semantics and independent fixture oracles. A multi-cycle projection labels its assumptions; it is not a promise of future cash or a default probability.
+
+### Accounting
+
+Every posted financial event has a balanced journal: debits equal credits, at least two valid lines, one currency and one organization, valid accounts and an open accounting period. Enforce these conditions in the posting service and with database permissions/constraints or deferred validation; a browser check is insufficient.
+
+The loan subledger, allocations, GL posting, command status and audit event commit atomically. Notifications and reporting updates use an outbox written in that same transaction and may follow later. Do not post the GL asynchronously after reporting a loan payment as fully posted.
+
+Use a single transaction coordinator and a canonical lock order: accounting period, affected loan IDs in sorted order, then financial command. Period close takes the conflicting period lock and verifies no unresolved posting/reconciliation issues. All posting paths obey the same ordering.
+
+Journals and posted allocations cannot be edited or deleted by ordinary application roles. Corrections create linked reversals and replacement events. Closed-period corrections use an authorized open-period adjustment that preserves original references; reopening a period is separately authorized and audited. Hashes or append-only permissions do not make records immune to a database administrator; operational access and independent backups remain necessary.
+
+The accountant must approve the chart, recognition and posting rules, including accrued interest, fees, provisions, write-offs, recoveries, share capital, reserves and reporting mappings. Total contractual repayments are not automatically all recognized income at origination. Versioned templates and manual authorized journals cover approved accounting treatments; automated tax or impairment models are not assumed.
+
+### Disbursement and repayments
+
+Loan approval, member acceptance, authorization to release, actual settlement and accounting posting are separate events. A first-release invariant prevents multiple principal releases for the same loan. Multi-tranche lending requires a later explicit product specification.
+
+1. A preparer creates a release/payment/refund command from server-checked terms. A distinct authorized checker approves the consequential action.
+2. The command is durable before an external provider is called. The same logical command always uses the same provider idempotency key.
+3. A timeout produces `unknown`, not failure. Reconcile status and references before any retry that could move money. A provider without sufficient idempotency/status controls cannot be enabled for unattended transfers.
+4. Record confirmed external settlement durably in an inbox before processing it. If GL posting fails, keep an explicit confirmed-but-unposted exception for reconciliation; never lose or resend the real-world movement.
+5. Apply a confirmed movement to the loan subledger and GL in one transaction. Deduplicate by the underlying provider transaction/business event as well as webhook event ID, since multiple notifications may refer to one movement.
+6. Cash/bank manual workflows require actual voucher/receipt evidence and separate confirmation. They do not pretend to electronically move funds.
+
+Payment allocation follows the approved schedule/product rule. Partial payments, early payments, penalties, reversals and refunds retain their event history. Excess receipts go to an identified unapplied-cash/liability workflow; do not silently create a negative principal balance. Written-off debt and recoveries retain separate authorized accounting events. A restructure creates new approved schedule terms, not an overwrite of the original obligation.
+
+Balances and arrears are computed from posted events as of an explicit date, including reversals and grace rules. Pending or stale information remains labeled. Member-reported financial strain is a separate observation and never changes the ledger by itself.
+
+## 6. Workflow states
+
+| Workflow | Required states and guards |
+| --- | --- |
+| Application review | Draft → evidence review → clarification or assessment ready → recommended → reviewer action. Approval/decline require current prerequisites; clarification remains possible with incomplete evidence |
+| Decision | Approve, decline or return; immutable snapshot and rationale. Configured multi-person/quorum steps accumulate against the same version; changed evidence invalidates outstanding votes |
+| Origination | Approved → awaiting member acceptance → release ready → release pending → active on confirmed release. Expired terms or material changes hold release |
+| Transfer | Prepared → authorized → submitted → confirmed, failed or unknown; confirmed-but-unposted is a visible exception. Reversal/refund is a new controlled command |
+| Loan | Pending release, active, settled, restructured or written off, with separate due/arrears indicators; a health concern is not a loan-status transition |
+| Journal/period | Journal draft → separately approved posting, or source-authorized automatic posting; posted journals are reversed through new records. Period open → closing → closed |
+| Health review | Scheduled → due → completed or clarification requested → next action/review. Missing check-in data does not imply a healthy member or a delinquent loan |
+
+The API foundation converts these into explicit transition rules and schemas before parallel feature implementation. No endpoint may accept arbitrary next-state strings or directly patch balances.
+
+## 7. API and integration contract register
+
+Use versioned HTTP JSON commands under `/api/v1`. The integration owner publishes OpenAPI schemas, error shapes and a generated client before feature teams depend on them. The paths below are the target register, not currently available endpoints.
+
+| Owner/module | Endpoint families | Important command inputs and output |
+| --- | --- | --- |
+| A: platform/members | `/session`, `/members`, `/applications`, `/staff`, `/audit` | Scoped session/profile; member/application create/read/update; assignments; paginated authorized read models |
+| B: evidence | `/applications/{id}/facts`, `/corrections`, `/verifications`, `/documents` | Source/file reference, supported or unavailable value, dates and reason; updated version and history |
+| B: credit | `/products/{id}/versions`, `/policies/{id}/versions`, `/applications/{id}/offers`, `/assessments` | Published config version, explicit permitted offer, input version; immutable complete/incomplete assessment |
+| C: decisions | `/applications/{id}/recommendations`, `/decisions`, `/acceptances`, `/briefs` | Assessment/recommendation IDs, selected offer, rationale, required exceptions/approvals; saved decision or acceptance |
+| C: servicing | `/loans`, `/disbursements`, `/payments`, `/refunds`, `/restructures`, `/statements` | Checked command, expected version, effective date and instrument; command state, receipt/journal references and position |
+| D: accounting | `/accounts`, `/posting-rules`, `/journals`, `/reconciliations`, `/periods`, `/financial-reports` | Versioned approved mapping, journal lines or reconciliation evidence; balanced posted journal and as-of reports |
+| D: monitoring | `/health-reviews`, `/review-tasks` | Dated member responses with explicit unavailable states, staff action and next date; recorded review and task state |
+| C/A: adapters | `/integrations/payments/{provider}/events`, `/jobs/{id}` | Provider-authenticated durable inbox; sanitized job status. These do not share staff-session authorization assumptions |
+
+For rows listing child resources, e.g. `/corrections`, the full scoped route is `/api/v1/applications/{id}/corrections`; the generated specification removes any shorthand ambiguity.
+
+All mutable aggregate commands require an `If-Match` version; missing precondition returns 428 and stale version returns 412. Return 409 for an incompatible workflow state or reuse of an idempotency key with a different request. Validation errors include stable codes, field paths and the next recoverable action; do not leak another member's existence or raw provider errors.
+
+Creation and consequential commands require an `Idempotency-Key`, scoped to authenticated actor/organization and operation, with a stored canonical request hash and result. Financial business-event uniqueness is permanent even after a transport idempotency record expires. Retrying the same command does not create another decision, receipt, journal or transfer.
+
+The server loads authoritative inputs, checks permission and version, runs the domain rule, then persists the result and audit record in one transaction. It ignores/rejects client-computed financial totals and actor fields. Client-supplied organization IDs cannot grant access.
+
+Versioned events use a stable envelope: event ID, type, schema version, organization ID, aggregate ID/version, occurred-at, correlation ID and a minimal payload or authorized snapshot reference. Outbox delivery is at least once; consumers deduplicate. Do not promise exactly-once delivery across external providers.
+
+## 8. Security, documents and privacy
+
+Keycloak uses authorization-code flow with PKCE; the backend validates issuer, audience, state/nonce and permitted redirects and keeps provider tokens server-side. Use opaque Secure/HttpOnly session cookies, CSRF protection for state-changing requests, session rotation, expiry/revocation and permission rechecks. Sensitive authorizations require sufficient MFA freshness. Recovery must not silently bypass required MFA. [Keycloak OIDC](https://www.keycloak.org/securing-apps/oidc-layers), [OAuth security BCP](https://www.rfc-editor.org/rfc/rfc9700.html), [OWASP sessions](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
+
+Staff permissions distinguish officer, verifier, reviewer, cashier/preparer, financial authorizer, accountant, auditor and system administrator. A user may hold several roles, but cannot prepare and authorize the same controlled transaction. System administration does not automatically confer lending or financial approval. Approval limits, quorum and exception authorities are institutional configuration and must be approved before live use.
+
+Enforce organization and applicable branch/assignment access in API services, read models, file downloads and jobs. Add PostgreSQL row-level policies as a second control with non-owner, non-`BYPASSRLS` application roles and transaction-local context. Schema owners/superusers can bypass RLS, so keep them out of application credentials. Test isolation using actual runtime roles, not only privileged test connections. [PostgreSQL row security](https://www.postgresql.org/docs/18/ddl-rowsecurity.html)
+
+Uploads pass through authenticated, size/type-limited quarantine with generated storage names, content inspection and malware scanning. Only cleared file versions can support evidence. Authorize downloads each time, log access, use safe download headers and isolate previews. Files, DB pointers and quarantine cleanup have a recoverable lifecycle; a dangling upload must not become a verified source. [OWASP file uploads](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html)
+
+Encrypt transport, storage and backups; keep keys and secrets outside the repository and recoverable independently of the machine they protect. Logs contain IDs and error codes instead of documents, account credentials or raw member payloads. Define purposes, notices, retention, access/correction requests, legal holds and secure disposal for each data class; immutable decisions do not justify retaining every personal document forever.
+
+No social-media scraping or facial/emotion truthfulness inference is part of the architecture. External credit reports require a separate approved access arrangement, lawful processing and a dispute route. Any optional AI provider gets only approved minimum structured data, no document-triggered tools or payment access. AI output is untrusted, source-checked, staff-reviewed and stored with its origin; deterministic fallback remains available. Philippine public-data availability does not remove processing obligations. [NPC scraping guidance](https://privacy.gov.ph/wp-content/uploads/2026/04/SGD_A_1.pdf), [CIC access guidance](https://cic.gov.ph/about-your-cic-credit-report/)
+
+## 9. Free development, hosting and operations
+
+**Guaranteed design property:** no mandatory software subscription for local development. Each developer can run the web/API, PostgreSQL, Keycloak and worker with fictional data; use a private filesystem, local mail sink and sandbox payment adapter. A permanently provisioned server or paid AI account is not necessary to develop the core.
+
+**Not guaranteed:** zero-cost, dependable public production hosting. Hardware, power, offsite backups, network availability, payment fees, SMS/email delivery and operations have real requirements even when software is free.
+
+| Option | Appropriate use | Verified constraints and required decision |
+| --- | --- | --- |
+| Existing cooperative/university Linux hardware | Free-license development, staging; potential production only after operational evaluation | Requires an assigned operator, secure access, independent backups, reliable power/network, monitoring and restore evidence |
+| Cloudflare Pages free | Optional static demo/frontend hosting | Does not run the complete Node backend or provide durable accounting storage; browser/API session origins must be designed consistently |
+| Supabase free | Optional fictional-data development database/storage | Pricing lists 500 MB DB, 1 GB files, inactivity pausing and no included automatic backups; do not treat it as a ready financial-system hosting plan |
+| Render free web service | Optional fictional-data API demonstration | Services can spin down and local files are ephemeral; not the default for durable documents or time-critical lending operations |
+
+These hosting observations were checked on 20 October 2026 and must be checked again before selection. The default architecture remains provider-independent. [Cloudflare limits](https://developers.cloudflare.com/pages/platform/limits/), [Supabase pricing](https://supabase.com/pricing), [Supabase backups](https://supabase.com/docs/guides/platform/backups), [Render free-service limits](https://render.com/docs/free)
+
+Backups must cover the database, document versions, identity configuration and recovery keys, with a consistent restoration procedure. Store an independent copy in a separate failure domain. Define acceptable recovery point/time and operating hours with the cooperative before live deployment, then demonstrate a restore and reconciliation of the recovery window. A backup on the same disk is insufficient.
+
+Operational measures include failed/unknown transfers, confirmed-but-unposted movements, unbalanced/rejected journals, unreconciled items, job lag, permission failures, backup age and read-model freshness. Staff see actionable exceptions, not a green dashboard based on missing data. Observability must not expose member information.
+
+## 10. Implementation migration and release gates
+
+Preserve the current frontend while building the backend modules. The integration owner introduces contracts and a server-backed repository adapter; migrate features incrementally. Existing pure calculations are extracted/re-exported through an agreed finance package after regression checks, not duplicated. Demo fixtures stay separate from production bootstrap data. No automatic import of browser demo records into a live institution.
+
+The future server accepts commands rather than the prototype's whole-record `saveCase`. Domain-specific responses and the generated client gradually replace that write boundary. Keep the current fictional workflow runnable throughout this transition.
+
+Required evidence before live lending includes independent schedule/interest/cost oracles; stale/concurrent decision tests; payment retry/unknown-outcome tests; subledger-to-GL reconciliation; duplicate/reversal/overpayment tests; period-close races; cross-scope authorization tests; upload access/scanning tests; backup/restore drills; and an observed institutional workflow exercise. Target OWASP ASVS Level 2 verification for applicable controls, with findings and exceptions recorded rather than claimed by framework choice. [OWASP ASVS](https://owasp.org/projects/asvs)
+
+Existing members, balances, capital, accruals and outstanding schedules require a controlled cutover: map source records, reconcile opening subledgers to approved opening GL balances, resolve exceptions, document the cutover date and prevent double posting from old/new systems. A CSV import is not proof of successful migration.
+
+The cooperative's accountant and responsible institutional officers must settle applicability of current reporting, lending, privacy and payment requirements, including later amendments. The CDA chart/reporting sources are research inputs, not a claim that an unreviewed account mapping is compliant. [CDA chart of accounts](https://cda.gov.ph/memorandum-circulars/mc-2022-24-revised-standard-chart-of-accounts-for-cooperatives/), [CDA reporting framework](https://cda.gov.ph/memorandum-circulars/mc-2022-25-amended-philippines-financial-reporting-framework-for-cooperatives/)
+
+Architecture decisions above are sufficient to divide foundation and module work. Real institutional product rules, provider credentials/contracts, operational capacity and accounting/retention mappings remain explicitly unresolved deployment inputs. They are not silently filled by fictional defaults or claimed complete for the hackathon.

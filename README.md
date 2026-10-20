@@ -4,7 +4,9 @@
 
 This frontend uses fictional people, records, offers and policies. Demo roles illustrate a workflow; they are not authentication. Browser storage is local to this browser. There are no backend, payment, core-system, or live AI connections.
 
-The visual direction follows the user's Google-inspired preference: Google Sans, Material Symbols Rounded, blue actions, white surfaces, soft selection states, and clear hierarchy. Shared tokens and contributor rules keep that direction consistent across features.
+The target product now includes full lending operations: evidence and credit review, decisions, controlled disbursement, repayments, accounting and financial-health follow-up. Start with the [feature priorities](docs/AGAP_Product_Solution.md), [production architecture](docs/AGAP_Production_Architecture.md) and [four-person delivery plan](docs/AGAP_Delivery_Plan.md). These are implementation plans, not claims that production modules already exist.
+
+The [UI/UX design system](design.md) defines the user's Google-inspired visual direction, screen layouts, shared patterns, and interaction rules. It distinguishes the implemented baseline from pending refinements and acceptance.
 
 ## Start locally
 
@@ -25,15 +27,20 @@ npm run dev -- --port 5174 --strictPort
 
 | Question | Authority |
 | --- | --- |
-| What problem and scope are we building? | [Product freeze](docs/AGAP_Product_Freeze.md) |
-| How should the UI and architecture work? | [Frontend specification](docs/AGAP_Frontend_Spec.md) |
-| How is implementation divided? | [Delivery plan](docs/superpowers/plans/2026-10-20-agap-frontend.md) and [task briefs](docs/tasks/) |
+| What problem, scope and key features are we building? | [Product solution and priorities](docs/AGAP_Product_Solution.md) |
+| What is the production architecture? | [Production architecture](docs/AGAP_Production_Architecture.md) |
+| Where are the original demonstration arithmetic and historical scope? | [Earlier product freeze](docs/AGAP_Product_Freeze.md) |
+| How should the interface look and behave? | [UI/UX design system](design.md) |
+| How should the frontend architecture, contracts, and persistence work? | [Frontend specification](docs/AGAP_Frontend_Spec.md) |
+| How do four people work without conflicting edits? | [Named team assignments](Assignment.md), [delivery and ownership plan](docs/AGAP_Delivery_Plan.md), and [production owner briefs](docs/tasks/production/) |
+| How was the existing browser implementation divided? | [Historical frontend plan](docs/superpowers/plans/2026-10-20-agap-frontend.md) and [earlier task briefs](docs/tasks/) |
 | How should contributors work? | [AGENTS.md](AGENTS.md) |
 | What is the shared data contract? | [Domain types](src/domain/types.ts) |
-| What values and visual rules are implemented? | [Design tokens](src/styles/tokens.css) and [fictional fixtures](src/demo/cases.ts) |
-| What is currently assigned or awaiting review? | [GitHub issues](https://github.com/Aracena18/AGAP/issues) and [pull requests](https://github.com/Aracena18/AGAP/pulls) |
+| What visual values and controls are implemented? | [Design tokens](src/styles/tokens.css), [global styles](src/styles/global.css), and [shared UI](src/shared/ui/index.tsx) |
+| What fictional evidence and offers are implemented? | [Fictional fixtures](src/demo/cases.ts) |
+| What is currently assigned or awaiting review? | [Assignment.md](Assignment.md) tracks tasks, owners, dependencies and progress; [pull requests](https://github.com/Aracena18/AGAP/pulls) provide implementation/review evidence |
 
-Historical partner briefs remain in the repository for context; the product freeze supersedes their earlier product direction.
+Historical partner briefs and the earlier product freeze remain for context and independent fictional arithmetic. Their prototype-only scope and backend-planning gate are superseded by the product solution; previously recorded implementation/verification evidence remains historical evidence, not proof of new production capabilities.
 
 ## Architecture
 
@@ -68,7 +75,7 @@ Use **Reset demo** to restore all three original cases. If saved data cannot be 
 
 ## Review status
 
-Implementation and automated verification are tracked in the [draft delivery PR](https://github.com/Aracena18/AGAP/pull/4). Local checks pass; [GitHub Actions startup](https://github.com/Aracena18/AGAP/issues/5) requires follow-up because remote jobs have not executed. Visual acceptance and representative staff evaluation remain separate, pending activities. Backend planning starts only after the frontend workflow is accepted.
+The existing browser implementation and automated verification are tracked in the [draft delivery PR](https://github.com/Aracena18/AGAP/pull/4). The verification record reports passing local checks and a [GitHub Actions startup issue](https://github.com/Aracena18/AGAP/issues/5); check live remote status before making a current CI claim. Visual acceptance and representative staff evaluation remain separate, pending activities. Production planning is authorized now under the linked product/architecture/delivery baseline; live readiness requires the additional implementation and evidence specified there.
 
 Typography and icons are locally bundled. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
