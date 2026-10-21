@@ -23,7 +23,7 @@ Existing fictional frontend work remains reusable groundwork. Robert's foundatio
 
 | Task ID | Owner | Deliverable | Prerequisites | Status | Evidence / branch / blocker |
 | --- | --- | --- | --- | --- | --- |
-| FND-01 | Robert | Shared contracts/client, backend module and transaction foundation | Architecture baseline | Ready for review | `feat/robert-fnd-01`, contract 0.1.0 candidate; [handoff](docs/AGAP_Platform_Foundation.md), [verification](docs/AGAP_Robert_Verification.md); B/C/D interface approval pending |
+| FND-01 | Robert | Shared contracts/client, backend module and transaction foundation | Architecture baseline | Ready for review | [Draft PR #10](https://github.com/Aracena18/AGAP/pull/10), implementation commit `4b03c6b`, contract 0.1.0 candidate; [handoff](docs/AGAP_Platform_Foundation.md), [verification](docs/AGAP_Robert_Verification.md); B/C/D interface approval pending |
 | FND-02 | Robert | Real identity, scoped permissions and member/application intake | FND-01 | Ready for review | Real DB/API and staff UI implemented/tested; [verification](docs/AGAP_Robert_Verification.md); real Keycloak password/OTP walkthrough passed; human acceptance remains pending |
 | EVD-01 | Aaron | Source files, corrections and verification history | FND-01 for server integration | Not started | Pending |
 | CRD-01 | Aaron | Versioned products/offers and deterministic assessments | FND-01 for server integration | Not started | Pending |
@@ -100,7 +100,7 @@ Aaron, Benedict and Earl can begin pure domain rules/tests and interface review 
 | Item | Owner | Current state | Reference / next step |
 | --- | --- | --- | --- |
 | Canonical contract version | Robert | 0.1.0 candidate | Executable schemas/client supplied; freeze only after all four owners review |
-| Integration base commit | Robert | Pending owner agreement | Candidate branch `feat/robert-fnd-01` starts at `875b405`; record the reviewed foundation commit before dependent integration |
+| Integration base commit | Robert | Pending owner agreement | [Candidate PR #10](https://github.com/Aracena18/AGAP/pull/10), implementation commit `4b03c6b`, based on `875b405`; record the reviewed foundation commit before dependent integration |
 | Assessment/offer interface | Robert with Aaron | Candidate port/DTO supplied | Aaron reviews and supplies checked calculations consumed by C |
 | Transactional posting interface | Robert with Earl and Benedict | Candidate port/DTO supplied | Earl/Benedict review; actual financial event/posting invariants remain their implementation |
 | Loan-position interface | Robert with Benedict and Earl | Candidate port/DTO supplied | Benedict/Earl review; D consumes dated posted repayment facts |

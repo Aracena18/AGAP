@@ -1,6 +1,6 @@
 # Robert's platform foundation
 
-21 October 2026. Task register: [Assignment.md](../Assignment.md). Branch `feat/robert-fnd-01`, base `875b405c3c6e5d13f8a00aed7c8712b99c5422ef`. Contract **0.1.0 is a review candidate**, awaiting Aaron, Benedict and Earl's interface review. It is not an agreed integration base or a production release.
+21 October 2026. Task register: [Assignment.md](../Assignment.md). Branch `feat/robert-fnd-01`, base `875b405c3c6e5d13f8a00aed7c8712b99c5422ef`. Published in [draft PR #10](https://github.com/Aracena18/AGAP/pull/10), implementation commit `4b03c6b`. Contract **0.1.0 is a review candidate**, awaiting Aaron, Benedict and Earl's interface review. It is not an agreed integration base or a production release.
 
 The foundation adds a real Nest/PostgreSQL intake boundary beside the fictional browser review demo. No production evidence, calculator, lending decision, payment, ledger or health-review service is supplied by this change. Known operations belonging to those modules return `501 module_not_available`; [capabilities](../packages/contracts/src/operations.ts) and OpenAPI mark their status explicitly.
 
