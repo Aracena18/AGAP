@@ -1,4 +1,4 @@
-name: Verify frontend
+name: Verify AGAP
 'on':
   push:
     branches: [main, 'feat/**']
@@ -15,6 +15,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      - run: npm run test:db
       - run: npm run check
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e

@@ -2,7 +2,7 @@
 
 **Baseline:** 20 October 2026, Asia/Manila.
 
-**Status:** target design for a four-person team; no production backend, payment integration or accounting implementation is claimed.
+**Status:** target design for a four-person team. The first platform/intake implementation is a [review candidate](AGAP_Platform_Foundation.md); payment integration and accounting remain unimplemented. This architecture does not certify live readiness.
 
 **Scope authority:** [product solution and priorities](AGAP_Product_Solution.md). Named owners and task progress are in [Assignment.md](../Assignment.md); exact path ownership and delivery gates are in the [delivery plan](AGAP_Delivery_Plan.md). A–D map to Robert, Aaron, Benedict and Earl respectively.
 
@@ -158,7 +158,7 @@ The API foundation converts these into explicit transition rules and schemas bef
 
 ## 7. API and integration contract register
 
-Use versioned HTTP JSON commands under `/api/v1`. The integration owner publishes OpenAPI schemas, error shapes and a generated client before feature teams depend on them. The paths below are the target register, not currently available endpoints.
+Use versioned HTTP JSON commands under `/api/v1`. The integration owner publishes OpenAPI schemas, error shapes and a generated client before feature teams depend on them. The paths below are the target register. Implemented platform/intake endpoints and contract-only financial endpoints are distinguished in the [foundation guide](AGAP_Platform_Foundation.md) and generated OpenAPI.
 
 | Owner/module | Endpoint families | Important command inputs and output |
 | --- | --- | --- |

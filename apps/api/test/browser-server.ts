@@ -1,0 +1,13 @@
+import { mkdir,writeFile } from 'node:fs/promises';
+import { createApp } from '../src/app.js';
+import { config,prepareDatabase,resetFixtures,closePools } from './database.js';
+await prepareDatabase();
+const fixture=await resetFixtures();
+config.PUBLIC_ORIGIN=`http://127.0.0.1:${process.env.AGAP_E2E_WEB_PORT??5174}`;
+const app=await createApp(config);
+await app.listen(Number(process.env.AGAP_E2E_API_PORT??4101),'127.0.0.1');
+await mkdir('.platform-test',{recursive:true});
+await writeFile('.platform-test/browser.json',JSON.stringify({officer:fixture.officer.token,auditor:fixture.auditor.token,administrator:fixture.administrator.token,target:fixture.revocationTarget.token,organizationId:fixture.org,branchId:fixture.branch}),{mode:0o600});
+console.log('Fictional browser-test API ready.');
+const stop=async()=>{await app.close();await closePools();process.exit(0);};
+process.on('SIGTERM',()=>void stop());process.on('SIGINT',()=>void stop());

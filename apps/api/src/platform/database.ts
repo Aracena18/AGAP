@@ -1,0 +1,29 @@
+import { Pool, type PoolConfig } from 'pg';
+import type { ActorContext, TransactionContext, UnitOfWork } from '../../../../packages/contracts/src/ports.js';
+import { ApiError } from './errors.js';
+
+export function createPool(connectionString: string, options: PoolConfig = {}) {
+  return new Pool({ connectionString, max: 10, connectionTimeoutMillis: 5000, idleTimeoutMillis: 30_000, ...options });
+}
+export class PostgresUnitOfWork implements UnitOfWork {
+  constructor(private readonly pool: Pool) {}
+  async run<T>(actor: ActorContext, work: (tx: TransactionContext) => Promise<T>): Promise<T> {
+    const client = await this.pool.connect();
+    let discard = false;
+    try {
+      await client.query('BEGIN');
+      await client.query("SELECT set_config('agap.organization_id', $1, true), set_config('agap.user_id', $2, true), set_config('agap.branch_ids', $3, true)", [actor.organizationId, actor.userId, JSON.stringify(actor.branchIds)]);
+      await client.query("SET LOCAL statement_timeout = '10s'");
+      await client.query("SET LOCAL lock_timeout = '5s'");
+      const current = await client.query<{ authorized: boolean }>('SELECT identity.assert_actor($1,$2,$3,$4,$5) AS authorized',[actor.sessionId,actor.userId,actor.organizationId,[...actor.branchIds],[...actor.roles]]);
+      if (!current.rows[0].authorized) throw new ApiError(401,'access_changed','Your staff access changed. Reload and sign in again.');
+      const tx: TransactionContext = { actor, query: async (sql, values) => client.query(sql, values ? [...values] : undefined) };
+      const result = await work(tx);
+      await client.query('COMMIT');
+      return result;
+    } catch (error) {
+      try { await client.query('ROLLBACK'); } catch { discard = true; }
+      throw error;
+    } finally { client.release(discard); }
+  }
+}

@@ -2,7 +2,7 @@
 
 Tracker: [Assignment.md — Robert](../../../Assignment.md#robert). Robert maintains the central task/status register and shared foundation.
 
-Read the [product priorities](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery plan](../../AGAP_Delivery_Plan.md) and root AGENTS.md before implementation. This is a planned production task brief, not an assertion that backend code exists.
+Read the [product priorities](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery plan](../../AGAP_Delivery_Plan.md) and root AGENTS.md before implementation. Implementation progress is recorded below; this brief defines Robert's scope and does not certify production readiness.
 
 ## Work packages and ownership
 
@@ -26,4 +26,8 @@ Record assignments, contract changes, dependencies and handoff evidence in Assig
 
 ## Progress and handoff notes
 
-No production implementation progress is recorded yet. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; update the corresponding Assignment.md entry.
+21 October 2026: FND-01/FND-02 are Ready for review on `feat/robert-fnd-01`, based on `875b405c3c6e5d13f8a00aed7c8712b99c5422ef`. Contract 0.1.0 is a candidate, awaiting Aaron/Benedict/Earl interface agreement. OPS-01 is In progress; its local encrypted restore drill passed, while full identity/offsite recovery and integrated financial cutover remain dependencies.
+
+Changed owned paths: `packages/contracts/`, `packages/api-client/`, `apps/api/src/platform/`, API bootstrap, modules `identity/`, `members/`, `applications/`, `apps/api/scripts/`, platform tests, `apps/worker/`, staff shell/access/member/application intake, root configuration/dependencies, infrastructure and shared documentation. Aaron/Benedict/Earl implementation files, existing financial functions, tokens and fictional fixture registry were not changed.
+
+Read the [platform setup/integration guide](../../AGAP_Platform_Foundation.md), [verification and critique](../../AGAP_Robert_Verification.md), and [restore evidence](../../AGAP_Robert_Restore_Drill.json). The staff UI creates/corrects members, prepares drafts and revokes access; application-correction/reassignment APIs are implemented with UI pending. Financial endpoints are explicitly contract-only. Record reviewer agreement and the actual accepted integration commit in Assignment.md before downstream integration. No merge is authorized by this handoff.

@@ -1,0 +1,30 @@
+import type { z } from 'zod';
+import type { AssessmentCreateSchema, AssessmentSchema, FinancialCommandSchema, LoanPositionSchema, PostingRequestSchema, JournalReceiptSchema, StaffRole } from './schemas.js';
+
+/** Constructed by the identity boundary, never deserialized from a browser request. */
+export interface ActorContext {
+  readonly userId: string; readonly organizationId: string; readonly branchIds: readonly string[];
+  readonly roles: readonly StaffRole[]; readonly sessionId: string; readonly authenticatedAt: Date;
+  readonly authenticationMethods: readonly string[]; readonly correlationId: string;
+}
+export interface QueryResult<Row> { rows: Row[]; rowCount: number | null }
+/** Only the transaction coordinator owns BEGIN/COMMIT/ROLLBACK and connection release. */
+export interface TransactionContext {
+  readonly actor: ActorContext;
+  query<Row extends Record<string, unknown> = Record<string, unknown>>(sql: string, values?: readonly unknown[]): Promise<QueryResult<Row>>;
+}
+export interface UnitOfWork { run<T>(actor: ActorContext, work: (tx: TransactionContext) => Promise<T>): Promise<T> }
+export interface AssessmentPort { assess(tx: TransactionContext, applicationId: string, request: z.input<typeof AssessmentCreateSchema>): Promise<z.output<typeof AssessmentSchema>> }
+export interface ReleaseAuthorizationPort { authorizeRelease(tx: TransactionContext, loanId: string, commandId: string): Promise<void> }
+export interface PostingPort { post(tx: TransactionContext, request: z.input<typeof PostingRequestSchema>): Promise<z.output<typeof JournalReceiptSchema>> }
+export interface LoanPositionPort { getPosition(tx: TransactionContext, loanId: string, asOfDate: string): Promise<z.output<typeof LoanPositionSchema>> }
+export type ProviderOutcome = { state: 'confirmed'; providerReference: string } | { state: 'failed'; code: string } | { state: 'unknown'; providerReference: string | null };
+export interface PaymentProviderPort {
+  submit(command: z.output<typeof FinancialCommandSchema>, idempotencyKey: string): Promise<ProviderOutcome>;
+  getStatus(providerReference: string): Promise<ProviderOutcome>;
+}
+export interface DocumentStorePort {
+  putQuarantined(stream: AsyncIterable<Uint8Array>, maxBytes: number): Promise<{ key: string; sha256: string; size: number }>;
+  read(key: string): Promise<AsyncIterable<Uint8Array>>;
+  remove(key: string): Promise<void>;
+}

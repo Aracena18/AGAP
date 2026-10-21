@@ -48,7 +48,7 @@ export default function App() {
     <header className={`${styles.header} no-print`}>
       <div className={styles.headerInner}>
         <Link to="/applications" className={styles.brand} aria-label="AGAP home"><span className={styles.brandMark} aria-hidden="true"><NorthEast size={24} /></span>AGAP<span className={styles.brandSubtitle}>Financial health loan review</span></Link>
-        <div className={styles.headerActions}><Badge tone="brand">Fictional demo</Badge><div className={styles.role}><label htmlFor="demo-role">Demo role</label><select id="demo-role" value={role} onChange={event => setRole(event.target.value as 'officer' | 'reviewer')}><option value="officer">Loan officer</option><option value="reviewer">Reviewer</option></select></div><span className={styles.userAvatar} title={`${actor.name} · fictional staff member`} aria-label={`${actor.name}, fictional staff member`}>{actor.name.split(' ').map(part => part[0]).join('')}</span></div>
+        <div className={styles.headerActions}><Link to="/staff">Staff workspace</Link><Badge tone="brand">Fictional demo</Badge><div className={styles.role}><label htmlFor="demo-role">Demo role</label><select id="demo-role" value={role} onChange={event => setRole(event.target.value as 'officer' | 'reviewer')}><option value="officer">Loan officer</option><option value="reviewer">Reviewer</option></select></div><span className={styles.userAvatar} title={`${actor.name} · fictional staff member`} aria-label={`${actor.name}, fictional staff member`}>{actor.name.split(' ').map(part => part[0]).join('')}</span></div>
       </div>
     </header>
     <main id="main-content" className={styles.main} tabIndex={-1}>

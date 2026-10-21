@@ -42,7 +42,7 @@ Before workers integrate against the server, A establishes:
 5. Shared transaction context, canonical lock order, audit/outbox/inbox schema and the migration registry.
 6. Minimal shell, authentication/authorization boundaries and feature route registration; a local fictional environment with no production credentials.
 
-These are the **first implementation tasks**, not schemas that this documentation pretends are already executable. Owners may develop pure functions and interface-driven tests against the agreed contract during foundation work. Production financial integration waits for the actual posting/authorization contracts and behavior.
+These are the **first implementation tasks**. Robert's [candidate foundation](AGAP_Platform_Foundation.md) now supplies executable schemas/client and platform services; the other owners' interface approval remains pending. Owners may develop pure functions and interface-driven tests against the agreed contract during foundation work. Production financial integration waits for the actual posting/authorization contracts and behavior.
 
 Freeze the first contract version once all four owners review the first slice. Additive contract changes can follow with compatibility checks; breaking changes need an explicit migration and coordinated task dependency.
 

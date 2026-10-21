@@ -1,10 +1,10 @@
 # AGAP team assignments
 
-**Updated:** 20 October 2026, Asia/Manila.
+**Updated:** 21 October 2026, Asia/Manila.
 
 This file is the team's active assignment and progress tracker, replacing GitHub issues for this workflow. The names below follow the order supplied by the team: Robert, Aaron, Benedict and Earl. A–D remain technical role labels in the architecture documents.
 
-The [product solution](docs/AGAP_Product_Solution.md) defines features and priorities. The [production architecture](docs/AGAP_Production_Architecture.md) defines technical boundaries. The [delivery plan](docs/AGAP_Delivery_Plan.md) defines exact owned paths, integration waves and acceptance criteria. This assignment does not mark any production task as implemented.
+The [product solution](docs/AGAP_Product_Solution.md) defines features and priorities. The [production architecture](docs/AGAP_Production_Architecture.md) defines technical boundaries. The [delivery plan](docs/AGAP_Delivery_Plan.md) defines exact owned paths, integration waves and acceptance criteria. Implementation and review evidence are recorded below; Ready for review does not mean integrated or production approved.
 
 ## Team ownership
 
@@ -19,12 +19,12 @@ Each person owns the UI, backend module, module persistence and tests within the
 
 ## Task register
 
-Production tasks start as **Not started**. Existing fictional frontend work is reusable groundwork, not completion of these production packages. Change a status only when its owner reports evidence.
+Existing fictional frontend work remains reusable groundwork. Robert's foundation/intake review candidate has implementation evidence; other owners' tasks remain unchanged. Change status only with evidence.
 
 | Task ID | Owner | Deliverable | Prerequisites | Status | Evidence / branch / blocker |
 | --- | --- | --- | --- | --- | --- |
-| FND-01 | Robert | Shared contracts/client, backend module and transaction foundation | Architecture baseline | Not started | Pending |
-| FND-02 | Robert | Real identity, scoped permissions and member/application intake | FND-01 | Not started | Pending |
+| FND-01 | Robert | Shared contracts/client, backend module and transaction foundation | Architecture baseline | Ready for review | `feat/robert-fnd-01`, contract 0.1.0 candidate; [handoff](docs/AGAP_Platform_Foundation.md), [verification](docs/AGAP_Robert_Verification.md); B/C/D interface approval pending |
+| FND-02 | Robert | Real identity, scoped permissions and member/application intake | FND-01 | Ready for review | Real DB/API and staff UI implemented/tested; [verification](docs/AGAP_Robert_Verification.md); real Keycloak password/OTP walkthrough passed; human acceptance remains pending |
 | EVD-01 | Aaron | Source files, corrections and verification history | FND-01 for server integration | Not started | Pending |
 | CRD-01 | Aaron | Versioned products/offers and deterministic assessments | FND-01 for server integration | Not started | Pending |
 | DEC-01 | Benedict | Recommendation, approval, acceptance and saved brief | FND-01; integrate EVD-01 and CRD-01 | Not started | Pending |
@@ -33,7 +33,7 @@ Production tasks start as **Not started**. Existing fictional frontend work is r
 | HLT-01 | Earl | Member health reviews and staff action queue | FND-01; integrate loan positions from PAY-01 | Not started | Pending |
 | ACC-01 | Earl | Reconciliation, capital, financial reports and adjustments | GL-01, PAY-01 | Not started | Pending |
 | SRV-01 | Benedict | Refunds, restructures, settlement and write-off/recovery commands | PAY-01; ACC-01 posting contracts | Not started | Pending |
-| OPS-01 | Robert | Backup/restore, migration and operating evidence | FND-02 plus integrated modules | Not started | Pending |
+| OPS-01 | Robert | Backup/restore, migration and operating evidence | FND-02 plus integrated modules | In progress | [Encrypted local restore drill passed](docs/AGAP_Robert_Restore_Drill.json); full identity/offsite recovery and integrated financial cutover require further work and C/D modules |
 | SHOW-01 | Robert coordinates; all contribute | Connected hackathon presentation and evaluation evidence | Core review; money/health paths when implemented | Not started | Pending |
 
 Statuses: **Not started → In progress → Ready for review → Integrated**. Use **Blocked** with a specific dependency when work cannot proceed. Integrated requires the relevant checks and the agreed integration/merge process; a PR or an unchecked checkbox alone is not completion.
@@ -42,14 +42,14 @@ Statuses: **Not started → In progress → Ready for review → Integrated**. U
 
 Start with **FND-01**. Publish the shared foundation to the repository through a reviewed PR; public deployment is not required for this task.
 
-- [ ] Define one canonical request/response schema for the first connected review path, plus the payment/receipt/journal and health-review boundaries needed by the other owners.
-- [ ] Define server-established actor context, centavo/date validation, explicit unavailable values, version checks, stable error shapes and idempotency rules.
-- [ ] Define the shared transaction context and interfaces for checked assessments, release authorization, transactional journal posting, loan positions and unknown payment-provider outcomes.
-- [ ] Establish module/migration boundaries, audit/outbox/inbox envelopes and a local fictional test environment.
-- [ ] Generate the shared frontend client and validate the schemas; document the transaction-boundary verification and module integration checks.
+- [x] Define one canonical request/response schema for the first connected review path, plus the payment/receipt/journal and health-review boundaries needed by the other owners.
+- [x] Define server-established actor context, centavo/date validation, explicit unavailable values, version checks, stable error shapes and idempotency rules.
+- [x] Define the shared transaction context and interfaces for checked assessments, release authorization, transactional journal posting, loan positions and unknown payment-provider outcomes.
+- [x] Establish module/migration boundaries, audit/outbox/inbox envelopes and a local fictional test environment.
+- [x] Generate the shared frontend client and validate the schemas; document the transaction-boundary verification and module integration checks.
 - [ ] Have Aaron, Benedict and Earl review the interfaces they consume; record the agreed contract version and base commit below.
 
-After FND-01, continue with FND-02, then integration/operations work as the modules become available. Keep the current frontend runnable and distinguish development fixtures from production configuration.
+FND-01 and FND-02 now have a review candidate. Continue integration/operations work as the modules become available; owner interface approval is still required before declaring FND-01 integrated. Keep the current frontend runnable and distinguish development fixtures from production configuration.
 
 ## Aaron
 
@@ -99,11 +99,11 @@ Aaron, Benedict and Earl can begin pure domain rules/tests and interface review 
 
 | Item | Owner | Current state | Reference / next step |
 | --- | --- | --- | --- |
-| Canonical contract version | Robert | Pending | Record after all four owners review FND-01 |
-| Integration base commit | Robert | Pending | Record the agreed foundation commit before dependent branches integrate |
-| Assessment/offer interface | Robert with Aaron | Pending | B supplies checked calculations consumed by C |
-| Transactional posting interface | Robert with Earl and Benedict | Pending | C and D share one transaction and stable financial-event identity |
-| Loan-position interface | Robert with Benedict and Earl | Pending | D consumes dated posted repayment facts for health reviews |
+| Canonical contract version | Robert | 0.1.0 candidate | Executable schemas/client supplied; freeze only after all four owners review |
+| Integration base commit | Robert | Pending owner agreement | Candidate branch `feat/robert-fnd-01` starts at `875b405`; record the reviewed foundation commit before dependent integration |
+| Assessment/offer interface | Robert with Aaron | Candidate port/DTO supplied | Aaron reviews and supplies checked calculations consumed by C |
+| Transactional posting interface | Robert with Earl and Benedict | Candidate port/DTO supplied | Earl/Benedict review; actual financial event/posting invariants remain their implementation |
+| Loan-position interface | Robert with Benedict and Earl | Candidate port/DTO supplied | Benedict/Earl review; D consumes dated posted repayment facts |
 | Institutional policies/accounting mappings | Relevant cooperative officers; each affected owner records the dependency | Unconfirmed | Use fictional development configuration; unresolved live rules block product activation |
 
 ## Progress updates
@@ -111,3 +111,4 @@ Aaron, Benedict and Earl can begin pure domain rules/tests and interface review 
 | Date | Update |
 | --- | --- |
 | 20 October 2026 | Assigned Robert, Aaron, Benedict and Earl to the four workstreams and adopted this file as the task tracker. Production tasks have not been marked started or completed. |
+| 21 October 2026 | Robert implemented the foundation/intake review candidate in an isolated worktree, tested it, recorded critique/improvements and a successful encrypted restore drill. FND-01/FND-02 await review; OPS-01 remains in progress. Other owners' tasks and merge authorization are unchanged. |

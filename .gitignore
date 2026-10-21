@@ -2,6 +2,10 @@
 /graft/
 node_modules/
 dist/
+dist-api/
+backups/
+private-documents/
+.platform-test/
 .worktrees/
 .superpowers/
 test-results/
@@ -11,3 +15,5 @@ playwright-report/
 !.env.example
 *.tsbuildinfo
 graphify-out/
+
+.backups/

@@ -321,3 +321,18 @@ References checked on 20 October 2026. These support asset selection and interac
 | [WCAG 2.2](https://www.w3.org/TR/WCAG22/) | Accessibility acceptance criteria; automated checks alone do not establish conformance |
 
 For technical verification commands and implementation boundaries, use the [frontend specification](docs/AGAP_Frontend_Spec.md) and [README](README.md).
+
+
+## 9. Staff intake workspace (21 October 2026)
+
+Implemented examples, awaiting team visual acceptance and representative staff evaluation. The [platform guide](docs/AGAP_Platform_Foundation.md) defines server capabilities; this section governs the added interface.
+
+Use the existing Google Sans typography, blue actions, surface/line colors, spacing tokens, buttons, badges and notices. Staff pages have a restrained brand/account header, Members/Applications navigation, scoped administration when permitted, a readable main landmark and a development-only fictional-data footer. Keep server intake and the fictional review demo visibly distinct. Never show a demo role selector as a staff access control.
+
+Members use a scan-friendly table and an inline create/contact-correction form. Applications show the member name, purpose, requested amount, term and Draft state. Member names/branch labels replace raw UUIDs in ordinary controls. Requested terms are explicitly subject to review. Staff access uses a named revocation form with a reason, recent-MFA explanation and a consequential action button; never one-click revocation or self-approval implications.
+
+Labels remain visible, targets are at least 44px, and fields stack on narrow screens. Tables scroll inside labeled, keyboard-focusable regions without page-level horizontal overflow. A skip link and route focus target support keyboard users. Validation summaries receive focus and retain entered values.
+
+Show server saving, saved, loading, unavailable, stale/validation failure and uncertain save results separately. On uncertain saves, lock editing and offer “Retry same submission”; preserve the original request/key/sender. Warn before navigation loses unsaved values or uncertain retry details. On confirmed conflict, allow cancel/reload; never silently overwrite a changed record. An audit/history or financial approval UI is not implied by intake save confirmations.
+
+[Members example](docs/screenshots/platform/staff-members.png) · [Applications example](docs/screenshots/platform/staff-applications.png) · [Staff access example](docs/screenshots/platform/staff-access.png). API-only application corrections/reassignment and broader staff grant/recovery screens remain pending designs, not accepted or implemented screens.
