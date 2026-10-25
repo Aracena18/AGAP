@@ -1,12 +1,12 @@
 # AGAP production architecture
 
-**Baseline:** 25 October 2026, Asia/Manila. Updated for member-phone access, bounded AI assistance and irregular-expense review.
+**Baseline:** 25 October 2026, Asia/Manila. Updated for member-phone access, bounded AI assistance, Qwen training and separate explainable-model research.
 
 **Status:** target design for a four-person team. The first platform/intake implementation is a [review candidate](AGAP_Platform_Foundation.md); payment integration and accounting remain unimplemented. This architecture does not certify live readiness.
 
 **Scope authority:** [product solution and priorities](AGAP_Product_Solution.md). Named owners and task progress are in [Assignment.md](../Assignment.md); exact path ownership and delivery gates are in the [delivery plan](AGAP_Delivery_Plan.md). A–D map to Robert, Aaron, Benedict and Earl respectively.
 
-This revision supersedes the earlier staff-first/later-member-channel sequencing. Robert exclusively owns the member portal and its access facade. It changes documentation only: candidate contract 0.1.0, generated clients, schemas and migrations remain unchanged. New interfaces below are proposals for FND-03 review, not implemented endpoints or an accepted integration base.
+This revision supersedes the earlier staff-first/later-member-channel sequencing. Robert exclusively owns the member portal and its access facade. It changes documentation only: candidate contract 0.1.0, generated clients, schemas and migrations remain unchanged. New interfaces below, including model artifact/provenance, are proposals for FND-03 review, not implemented endpoints or an accepted integration base. [Training/evaluation details](AGAP_Model_Training_Plan.md) distinguish Benedict’s Qwen work, Aaron’s research training/inference adapter and Earl’s independent evaluation.
 
 ## 1. Architecture decisions
 
@@ -22,6 +22,7 @@ Build a **modular monolith**: one application backend, one PostgreSQL database, 
 | Background work | PostgreSQL-backed outbox/inbox and jobs, processed by a separate worker process | No extra paid queue required; retry, deduplication and operator-visible failures are part of the contract |
 | Member channel | Responsive web portal with a separate member principal and own-record linkage | Robert owns its screens/facade; domain services remain with their existing owners; assisted access remains available |
 | Documents and explanations | One reusable bounded AI adapter, source-linked drafts and explicit confirmation; deterministic/manual fallback | Aaron owns the adapter; domain owners validate their prompts/results; no AI financial or decision authority |
+| Model training | Offline Qwen3.5-2B LoRA pipeline (Benedict); CPU EBM/logistic research pipeline (Aaron); independent corpus/splits/evaluation (Earl) | Training is outside the transactional backend. Only an evaluated Qwen artifact is eligible for the shared inference adapter; EBM has no lending/member API |
 | Deployment | Docker Engine/Compose on Linux; HTTPS reverse proxy; separate development, staging and production configurations | No software subscription is required. Hardware, backups, connectivity, domains and provider transactions can still cost money |
 
 These are project choices, not a claim that a framework supplies financial correctness. Nest's module model supports explicit exports/imports; transaction isolation and row-security behavior must be implemented and tested as designed. [Nest modules](https://docs.nestjs.com/modules), [PostgreSQL transactions](https://www.postgresql.org/docs/18/transaction-iso.html)
@@ -59,7 +60,7 @@ flowchart TB
   DB <--> Worker[Jobs, inbox and outbox worker]
   Worker --> Adapters[Payment and notification adapters]
   Adapters <--> External[External providers]
-  AI --> AIProvider[Optional approved AI provider]
+  AI --> AIProvider[Configured evaluated Qwen inference runtime]
 ```
 
 The module boxes belong to the same backend. They are not independently deployed microservices. Identity uses a separate database/schema and credentials; its records are not loan or accounting tables. The worker does not become a second implementation of business rules.
@@ -109,7 +110,28 @@ Important cross-module interfaces:
 
 The integration owner encodes request/response schemas and these ports in the foundation task. Proposed interfaces here do not replace the existing executable `src/domain/types.ts` until the migration is implemented.
 
-Aaron implements the single provider adapter in planned module `ai/`. Domain prompts/result validation stay in `evidence/` and `credit/` (Aaron), `decisions/` (Benedict), and `monitoring/` (Earl). Robert owns canonical schema/port edits, dependencies/configuration and registration. Earl's planned `evaluation/synthetic/` supplies independent test evidence, not another business database or demo fixture registry.
+Aaron implements the single provider adapter in planned module `ai/`. Domain prompts/result validation stay in `evidence/` and `credit/` (Aaron), `decisions/` (Benedict), and `monitoring/` (Earl). Robert owns canonical schema/port edits, dependencies/configuration and registration. Benedict owns planned `models/qwen/` for offline baseline/LoRA/config/artifact handoff; Aaron owns planned `models/explainable/` for EBM/logistic training. Earl’s `evaluation/synthetic/` owns generated sources, independent truth and grouped manifests; `evaluation/explainable/` owns independent research split/evaluation protocols and reports. These are not operational databases or duplicate demo fixture registries. Shared dependencies, manifest/wire schemas and runtime registration remain Robert’s.
+
+### Model training, inference and research separation
+
+QWN-01 consumes Earl's approved training/validation manifest in an offline Python/notebook environment; Earl reserves the grouped holdout for final pretrained/tuned/checklist evaluation. Benedict supplies a pinned base/processor revision, LoRA artifact/config/checksum, dataset/split hashes, resource limits and reproducible run/model card. No training script can query operational member/loan tables or mutate application facts. Large weights remain outside Git in an approved artifact location.
+
+Aaron's AI-01 adapter consumes a configured compatible inference runtime, not a training notebook. Runtime selection/hosting is a separate integration decision: free Colab training does not provide a dependable always-on backend. The same source-validation, output-schema, confirmation and manual-fallback rules apply to both pretrained and tuned artifacts. A training result alone never enables a capability flag or replaces the configured baseline. Earl records reviewed promotion/non-promotion evidence; Robert wires the eligible release with Aaron.
+
+XAI-01 trains an EBM and logistic-regression baseline offline on a separately documented public-research dataset. It models reported emergency-fund difficulty with codebook/weight/missingness/leakage review, not future loan default or a validated member score. Earl independently evaluates returned artifacts. The research report has **no data path into member views, assessments, decisions, support priority or financial commands**. Any operational predictive use needs a separate approved design and relevant validation.
+
+```mermaid
+flowchart LR
+  Corpus[Earl: fictional corpus and frozen grouped splits] --> Train[Benedict: Qwen baseline and LoRA training]
+  Train --> Artifact[Versioned Qwen artifact and run card]
+  Artifact --> Eval[Earl: independent holdout evaluation]
+  Eval --> Gate[Reviewed promotion or non-promotion]
+  Gate --> Runtime[Robert and Aaron: configured single inference adapter]
+  Survey[Separate public survey research data] --> Research[Aaron: EBM and logistic training]
+  Research --> Report[Earl: independent research report]
+```
+
+Only the inference path can produce application drafts; confirmation/verification and deterministic calculations remain separate. The research branch ends at an offline report. Data/protocol handoffs precede training; final artifact evaluation follows it, avoiding a circular dependency between whole tasks.
 
 ## 4. Data model and versioning
 
@@ -120,7 +142,8 @@ Use normalized tables for operational records and append-only historical records
 | Member/application | Stable IDs, organization, branch, assignment, concurrency version, assessment-input version and recorded timestamps |
 | Member linkage/preferences | Trusted issuer/subject linkage to the approved member record, linkage status/history and disclosure/reminder choices; no client-controlled scope |
 | Evidence/source | Application, fact category, nullable value, currency when monetary, effective/cash dates, original source/file version, evidence status and verification status |
-| AI draft/confirmation | Source/version and prompt/provider/model origin, candidate/confirmed status, confirming actor/time/correction and limitations; extraction is not independent verification |
+| AI draft/confirmation | Source/version and pinned base/adapter artifact/prompt/schema origin, candidate/confirmed status, confirming actor/time/correction and limitations; extraction is not independent verification |
+| Model release manifest (offline) | Base/processor/artifact checksums, license, dataset/split/config hashes, run/evaluation versions and promotion outcome; no member records or financial authority |
 | Irregular expense | Confirmed relevance, nullable amount/date until supplied, source, category, occurrence/explicit recurrence assumption and modeled horizon; no implicit zero or inferred future fact |
 | Product/policy/offer | Immutable published version, validity/effective dates, approved formula and rounding configuration, permitted terms, authority/verification requirements and account mappings |
 | Assessment | Exact input snapshot, assessment-input version, policy/offer/engine versions, modeled horizon, checked results, unresolved issues and calculation hash |
@@ -201,7 +224,7 @@ Balances and arrears are computed from posted events as of an explicit date, inc
 | Health review | Scheduled → due → completed or clarification requested → next action/review. Missing check-in data does not imply a healthy member or a delinquent loan |
 | Member support | Draft → confirmed submission → assigned/reviewed → recorded response/follow-up; amendments require servicing authorization/member acceptance; requests do not pause charges or change dates |
 
-The API foundation converts these into explicit transition rules and schemas before parallel feature implementation. No endpoint may accept arbitrary next-state strings or directly patch balances.
+The API foundation converts these into explicit transition rules and schemas before parallel feature implementation. No endpoint may accept arbitrary next-state strings or directly patch balances. SRV-01 amendments are stage 2; the first demo exposes confirmed support requests and recorded staff responses without promising a contractual change.
 
 A case preparer cannot supply final loan approval. Declared conflicts trigger institutional recusal/reassignment/approval restrictions; administrative assignment does not grant exception authority. Authorized exceptions preserve reason, authorizer and evidence. Hidden relationships remain an oversight risk, not something AI can certify absent.
 
@@ -231,9 +254,9 @@ Use versioned HTTP JSON commands under `/api/v1`. The integration owner publishe
 | Aaron | Evidence AI drafts/confirmation, irregular-cost inputs and checked assessment extension | Source-linked suggestions versus confirmed facts and independent checks; one engine; explicit horizon/unavailable inputs |
 | Benedict | Conflict declarations/approval guards and amendment comparisons/acceptance | Separate authority, current basis, approved/accepted new schedule and preserved original |
 | Earl | Support-request/check-in/task projections and confirmed sharing | Staff routing and action history; no automatic health verdict, credit penalty or contractual change |
-| Robert | Shared principal, AI draft, confirmation and support/amendment port schemas | Consuming-owner review before generation; capability flags remain honest |
+| Robert | Shared principal, AI draft, model artifact/provenance, confirmation and support/amendment port schemas | Consuming-owner review including both trainers and evaluator before generation; capability flags remain honest |
 
-These are intended capabilities, not finalized wire shapes. FND-03 records the next reviewed schema/version before dependent implementation. PLN-01 changes no existing staff route, executable schema, generated client or migration; current code does not silently accept new member/linkage fields.
+These are intended capabilities, not finalized wire shapes. FND-03 records the next reviewed schema/version before dependent implementation. PLN-01/PLN-02 change no existing staff route, executable schema, generated client or migration; current code does not silently accept new member/linkage fields.
 
 For rows listing child resources, e.g. `/corrections`, the full scoped route is `/api/v1/applications/{id}/corrections`; the generated specification removes any shorthand ambiguity.
 

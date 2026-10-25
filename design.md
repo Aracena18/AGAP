@@ -388,6 +388,14 @@ After submission, show **Sent for review** and the recorded response when availa
 
 Use the existing table/notice/form patterns and shared tokens; owner briefs do not define competing layouts. Underlying permission enforcement is a server requirement, and hidden controls alone do not establish it.
 
+### Model origin and research presentation
+
+Qwen fine-tuning does not add another member task: retain the existing source/confirmation controls and manual fallback. Runtime origin and exact model/artifact versions remain inspectable in staff evidence rather than added to the member's main flow. Label generated drafts, templates and prerecorded/simulated responses accurately; an uploaded scan is not an authenticated claim.
+
+EBM/logistic results belong to a separately labeled **Exploratory research** report, outside the member portal and staff lending decisions. Show the survey/cohort, reported emergency-funds target, sample/exclusions, comparison baseline, uncertainty and limits beside any feature-contribution chart. Do not display a member health/credit score, causal promise or suggested loan limit from these results. An offline report needs no new application route; any later interactive research view requires a design/ownership proposal through Robert.
+
+The first demo ends payment help at submitted request, staff review and recorded response/follow-up. The amended-terms blueprint above is retained for stage 2 under Benedict and is not included in the new first-demo training workload. Pending requests leave the existing schedule/charges intact.
+
 ### Planned acceptance checks
 
 Review the complete member journey with keyboard and 320px reflow, unavailable/stale/empty/error states, source confirmation/correction, saving and uncertain retries, inaccessible other-member records and revoked linkage. Check that support requests cannot silently alter a loan and original decisions/schedules remain accessible. Attach screenshots when actual UI is implemented.

@@ -1,6 +1,6 @@
 # AGAP product solution and feature priorities
 
-**Planning baseline:** 25 October 2026, Asia/Manila. This revision incorporates the member-phone and AI-assisted financial-health direction.
+**Planning baseline:** 25 October 2026, Asia/Manila. This revision incorporates member-phone access, AI-assisted financial-health review and assigned Qwen/explainable-model training.
 
 **Confirmed direction:** a complete lending system, including disbursement, repayment processing, accounting, and financial-health follow-up; four developers; free software and a free development setup.
 
@@ -114,6 +114,14 @@ Confirmed irregular costs enter the same calculation engine without duplicate co
 
 Deterministic explanations are required. AI is an enhancement with a measured evaluation, data-processing review and an off switch; its availability or price must not block the complete product. Do not label a template as an AI response or promise an unverified free production AI service.
 
+### Assigned model training
+
+The [model training plan](AGAP_Model_Training_Plan.md) specifies two main model families and one comparison baseline. **Benedict owns QWN-01: Qwen3.5-2B LoRA fine-tuning** for source-linked document extraction and overlooked-expense questions. **Aaron owns XAI-01: EBM training plus logistic regression** for a separate offline emergency-funds research experiment. Aaron retains the single runtime AI adapter under AI-01; Qwen training does not transfer evidence/credit ownership.
+
+Earl owns verifiable synthetic documents, independent truth, grouped train/validation/holdout splits and final model comparisons. Application/presentation fixtures stay fictional. The candidate Philippine Findex survey is a distinct offline research source, subject to access/codebook review; it is not cooperative loan-outcome data or application fixtures. EBM explains associations with reported emergency-fund difficulty, not causes, future default, member eligibility or a credit/health score. Its outputs do not enter operational assessments, approval, member screens or support ranking.
+
+Robert owns shared model contracts/dependencies, runtime wiring and evidence packaging. Free cloud GPU availability, reproducible training and a held-out comparison are dependencies, not completed capabilities. Evaluate pretrained Qwen before LoRA; deploy a tuned artifact only if reviewed evidence supports it. Keep manual/checklist/template fallback, including when training is unfinished or shows no gain.
+
 ### Payment help and financial-health follow-up
 
 The member can report an income change or difficulty meeting essentials and preview/edit what will be shared. Monitoring records the confirmed request and assigns staff review. Staff discuss only institutionally permitted options, such as a due-date change, temporary arrangement, authorized restructuring or an available assistance/referral pathway. These options remain unconfirmed institutional inputs until the cooperative approves them.
@@ -132,7 +140,7 @@ Use the existing fictional fixtures; retain their independent expected amounts i
 6. When implemented, show a later fictional check-in where repayment is current but essential expenses have become difficult; staff record a support/review action. No automatic restructure or invented diagnosis.
 7. Briefly use Ben to demonstrate overall shortfall and Cora to demonstrate missing information and clarification.
 
-The updated target journey adds a phone application, a confirmed irregular expense beyond the original review cycle, a blocked self-approval/conflict restriction, and a member-requested payment-help handoff. Demonstrate these only after implementation; preserve Ana/Ben/Cora and their original arithmetic. External issuer checks use an explicitly fictional registry in the synthetic demonstration, not a claim to authenticate real payslips or land titles.
+The updated target journey adds a phone application, a confirmed irregular expense beyond the original review cycle, a blocked self-approval/conflict restriction, and a member-requested payment-help handoff with staff response. The first contractual hardship amendment is retained for stage 2 under Benedict, making room for Qwen training. Demonstrate these only after implementation; preserve Ana/Ben/Cora and their original arithmetic. External issuer checks use an explicitly fictional registry in the synthetic demonstration, not a claim to authenticate real payslips or land titles.
 
 This is a proposed presentation sequence; no official pitch length or final-round scoring weights have been supplied. Shorten the delivery to the confirmed organizer format when available.
 
@@ -148,12 +156,12 @@ Acceptance evidence must distinguish:
 
 Measure completion time, repeated entry, missed discrepancies, inappropriate actions and applicant burden in the staff exercise. Later real-world evaluation also needs member outcomes such as ability to meet essentials and additional borrowing to make payments; repayment performance alone is insufficient.
 
-Use a verifiable synthetic evaluation corpus with source documents/statements, separate ground truth, known conflicts/unknowns, and independently checked expected calculations. Keep held-out cases separate from prompt tuning and reference the canonical fixtures instead of copying them into a second registry. Compare AI with a simple annual-expense checklist and manual/form-based check-in. Report extraction/source accuracy, missed costs, unsupported assumptions, confirmation/correction effort, latency and appropriate staff handoff. Synthetic results establish behavior on those cases; they do not establish real borrower outcomes, default prediction or population-wide fairness. Earl owns the corpus/evaluation, with each domain owner supplying independently reviewable acceptance evidence.
+Use a verifiable synthetic evaluation corpus with source documents/statements, separate ground truth, known conflicts/unknowns, and independently checked expected calculations. Keep held-out cases separate from prompt tuning and reference the canonical fixtures instead of copying them into a second registry. Compare AI with a simple annual-expense checklist and manual/form-based check-in. Report extraction/source accuracy, missed costs, unsupported assumptions, confirmation/correction effort, latency and appropriate staff handoff. Synthetic results establish behavior on those cases; they do not establish real borrower outcomes, default prediction or population-wide fairness. Earl owns the corpus/evaluation, with each domain owner supplying independently reviewable acceptance evidence. Add pretrained-versus-tuned Qwen comparison with untouched template/scenario families. Present EBM versus logistic regression separately as exploratory research with missingness/weight/leakage controls, uncertainty and no member-level lending inference; details are in the model training plan.
 
 ## 7. Phases and readiness
 
 1. **Architecture and contracts:** agree module ownership and critical invariants; encode API/database contracts; identify unresolved institutional policy.
-2. **Hackathon delivery:** prioritize one connected phone/evidence/expense-discovery → checked options → accountable decision → controlled disbursement/repayment/journal → payment-help journey. Use the 12-unit-per-owner slice budgets in [Assignment.md](../Assignment.md); missing paths remain explicitly planned. The budgets are provisional remaining-effort estimates, not proof of equal hours or completion dates.
+2. **Hackathon delivery:** prioritize one connected phone/evidence/expense-discovery → checked options → accountable decision → controlled disbursement/repayment/journal → payment-help journey. Use the 16-unit-per-owner slice budgets (64 total, expanded from 48 after adding training/evaluation) in [Assignment.md](../Assignment.md); first contractual amendments remain in stage 2 and missing paths remain explicitly planned. The budgets are provisional remaining-effort estimates, not proof of equal hours or completion dates.
 3. **Complete product implementation:** finish all operational requirements, adverse cases, reports, policy configuration and migration tools. No phase is treated as production-ready by its name.
 4. **Controlled institutional deployment:** requires documented policy/accounting approval, operational ownership, security/recovery evidence, reconciled opening data, user evaluation and confirmed permissions for real data and payment connections.
 
