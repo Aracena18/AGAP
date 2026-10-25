@@ -1,98 +1,108 @@
 # AGAP delivery and ownership plan
 
-**Baseline:** 20 October 2026, Asia/Manila.
+**Baseline:** 25 October 2026, Asia/Manila. Supersedes the earlier delivery instructions where they differ.
 
-**Team:** Robert (A), Aaron (B), Benedict (C) and Earl (D). [Assignment.md](../Assignment.md) is the active task and progress tracker.
+**Team:** Robert (A), Aaron (B), Benedict (C) and Earl (D). [Assignment.md](../Assignment.md) is the sole task/status tracker. This document defines scope, boundaries and acceptance; it is not another status register.
 
-**Scope:** [product solution and priorities](AGAP_Product_Solution.md).
-
-**Technical baseline:** [production architecture](AGAP_Production_Architecture.md).
+**Authorities:** [product solution](AGAP_Product_Solution.md), [architecture](AGAP_Production_Architecture.md), and [design.md](../design.md). Existing implementation and verification remain distinguishable from planned work.
 
 ## 1. Outcome and priorities
 
-Build toward the confirmed complete lending product while making the hackathon's core financial-health journey understandable and demonstrable first. Evidence → cash-flow scenarios → available alternatives → accountable human decision → financial-health follow-up is the presentation spine. Disbursements, repayments and accounting are real product responsibilities, not an implied dependency on another lending system.
+Deliver a coherent hackathon path first: member-phone application → evidence/CI and AI-assisted overlooked-expense clarification → deterministic options → accountable human decision/acceptance → controlled fictional disbursement/repayment/journal → member payment-help request and authorized follow-up. All phone-facing implementation stays with Robert.
 
-The existing browser implementation is reusable groundwork. It is not the production backend. Neither the presentation deadline nor a completed task changes that distinction.
+The complete lending destination is retained, including full servicing, accounting, financial-health follow-up and operational readiness. An omitted demo path remains assigned later work. Demo manual money movements are simulated and labeled; no real funds or production records are required. Never bypass authorization, financial posting integrity or honest uncertainty to meet presentation scope.
+
+The first demonstration uses equal provisional budgets of 12 relative units per owner, as recorded in Assignment.md. Budget the stated slices, their tests/review and the dependencies below; do not treat complete production packages as twelve hours of work. Re-estimate based on actual availability/progress without silently changing owners. The current platform/intake candidate is supplied work awaiting review, not a new implementation assignment.
 
 ## 2. Four ownership areas
 
-Each developer owns a vertical area: UI, API service/domain code, module persistence and meaningful tests. The integration owner controls shared contracts and wiring so workers do not edit the same files.
+Each developer owns their staff feature UI, service/domain logic, module persistence/migrations and tests. The member UI is the explicit exception: **Robert owns every member-phone screen**, while B–D supply the underlying domain services.
 
-| Developer | Responsibility | Exclusive implementation paths after foundation |
+| Developer | Responsibility | Exclusive implementation paths |
 | --- | --- | --- |
-| Robert (A) — platform and integration | Identity, permissions, member/application intake, shared contracts/client, shell, infrastructure, migrations registry and integration | `src/app/`, `src/features/applications/`, new `src/features/members/` and `src/features/access/`; `src/shared/`, `src/styles/`, `src/demo/`; `src/domain/types.ts` and `format.ts`; `packages/contracts/`, `packages/api-client/`; `apps/api/src/platform/`, API bootstrap and modules `identity/`, `members/`, `applications/`; worker bootstrap; `infra/`, root manifests/configuration/lockfile, `.github/` |
-| Aaron (B) — evidence and credit | Evidence, CI/verification, product/policy terms, deterministic schedule and cash-flow calculations, offer comparison | `src/features/evidence/`, `src/features/comparison/`, new `src/features/products/`; `src/domain/evidence.ts`, `assessment.ts` and corresponding tests; finance-package implementation after the agreed extraction; API modules `evidence/` and `credit/` |
-| Benedict (C) — decisions and servicing | Recommendation/approval/acceptance, explanations, loan lifecycle, disbursement/payment/refund/restructure commands and payment adapters | `src/features/decision/`, new `src/features/loans/`, `src/features/payments/`; `src/domain/review.ts`, `explanation.ts` and corresponding tests; API modules `decisions/`, `servicing/`; payment-provider adapters inside `servicing/` |
-| Earl (D) — accounting and health | Posting, capital transactions, GL/reconciliation/reporting, health-review tasks and member check-ins | New `src/features/accounting/`, `src/features/monitoring/`; API modules `accounting/` and `monitoring/`, including their own domain rules/read models |
+| Robert (A) — platform, member portal and integration | Shared contracts, identity and own-record member access, intake, member-portal facade/screens, notification infrastructure, wiring and operations | `src/app/`, `src/features/applications/`, `src/features/members/`, `src/features/access/`, new `src/features/member-portal/`; `src/shared/`, `src/styles/`, `src/demo/`; `src/domain/types.ts`, `format.ts`; `packages/contracts/`, `packages/api-client/`; `apps/api/src/platform/`, API bootstrap/scripts, modules `identity/`, `members/`, `applications/`, new `member-portal/`; worker bootstrap/notification infrastructure, `infra/`, root configuration/manifests/lockfile, `.github/` and shared documentation |
+| Aaron (B) — evidence, credit and AI | Source/CI/issuer checks, draft confirmation, product/policy configuration, finance and offer comparison, one reusable AI adapter and expense assistance | `src/features/evidence/`, `src/features/comparison/`, `src/features/products/`; `src/domain/evidence.ts`, `assessment.ts` and corresponding tests; `packages/finance/` implementation only after Robert's extraction handoff; API modules `evidence/`, `credit/`, new `ai/` |
+| Benedict (C) — decisions and servicing | Conflict-aware approval/acceptance, explanations, disbursement/payment/loan lifecycle, amendment comparisons and provider adapters | `src/features/decision/`, new `src/features/loans/`, `src/features/payments/`; `src/domain/review.ts`, `explanation.ts` and corresponding tests; API modules `decisions/`, `servicing/`, with payment adapters inside `servicing/` |
+| Earl (D) — accounting, health and evaluation | Posting/reconciliation/capital/reporting, confirmed support requests/check-ins and staff queue, synthetic benchmark | New `src/features/accounting/`, `src/features/monitoring/`; API modules `accounting/`, `monitoring/`; new `evaluation/synthetic/` corpus/generator/manifests/evaluation runners and independently checked expectations |
 
-Module paths above live under `apps/api/src/modules/` unless otherwise shown. Each owner also controls that module's migrations and tests. A owns the migration discovery/ordering mechanism; workers submit module migrations through it instead of sharing one schema file.
+API module paths are under `apps/api/src/modules/`. New paths are proposals, not existing features. Each owner controls their module's tests and migrations; Robert alone edits the central migration discovery/order and route/provider registration. Keep existing implementation paths; no broad frontend move is required.
 
-New paths are planned, not an assertion that those folders already exist. Do not move the entire frontend just to match a monorepo template. A performs the one-time finance extraction/re-export migration; B takes ownership only after that handoff, so old and new calculators cannot diverge.
+Domain-specific AI prompts, result validation and confirmation rules stay in their owning module: Aaron for evidence/expenses, Benedict for decision explanations, Earl for health summaries. They call Aaron's one reusable provider adapter through the reviewed port. Robert connects the member UI to those services and owns common contracts/configuration. No owner creates a second provider client or calculator.
 
-Shared files include route registration, Context/repository wiring, API module registration, infrastructure, dependencies, generated code, DTO schemas and default policies/fixtures. **Only Robert edits them.** Workers record a small contract/wiring request in their own brief/PR; Robert records the agreed change and dependency in Assignment.md and lands it before dependent implementation. Never copy a shared type or implement a second authoritative calculation to avoid waiting.
+The member-portal facade owns member access/orchestration, not copies of evidence, balances, journals or health records. It calls B–D public services with server-established member context. B–D do not edit `member-portal/` paths or the member screens. Notification facts come from servicing/monitoring; Robert owns preferences/access and delivery infrastructure. First-demo delivery is an in-portal due notice; external channel simulations are visibly labeled.
 
-## 3. Contract-first foundation
+Robert owns the canonical demo fixtures/types. Earl's evaluation corpus references those fixtures and historical oracles without copying a second baseline registry. New synthetic variants and their independent expected answers live only in the evaluation boundary; candidate shared manifest schemas still go through Robert.
 
-Before workers integrate against the server, A establishes:
+## 3. Contract-first foundation and handoffs
 
-1. API error/validation shapes, pagination, safe centavo/date types, ID conventions and server-established actor context.
-2. OpenAPI schemas and generated client for the first end-to-end slice, including complete/incomplete assessment, recommendation/decision snapshot, financial command/receipt/journal and health review.
-3. Concurrency and assessment-input version semantics; `If-Match`, idempotency and stable financial business-event uniqueness.
-4. Module ports for checked assessments, release authorization, transactional GL posting, loan positions and payment-provider unknown outcomes.
-5. Shared transaction context, canonical lock order, audit/outbox/inbox schema and the migration registry.
-6. Minimal shell, authentication/authorization boundaries and feature route registration; a local fictional environment with no production credentials.
+The [platform guide](AGAP_Platform_Foundation.md) records supplied FND-01/FND-02 code and candidate contract 0.1.0. It remains subject to consuming-owner review; its financial endpoints are contract-only. The documentation branch does not freeze that contract or make its commit an accepted integration base.
 
-These are the **first implementation tasks**. Robert's [candidate foundation](AGAP_Platform_Foundation.md) now supplies executable schemas/client and platform services; the other owners' interface approval remains pending. Owners may develop pure functions and interface-driven tests against the agreed contract during foundation work. Production financial integration waits for the actual posting/authorization contracts and behavior.
+Robert proposes the next canonical revision under FND-03: separate member principal/linkage and own-record permissions; source-linked AI drafts and explicit confirmation; irregular-cost inputs/horizon; member support requests and approved amendment reads; reminder preferences/read models. PLN-01 changes documentation only, not schemas, generated clients, migrations or executable versions.
 
-Freeze the first contract version once all four owners review the first slice. Additive contract changes can follow with compatibility checks; breaking changes need an explicit migration and coordinated task dependency.
+Required handoffs:
 
-## 4. Parallel work and integration waves
+| Producer → consumer | Boundary and acceptance |
+| --- | --- |
+| Robert → all | Reviewed actor/schema/client/transaction/error/version/idempotency contracts, registered routes/migrations and agreed base |
+| Aaron → Robert/Benedict | Cleared source lifecycle, candidate versus accepted fact/verification projections, complete/incomplete checked assessments and permitted offers |
+| Aaron → Benedict/Earl | One bounded AI adapter; callers retain domain prompts, source/output validation and human confirmation; manual/template fallback |
+| Earl → Benedict | Real transaction-aware posting service and approved fictional mappings before any shown money path |
+| Benedict → Robert/Earl | Dated posted loan position, schedule/receipt/status freshness and versioned amendment comparisons |
+| Earl → Robert/Benedict | Confirmed support-request/task projections; health concerns do not amend contracts or write servicing/accounting tables |
+| Earl → all | Held-out synthetic sources/ground truth and independent expected results; owners contribute evidence from their own modules |
 
-| Wave | Robert (A) | Aaron (B) | Benedict (C) | Earl (D) | Integration condition |
-| --- | --- | --- | --- | --- | --- |
-| 0: contracts and domain groundwork | Publish contracts, transaction context, schema/migration boundaries and local environment | Specify evidence transitions and implement independently checked schedule/cash-flow tests | Specify decision, acceptance and transfer state transitions with retry tests | Implement ledger balance/period/idempotency domain tests | Owners agree the first interfaces; generated client and migrations run cleanly |
-| 1: core review | IAM and member/application intake; shared wiring | Real source/fact/verification commands, assessment and offer comparison | Recommendation, human decision, preserved brief and acceptance | Posting service, accounts/periods and health-review domain/UI against agreed read models | Persisted application → evidence → assessment → decision works with server permissions |
-| 2: complete money path and follow-up | Integrate modules; backups and audit visibility | Product validation, verification alternatives and scenario edge cases | Controlled fictional disbursement → payment → receipt using real posting service | Atomic journal integration, loan/GL reconciliation, repayment position and health check-in | Money path survives duplicate events, unknown outcomes and reversals; follow-up distinguishes repayment from wellbeing |
-| 3: breadth and operational completion | Access recovery, deployment/restore, cutover tooling and integration checks | Approved product methods, policy applicability, required disclosures and robustness | Refunds, restructuring, settlement, write-off/recovery workflows and provider reconciliation | Financial reports, share-capital postings, period close and accounting adjustments | Full product acceptance matrix is satisfied; unresolved live-policy/provider/operations inputs are explicit |
-| 4: presentation and institutional evaluation | Maintain integrated build and presentation evidence | Demonstrate evidence and affordability | Demonstrate accountable decisions and servicing | Demonstrate journal integrity and member follow-up | Each shown capability is implemented or visibly labeled planned/sandbox; user acceptance remains separate |
+One financial transaction updates servicing and accounting together. A module never writes another owner's tables. UI absence, candidate interfaces and synthetic issuer responses are not production controls.
 
-Presentation rehearsal and regression checks occur throughout, not only after wave 3. The team does not wait to finish all accounting reports before evaluating the core story. Conversely, a live money workflow never bypasses ledger integrity because its UI is ready.
+## 4. Delivery stages
+
+| Stage | Parallel work | Exit evidence |
+| --- | --- | --- |
+| 0 — current plan and contracts | Robert publishes the coordinated docs, preserves existing statuses and proposes member interfaces; B–D review their ports and build pure domain rules/independent examples within owned paths | Current tracker/briefs agree; owners record contract/base agreement before dependent integration |
+| 1a — first vertical slices | Robert builds member access/portal shell; Aaron evidence, AI drafts and checked regular/irregular scenarios; Benedict decisions/conflicts/acceptance; Earl posting foundation and synthetic cases | Member-owned draft → confirmed facts → assessed option → separate reviewer path; sources, horizon and uncertainty visible |
+| 1b — money and support | Benedict integrates controlled manual fictional disbursement/repayment with Earl's ledger/reconciliation; Earl provides support queue; Robert integrates own-loan notices/help; Benedict completes one authorized date amendment | No self-approval, duplicate posting or silent amendment; member confirms/accepts; original decisions/schedules preserved |
+| 1c — evaluation/presentation | Earl compares AI with annual-expense checklist/plain form; owners supply module evidence; Robert integrates and packages screenshots/walkthrough | Faithful source-linked drafts, independent arithmetic, usable handoff and accurate implemented/planned labels; relevant feature checks pass |
+| 2 — complete product/readiness | Each existing owner completes the retained scope below; Robert completes identity/offsite recovery, integration and deployment evidence | Full product acceptance plus institutional rules, security/restore, cutover/reconciliation and observed workflow evaluation |
+
+First-demonstration budgets cover the acceptance slices below. They do not remove stage 2 work, certify a live release or imply the event date guarantees completion.
 
 ## 5. Work packages and acceptance
 
-These are stable work-package IDs. [Assignment.md](../Assignment.md) is authoritative for named ownership, current status, dependencies and progress evidence. The table below defines deliverables and acceptance criteria; it does not maintain a competing status register. GitHub issues are not required for this workflow. Earlier issues remain historical references and have not been closed or otherwise changed by this tracking update.
+Status and next action live only in [Assignment.md](../Assignment.md). A task has one accountable owner; other developers contribute/review only their own boundary. Acceptance below includes the integrity requirements in each updated owner brief.
 
-| ID | Owner | Deliverable | Dependencies | Acceptance evidence |
+| ID | Owner | First-demonstration slice | Relative units | Retained later work |
 | --- | --- | --- | --- | --- |
-| FND-01 | A | Contract/client and backend module foundation | Architecture baseline | Schemas validate, client generates, migrations and test environment run, module imports respect ownership |
-| FND-02 | A | Identity, scoped access and member/application intake | FND-01 | Actual runtime-role access tests; separate user identities; revocation and session/CSRF tests |
-| EVD-01 | B | Source files, fact corrections and verification history | FND-01 | Quarantine/download permissions, explicit missing/conflict states, preserved prior facts and stale-review behavior |
-| CRD-01 | B | Versioned products/offers and deterministic assessments | FND-01 | Existing independent oracles plus schedule rounding/principal conservation, cost/fee and invalid-input tests |
-| DEC-01 | C | Recommendation, approval steps, member acceptance and brief | FND-01; integrate with EVD-01/CRD-01 | Current-input enforcement, authority limits, reason/exception requirements, immutable historical brief |
-| GL-01 | D | Transactional journal posting, chart and periods | FND-01 | Balanced entries, durable business-event deduplication, closed-period and concurrent-post/close tests |
-| PAY-01 | C | Disbursement/payment and receipt path | FND-02, DEC-01, CRD-01, GL-01 | No self-authorization, no second transfer after timeout, atomic subledger/GL update, duplicate-notification and allocation tests |
-| HLT-01 | D | Health reviews and staff action queue | FND-01; integrate loan positions from PAY-01 | Current repayment can coexist with reported strain; unknown responses remain unknown; no automatic contract change |
-| ACC-01 | D | Reconciliation, capital, reports and adjustments | GL-01, PAY-01 | Opening/trial balance, loan-to-GL and cash/bank reconciliation, reversal/period history, financial-report mapping |
-| SRV-01 | C | Refunds, restructures, settlement and write-off/recovery commands | PAY-01, ACC-01 posting contracts | New approved schedule preserves original; excess money and reversals conserve value; authorized journal references |
-| OPS-01 | A | Restore, migration and operating evidence | FND-02 plus integrated modules | Restore drill, scoped secrets/logs, reconciled cutover rehearsal, unresolved recovery targets recorded |
-| SHOW-01 | A, with B–D evidence | Integrated hackathon journey and staff exercise | Core review; add money/health paths only when implemented | Reproducible fictional run, screenshots/brief, observed usability notes, accurate capability/impact claims |
+| PLN-01 | Robert | Coordinated documentation and draft PR; no feature implementation | — | Future changes follow the same sources of truth |
+| FND-01 | Robert | Review the supplied platform/contracts candidate | Already supplied; review in A budget | Freeze only with consuming-owner evidence |
+| FND-02 | Robert | Review supplied staff identity/intake | Already supplied; review in A budget | Remaining staff UX refinements stay with Robert |
+| FND-03 | Robert | Member identity linkage/own-record scopes and next contract proposals | 4 | Access recovery, broader administration and production enrollment |
+| MOB-01 | Robert | Responsive apply/upload/confirm/status/loan/in-portal-reminder/help path | 5 | Broader member self-service and external notification channels |
+| EVD-01 | Aaron | Controlled fictional uploads, source facts, recorded CI/issuer check and corrections | 3 | Additional evidence alternatives, lifecycle/retention and authorized issuer integrations |
+| CRD-01 | Aaron | Explicit permitted PHP offers; costs and dated regular/confirmed-irregular cash flow with visible horizon | 5 | Approved product variants, seasonal/full-term projections with explicit inputs and edge cases |
+| AI-01 | Aaron | One bounded adapter; source extraction, one focused clarification and irregular-cost suggestions | 4 | Additional formats/languages and domain drafting after measured evaluation |
+| DEC-01 | Benedict | Separate preparer/reviewer, conflict restriction/reassignment, current snapshot and member acceptance | 4 | Full configured quorum/limits/exception and expiry combinations |
+| GL-01 | Earl | Minimal approved fictional chart, balanced posting, uniqueness and period guards | 5 | Complete chart/posting-rule versions and close/adjustment breadth |
+| PAY-01 | Benedict | Controlled fictional manual disbursement → repayment → receipt using the real posting service | 5 | Provider-backed release, allocation variants, refunds/reversals and reconciliation exceptions |
+| HLT-01 | Earl | Confirmed check-in/help request, dated position, staff assignment/action and unavailable answers | 3 | Follow-up histories, review scheduling and longitudinal outcome reporting |
+| ACC-01 | Earl | Receipt/loan-subledger/GL reconciliation for the shown money path | 2 | Share capital, complete cash/bank reconciliation, reports, period close and adjustments |
+| SRV-01 | Benedict | One policy-permitted fictional due-date amendment, compared/approved/accepted with history | 3 | Other temporary arrangements, amount/term restructuring, settlement, refund, write-off/recovery |
+| EVAL-01 | Earl | Small held-out verifiable synthetic corpus and comparison with checklist/plain form | 2 | Broader data quality/language evaluation and separately authorized member outcome study |
+| OPS-01 | Robert | Preserve and use supplied local operating evidence; no live release implied | Stage 2; groundwork ongoing | Complete identity/offsite recovery, keys, monitoring, opening data and cutover reconciliation |
+| SHOW-01 | Robert | Contract-review coordination, integrated fictional journey and accurate evidence packaging | 3 | Repeat integration/regression and institutional release evidence as scope expands |
 
-Owner briefs: [Robert (A)](tasks/production/01-platform.md), [Aaron (B)](tasks/production/02-evidence-credit.md), [Benedict (C)](tasks/production/03-decisions-servicing.md), [Earl (D)](tasks/production/04-accounting-monitoring.md).
+Owner briefs: [Robert](tasks/production/01-platform.md), [Aaron](tasks/production/02-evidence-credit.md), [Benedict](tasks/production/03-decisions-servicing.md), [Earl](tasks/production/04-accounting-monitoring.md). Updated briefs explicitly supersede their earlier task directions; progress remains in the central tracker and dated handoff evidence.
 
-External CI startup is an existing unresolved item in the [verification record](AGAP_Verification.md). Check its current status before relying on GitHub checks; local results and remote checks must be reported separately.
+## 6. Conflict-prevention and verification
 
-## 6. Conflict-prevention rules
-
-- A maintains an integration branch. Each task uses an isolated worktree and a named task branch from the agreed contract/integration commit. Existing frontend feature branches are historical work; do not reuse or delete another worker's branch/worktree without coordination.
-- Record exact owned paths, contract version and base commit in the owner's brief/handoff and the relevant Assignment.md task entry. A task does not gain ownership of another module because it needs an interface change.
-- Keep PRs narrow: domain/persistence contract first when needed, then feature integration. Share commit references through owner handoffs and Assignment.md; never cherry-pick an unfinished branch or independently edit shared wiring.
-- New migrations are module-owned and append-only after integration. A validates dependency ordering and the full database build; no worker renumbers or edits an integrated migration.
-- Generated client artifacts are regenerated by A from canonical schemas. Feature code does not hand-edit generated files.
-- All owners test financial/workflow invariants in their modules. Adjacent owners review the boundary behavior; A checks the integrated journey. Four developers do not imply a fifth QA or operations person.
-- Run `npm run check` and `npm run test:e2e` before declaring a feature integrated; add backend/DB and financial integration checks as those modules are introduced. Documentation-only changes need reference/consistency checks instead.
-- UI changes update `design.md` through A and include screenshots; feature briefs do not become competing design guides. All PRs identify purpose, the Assignment.md task ID, evidence and remaining limitations. Never merge without the user's authorization.
-
-Robert maintains the central [Assignment.md](../Assignment.md) tracker. Aaron, Benedict and Earl maintain their own brief's progress/handoff notes and provide status evidence for Robert to incorporate, avoiding simultaneous edits to the central table. Track blockers and contract changes in these repository documents; chat is not the durable specification.
+- Use isolated worktrees/task branches based on the actual owner-agreed foundation commit. Do not reuse, reset or overwrite another worker's branch. Candidate PR #10 remains unmerged unless the user authorizes it.
+- Only Robert edits shared contracts/client, configuration/dependencies, route/provider/migration registration, tokens and canonical demo data. Workers submit proposed interface/wiring changes in their own brief/PR, with task ID and dependencies.
+- Robert performs the one-time finance extraction/re-export handoff. Aaron then owns the single package implementation; no parallel calculator is allowed.
+- B–D retain staff/domain ownership while Robert alone builds member-portal screens and facade. Aaron's shared AI adapter has no decision/payment/posting authority; domain callers validate drafts and preserve confirmation provenance.
+- Every module owns its append-only migrations/tests. Central registration is Robert's; no worker alters another owner's applied migration or table. Adjacent owners review transaction and permission boundaries.
+- Feature integration requires `npm run check`, `npm run test:e2e`, relevant backend/DB/financial tests and UI screenshots. Documentation-only changes use link, task/dependency, ownership and consistency checks. An AI test must distinguish the real provider from a labeled stub/template.
+- Preserve Ana/Ben/Cora and the historical arithmetic. New source/expense tests cover missing/conflicting data, confirmation, beyond-cycle dates, double counting, independent verification, self-approval/conflict restrictions, posted-money integrity and unchanged contracts while help is pending.
+- Compare AI with a checklist/plain form on held-out synthetic cases. Report corrections, missed expenses, unsupported claims, latency and user/staff effort. Synthetic technical results are not borrower-outcome evidence.
+- Keep local verification distinct from remote CI. The [recorded remote startup issue](AGAP_Verification.md) remains unresolved unless new evidence establishes otherwise. No unrelated account/hosting/billing changes are authorized by this documentation update.
+- Keep `Assignment.md` as the sole status tracker. Existing GitHub issues and PR descriptions remain unchanged; publish PLN-01 in a new draft PR stacked on #10. Never merge without the user's authorization.
 
 ## 7. Inputs that must be settled before live deployment
 
@@ -101,10 +111,11 @@ These do not prevent architecture or fictional development, but cannot be replac
 | Input | Responsible institutional/team role | Affected work |
 | --- | --- | --- |
 | Exact loan products, rates, fees, grace/day-count/rounding and payment allocation | Cooperative product owner and accountant | Credit, disclosures, servicing and GL posting |
-| Evidence alternatives, CI practice, authority limits, quorum and exceptions | Cooperative credit/approval officers | Evidence, decisions and access scopes |
+| Evidence alternatives, CI/issuer practice, conflict declarations/recusal, authority limits, quorum and exceptions | Cooperative credit/approval officers | Evidence, decisions and access scopes |
 | Chart, interest recognition, provisions, reporting and period/capital rules, including current applicable requirements | Cooperative accountant/responsible officer | Accounting, financial reports and capital |
 | Cash/bank operating controls, electronic provider access/fees and reconciliation | Cashier/treasury and payment provider | Disbursement, repayments, refunds and incident handling |
 | Existing member/loan/capital data and cutover balances | Cooperative data/finance owners | Migration and opening reconciliation |
+| Member account linkage/recovery, support eligibility, amendment approvals and reminder delivery | Cooperative identity/credit/servicing owners | Member access, support workflow, notifications and contract changes |
 | Privacy purposes, retention/holds and any external credit/AI processing | Institution's responsible privacy role | Documents, evidence, history and external adapters |
 | Actual hosting hardware, operator, backups, capacity and recovery objectives | Team A plus institution's operator | Deployment feasibility and ongoing cost |
 | Presenter format, time limit and any final-round-specific rubric | Team/organizer materials | Presentation sequence and evidence packaging |

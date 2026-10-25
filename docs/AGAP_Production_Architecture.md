@@ -1,10 +1,12 @@
 # AGAP production architecture
 
-**Baseline:** 20 October 2026, Asia/Manila.
+**Baseline:** 25 October 2026, Asia/Manila. Updated for member-phone access, bounded AI assistance and irregular-expense review.
 
 **Status:** target design for a four-person team. The first platform/intake implementation is a [review candidate](AGAP_Platform_Foundation.md); payment integration and accounting remain unimplemented. This architecture does not certify live readiness.
 
 **Scope authority:** [product solution and priorities](AGAP_Product_Solution.md). Named owners and task progress are in [Assignment.md](../Assignment.md); exact path ownership and delivery gates are in the [delivery plan](AGAP_Delivery_Plan.md). A–D map to Robert, Aaron, Benedict and Earl respectively.
+
+This revision supersedes the earlier staff-first/later-member-channel sequencing. Robert exclusively owns the member portal and its access facade. It changes documentation only: candidate contract 0.1.0, generated clients, schemas and migrations remain unchanged. New interfaces below are proposals for FND-03 review, not implemented endpoints or an accepted integration base.
 
 ## 1. Architecture decisions
 
@@ -18,7 +20,8 @@ Build a **modular monolith**: one application backend, one PostgreSQL database, 
 | Identity | Keycloak through OpenID Connect; backend-managed sessions | Free, self-hostable identity service; application permissions and segregation of duties remain server responsibilities |
 | Files | Private filesystem adapter for local/single-host deployment; an interchangeable object-storage adapter for later hosting | Original versions, checksums, access control and independent backups; never serve document paths as public assets |
 | Background work | PostgreSQL-backed outbox/inbox and jobs, processed by a separate worker process | No extra paid queue required; retry, deduplication and operator-visible failures are part of the contract |
-| Documents and explanations | Deterministic templates and saved-snapshot rendering; optional constrained AI adapter | Core operation remains available without an AI provider |
+| Member channel | Responsive web portal with a separate member principal and own-record linkage | Robert owns its screens/facade; domain services remain with their existing owners; assisted access remains available |
+| Documents and explanations | One reusable bounded AI adapter, source-linked drafts and explicit confirmation; deterministic/manual fallback | Aaron owns the adapter; domain owners validate their prompts/results; no AI financial or decision authority |
 | Deployment | Docker Engine/Compose on Linux; HTTPS reverse proxy; separate development, staging and production configurations | No software subscription is required. Hardware, backups, connectivity, domains and provider transactions can still cost money |
 
 These are project choices, not a claim that a framework supplies financial correctness. Nest's module model supports explicit exports/imports; transaction isolation and row-security behavior must be implemented and tested as designed. [Nest modules](https://docs.nestjs.com/modules), [PostgreSQL transactions](https://www.postgresql.org/docs/18/transaction-iso.html)
@@ -28,8 +31,15 @@ These are project choices, not a claim that a framework supplies financial corre
 ```mermaid
 flowchart TB
   Staff[Cooperative staff web application] --> Edge[HTTPS reverse proxy]
+  Phone[Member phone web portal - Robert] --> Edge
   Edge --> API[AGAP API and session backend]
   API <--> IdP[Keycloak identity service]
+  API --> Portal[Member access facade - Robert]
+  Portal --> Members
+  Portal --> Evidence
+  Portal --> Credit
+  Portal --> Loans
+  Portal --> Health
   API --> Members[Members and applications]
   API --> Evidence[Evidence and verification]
   API --> Credit[Products, scenarios and policy checks]
@@ -43,9 +53,13 @@ flowchart TB
   Accounting --> DB
   Health --> DB
   Evidence --> Files[Private document storage]
+  Evidence --> AI[Bounded AI drafting adapter - Aaron]
+  Loans --> AI
+  Health --> AI
   DB <--> Worker[Jobs, inbox and outbox worker]
-  Worker --> Adapters[Payment, notification and optional AI adapters]
+  Worker --> Adapters[Payment and notification adapters]
   Adapters <--> External[External providers]
+  AI --> AIProvider[Optional approved AI provider]
 ```
 
 The module boxes belong to the same backend. They are not independently deployed microservices. Identity uses a separate database/schema and credentials; its records are not loan or accounting tables. The worker does not become a second implementation of business rules.
@@ -53,6 +67,14 @@ The module boxes belong to the same backend. They are not independently deployed
 The browser submits commands and displays server results. It cannot set its own actor, organization, reviewer, verified status, policy exception authority, payment settlement or journal balance. Browser storage remains a demo facility; production drafts are saved to the server with visible saved/unsaved state. No real financial payloads or identity tokens are persisted in browser localStorage.
 
 The first deployment serves one cooperative. Organization IDs and branch/assignment scopes remain explicit to prevent accidental cross-context access; this is not a promise of a multi-tenant SaaS release.
+
+### Member access and orchestration
+
+FND-03 introduces a server-established member principal distinct from staff roles. An approved identity-to-member linkage supplies organization/member scope; a submitted member ID, phone number, uploaded image or AI match cannot create that linkage. Enrollment, recovery and linkage changes need an institutionally approved verification process and audit history. No automatic linking by an editable contact field is assumed.
+
+Member routes expose only the caller's applications, cleared document access, permitted options, decisions/acceptances, posted loans/schedules/receipts, reminder preferences and support requests. Extend domain authorization through reviewed member-specific operations/ports; never cast a member as an officer or expose staff searches, CI notes, audit queues or another member's existence. Linkage revocation/expiry is rechecked on reads, writes, downloads and delivery.
+
+Robert's facade owns access/orchestration; evidence/credit, decisions/servicing and monitoring retain their domain commands and tables. Member drafts use server persistence, concurrency and idempotency protections. Initial reminders are in-portal notices from confirmed schedules, not proof of external delivery.
 
 ## 3. Modules, data ownership and interfaces
 
@@ -62,12 +84,14 @@ Each module owns its tables and writes them through its public application servi
 | --- | --- | --- |
 | Identity/platform | Organization, branch, user membership, scoped permissions, sessions, audit events, jobs and idempotency records | Establish actor context, authorize actions, provide transaction and infrastructure adapters |
 | Members/applications | Member identifiers, contact/identity references, notices/consents, application metadata, assignment and aggregate revisions | Open and assign applications; preserve member/application history; return authorized workspace views |
+| Member portal (Robert) | Member linkage, portal preferences and access/orchestration metadata | Enforce own-record access and call public domain services; all member-phone UI stays with Robert |
 | Evidence | Source metadata, file versions, fact revisions, verification attempts and clarification tasks | Record facts and verification outcomes; retain provenance; invalidate affected assessment inputs |
 | Credit | Versioned product/policy configuration, available offers, contractual schedules and assessment runs | Generate allowed offers; calculate schedule/cost/cash-flow results; return eligibility and policy checks with reasons |
 | Decisions/origination | Recommendations, decisions, approval steps, member acceptance and approved contract snapshots | Enforce authority and prerequisite checks; produce a signed-off release basis and saved explanation |
 | Servicing/payments | Loan accounts, immutable schedule versions, disbursement/payment/refund commands, allocations, receipts, settlement events and adjustment proposals | Execute controlled financial workflows; maintain the loan subledger; invoke accounting synchronously for every financial posting |
 | Accounting | Chart and posting-rule versions, journals/lines, share-capital subledger, periods and reconciliation records | Validate and post balanced journals; enforce period rules; reconcile cash/bank; produce financial reports |
 | Monitoring/reporting | Review schedule, dated member responses, task/action history and read-model freshness | Show repayment facts alongside household circumstances; support staff review without inferring character or automatically changing a loan |
+| AI adapter (Aaron) | Provider/prompt provenance and bounded execution metadata | One reusable transport/output envelope; callers retain source validation, confirmation and policy; no direct financial/table/tool authority |
 
 Important cross-module interfaces:
 
@@ -78,8 +102,14 @@ Important cross-module interfaces:
 - `Servicing.getPosition(loanId, asOfDate)`: principal, accrued components, due/paid amounts and freshness from posted events, not a browser total.
 - `PaymentProvider.submit(command, idempotencyKey)` and `getStatus(providerReference)`: distinguish confirmed success, confirmed failure and unknown outcome.
 - `DocumentStore`: immutable version put/read/delete-under-retention-policy; no public-path exposure.
+- Proposed `MemberActorContext`: verified server linkage and own-record permissions, separate from existing staff `ActorContext`; domain ports explicitly authorize member operations.
+- Proposed `AiDraftPort`: approved necessary source excerpts or checked results → untrusted draft with source/origin references; never an accepted fact, decision or calculated amount.
+- Proposed evidence draft/confirmation operations: source version, candidate text/value, confirmation/correction actor and time, with independent verification separate.
+- Proposed monitoring support-request port: member-confirmed request → staff-review task; servicing alone owns amendment comparisons, approval, acceptance and effective schedules.
 
 The integration owner encodes request/response schemas and these ports in the foundation task. Proposed interfaces here do not replace the existing executable `src/domain/types.ts` until the migration is implemented.
+
+Aaron implements the single provider adapter in planned module `ai/`. Domain prompts/result validation stay in `evidence/` and `credit/` (Aaron), `decisions/` (Benedict), and `monitoring/` (Earl). Robert owns canonical schema/port edits, dependencies/configuration and registration. Earl's planned `evaluation/synthetic/` supplies independent test evidence, not another business database or demo fixture registry.
 
 ## 4. Data model and versioning
 
@@ -88,7 +118,10 @@ Use normalized tables for operational records and append-only historical records
 | Record family | Required references and invariants |
 | --- | --- |
 | Member/application | Stable IDs, organization, branch, assignment, concurrency version, assessment-input version and recorded timestamps |
+| Member linkage/preferences | Trusted issuer/subject linkage to the approved member record, linkage status/history and disclosure/reminder choices; no client-controlled scope |
 | Evidence/source | Application, fact category, nullable value, currency when monetary, effective/cash dates, original source/file version, evidence status and verification status |
+| AI draft/confirmation | Source/version and prompt/provider/model origin, candidate/confirmed status, confirming actor/time/correction and limitations; extraction is not independent verification |
+| Irregular expense | Confirmed relevance, nullable amount/date until supplied, source, category, occurrence/explicit recurrence assumption and modeled horizon; no implicit zero or inferred future fact |
 | Product/policy/offer | Immutable published version, validity/effective dates, approved formula and rounding configuration, permitted terms, authority/verification requirements and account mappings |
 | Assessment | Exact input snapshot, assessment-input version, policy/offer/engine versions, modeled horizon, checked results, unresolved issues and calculation hash |
 | Decision/acceptance | Assessment/recommendation references, actual approvers and authority, rationale, exceptions, snapshot, member acknowledgment and document versions |
@@ -96,6 +129,8 @@ Use normalized tables for operational records and append-only historical records
 | Financial event | Unique business-event identity, amount/currency, actual instrument/provider reference, effective date, recorded time, authorizations, allocations and reversal references |
 | Journal | Source financial event, posting-rule version, effective/recorded dates, period and balanced immutable lines |
 | Health review | Loan/member reference, review/as-of dates, recorded responses and explicit unavailable values, source, staff action and next review; separate from credit decision snapshots |
+| Support request | Confirmed shared account, submitted/assigned/reviewed state and action history, position freshness and optional servicing-proposal reference; request status does not alter obligations |
+| Conflict declaration | Case/actor declaration, applicable restriction, reassignment/recusal and resolution evidence; separate from eligibility and calculation |
 
 Concurrency version and assessment-input version have different jobs. Every application mutation changes its concurrency version. Only changes affecting evidence, verification readiness, policy applicability or available terms change the assessment-input version. Saving a reminder must not invalidate a valid assessment; changing verified income must.
 
@@ -104,6 +139,16 @@ Recommendations reference the assessment-input version and assessment ID. At dec
 Material changes after approval hold an unreleased loan for renewed review. Changes after disbursement do not rewrite the contract or historic decision: create a health-review, dispute or authorized amendment/restructure workflow.
 
 Missing, conflicting, stale and unknown values remain distinguishable from zero. Document provenance and independent verification are separate dimensions. A scan result or successful OCR extraction does not prove authenticity.
+
+### Irregular-expense flow
+
+1. Evidence supplies cleared, authorized source versions or voluntary member text to the bounded adapter. AI returns candidates/questions without changing the assessment.
+2. The member confirms/corrects relevance, amount, date and recurrence. Staff may record an assisted confirmation with the actual actor/method. Neither action marks the claim independently verified.
+3. Evidence records accepted facts and provenance; required unresolved amounts/dates stay unavailable. Material accepted changes invalidate pending assessments/reviews while historic snapshots remain intact.
+4. Credit uses the existing engine after its reviewed extension, with explicit dated inputs and a displayed horizon. The first new scenario covers an irregular expense beyond the original demo cycle; future income/recurrence is not silently invented.
+5. Compare permitted offers from checked results. Count a cost once: a reserve presentation and eventual dated spending cannot both be deducted, and repeated source mentions cannot duplicate obligations.
+
+The unchanged browser model still covers one cycle and retains its historical oracles. New multi-cycle results need independent expectations. Document quantity, asset ownership, AI confidence and draft completeness do not automatically raise a loan limit or become predictive default scores.
 
 ## 5. Financial invariants and transaction boundaries
 
@@ -147,14 +192,20 @@ Balances and arrears are computed from posted events as of an explicit date, inc
 | Workflow | Required states and guards |
 | --- | --- |
 | Application review | Draft → evidence review → clarification or assessment ready → recommended → reviewer action. Approval/decline require current prerequisites; clarification remains possible with incomplete evidence |
+| AI evidence draft | Suggested → member/staff confirmation, correction or decline; changed sources require revalidation; only accepted facts can affect assessment inputs |
 | Decision | Approve, decline or return; immutable snapshot and rationale. Configured multi-person/quorum steps accumulate against the same version; changed evidence invalidates outstanding votes |
 | Origination | Approved → awaiting member acceptance → release ready → release pending → active on confirmed release. Expired terms or material changes hold release |
 | Transfer | Prepared → authorized → submitted → confirmed, failed or unknown; confirmed-but-unposted is a visible exception. Reversal/refund is a new controlled command |
 | Loan | Pending release, active, settled, restructured or written off, with separate due/arrears indicators; a health concern is not a loan-status transition |
 | Journal/period | Journal draft → separately approved posting, or source-authorized automatic posting; posted journals are reversed through new records. Period open → closing → closed |
 | Health review | Scheduled → due → completed or clarification requested → next action/review. Missing check-in data does not imply a healthy member or a delinquent loan |
+| Member support | Draft → confirmed submission → assigned/reviewed → recorded response/follow-up; amendments require servicing authorization/member acceptance; requests do not pause charges or change dates |
 
 The API foundation converts these into explicit transition rules and schemas before parallel feature implementation. No endpoint may accept arbitrary next-state strings or directly patch balances.
+
+A case preparer cannot supply final loan approval. Declared conflicts trigger institutional recusal/reassignment/approval restrictions; administrative assignment does not grant exception authority. Authorized exceptions preserve reason, authorizer and evidence. Hidden relationships remain an oversight risk, not something AI can certify absent.
+
+Payment help is reviewed alongside a dated posted position and confirmed circumstances. Servicing calculates configured options with old/new dates, amounts, term, fees and total cost. An effective amendment requires authorized approval, member acceptance and the retained original schedule. A pending request does not suspend interest/fees or create new borrowing. When no institutional support option is available, record a human response without inventing relief.
 
 ## 7. API and integration contract register
 
@@ -170,6 +221,19 @@ Use versioned HTTP JSON commands under `/api/v1`. The integration owner publishe
 | D: accounting | `/accounts`, `/posting-rules`, `/journals`, `/reconciliations`, `/periods`, `/financial-reports` | Versioned approved mapping, journal lines or reconciliation evidence; balanced posted journal and as-of reports |
 | D: monitoring | `/health-reviews`, `/review-tasks` | Dated member responses with explicit unavailable states, staff action and next date; recorded review and task state |
 | C/A: adapters | `/integrations/payments/{provider}/events`, `/jobs/{id}` | Provider-authenticated durable inbox; sanitized job status. These do not share staff-session authorization assumptions |
+
+### Proposed next revision — not in executable contract 0.1.0
+
+| Accountable owner | Proposed family/port | Required boundary |
+| --- | --- | --- |
+| Robert | `/member/me`, `/member/applications`, `/member/loans`, `/member/reminder-preferences` | Own-record linkage, version/access/freshness; no staff search or domain-table writes |
+| Robert | Member document/confirmation and `/member/support-requests` facade commands | Call Aaron's evidence and Earl's monitoring services with explicit member context; no duplicated verification/finance logic |
+| Aaron | Evidence AI drafts/confirmation, irregular-cost inputs and checked assessment extension | Source-linked suggestions versus confirmed facts and independent checks; one engine; explicit horizon/unavailable inputs |
+| Benedict | Conflict declarations/approval guards and amendment comparisons/acceptance | Separate authority, current basis, approved/accepted new schedule and preserved original |
+| Earl | Support-request/check-in/task projections and confirmed sharing | Staff routing and action history; no automatic health verdict, credit penalty or contractual change |
+| Robert | Shared principal, AI draft, confirmation and support/amendment port schemas | Consuming-owner review before generation; capability flags remain honest |
+
+These are intended capabilities, not finalized wire shapes. FND-03 records the next reviewed schema/version before dependent implementation. PLN-01 changes no existing staff route, executable schema, generated client or migration; current code does not silently accept new member/linkage fields.
 
 For rows listing child resources, e.g. `/corrections`, the full scoped route is `/api/v1/applications/{id}/corrections`; the generated specification removes any shorthand ambiguity.
 
@@ -187,13 +251,19 @@ Keycloak uses authorization-code flow with PKCE; the backend validates issuer, a
 
 Staff permissions distinguish officer, verifier, reviewer, cashier/preparer, financial authorizer, accountant, auditor and system administrator. A user may hold several roles, but cannot prepare and authorize the same controlled transaction. System administration does not automatically confer lending or financial approval. Approval limits, quorum and exception authorities are institutional configuration and must be approved before live use.
 
+Member principals are a distinct access boundary, not a privileged staff role. Evidence/support disclosures have stated purposes, visible sharing controls and a correction path; a declined answer is not an adverse character inference. Documents and loan positions stay private/server-side. Document reuse preserves dates/versions and requests freshness confirmation where circumstances may have changed.
+
 Enforce organization and applicable branch/assignment access in API services, read models, file downloads and jobs. Add PostgreSQL row-level policies as a second control with non-owner, non-`BYPASSRLS` application roles and transaction-local context. Schema owners/superusers can bypass RLS, so keep them out of application credentials. Test isolation using actual runtime roles, not only privileged test connections. [PostgreSQL row security](https://www.postgresql.org/docs/18/ddl-rowsecurity.html)
 
 Uploads pass through authenticated, size/type-limited quarantine with generated storage names, content inspection and malware scanning. Only cleared file versions can support evidence. Authorize downloads each time, log access, use safe download headers and isolate previews. Files, DB pointers and quarantine cleanup have a recoverable lifecycle; a dangling upload must not become a verified source. [OWASP file uploads](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html)
 
 Encrypt transport, storage and backups; keep keys and secrets outside the repository and recoverable independently of the machine they protect. Logs contain IDs and error codes instead of documents, account credentials or raw member payloads. Define purposes, notices, retention, access/correction requests, legal holds and secure disposal for each data class; immutable decisions do not justify retaining every personal document forever.
 
-No social-media scraping or facial/emotion truthfulness inference is part of the architecture. External credit reports require a separate approved access arrangement, lawful processing and a dispute route. Any optional AI provider gets only approved minimum structured data, no document-triggered tools or payment access. AI output is untrusted, source-checked, staff-reviewed and stored with its origin; deterministic fallback remains available. Philippine public-data availability does not remove processing obligations. [NPC scraping guidance](https://privacy.gov.ph/wp-content/uploads/2026/04/SGD_A_1.pdf), [CIC access guidance](https://cic.gov.ph/about-your-cic-credit-report/)
+No social-media scraping or facial/emotion truthfulness inference is part of the architecture. External credit reports require a separate approved access arrangement, lawful processing and a dispute route. Optional AI receives only approved minimum inputs: necessary excerpts from cleared documents, confirmed member text, or checked structured results. Uploaded text cannot trigger tools, issuer lookups, payments or journal posting. Output is untrusted, source-checked, confirmed by the appropriate member/staff actor and stored with its origin. Manual entry, checklist and deterministic explanation fallback remain available. Philippine public-data availability does not remove processing obligations. [NPC scraping guidance](https://privacy.gov.ph/wp-content/uploads/2026/04/SGD_A_1.pdf), [CIC access guidance](https://cic.gov.ph/about-your-cic-credit-report/)
+
+Provider failures/timeouts leave an explicit draft-unavailable state. No browser API keys, raw document logs or provider-driven eligibility decisions. Evaluate unsupported values/source links, conflicting inputs, malicious document instructions, correction effort and fallback. A stub or prerecorded reply is labeled simulated and cannot substantiate live-model accuracy.
+
+Due notices derive from the effective schedule and posted position; a help request does not change their basis. Reminder preferences/destinations are access-controlled, and outbox delivery attempts deduplicate. Start with in-portal notices. External channels require approved providers, verified costs/access, permitted content and delivery evidence; do not expose sensitive amounts through an unapproved destination.
 
 ## 9. Free development, hosting and operations
 

@@ -4,6 +4,16 @@
 
 The foundation adds a real Nest/PostgreSQL intake boundary beside the fictional browser review demo. No production evidence, calculator, lending decision, payment, ledger or health-review service is supplied by this change. Known operations belonging to those modules return `501 module_not_available`; [capabilities](../packages/contracts/src/operations.ts) and OpenAPI mark their status explicitly.
 
+## Next planned revision — 25 October 2026
+
+Read the current [Assignment.md](../Assignment.md), [product](AGAP_Product_Solution.md), [architecture](AGAP_Production_Architecture.md), [delivery boundaries](AGAP_Delivery_Plan.md) and updated owner brief before implementing. They supersede earlier task instructions; GitHub issues/existing PR descriptions remain historical references. This paragraph records planning, not new platform capability or a change to the dated verification below.
+
+- Robert exclusively owns the member-phone feature/API facade under MOB-01 and separate member linkage/access/shared interfaces under FND-03. Existing staff identity/intake does not provide member authentication or own-record endpoints.
+- Aaron owns evidence/credit plus the one reusable AI adapter and expense assistance; Benedict owns conflict-aware approval and authorized loan amendments; Earl owns support records/queue, accounting and synthetic evaluation. Member screens stay with Robert, with domain services supplied through their owners' reviewed ports.
+- New member principals, draft/confirmation and irregular-cost inputs, support/amendment projections and reminder preferences are proposed for the next contract review. This documentation revision changes no executable schemas, generated clients, migrations or 0.1.0 capability flags. Do not cast members as staff to reuse an endpoint.
+- FND-01/FND-02 remain Ready for review; OPS-01 remains In progress with its existing recovery/cutover dependencies. Contract 0.1.0 and the candidate branch are not frozen as the integration base. Record consuming-owner agreement before dependent integration.
+- First-demo reminders are in-portal; issuer checks use clearly fictional verification records. No live provider, production verification or automatic repayment adjustment is established by a written plan.
+
 ## Run the local staff workspace
 
 Use Node 24, npm and Docker Compose on Linux. All supplied credentials, organizations and identities are public fictional development fixtures. The database and Keycloak listen on loopback. Initial image downloads require network access.

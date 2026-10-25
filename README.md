@@ -1,10 +1,14 @@
 # AGAP
 
-**Financial health loan review.** A staff workspace for checking evidence, examining repayment timing and full costs, and recording an accountable human decision.
+**Financial health lending.** AGAP's target connects member-phone applications, source-linked evidence, overlooked-expense clarification, affordable repayment scenarios, accountable human decisions and ongoing support.
 
 This frontend uses fictional people, records, offers and policies. Demo roles illustrate a workflow; they are not authentication. Browser storage is local to this browser. The review demo has no backend, payment, core-system or live AI connections. A separate server-backed staff intake workspace is now implemented as Robert's review candidate; see the [platform setup guide](docs/AGAP_Platform_Foundation.md).
 
 The target product now includes full lending operations: evidence and credit review, decisions, controlled disbursement, repayments, accounting and financial-health follow-up. Start with the [feature priorities](docs/AGAP_Product_Solution.md), [production architecture](docs/AGAP_Production_Architecture.md) and [four-person delivery plan](docs/AGAP_Delivery_Plan.md). The [platform handoff](docs/AGAP_Robert_Verification.md) records what has been implemented and tested; financial modules and live readiness remain pending.
+
+The **25 October plan** adds a Robert-owned responsive member portal, member-confirmed AI document/expense suggestions, conflict-aware separate approval and payment-help requests. These are planned capabilities, not features of the current demo or staff intake. AI reads/clarifies/explains; independent source checks verify claims, tested code calculates and authorized people decide. The overlooked-expense mechanism is a research hypothesis to validate with the cooperative.
+
+Start team work from [Assignment.md](Assignment.md) and its current owner briefs. It is the sole task/status tracker and records four provisional 12-unit first-demonstration budgets. Robert owns all member-phone UI/access and integration; Aaron evidence/credit/reusable AI; Benedict decisions/servicing; Earl accounting/health/synthetic evaluation. Existing GitHub work cards and earlier branch instructions do not override the current documents. Complete production duties remain assigned beyond the first demo.
 
 The [UI/UX design system](design.md) defines the user's Google-inspired visual direction, screen layouts, shared patterns, and interaction rules. It distinguishes the implemented baseline from pending refinements and acceptance.
 
@@ -41,6 +45,7 @@ For the staff workspace, follow the [database, Keycloak and API setup](docs/AGAP
 | What visual values and controls are implemented? | [Design tokens](src/styles/tokens.css), [global styles](src/styles/global.css), and [shared UI](src/shared/ui/index.tsx) |
 | What fictional evidence and offers are implemented? | [Fictional fixtures](src/demo/cases.ts) |
 | What is currently assigned or awaiting review? | [Assignment.md](Assignment.md) tracks tasks, owners, dependencies and progress; [pull requests](https://github.com/Aracena18/AGAP/pulls) provide implementation/review evidence |
+| How was the updated plan checked? | [25 October documentation verification](docs/AGAP_Plan_Revision_Verification.md); no application features changed |
 
 Historical partner briefs and the earlier product freeze remain for context and independent fictional arithmetic. Their prototype-only scope and backend-planning gate are superseded by the product solution; previously recorded implementation/verification evidence remains historical evidence, not proof of new production capabilities.
 
@@ -57,6 +62,8 @@ Historical partner briefs and the earlier product freeze remain for context and 
 - `src/demo`: fictional fixtures, validated/versioned browser repository.
 
 Fictional review features share one `CaseRecord`. Screens call domain functions and save through the repository boundary; they do not maintain independent financial totals. Money is integer centavos and dates are calendar dates. Recorded decisions preserve their original evidence and explanation.
+
+Planned additions have exclusive owners in the delivery plan: Robert's member-portal feature/API facade, Aaron's reusable AI module and Earl's `evaluation/synthetic/` benchmark. Member services use own-record authorization and domain ports; they do not copy staff roles, financial calculations or ledgers. Candidate contract 0.1.0 is unchanged by this documentation revision; new interfaces need the FND-03 review before implementation.
 
 ## Verification
 

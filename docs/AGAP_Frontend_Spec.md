@@ -2,6 +2,8 @@
 
 Status: implementation baseline; visual acceptance and representative staff evaluation are pending.
 
+**25 October planning revision:** the [product solution](AGAP_Product_Solution.md) and [planned design blueprints](../design.md#10-planned-member-and-support-workflows-25-october-2026) now include a Robert-owned member portal, AI-assisted irregular-expense clarification and member payment-help access. None of these changes the implemented routes, one-cycle arithmetic, demo data or staff-only permissions described below. Proposed member identity/ports are in the [architecture](AGAP_Production_Architecture.md#proposed-next-revision--not-in-executable-contract-010); executable contract 0.1.0 remains a candidate without these additions.
+
 Production planning now follows the [product solution](AGAP_Product_Solution.md), [production architecture](AGAP_Production_Architecture.md) and [four-person delivery plan](AGAP_Delivery_Plan.md). This file describes the fictional review routes and the separate staff intake interface. The [platform foundation](AGAP_Platform_Foundation.md) specifies the implemented server commands; financial server modules remain contract-only.
 
 ## Authority and design
