@@ -1,12 +1,14 @@
 # AGAP UI/UX design system
 
-**Status:** implemented baseline; visual acceptance and representative staff evaluation are pending.
+**Status:** implemented baseline plus explicitly planned expansion blueprints; visual acceptance and representative staff evaluation are pending.
 
 **Baseline reviewed:** 20 October 2026.
 
+**Planned expansion updated:** 25 October 2026. Section 10 supersedes the earlier later-member-channel sequencing; it is a design requirement for future work, not an implemented or accepted screen.
+
 **Audience:** designers, developers, reviewers, and AI contributors.
 
-**Production expansion:** the [product solution](docs/AGAP_Product_Solution.md) now governs target scope, including full lending operations and financial-health follow-up. This document remains the sole UI/UX authority. The screens below describe the implemented baseline; production access, servicing, accounting and monitoring screens require blueprints and review here before being declared accepted. Backend architecture planning no longer waits for frontend acceptance.
+**Production expansion:** the [product solution](docs/AGAP_Product_Solution.md) governs member-phone applications, AI-assisted expense clarification, accountable review, full lending and financial-health support. This document remains the sole UI/UX authority. Sections labeled baseline/implemented describe inspected code; section 10 defines planned member and adjacent staff behavior requiring implementation and review. Backend planning does not wait for frontend acceptance.
 
 AGAP is a financial health loan-review workspace. Its interface should help staff connect evidence, everyday cash needs, available repayment options, and a recorded human decision. The design direction is Google-inspired: Google Sans, Material Symbols Rounded, white surfaces, blue actions, and calm hierarchy, while retaining AGAP's own identity.
 
@@ -254,7 +256,7 @@ The browser repository may fall back to memory-only changes. Keep the warning vi
 
 Use brief feedback for hover, focus, and disclosure state changes. The baseline uses 120ms color/border transitions and honors `prefers-reduced-motion`. Avoid decorative motion and artificial loading delays in the review journey.
 
-The current explanation is a deterministic template reviewed by staff. A later AI explanation must identify its origin, remain source-linked and reviewable, and preserve the checked financial results. Provider choice and live AI integration belong to later architecture work. Human recommendation and decision ownership remain visible in either mode.
+The current explanation is a deterministic template reviewed by staff. A later AI explanation must identify its origin, remain source-linked and reviewable, and preserve the checked financial results. The planned shared AI adapter and confirmation boundary follow the production architecture; the implemented brief remains a template until the reviewed enhancement is delivered. Human recommendation and decision ownership remain visible in either mode.
 
 ### Printing
 
@@ -321,3 +323,81 @@ References checked on 20 October 2026. These support asset selection and interac
 | [WCAG 2.2](https://www.w3.org/TR/WCAG22/) | Accessibility acceptance criteria; automated checks alone do not establish conformance |
 
 For technical verification commands and implementation boundaries, use the [frontend specification](docs/AGAP_Frontend_Spec.md) and [README](README.md).
+
+
+## 9. Staff intake workspace (21 October 2026)
+
+Examples implemented on the separate foundation candidate, awaiting team visual acceptance and representative staff evaluation; they are not supplied by main. The [platform guide](docs/AGAP_Platform_Foundation.md) defines server capabilities; this section governs the added interface.
+
+Use the existing Google Sans typography, blue actions, surface/line colors, spacing tokens, buttons, badges and notices. Staff pages have a restrained brand/account header, Members/Applications navigation, scoped administration when permitted, a readable main landmark and a development-only fictional-data footer. Keep server intake and the fictional review demo visibly distinct. Never show a demo role selector as a staff access control.
+
+Members use a scan-friendly table and an inline create/contact-correction form. Applications show the member name, purpose, requested amount, term and Draft state. Member names/branch labels replace raw UUIDs in ordinary controls. Requested terms are explicitly subject to review. Staff access uses a named revocation form with a reason, recent-MFA explanation and a consequential action button; never one-click revocation or self-approval implications.
+
+Labels remain visible, targets are at least 44px, and fields stack on narrow screens. Tables scroll inside labeled, keyboard-focusable regions without page-level horizontal overflow. A skip link and route focus target support keyboard users. Validation summaries receive focus and retain entered values.
+
+Show server saving, saved, loading, unavailable, stale/validation failure and uncertain save results separately. On uncertain saves, lock editing and offer “Retry same submission”; preserve the original request/key/sender. Warn before navigation loses unsaved values or uncertain retry details. On confirmed conflict, allow cancel/reload; never silently overwrite a changed record. An audit/history or financial approval UI is not implied by intake save confirmations.
+
+[Members example](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/screenshots/platform/staff-members.png) · [Applications example](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/screenshots/platform/staff-applications.png) · [Staff access example](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/screenshots/platform/staff-access.png). API-only application corrections/reassignment and broader staff grant/recovery screens remain pending designs, not accepted or implemented screens.
+
+
+## 10. Planned member and support workflows (25 October 2026)
+
+**Status: planned; implementation, screenshots, team acceptance and representative evaluation are pending.** This section supersedes the earlier later-member-channel sequencing. It does not change the implemented demo/staff examples above. Robert exclusively owns every member-phone screen and the member-portal facade. Other owners build their staff/domain views and provide the reviewed projections in the delivery plan.
+
+### Member navigation and page hierarchy
+
+Use the same Google Sans, tokens, shared controls, focus/error patterns and minimum target sizes as the baseline. Start with a responsive web experience; native installation, voice input and external push/SMS delivery are not first-demo prerequisites. At 320px, forms and summaries reflow without a page-wide horizontal scroll. Keep one primary action per current task.
+
+The signed-in member home has four clearly labeled actions: **Apply for a loan**, **Track my application**, **View my loan**, and **Get payment help**. Show the next confirmed payment/date with position freshness when a loan exists; otherwise explain the applicable application/empty state. Member identity and sign-out are separate from staff navigation. Never offer a demo-role switch as member authentication or display an invented credit/financial-health score.
+
+| Member workflow | Planned content | Primary action and state treatment |
+| --- | --- | --- |
+| Apply | Requested amount/purpose; relevant household/business income, essential expenses, existing obligations and timing; only missing relevant evidence | Continue through short grouped steps, then review and submit; application saved/submitted is not loan approval |
+| Add/check information | Camera/file input or approved alternative statement; dated source; proposed extracted fields and unresolved questions | Confirm, edit or mark a suggestion not applicable; upload/quarantine, extracted text and independent checks are separate statuses |
+| Review irregular needs | Candidate nonmonthly costs with supporting source; confirmation of relevance/amount/date and explicit recurrence assumptions | Confirm details; unknown stays unavailable; do not imply a past repair will necessarily recur |
+| Track application | Plain stage, outstanding request, next responsible action and recorded decision/explanation when available | Supply requested information or inspect the explanation; no unsupported guaranteed approval date |
+| Compare options | Only permitted options; net proceeds, payments/dates, fees, total cost, modeled horizon and remaining essentials context | Review the option; show incomplete information before unavailable results; selection is not institutional approval |
+| View loan | Own posted balance/as-of date, effective schedule, receipts, next payment and reminder preferences | View schedule/receipt; distinguish pending transactions and unavailable/stale data from zero or success |
+| Get payment help | Short explanation of changed circumstances, optional detail/contact preference and preview of what staff will see | Confirm and send request; then show review status and staff response without promising a pause or amendment |
+| Review amended terms | Checked old/new dates, amounts, term and full cost; effective date, human authorization and original schedule available | Accept or decline the proposed terms; reminders change only when the amendment is effective |
+
+Keep information reuse visible: show the document/source date and ask whether circumstances changed. Do not require every applicant to upload land titles, a fixed number of documents or all grocery receipts. Offer the approved alternative/assisted route where relevant. Technical engine versions, provider labels and correlation details belong in inspectable staff evidence rather than the member's main task flow.
+
+### AI drafts, confirmation and uncertainty
+
+Place a proposed value beside its source excerpt and status. Label an actual generated suggestion **AI draft**; label deterministic text **Template** and a simulated response **Simulated**. A generic success badge must not imply authenticity, affordability or approval. Do not show an unvalidated confidence percentage as a borrowing score.
+
+Member/staff confirmation records what was accepted or corrected. It must not relabel the source independently verified. If an accepted value changes, show that affected pending results require review; historical decision briefs remain available. Display the calculation horizon and explicit assumptions alongside a comparison. A reserve view and a dated irregular expense cannot visually appear as two separate costs when they represent the same commitment.
+
+If extraction fails, keep manual entry and source inspection available. If AI is unavailable, use the checklist/template path and explain the recoverable next action. Retain entered values on validation errors; focus a concise error summary and associate errors with fields. Confirmation controls and source links must work by keyboard. A member is never required to compose a prompt to complete the journey.
+
+### Payment-help and adjacent staff blueprints
+
+Explain who will receive the shared request before submission. Let the member preview/edit their words and proposed summary, skip unnecessary sensitive detail, or use staff assistance. A missing/declined check-in response remains unavailable. The first check-in can ask about difficulty meeting essentials, borrowing to repay and changed income/circumstances; no emotion/character inference is displayed.
+
+After submission, show **Sent for review** and the recorded response when available. A pending request does not say payments, fees or interest have paused. When an amendment is proposed, the member sees old/new cost and dates before acceptance; keep the original terms inspectable. Notification preferences do not alter contractual due dates. First-demo reminders are in-portal notices; simulated external delivery is labeled, and real delivery failures remain visible/recoverable.
+
+| Staff view and owner | Required planned behavior |
+| --- | --- |
+| Evidence/expense review — Aaron | Sources and proposed/confirmed facts side by side; CI/issuer method/date/limitations separate; one focused missing question; no fraud verdict from a mismatch |
+| Comparison — Aaron | Equal visibility for regular/irregular commitments, dated shortages, cost and horizon; permitted alternatives only; no date-change cure for an overall shortfall |
+| Decision/conflict review — Benedict | Show preparer, reviewer and declared restriction; require reassignment/authorized resolution; block self-approval; explain current-input/exception errors |
+| Amendment review — Benedict | Link to the support request, show checked cost comparison, authorization/acceptance/effectiveness and retained original schedule |
+| Support queue — Earl | Show confirmed member concern next to a dated repayment position; assign staff action/follow-up; current repayment can coexist with reported strain |
+| Reconciliation — Earl | Show the demonstrated receipt/subledger/GL relationship and unresolved differences; no green success from missing positions |
+
+Use the existing table/notice/form patterns and shared tokens; owner briefs do not define competing layouts. Underlying permission enforcement is a server requirement, and hidden controls alone do not establish it.
+
+### Model origin and research presentation
+
+Qwen fine-tuning does not add another member task: retain the existing source/confirmation controls and manual fallback. Runtime origin and exact model/artifact versions remain inspectable in staff evidence rather than added to the member's main flow. Label generated drafts, templates and prerecorded/simulated responses accurately; an uploaded scan is not an authenticated claim.
+
+EBM/logistic results belong to a separately labeled **Exploratory research** report, outside the member portal and staff lending decisions. Show the survey/cohort, reported emergency-funds target, sample/exclusions, comparison baseline, uncertainty and limits beside any feature-contribution chart. Do not display a member health/credit score, causal promise or suggested loan limit from these results. An offline report needs no new application route; any later interactive research view requires a design/ownership proposal through Robert.
+
+The first demo ends payment help at submitted request, staff review and recorded response/follow-up. The amended-terms blueprint above is retained for stage 2 under Benedict and is not included in the new first-demo training workload. Pending requests leave the existing schedule/charges intact.
+
+### Planned acceptance checks
+
+Review the complete member journey with keyboard and 320px reflow, unavailable/stale/empty/error states, source confirmation/correction, saving and uncertain retries, inaccessible other-member records and revoked linkage. Check that support requests cannot silently alter a loan and original decisions/schedules remain accessible. Attach screenshots when actual UI is implemented.
+
+Compare AI-assisted expense discovery with an annual-expense checklist and AI summaries with a plain form. Observe completion, missed relevant costs, unsupported assumptions, correction effort and comprehension. Technical tests and synthetic examples do not establish actual household benefit, accepted visual design or production readiness. Track implementation/status only in [Assignment.md](Assignment.md).
