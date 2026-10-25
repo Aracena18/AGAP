@@ -1,0 +1,18 @@
+.button { border: 1px solid transparent; border-radius: var(--button-radius); min-height: 44px; padding: 10px 20px; display: inline-flex; justify-content: center; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; line-height: 20px; text-decoration: none; transition: background-color 120ms ease, box-shadow 120ms ease; }
+.primary { background: var(--primary); color: white; }
+.primary:hover:not(:disabled) { background: var(--primary-hover); }
+.primary:hover:not(:disabled) { box-shadow: 0 1px 2px #1f1f1f26; }
+.secondary { background: white; border-color: var(--input-line); color: var(--ink); }
+.secondary:hover:not(:disabled) { background: var(--canvas); }
+.quiet { background: transparent; color: var(--primary); }
+.quiet:hover:not(:disabled) { background: var(--primary-soft); }
+.button.danger { background: var(--danger); color: white; }
+.badge { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 8px; font-size: 12px; line-height: 18px; font-weight: 500; white-space: nowrap; }
+.neutral { background: var(--surface-variant); color: var(--muted); }
+.warning { background: var(--warning-bg); color: var(--warning); }
+.danger { background: var(--danger-bg); color: var(--danger); }
+.success { background: var(--success-bg); color: var(--success); }
+.brand { background: var(--primary-container); color: var(--on-primary-container); }
+.notice { display: flex; align-items: flex-start; gap: 12px; padding: 16px; border-radius: 12px; font-size: 14px; line-height: 22px; }
+.notice > svg { flex: 0 0 auto; margin-top: 1px; }
+.money { font-variant-numeric: tabular-nums; white-space: nowrap; }

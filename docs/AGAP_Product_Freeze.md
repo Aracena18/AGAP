@@ -6,6 +6,8 @@
 **Product:** AGAP — Financial Health Loan Review  
 **Status:** Working product baseline for hackathon design and build planning, established at the team's request. This records product scope; it does not claim partner adoption, production readiness, or measured impact.
 
+> **Superseded scope, 20 October 2026:** The user subsequently directed a complete lending product, including disbursement, payments, accounting and financial-health follow-up, with hackathon features prioritized first. The [product solution](AGAP_Product_Solution.md), [production architecture](AGAP_Production_Architecture.md) and [delivery plan](AGAP_Delivery_Plan.md) now govern new planning. Prototype-only scope exclusions and the requirement to defer backend planning no longer govern that work. Preserve this document as the historical problem/demo baseline and independent fictional arithmetic oracle; none of its scenarios establishes real policy or production readiness.
+
 ## 1. Decision and problem
 
 Commit to one workflow: preparing a loan application for a well-supported human decision, with the member's ability to meet everyday needs visible throughout the review.
