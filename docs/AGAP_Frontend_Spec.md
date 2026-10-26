@@ -79,3 +79,8 @@ The current UI revision requires a real staff session for `/applications/*` revi
 All workspaces use the shared workspace/account header. Actual account menus replace decorative fictional avatars; Sign out invokes the appropriate server endpoint with the existing CSRF token. Menu navigation supports arrows/Home/End/Escape, outside dismissal and focus restoration. Demo role/reset controls move into Demo tools. Copy, case/evidence grouping and retained financial details follow design.md section 11.
 
 Staff login accepts optional `assurance=mfa` and an internal `returnTo` for supported staff/review routes, including source fragments. OAuth state stores the validated route and requested signed assurance. Local password-only preview is opt-in and loopback-development-only, using a separate client; sensitive staff commands still require fresh MFA. Step-up returns to the saved page without automatically resubmitting an action. The member flow, cookie separation, canonical session JSON schemas and contract 0.2.0 are unchanged.
+
+
+### Follow-up card refinements
+
+The source sidebar now separates title, Type/Date metadata, a complete excerpt, linked-field context and the qualification that verification is separate. Assignment and revocation share an action-panel stylesheet: compact header/target, distinct MFA navigation, aligned fields and Cancel/primary footer. Page-header filler copy is removed from staff Applications/Staff access. These are presentation changes only: commands, reasons, expected versions, uncertain retries, MFA links, financial inputs and preserved source text are unchanged. Design.md section 11 remains the visual authority.

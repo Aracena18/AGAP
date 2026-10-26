@@ -6,3 +6,5 @@
 .footer{max-width:1280px;margin:0 auto;padding:var(--space-5);color:var(--muted);font-size:13px;display:flex;justify-content:space-between;gap:var(--space-4)}.footer a{min-height:44px;display:inline-flex;align-items:center}
 .skip{position:fixed;left:var(--space-4);top:-100px;background:var(--surface);padding:var(--space-4);z-index:50}.skip:focus{top:var(--space-2)}
 @media(max-width:767px){.header{padding:var(--space-4);flex-wrap:wrap}.brand span{display:none}.main,.footer{padding:var(--space-4)}.nav{overflow-x:auto}.account{width:100%;justify-content:space-between}}
+
+@media(max-width:767px){.nav{gap:var(--space-1)}.nav a{flex-shrink:0;white-space:nowrap;font-size:14px;padding-inline:var(--space-3)}}

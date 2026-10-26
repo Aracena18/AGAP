@@ -10,6 +10,7 @@ import { useUnsavedChanges } from '../access/useUnsavedChanges';
 import { parsePesoInput } from '../../domain/evidence';
 import { Badge,Button,Money,Notice } from '../../shared/ui';
 import styles from '../members/intake.module.css';
+import panel from '../../shared/ui/action-panel.module.css';
 import ApplicationManagement from './ApplicationManagement';
 
 export default function IntakePage(){
@@ -27,7 +28,7 @@ export default function IntakePage(){
     const saved=await command.submit({memberId,purpose,requestedPrincipalCentavos:principal,requestedTermMonths:Number(term),currency:'PHP'},(body,key)=>client.createApplication(body,{idempotencyKey:key,csrfToken:session!.csrfToken}));
     if(saved){setStatus(`Application saved for ${saved.memberName}.`);setEditing(false);setMemberId('');setPurpose('');setAmount('');setTerm('12');page.refresh();}
   }
-  return <div className="stack"><div className="page-heading"><div><p className="eyebrow">Loan intake</p><h1>Applications</h1><p>Record the request before its evidence and terms are reviewed.</p></div>{session!.user.roles.includes('officer')&&!editing&&<Button onClick={()=>{setEditing(true);setStatus('');}}>New application</Button>}</div>
+  return <div className="stack"><div className={`page-heading ${panel.pageHeading}`}><div><h1>Applications</h1></div>{session!.user.roles.includes('officer')&&!editing&&<Button onClick={()=>{setEditing(true);setStatus('');}}>New application</Button>}</div>
     {status&&<Notice role="status">{status}</Notice>}
     {management&&<ApplicationManagement key={`${management.record.id}:${management.mode}`} record={management.record} mode={management.mode} cancel={()=>setManagement(null)} saved={saved=>{setManagement(null);setStatus(`Application ${management.mode==='assign'?'assignment':'correction'} saved for ${saved.memberName}.`);page.refresh();}}/>}
     {editing&&<section className="panel panel-body"><form onSubmit={event=>void submit(event)} className="stack"><div><h2>Prepare an application</h2><p className="small subtle">Requested terms are for review. Saving this draft does not approve a loan.</p></div>

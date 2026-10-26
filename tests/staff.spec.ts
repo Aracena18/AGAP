@@ -77,11 +77,12 @@ test.describe('Server-backed staff workspace',()=>{
     await signIn(context,'officer');await page.goto('/#/staff/members');
     await page.getByRole('button',{name:'Add member',exact:true}).click();
     await page.getByLabel('Full name').fill('Unsaved fictional person');
-    page.once('dialog',dialog=>dialog.dismiss());
-    await page.getByRole('link',{name:'Applications',exact:true}).click();
+    // Wait for the blocker effect before registering another dialog handler.
+    const cancelled=page.waitForEvent('dialog'),firstNavigation=page.getByRole('link',{name:'Applications',exact:true}).click();
+    await (await cancelled).dismiss();await firstNavigation;
     await expect(page.getByLabel('Full name')).toHaveValue('Unsaved fictional person');
-    page.once('dialog',dialog=>dialog.accept());
-    await page.getByRole('link',{name:'Applications',exact:true}).click();
+    const confirmed=page.waitForEvent('dialog'),nextNavigation=page.getByRole('link',{name:'Applications',exact:true}).click();
+    await (await confirmed).accept();await nextNavigation;
     await expect(page.getByRole('heading',{name:'Applications',exact:true})).toBeVisible();
   });
   test('auditor has read access without write controls and small-screen overflow',async({page,context})=>{

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ArrowForward, CalendarToday, FindInPage, Edit, History } from '../../shared/icons';
+import { ArrowForward, CalendarToday, FindInPage, Edit, History, Info } from '../../shared/icons';
 import type { CaseRecord, EvidenceFact, EvidenceStatus } from '../../domain/types';
 import { dateLabel } from '../../domain/format';
 import { useWorkspace } from '../../app/WorkspaceContext';
@@ -136,13 +136,12 @@ function EvidenceWorkspace({ record, requestedSource }: { record: CaseRecord; re
       <aside ref={sourcePanel} id={source ? `source-${source.id}` : undefined} tabIndex={-1} aria-label="Source details" className={`panel ${styles.sourcePanel}`}>
         <div className="panel-header"><h2>Source details</h2><FindInPage size={20} aria-hidden="true" /></div>
         <div className={`panel-body ${styles.sourceBody}`}>
-          <div aria-live="polite">
-            <h3>{source?.title ?? 'No source recorded'}</h3>
-            {source && <p className="small subtle">{source.kind === 'statement' ? 'Member statement' : source.kind === 'worksheet' ? 'Assessment worksheet' : 'Document'} · {dateLabel(source.date)}</p>}
+          <div className={styles.sourceIdentity} aria-live="polite"><h3>{source?.title ?? 'No source recorded'}</h3>
+            {source&&<dl className={styles.sourceMetadata}><div><dt>Type</dt><dd>{source.kind==='statement'?'Member statement':source.kind==='worksheet'?'Assessment worksheet':'Document'}</dd></div><div><dt>Date</dt><dd>{dateLabel(source.date)}</dd></div></dl>}
           </div>
-          <p className={styles.sourceExcerpt}>{source?.excerpt ?? 'No supporting source. Ask the member for clarification.'}</p>
-          {selectedFact && <div className={styles.sourceContext}><p className="small subtle">For {selectedFact.label}</p></div>}
-          <p className="small subtle">A source link does not establish authenticity.</p>
+          {source?<figure className={styles.sourceExcerpt}><figcaption>Excerpt</figcaption><blockquote>{source.excerpt}</blockquote></figure>:<p className="small subtle">No supporting source. Ask the member for clarification.</p>}
+          {selectedFact&&<dl className={styles.sourceContext}><dt>Linked field</dt><dd>{selectedFact.label}</dd></dl>}
+          <p className={styles.verificationNote}><Info size={16}/>Verification is separate.</p>
         </div>
       </aside>
     </div>

@@ -422,3 +422,12 @@ This section supersedes earlier baseline header/copy/layout descriptions where t
 - Review-demo role/reset controls stay under Demo tools. Review-demo access uses a real staff session; the fictional record actors and role simulation do not become server permissions or real lending decisions. Preserve browser edits on sign-out; Reset demo remains explicit.
 
 Use existing Google Sans, tokens, Material symbols and shared controls. Verify at 320px and 1101px, keyboard menus and full source/correction/decision workflows. Keep private member/staff sessions separate; a workspace switch is navigation, not an authorization grant.
+
+
+### Source and staff action cards — follow-up annotations
+
+Keep source identity separate from Type/Date metadata, the complete excerpt, the linked field and the concise verification qualification. Use a wider desktop source column, readable quote typography and a contained excerpt surface; stack below the evidence on phones. Do not turn source text into invented facts or replace the original excerpt.
+
+Assignment and access-revocation forms use the same action-card pattern: short action heading and target identity; an Authenticator required policy hint with a separate Verify link; aligned labeled fields; and a bordered footer with Cancel before the primary action. Verify remains outside the submit/cancel group. Destructive actions retain their red treatment and a short consequence statement. On phones, stack fields and keep the primary action prominent without horizontal overflow. Staff tabs use compact spacing and single-line labels.
+
+Remove redundant Loan intake/Administration eyebrows and descriptive page subtitles from staff Applications/Staff access. Keep the page heading, workspace navigation, field labels, errors, required reasons, uncertain-result recovery and MFA authority checks. The user explicitly requested these presentation refinements; domain behavior and ownership remain unchanged.
