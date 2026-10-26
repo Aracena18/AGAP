@@ -16,7 +16,8 @@ export function useCommand<T,R>(){
       const result=await attempt.current.send(attempt.current.body,attempt.current.key);
       attempt.current=null;setUncertain(false);return result;
     }catch(problem){
-      const unknown=!(problem instanceof ApiClientError)||problem.status>=500||problem.code==='invalid_response';
+      const unavailable=problem instanceof ApiClientError&&problem.status===501&&problem.code==='module_not_available';
+      const unknown=!unavailable&&(!(problem instanceof ApiClientError)||problem.status>=500||problem.code==='invalid_response');
       setUncertain(unknown);
       if(problem instanceof ApiClientError)setFields(problem.fields??[]);
       setError(unknown?'The save result is uncertain. Retry the same submission before starting another.':problem.message);

@@ -136,7 +136,8 @@
       "directAccessGrantsEnabled": false,
       "serviceAccountsEnabled": false,
       "redirectUris": [
-        "http://127.0.0.1:5174/api/v1/auth/callback"
+        "http://127.0.0.1:5174/api/v1/auth/callback",
+        "http://127.0.0.1:5174/api/v1/member/auth/callback"
       ],
       "webOrigins": [],
       "attributes": {
@@ -207,6 +208,22 @@
       ],
       "requiredActions": [
         "CONFIGURE_TOTP"
+      ]
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000004",
+      "username": "member",
+      "enabled": true,
+      "firstName": "Fictional Member",
+      "lastName": "Training",
+      "email": "member@example.invalid",
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Fictional-training-123!",
+          "temporary": false
+        }
       ]
     }
   ]

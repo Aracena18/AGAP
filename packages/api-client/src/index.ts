@@ -3,6 +3,25 @@ import type { z } from 'zod';
 import { schemas } from '../../contracts/src/schemas.js';
 import { ClientTransport, type RequestOptions } from './transport.js';
 export class AgapClient extends ClientTransport {
+  getMemberSession(options: RequestOptions = {}) { return this.request('GET', `/member/session`, undefined, schemas.MemberSession, options); }
+  getMemberProfile(options: RequestOptions = {}) { return this.request('GET', `/member/me`, undefined, schemas.MemberProfile, options); }
+  listMemberApplications(options: RequestOptions = {}) { return this.request('GET', `/member/applications`, undefined, schemas.MemberApplicationPage, options); }
+  getMemberApplication(id: string, options: RequestOptions = {}) { return this.request('GET', `/member/applications/${encodeURIComponent(id)}`, undefined, schemas.MemberApplication, options); }
+  createMemberApplication(body: z.input<typeof schemas.MemberApplicationCreate>, options: RequestOptions = {}) { return this.request('POST', `/member/applications`, body, schemas.MemberApplication, options); }
+  updateMemberApplication(id: string, body: z.input<typeof schemas.ApplicationUpdate>, options: RequestOptions = {}) { return this.request('PATCH', `/member/applications/${encodeURIComponent(id)}`, body, schemas.MemberApplication, options); }
+  submitMemberApplication(id: string, body: z.input<typeof schemas.MemberSubmit>, options: RequestOptions = {}) { return this.request('POST', `/member/applications/${encodeURIComponent(id)}/submission`, body, schemas.MemberApplication, options); }
+  getReminderPreferences(options: RequestOptions = {}) { return this.request('GET', `/member/reminder-preferences`, undefined, schemas.ReminderPreferences, options); }
+  updateReminderPreferences(body: z.input<typeof schemas.ReminderPreferenceUpdate>, options: RequestOptions = {}) { return this.request('PATCH', `/member/reminder-preferences`, body, schemas.ReminderPreferences, options); }
+  getMemberEvidence(id: string, options: RequestOptions = {}) { return this.request('GET', `/member/applications/${encodeURIComponent(id)}/evidence`, undefined, schemas.MemberEvidenceView, options); }
+  uploadMemberDocument(id: string, file: Blob, metadata: z.input<typeof schemas.MemberUpload>, options: RequestOptions = {}) { return this.upload(`/member/applications/${encodeURIComponent(id)}/documents`, file, metadata, schemas.MemberSource, options); }
+  downloadMemberDocument(id: string, sourceId: string, options: RequestOptions = {}) { return this.download(`/member/applications/${encodeURIComponent(id)}/documents/${encodeURIComponent(sourceId)}`, options); }
+  confirmMemberDraft(id: string, body: z.input<typeof schemas.DraftConfirmation>, options: RequestOptions = {}) { return this.request('POST', `/member/applications/${encodeURIComponent(id)}/confirmations`, body, schemas.CommandReceipt, options); }
+  getMemberOptions(id: string, options: RequestOptions = {}) { return this.request('GET', `/member/applications/${encodeURIComponent(id)}/options`, undefined, schemas.MemberOptionsView, options); }
+  getMemberDecision(id: string, options: RequestOptions = {}) { return this.request('GET', `/member/applications/${encodeURIComponent(id)}/decision`, undefined, schemas.MemberDecisionView, options); }
+  acceptMemberDecision(id: string, body: z.input<typeof schemas.MemberAcceptance>, options: RequestOptions = {}) { return this.request('POST', `/member/applications/${encodeURIComponent(id)}/acceptances`, body, schemas.CommandReceipt, options); }
+  listMemberLoans(options: RequestOptions = {}) { return this.request('GET', `/member/loans`, undefined, schemas.MemberLoansView, options); }
+  listMemberSupport(options: RequestOptions = {}) { return this.request('GET', `/member/support-requests`, undefined, schemas.MemberSupportView, options); }
+  createMemberSupport(body: z.input<typeof schemas.MemberSupportCreate>, options: RequestOptions = {}) { return this.request('POST', `/member/support-requests`, body, schemas.MemberSupport, options); }
   getSession(options: RequestOptions = {}) { return this.request('GET', `/session`, undefined, schemas.Session, options); }
   getCapabilities(options: RequestOptions = {}) { return this.request('GET', `/capabilities`, undefined, schemas.Capabilities, options); }
   listStaff(options: RequestOptions = {}) { return this.request('GET', `/staff`, undefined, schemas.StaffPage, options); }

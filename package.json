@@ -30,7 +30,9 @@
     "worker:dev": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/worker/src/main.ts",
     "ops:drill": "node infra/scripts/restore-drill.mjs",
     "staff:provision": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/scripts/provision-staff.ts",
-    "test:keycloak": "node --env-file=.env infra/scripts/identity-walkthrough.mjs"
+    "test:keycloak": "node --env-file=.env infra/scripts/identity-walkthrough.mjs",
+    "test:keycloak:member": "node --env-file=.env infra/scripts/member-identity-walkthrough.mjs",
+    "member:provision": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/scripts/provision-member.ts"
   },
   "dependencies": {
     "@fontsource-variable/google-sans": "^5.3.2",

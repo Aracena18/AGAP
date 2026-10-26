@@ -19,6 +19,21 @@ export class ClientTransport {
     // Native browser fetch must not receive ClientTransport as its receiver.
     const fetcher = this.fetcher;
     const response = await fetcher(`${this.baseUrl}${path}${query.size ? `?${query}` : ''}`, { method, headers, credentials: 'same-origin', body: body === undefined ? undefined : JSON.stringify(body), signal: options.signal, redirect: 'error' });
+    return this.read(response,schema);
+  }
+  protected async upload<T>(path:string,file:Blob,metadata:{fileName:string;mediaType:string;size:number},schema:z.ZodType<T>,options:RequestOptions):Promise<T>{
+    const headers=new Headers({Accept:'application/json','Content-Type':metadata.mediaType,'X-File-Name':encodeURIComponent(metadata.fileName),'X-Upload-Size':String(metadata.size)});
+    if(options.csrfToken)headers.set('X-CSRF-Token',options.csrfToken);
+    if(options.idempotencyKey)headers.set('Idempotency-Key',options.idempotencyKey);
+    const fetcher=this.fetcher;
+    return this.read(await fetcher(`${this.baseUrl}${path}`,{method:'POST',headers,body:file,credentials:'same-origin',redirect:'error',signal:options.signal}),schema);
+  }
+  protected async download(path:string,options:RequestOptions):Promise<Blob>{
+    const fetcher=this.fetcher,response=await fetcher(`${this.baseUrl}${path}`,{credentials:'same-origin',redirect:'error',signal:options.signal});
+    if(!response.ok)await this.read(response,ApiErrorSchema);
+    return response.blob();
+  }
+  private async read<T>(response:Response,schema:z.ZodType<T>):Promise<T>{
     let value: unknown;
     try { value = await response.json(); } catch { throw new ApiClientError(response.status,'invalid_response','The server returned an unreadable response.'); }
     if (!response.ok) {

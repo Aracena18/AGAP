@@ -4,6 +4,10 @@ Tracker: [Assignment.md — Benedict](../../../Assignment.md#benedict). **Curren
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and AGENTS.md. Assignment.md alone records task status.
 
+## 26 October candidate handoff
+
+Start interface review from [the current platform guide](../../AGAP_Platform_Foundation.md), [member contract proposal](../../AGAP_Member_Contract_Proposal.md) and [verification/limits](../../AGAP_Robert_Member_Verification.md) on `feat/robert-member-platform`. Executable 0.2.0 is supplied for review; no consuming-owner agreement is recorded. Member actor/transactions are separate from staff, and domain defaults are unavailable. This supersedes earlier future-tense instructions about creating the member contracts from scratch. Assignment.md remains the only status tracker.
+
 ## Work packages and ownership
 
 Own QWN-01, DEC-01, PAY-01 and stage 2 SRV-01. Add exclusive planned `models/qwen/` for baseline/LoRA notebooks, training/configs, artifact manifests and model/run cards. Retain decision/loans/payments staff features, `src/domain/review.ts`, `explanation.ts` and tests, API modules `decisions/` and `servicing/` with payment adapters. Robert owns member-phone screens/facade and shared contracts/wiring. Earl owns accounting and support-request records; do not write their tables or create a separate ledger.

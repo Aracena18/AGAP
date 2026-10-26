@@ -4,13 +4,17 @@ Tracker: [Assignment.md — Robert](../../../Assignment.md#robert). **Current di
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and root AGENTS.md. Assignment.md alone records current statuses. The first foundation is a review candidate, not an accepted integration base or production release.
 
+## 26 October candidate handoff
+
+Start interface review from [the current platform guide](../../AGAP_Platform_Foundation.md), [member contract proposal](../../AGAP_Member_Contract_Proposal.md) and [verification/limits](../../AGAP_Robert_Member_Verification.md) on `feat/robert-member-platform`. Executable 0.2.0 is supplied for review; no consuming-owner agreement is recorded. Member actor/transactions are separate from staff, and domain defaults are unavailable. This supersedes earlier future-tense instructions about creating the member contracts from scratch. Assignment.md remains the only status tracker.
+
 ## Work packages and ownership
 
 Own PLN-01/PLN-02, FND-01/FND-02/FND-03, MOB-01, OPS-01 and SHOW-01. Preserve supplied FND-01/FND-02 evidence and pending consuming-owner agreement. New member access is FND-03; it must not be described as supplied staff authentication.
 
 **All phone-facing work is reserved for you.** Own planned `src/features/member-portal/` and API module `member-portal/`, plus existing platform/identity/member/application and shared paths in the delivery table. B–D supply their services and staff screens, not portal screens. The facade delegates to their authorized services and never copies calculators, writes financial tables or impersonates a staff actor.
 
-Only you edit canonical schemas/ports, generated client/OpenAPI, route/provider/migration registration, common UI/tokens, demo fixtures, root configuration/dependencies and integration wiring. Keep one transaction coordinator and one authoritative calculation engine. Perform the finance extraction/re-export handoff once before Aaron takes package ownership.
+Only you edit canonical schemas/ports, generated client/OpenAPI, route/provider/migration registration, common UI/tokens, demo fixtures, root configuration/dependencies and integration wiring. Keep one transaction coordinator and one authoritative calculation engine. The 26 October candidate performs the one-time finance extraction/re-export handoff; Aaron owns subsequent package implementation. Do not repeat or copy the extraction.
 
 ## First-demonstration slice — 16 relative units
 
@@ -26,7 +30,7 @@ These are provisional remaining-effort slices including tests/review. The total 
 
 1. Read the candidate [platform handoff](../../AGAP_Platform_Foundation.md); record Aaron/Benedict/Earl agreement and the actual accepted base before dependent integration.
 2. Under FND-03, propose a server-established member principal/linkage distinct from staff roles. Link verified cooperative membership through the approved process; client IDs, phone edits or AI matches cannot grant access. Cover revocation, recovery and own-record downloads as well as UI access.
-3. Publish the reviewed ports for evidence drafts/confirmation, irregular-cost inputs, checked results, support requests, servicing amendment views and reminder preferences. Also propose the base/adapter/checksum, prompt/schema/dataset/evaluation provenance and runtime-limit envelope with Benedict/Aaron/Earl. This documentation change itself does not generate schemas/client or change version 0.1.0.
+3. Publish the reviewed ports for evidence drafts/confirmation, irregular-cost inputs, checked results, support requests, servicing amendment views and reminder preferences. Also propose the base/adapter/checksum, prompt/schema/dataset/evaluation provenance and runtime-limit envelope with Benedict/Aaron/Earl. The supplied 0.2.0 candidate generates schemas/client after the written proposal; consuming-owner review remains required before dependent domain integration.
 4. Build the portal against Aaron's evidence/credit, Benedict's decision/servicing and Earl's monitoring ports. Persist drafts server-side; label unknown outcomes and retain stable retry/version semantics.
 5. Provide notification preferences/delivery infrastructure; servicing supplies effective schedules and monitoring supplies support/review facts. First-demo notices are in-portal. External channels require configured providers, real delivery evidence and verified costs; label simulations.
 6. For [QWN-01/XAI-01](../../AGAP_Model_Training_Plan.md), Benedict owns Qwen training/artifacts and Aaron owns EBM/logistic training plus the reusable inference adapter. Earl owns data/splits and independent evaluation. You alone approve shared dependencies/schema proposals and wire the configured compatible runtime. Do not make free training notebooks an always-on backend. Keep EBM research outside operational APIs/member screens; package the offline report separately.
@@ -55,3 +59,5 @@ Published [draft PR #10](https://github.com/Aracena18/AGAP/pull/10), implementat
 25 October 2026: PLN-01 revised this brief, ownership and first-demonstration slices. This note records documentation only; no new feature implementation or review acceptance is claimed. Use Assignment.md for the current task status and next action.
 
 25 October 2026 — PLN-02: the user-requested model-training revision supersedes this brief’s earlier 12-unit allocation. Current scope is the 16-unit table above and the [model training plan](../../AGAP_Model_Training_Plan.md); recorded implementation history remains unchanged. No training result or new feature implementation is claimed.
+
+26 October candidate: separate linked member identity/session/RLS and own draft/submission/preferences are supplied, along with the member facade/screens and staff assignment/correction UI. The pure assessment implementation was moved once with import-only changes and re-exported. Real PostgreSQL, signed OIDC, browser and encrypted-restore evidence is in [the current verification](../../AGAP_Robert_Member_Verification.md). Domain rendering simulations are explicitly labeled; default runtime domains remain unavailable. Remaining integration awaits the actual B–D services, model artifacts/evaluation and recorded owner review; full OPS recovery/cutover is still separate. Historical statements above describe their date, not the current UI capability.

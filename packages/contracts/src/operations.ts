@@ -3,9 +3,28 @@ import type { SchemaName } from './schemas.js';
 export interface Operation {
   id: string; method: 'GET' | 'POST' | 'PATCH'; path: string; response: SchemaName;
   request?: SchemaName; owner: 'Robert' | 'Aaron' | 'Benedict' | 'Earl'; implemented: boolean;
-  versioned?: boolean; idempotent?: boolean; public?: boolean;
+  versioned?: boolean; idempotent?: boolean; public?: boolean; principal?:'member'; binary?:boolean; binaryResponse?:boolean;
 }
 export const operations = [
+  {id:'getMemberSession',method:'GET',path:'/member/session',response:'MemberSession',owner:'Robert',implemented:true,principal:'member'},
+  {id:'getMemberProfile',method:'GET',path:'/member/me',response:'MemberProfile',owner:'Robert',implemented:true,principal:'member'},
+  {id:'listMemberApplications',method:'GET',path:'/member/applications',response:'MemberApplicationPage',owner:'Robert',implemented:true,principal:'member'},
+  {id:'getMemberApplication',method:'GET',path:'/member/applications/{id}',response:'MemberApplication',owner:'Robert',implemented:true,principal:'member'},
+  {id:'createMemberApplication',method:'POST',path:'/member/applications',request:'MemberApplicationCreate',response:'MemberApplication',owner:'Robert',implemented:true,idempotent:true,principal:'member'},
+  {id:'updateMemberApplication',method:'PATCH',path:'/member/applications/{id}',request:'ApplicationUpdate',response:'MemberApplication',owner:'Robert',implemented:true,idempotent:true,versioned:true,principal:'member'},
+  {id:'submitMemberApplication',method:'POST',path:'/member/applications/{id}/submission',request:'MemberSubmit',response:'MemberApplication',owner:'Robert',implemented:true,idempotent:true,versioned:true,principal:'member'},
+  {id:'getReminderPreferences',method:'GET',path:'/member/reminder-preferences',response:'ReminderPreferences',owner:'Robert',implemented:true,principal:'member'},
+  {id:'updateReminderPreferences',method:'PATCH',path:'/member/reminder-preferences',request:'ReminderPreferenceUpdate',response:'ReminderPreferences',owner:'Robert',implemented:true,idempotent:true,versioned:true,principal:'member'},
+  {id:'getMemberEvidence',method:'GET',path:'/member/applications/{id}/evidence',response:'MemberEvidenceView',owner:'Robert',implemented:true,principal:'member'},
+  {id:'uploadMemberDocument',method:'POST',path:'/member/applications/{id}/documents',request:'MemberUpload',response:'MemberSource',owner:'Robert',implemented:true,idempotent:true,principal:'member',binary:true},
+  {id:'downloadMemberDocument',method:'GET',path:'/member/applications/{id}/documents/{sourceId}',response:'MemberSource',owner:'Robert',implemented:true,principal:'member',binaryResponse:true},
+  {id:'confirmMemberDraft',method:'POST',path:'/member/applications/{id}/confirmations',request:'DraftConfirmation',response:'CommandReceipt',owner:'Robert',implemented:true,idempotent:true,versioned:true,principal:'member'},
+  {id:'getMemberOptions',method:'GET',path:'/member/applications/{id}/options',response:'MemberOptionsView',owner:'Robert',implemented:true,principal:'member'},
+  {id:'getMemberDecision',method:'GET',path:'/member/applications/{id}/decision',response:'MemberDecisionView',owner:'Robert',implemented:true,principal:'member'},
+  {id:'acceptMemberDecision',method:'POST',path:'/member/applications/{id}/acceptances',request:'MemberAcceptance',response:'CommandReceipt',owner:'Robert',implemented:true,idempotent:true,versioned:true,principal:'member'},
+  {id:'listMemberLoans',method:'GET',path:'/member/loans',response:'MemberLoansView',owner:'Robert',implemented:true,principal:'member'},
+  {id:'listMemberSupport',method:'GET',path:'/member/support-requests',response:'MemberSupportView',owner:'Robert',implemented:true,principal:'member'},
+  {id:'createMemberSupport',method:'POST',path:'/member/support-requests',request:'MemberSupportCreate',response:'MemberSupport',owner:'Robert',implemented:true,idempotent:true,principal:'member'},
   { id: 'getSession', method: 'GET', path: '/session', response: 'Session', owner: 'Robert', implemented: true },
   { id: 'getCapabilities', method: 'GET', path: '/capabilities', response: 'Capabilities', owner: 'Robert', implemented: true, public: true },
   { id: 'listStaff', method: 'GET', path: '/staff', response: 'StaffPage', owner: 'Robert', implemented: true },

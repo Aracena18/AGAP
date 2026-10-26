@@ -19,8 +19,13 @@ import { MembersService } from './modules/members/members.service.js';
 import { ApplicationsService } from './modules/applications/applications.service.js';
 import { StaffService } from './modules/identity/staff.service.js';
 import { limitLogin } from './modules/identity/login-limit.js';
+import { PostgresMemberUnitOfWork } from './platform/member-database.js';
+import { MemberApplicationsService } from './modules/applications/member-applications.service.js';
+import { MemberPortalService } from './modules/member-portal/member-portal.service.js';
+import { MemberController,MEMBER_PLATFORM,type MemberRequest } from './modules/member-portal/member.controller.js';
+import type { MemberDomainPorts } from '../../../packages/contracts/src/ports.js';
 
-interface StaffRequest extends Request { correlationId: string; staff?: Awaited<ReturnType<IdentityService['authenticate']>> }
+interface StaffRequest extends Request,MemberRequest { staff?: Awaited<ReturnType<IdentityService['authenticate']>> }
 interface PlatformServices { config: Config; identity: IdentityService; staff: StaffService; members: MembersService; applications: ApplicationsService; database: Pool; identityDatabase: Pool; onModuleDestroy(): Promise<void> }
 const PLATFORM = Symbol('PLATFORM');
 const actor = (request: StaffRequest) => {
@@ -50,7 +55,7 @@ class PlatformController {
   @Get('health') async health() { await Promise.all([this.services.database.query('SELECT 1'),this.services.identityDatabase.query('SELECT 1')]); return {status:'ok',contractVersion:CONTRACT_VERSION}; }
   @Get('openapi.json') async openapi() { return JSON.parse(await readFile('packages/contracts/openapi.json','utf8')) as unknown; }
   @Get('capabilities') capabilities() {
-    return {contractVersion:CONTRACT_VERSION,modules:[{name:'platform',owner:'Robert',state:'available'},{name:'identity',owner:'Robert',state:'available'},{name:'members',owner:'Robert',state:'available'},{name:'applications',owner:'Robert',state:'available'},{name:'evidence',owner:'Aaron',state:'contract_only'},{name:'credit',owner:'Aaron',state:'contract_only'},{name:'decisions',owner:'Benedict',state:'contract_only'},{name:'servicing',owner:'Benedict',state:'contract_only'},{name:'accounting',owner:'Earl',state:'contract_only'},{name:'monitoring',owner:'Earl',state:'contract_only'}]};
+    return {contractVersion:CONTRACT_VERSION,modules:[{name:'platform',owner:'Robert',state:'available'},{name:'identity',owner:'Robert',state:'available'},{name:'members',owner:'Robert',state:'available'},{name:'applications',owner:'Robert',state:'available'},{name:'member_portal',owner:'Robert',state:'available'},{name:'evidence',owner:'Aaron',state:'contract_only'},{name:'credit',owner:'Aaron',state:'contract_only'},{name:'decisions',owner:'Benedict',state:'contract_only'},{name:'servicing',owner:'Benedict',state:'contract_only'},{name:'accounting',owner:'Earl',state:'contract_only'},{name:'monitoring',owner:'Earl',state:'contract_only'}]};
   }
   @Get('auth/login') async login(@Req() request:StaffRequest,@Res() response: Response) {
     await limitLogin(this.services.identityDatabase,this.services.config.SESSION_SECRET,request.socket.remoteAddress??'unknown');
@@ -88,34 +93,38 @@ class PlatformController {
   @Post('applications/:id/assignments') assignApplication(@Req() request:StaffRequest,@Param('id') id:string,@Body() body:unknown){return this.services.applications.assign(actor(request),id,body,expectedVersion(request.headers['if-match']),request.headers['idempotency-key']);}
 }
 
-export async function createApp(config: Config) {
+export async function createApp(config: Config,memberDomains?:MemberDomainPorts) {
   const database = createPool(config.DATABASE_URL);
   const identityDatabase = createPool(config.IDENTITY_DATABASE_URL);
   try {
     for (const pool of [database,identityDatabase]) {
       const result = await pool.query<{rolsuper:boolean;rolbypassrls:boolean}>("SELECT rolsuper,rolbypassrls FROM pg_roles WHERE rolname=current_user");
       if (result.rows[0].rolsuper || result.rows[0].rolbypassrls) throw new Error('API database credentials must not be superuser or BYPASSRLS roles.');
-      const owned=await pool.query("SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('platform','identity','members','applications') AND c.relkind IN ('r','p') AND pg_has_role(current_user,c.relowner,'MEMBER') LIMIT 1");
+      const owned=await pool.query("SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('platform','identity','members','applications','portal') AND c.relkind IN ('r','p') AND pg_has_role(current_user,c.relowner,'MEMBER') LIMIT 1");
       if(owned.rowCount)throw new Error('API database credentials must not own application tables or inherit their owner role.');
     }
     const uow = new PostgresUnitOfWork(database);
     const members = new MembersService(uow,config.PRIVACY_NOTICE_VERSION);
     const identity = new IdentityService(identityDatabase,config);
     const services: PlatformServices = {config,database,identityDatabase,identity,staff:new StaffService(new PostgresUnitOfWork(identityDatabase)),members,applications:new ApplicationsService(uow,members),async onModuleDestroy(){await Promise.all([database.end(),identityDatabase.end()]);}};
-    @Module({controllers:[PlatformController],providers:[{provide:PLATFORM,useValue:services}]})
+    const memberUow=new PostgresMemberUnitOfWork(database);
+    const portal=new MemberPortalService(memberUow,new MemberApplicationsService(memberUow,config.PRIVACY_NOTICE_VERSION),config.PRIVACY_NOTICE_VERSION,memberDomains);
+    @Module({controllers:[PlatformController,MemberController],providers:[{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal}}]})
     class AppModule {}
     const app = await NestFactory.create<NestExpressApplication>(AppModule,{logger:false,bodyParser:false,abortOnError:false});
     app.set('trust proxy',false);
     app.use((request: StaffRequest,response: Response,next: NextFunction) => {request.correlationId=randomUUID();response.setHeader('X-Request-ID',request.correlationId);response.setHeader('Cache-Control','no-store');next();});
     app.use(helmet());
     app.useBodyParser('json',{limit:'32kb',strict:true});
-    const publicPaths = new Set(['/api/v1/health','/api/v1/capabilities','/api/v1/openapi.json','/api/v1/auth/login','/api/v1/auth/callback']);
+    const publicPaths = new Set(['/api/v1/health','/api/v1/capabilities','/api/v1/openapi.json','/api/v1/auth/login','/api/v1/auth/callback','/api/v1/member/auth/login','/api/v1/member/auth/callback']);
     const errors = new ErrorFilter();
     app.use(async (request: StaffRequest,response: Response,next: NextFunction) => {
       try {
         if (!publicPaths.has(request.path)) {
-          const token = cookieValue(request.headers.cookie,'agap_session');
-          request.staff = await identity.authenticate(token,request.correlationId);
+          const isMember=request.path.startsWith('/api/v1/member/');
+          const token = cookieValue(request.headers.cookie,isMember?'agap_member_session':'agap_session');
+          if(isMember)request.member=await identity.authenticateMember(token,request.correlationId);
+          else request.staff = await identity.authenticate(token,request.correlationId);
           if (!['GET','HEAD','OPTIONS'].includes(request.method)) identity.verifyCsrf(token!,request.headers['x-csrf-token'],request.headers.origin);
         }
         const pending = operations.find(op => !op.implemented && op.method === request.method && new RegExp(`^/api/v1${op.path.replace(/\{\w+\}/g,'[^/]+')}$`).test(request.path));
@@ -123,7 +132,7 @@ export async function createApp(config: Config) {
         next();
       } catch (error) {
         // Middleware errors must use the same public shape as controller errors.
-        const safe = error instanceof ApiError ? error : new ApiError(503,'identity_unavailable','The staff identity service is temporarily unavailable.');
+        const safe = error instanceof ApiError ? error : new ApiError(503,'identity_unavailable','The sign-in service is temporarily unavailable.');
         response.status(safe.status).json({error:{code:safe.code,message:safe.message,correlationId:request.correlationId}});
       }
     });

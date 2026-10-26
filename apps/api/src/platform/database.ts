@@ -12,7 +12,7 @@ export class PostgresUnitOfWork implements UnitOfWork {
     let discard = false;
     try {
       await client.query('BEGIN');
-      await client.query("SELECT set_config('agap.organization_id', $1, true), set_config('agap.user_id', $2, true), set_config('agap.branch_ids', $3, true)", [actor.organizationId, actor.userId, JSON.stringify(actor.branchIds)]);
+      await client.query("SELECT set_config('agap.organization_id', $1, true), set_config('agap.user_id', $2, true), set_config('agap.branch_ids', $3, true),set_config('agap.member_id','',true),set_config('agap.member_link_id','',true)", [actor.organizationId, actor.userId, JSON.stringify(actor.branchIds)]);
       await client.query("SET LOCAL statement_timeout = '10s'");
       await client.query("SET LOCAL lock_timeout = '5s'");
       const current = await client.query<{ authorized: boolean }>('SELECT identity.assert_actor($1,$2,$3,$4,$5) AS authorized',[actor.sessionId,actor.userId,actor.organizationId,[...actor.branchIds],[...actor.roles]]);

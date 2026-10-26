@@ -11,7 +11,7 @@ const root=resolve('.backups',`drill-${id}`),source=join(root,'source'),restored
 const docker=(args,options={})=>execFileSync('docker',args,{maxBuffer:64*1024*1024,...options});
 const compose=['compose','-f','infra/compose.test.yml','exec','-T','database'];
 const sourceSql=sql=>docker([...compose,'psql','-X','-q','-A','-t','-v','ON_ERROR_STOP=1','-U','agap_owner','-d','agap_test','-c',sql]).toString().trim();
-const tables=['platform.organizations','platform.branches','identity.staff_users','identity.sessions','identity.staff_revocations','identity.staff_provisionings','members.members','members.member_revisions','applications.applications','applications.application_revisions','applications.assignment_changes','platform.idempotency','platform.audit_events','platform.outbox','platform.jobs','platform.inbox','public.agap_migrations'];
+const tables=sourceSql("SELECT format('%I.%I',schemaname,tablename) FROM pg_tables WHERE schemaname NOT IN ('pg_catalog','information_schema') AND schemaname NOT LIKE 'pg_toast%' ORDER BY schemaname,tablename").split('\n');
 const fingerprintSql=tables.map(table=>`SELECT '${table}',count(*),md5(coalesce(string_agg(to_jsonb(t)::text,E'\\n' ORDER BY to_jsonb(t)::text),'')) FROM ${table} t`).join(' UNION ALL ');
 const restic=args=>docker(['run','--rm','--network','none','--user',`${process.getuid()}:${process.getgid()}`,'--mount',`type=bind,src=${root},dst=/work`,'restic/restic:0.18.1','--no-cache','--repo','/work/repository','--password-file','/work/recovery-key',...args]).toString();
 let cloneStarted=false;
@@ -21,6 +21,7 @@ try{
   const before=sourceSql(fingerprintSql);
   assert(Number(sourceSql('SELECT count(*) FROM members.members'))>0,'Run browser tests first so the backup contains persisted member/application history.');
   const dump=docker([...compose,'pg_dump','-U','agap_owner','-d','agap_test','--format=custom']);
+  assert.equal(sourceSql(fingerprintSql),before,'Test records changed during backup; stop test writers and repeat.');
   await writeFile(join(source,'agap.dump'),dump,{mode:0o600});
   // A separate private-file fixture exercises document recovery. Full evidence
   // file/metadata reconciliation waits for Aaron's document lifecycle module.
@@ -52,6 +53,6 @@ try{
   const after=docker(['exec',container,'psql','-X','-q','-A','-t','-v','ON_ERROR_STOP=1','-U','agap_owner','-d','agap_restored','-c',fingerprintSql]).toString().trim();
   assert.equal(after,before,'Restored rows/history differ from the source.');
   const evidence={executedAt:new Date().toISOString(),result:'passed',fictional:true,durationSeconds:Math.round((Date.now()-started.getTime())/1000),postgresImage:'postgres:18-alpine',backupImage:'restic/restic:0.18.1',encryptedRepositoryChecked:true,plaintextStageRemovedBeforeRestore:true,isolatedDatabaseRestored:true,tableCounts:Object.fromEntries(before.split('\n').map(line=>{const [table,count]=line.split('|');return [table,Number(count)];})),allTableFingerprintsMatched:true,privateDocumentSha256Matched:true,limitations:['Local repository and recovery key share the development host; not offsite recovery.','Identity-provider database, institutional keys and an integrated financial cutover are outside this dedicated test drill.','No approved RPO/RTO or production capacity claim.']};
-  await writeFile('docs/AGAP_Robert_Restore_Drill.json',JSON.stringify(evidence,null,2)+'\n');
+  await writeFile('docs/AGAP_Member_Restore_Drill.json',JSON.stringify(evidence,null,2)+'\n');
   console.log(JSON.stringify(evidence,null,2));
 }finally{if(cloneStarted)docker(['rm','-f',container]);}

@@ -2,3 +2,5 @@
 .check{grid-column:1/-1;display:flex;align-items:center;gap:var(--space-3);min-height:44px;cursor:pointer}
 .check input{flex-shrink:0}.actions{display:flex;gap:var(--space-3);flex-wrap:wrap}
 @media(max-width:767px){.fields{grid-template-columns:1fr}.check{align-items:flex-start;padding:var(--space-3) 0}}
+
+.link{display:inline-flex;align-items:center;min-height:44px}

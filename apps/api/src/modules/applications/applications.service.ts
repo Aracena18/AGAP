@@ -77,7 +77,7 @@ export class ApplicationsService {
       return command(tx,`applications.assign:${id}`,key,{data,version},async()=>{
         const current=(await tx.query('SELECT branch_id,version,status,assigned_officer_id FROM applications.applications WHERE organization_id=$1 AND id=$2 FOR UPDATE',[actor.organizationId,id])).rows[0];
         if(Number(current.version)!==version)throw new ApiError(412,'stale_version','This application changed. Reload before changing its assignment.');
-        if(!['draft','evidence_review','clarification'].includes(String(current.status)))throw new ApiError(409,'review_in_progress','Assignment is locked after intake review has progressed.');
+        if(!['draft','submitted','evidence_review','clarification'].includes(String(current.status)))throw new ApiError(409,'review_in_progress','Assignment is locked after intake review has progressed.');
         const target=await tx.query<{allowed:boolean}>('SELECT identity.assignable_officer($1,$2,$3) AS allowed',[actor.organizationId,data.officerId,current.branch_id]);
         if(!target.rows[0].allowed)throw new ApiError(422,'officer_unavailable','Choose an active officer assigned to this application branch.');
         if(current.assigned_officer_id===data.officerId)throw new ApiError(409,'already_assigned','This officer already holds the assignment.');

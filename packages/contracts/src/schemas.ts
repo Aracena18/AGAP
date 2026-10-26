@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { CalendarDate, Money } from '../../../src/domain/types.js';
 
-export const CONTRACT_VERSION = '0.1.0';
+export const CONTRACT_VERSION = '0.2.0';
 export const Id = z.uuid();
 export const MoneyAmount: z.ZodType<Money> = z.number().int().min(0).max(Number.MAX_SAFE_INTEGER);
 export const SignedMoney: z.ZodType<Money> = z.number().int().min(Number.MIN_SAFE_INTEGER).max(Number.MAX_SAFE_INTEGER);
@@ -42,8 +42,8 @@ export const ApplicationCreateSchema = z.strictObject({
 export const ApplicationUpdateSchema = ApplicationCreateSchema.omit({ memberId: true });
 export const ApplicationSchema = z.strictObject({
   id: Id, organizationId: Id, branchId: Id, memberId: Id, memberName: z.string(), purpose: z.string(), requestedPrincipalCentavos: MoneyAmount,
-  requestedTermMonths: z.number().int(), currency: Currency, status: z.enum(['draft', 'evidence_review', 'clarification', 'assessment_ready', 'recommended', 'decision_recorded']),
-  version: Version, assessmentInputVersion: Version, assignedOfficerId: Id, createdAt: Instant, updatedAt: Instant,
+  requestedTermMonths: z.number().int(), currency: Currency, status: z.enum(['draft', 'submitted', 'evidence_review', 'clarification', 'assessment_ready', 'recommended', 'decision_recorded']),
+  version: Version, assessmentInputVersion: Version, assignedOfficerId: Id.nullable(), createdAt: Instant, updatedAt: Instant,
 });
 export const ApplicationPageSchema = z.strictObject({ items: z.array(ApplicationSchema), nextCursor: Id.nullable() });
 export const FactValueSchema = z.discriminatedUnion('availability', [
@@ -106,7 +106,57 @@ export const CommandReceiptSchema = z.strictObject({ id: Id, version: Version })
 export const CapabilitiesSchema = z.strictObject({ contractVersion: z.literal(CONTRACT_VERSION), modules: z.array(z.strictObject({ name: z.string(), owner: z.string(), state: z.enum(['available', 'contract_only']) })) });
 export const EventEnvelopeSchema = z.strictObject({ id: Id, type: z.string(), schemaVersion: z.literal(1), organizationId: Id, aggregateId: Id, aggregateVersion: Version, occurredAt: Instant, correlationId: z.string(), payload: z.record(z.string(), z.unknown()) });
 
+// Member principals and projections deliberately contain no staff authority.
+export const MemberSessionSchema = z.strictObject({
+  principal: z.strictObject({ kind: z.literal('member'), memberId: Id, displayName: Text }),
+  csrfToken: z.string(), expiresAt: Instant, privacyNoticeVersion: Text, contractVersion: z.literal(CONTRACT_VERSION),
+});
+export const MemberProfileSchema = MemberSchema.pick({id:true,fullName:true,phone:true,externalReference:true});
+export const MemberApplicationCreateSchema = ApplicationCreateSchema.omit({memberId:true}).extend({noticeVersion:Text,noticeAcknowledged:z.literal(true)});
+export const MemberApplicationSchema = ApplicationSchema.pick({id:true,purpose:true,requestedPrincipalCentavos:true,requestedTermMonths:true,currency:true,status:true,version:true,createdAt:true,updatedAt:true});
+export const MemberApplicationPageSchema = z.strictObject({items:z.array(MemberApplicationSchema),nextCursor:Id.nullable()});
+export const MemberSubmitSchema = z.strictObject({noticeVersion:Text,acknowledgment:z.literal(true)});
+export const ReminderPreferenceUpdateSchema = z.strictObject({noticesEnabled:z.boolean()});
+export const ReminderPreferencesSchema = ReminderPreferenceUpdateSchema.extend({version:Version});
+export const SourceReferenceSchema = z.strictObject({sourceId:Id,sourceVersion:Version,excerpt:Text,page:z.number().int().positive().optional()});
+export const ModelArtifactSchema = z.strictObject({
+  baseModel:Text,baseRevision:z.string().regex(/^[a-f0-9]{40}$/),artifactSha256:z.string().regex(/^[a-f0-9]{64}$/).nullable(),
+  promptVersion:Text,schemaVersion:Text,datasetManifestSha256:z.string().regex(/^[a-f0-9]{64}$/).nullable(),evaluationReference:Text,
+});
+export const AiDraftSchema = z.strictObject({id:Id,origin:z.enum(['model','template','simulated']),provenance:ModelArtifactSchema.nullable(),source:SourceReferenceSchema,value:FactValueSchema,question:Text,state:z.literal('suggested')});
+export const DraftConfirmationSchema = z.strictObject({draftId:Id,sourceId:Id,sourceVersion:Version,action:z.enum(['confirm','correct','not_applicable']),value:FactValueSchema,effectiveDate:CalendarDay.nullable(),reason:Text});
+export const IrregularExpenseSchema = z.strictObject({
+  source:SourceReferenceSchema,relevance:z.enum(['confirmed','uncertain','not_applicable']),value:FactValueSchema,
+  cashDate:CalendarDay.nullable(),recurrence:z.enum(['one_time','explicit_recurring','unknown']),assumption:Text,horizonEnd:CalendarDay,
+});
+export const MemberSourceSchema = z.strictObject({id:Id,fileName:Text,state:z.enum(['quarantined','cleared','blocked']),version:Version,verification:z.enum(['not_checked','supported','mismatch','unavailable'])});
+export const MemberEvidenceSchema = z.strictObject({sources:z.array(MemberSourceSchema),drafts:z.array(AiDraftSchema)});
+export const MemberOptionSchema = z.strictObject({offer:OfferSchema,checked:ScenarioSchema,horizonStart:CalendarDay,horizonEnd:CalendarDay,assumptions:z.array(Text)});
+export const MemberDecisionSchema = z.strictObject({id:Id,outcome:z.enum(['approve','decline','return']),explanation:Text,recordedAt:Instant,documentVersionId:Id.nullable(),terms:MemberOptionSchema.nullable(),accepted:z.boolean()});
+export const MemberReceiptSchema = z.strictObject({id:Id,loanId:Id,paidOn:CalendarDay,amountCentavos:MoneyAmount,reference:Text});
+export const MemberLoanSchema = z.strictObject({
+  id:Id,label:Text,status:z.enum(['active','settled','restructured','written_off']),position:LoanPositionSchema,
+  nextPayment:z.strictObject({date:CalendarDay,amountCentavos:MoneyAmount}).nullable(),
+  schedule:z.array(z.strictObject({date:CalendarDay,amountCentavos:MoneyAmount})),receipts:z.array(MemberReceiptSchema),
+});
+export const MemberSupportCreateSchema = z.strictObject({loanId:Id.nullable(),message:Text,contactPreference:z.enum(['portal','phone']),sharingConfirmed:z.literal(true),noticeVersion:Text});
+export const MemberSupportSchema = z.strictObject({id:Id,submittedAt:Instant,status:z.enum(['submitted','assigned','reviewed']),message:Text,response:Text.nullable()});
+export const MemberAcceptanceSchema = z.strictObject({decisionId:Id,documentVersionId:Id,acknowledgment:z.literal(true)});
+export const MemberUploadSchema = z.strictObject({fileName:z.string().trim().min(1).max(160),mediaType:z.enum(['application/pdf','image/jpeg','image/png']),size:z.number().int().min(1).max(10*1024*1024)});
+const serviceView = <T extends z.ZodType>(data:T) => z.discriminatedUnion('state',[
+  z.strictObject({state:z.literal('available'),data}),z.strictObject({state:z.literal('unavailable'),message:Text}),
+]);
+export const MemberEvidenceViewSchema = serviceView(MemberEvidenceSchema);
+export const MemberOptionsViewSchema = serviceView(z.array(MemberOptionSchema));
+export const MemberDecisionViewSchema = serviceView(MemberDecisionSchema.nullable());
+export const MemberLoansViewSchema = serviceView(z.array(MemberLoanSchema));
+export const MemberSupportViewSchema = serviceView(z.array(MemberSupportSchema));
+
 export const schemas = {
+  MemberSession:MemberSessionSchema,MemberProfile:MemberProfileSchema,MemberApplicationCreate:MemberApplicationCreateSchema,MemberApplication:MemberApplicationSchema,MemberApplicationPage:MemberApplicationPageSchema,MemberSubmit:MemberSubmitSchema,
+  ReminderPreferenceUpdate:ReminderPreferenceUpdateSchema,ReminderPreferences:ReminderPreferencesSchema,ModelArtifact:ModelArtifactSchema,AiDraft:AiDraftSchema,DraftConfirmation:DraftConfirmationSchema,IrregularExpense:IrregularExpenseSchema,
+  MemberSource:MemberSourceSchema,MemberEvidenceView:MemberEvidenceViewSchema,MemberOptionsView:MemberOptionsViewSchema,MemberDecisionView:MemberDecisionViewSchema,MemberLoansView:MemberLoansViewSchema,MemberSupportView:MemberSupportViewSchema,MemberSupportCreate:MemberSupportCreateSchema,MemberSupport:MemberSupportSchema,MemberAcceptance:MemberAcceptanceSchema,MemberUpload:MemberUploadSchema,
+  MemberOption:MemberOptionSchema,MemberDecision:MemberDecisionSchema,MemberLoan:MemberLoanSchema,MemberReceipt:MemberReceiptSchema,SourceReference:SourceReferenceSchema,
   ApiError: ApiErrorSchema, Session: SessionSchema, Staff: StaffSchema, StaffPage: StaffPageSchema, StaffRevoke: StaffRevokeSchema, MemberCreate: MemberCreateSchema, MemberUpdate: MemberUpdateSchema, Member: MemberSchema, MemberPage: MemberPageSchema,
   ApplicationCreate: ApplicationCreateSchema, ApplicationUpdate: ApplicationUpdateSchema, Application: ApplicationSchema, ApplicationPage: ApplicationPageSchema, AssignmentCreate: AssignmentCreateSchema,
   EvidenceCorrection: EvidenceCorrectionSchema, Verification: VerificationSchema, AssessmentCreate: AssessmentCreateSchema, Assessment: AssessmentSchema, Offer: OfferSchema,
