@@ -130,3 +130,7 @@ These do not prevent architecture or fictional development, but cannot be replac
 | Presenter format, time limit and any final-round-specific rubric | Team/organizer materials | Presentation sequence and evidence packaging |
 
 No guaranteed completion date, production certification or free hosted operating budget follows from this plan. The four-person split reduces conflicting edits; its workload and live readiness still depend on implementation and verified institutional inputs.
+
+## 8. User-requested UI refinement
+
+UI-01 is Robert's requested navigation/account/local-preview refinement within platform, member and integration work; the provisional four-person capacity estimates are unchanged, not actual-hours claims. The user explicitly authorized presentation-only changes in Aaron's evidence screen for the seven annotations. Aaron retains evidence/domain ownership; no financial/evidence rules or fixtures are reassigned. Work is isolated on `codex/ui-review-cleanup` over the current member-platform candidate. Design.md section 11 and the authentication proposal govern the revision; Assignment.md records its status. Existing uncommitted notes and historical evidence remain untouched.

@@ -23,7 +23,7 @@ export class MemberController {
   @Get('auth/callback') async callback(@Req() request:MemberRequest,@Res() response:Response){
     response.clearCookie('agap_member_login',{path:'/api/v1/member/auth',httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax'});
     let token:string;
-    try{token=await this.services.identity.finishLogin(cookieValue(request.headers.cookie,'agap_member_login'),new URL(request.originalUrl,this.services.config.PUBLIC_ORIGIN),cookieValue(request.headers.cookie,'agap_member_session'),'member');}
+    try{token=(await this.services.identity.finishLogin(cookieValue(request.headers.cookie,'agap_member_login'),new URL(request.originalUrl,this.services.config.PUBLIC_ORIGIN),cookieValue(request.headers.cookie,'agap_member_session'),'member')).token;}
     catch(error){if(!(error instanceof ApiError))throw error;const reason=error.code==='member_access_required'?'access':'retry';response.redirect(302,`${this.services.config.PUBLIC_ORIGIN}/#/member?signin=${reason}`);return;}
     response.cookie('agap_member_session',token,{httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax',path:'/api/v1/member',maxAge:this.services.config.SESSION_TTL_SECONDS*1000});response.redirect(302,`${this.services.config.PUBLIC_ORIGIN}/#/member`);
   }

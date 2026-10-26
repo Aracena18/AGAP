@@ -154,3 +154,27 @@ An accountable operator verifies the provider subject and cooperative record fir
 Run `npm run member:provision -- /private/path/member-link.json` with operator migration credentials. Revocation uses `{ "action": "revoke", "linkId": "<recorded UUID>", "expectedVersion": 1, "operatorReference": "<review reference>", "reason": "<reason>" }`; it atomically disables the link, ends sessions and preserves operator history. API identity/runtime credentials cannot perform these changes. Recovery requires verified operator review, not a phone match or upload.
 
 With the fictional API/web/provider running, `npm run test:keycloak:member` verifies a real signed member login, separate principal, denied staff session and logout. It refuses a member with an existing OTP credential, temporarily enrolls only when requested, restores the original required actions and removes only the temporary credential. [Member identity evidence](AGAP_Member_Identity_Walkthrough.json) contains no tokens or OTP secrets. Run this optional local check separately from the dedicated test database suites; production providers are refused.
+
+## Shared local administrator preview
+
+The user-approved UI cleanup reuses the seeded `administrator` and real staff session for review-demo access. Its account menu now signs out; simulated role/reset controls live under Demo tools. Staff and demo routes share session state; member sessions remain separate.
+
+For the explicitly fictional loopback setup, set this in the existing private `.env`:
+
+```dotenv
+LOCAL_PREVIEW_PASSWORD_ONLY=true
+```
+
+Then run:
+
+```sh
+npm run db:migrate
+npm run preview:setup
+npm run api:dev
+```
+
+Start Vite in another terminal as above. `preview:setup` is repeatable: it adds/updates only the marked local preview client and removes pending CONFIGURE_TOTP for the fixed fictional administrator. It does not remove enrolled credentials, reset a realm/database, change roles or reactivate access. A fresh import also contains the preview client. The setting defaults to false, requires loopback development/fictional database names and cannot enable production.
+
+Staff password-only sign-in uses the preview client at signed level 1; the normal client/member flow is unchanged. `/api/v1/auth/login?assurance=mfa&returnTo=%2Fstaff%2Faccess` requests level 2, verifies it and returns to the saved internal page. Assignment/revocation still reject single-factor sessions. Step-up does not replay commands; users review/submit after verification, with existing unsaved-navigation warnings.
+
+With the local preview/API/provider running, `npm run test:keycloak:preview` checks real password-only login, denied privileged action before MFA, explicit step-up and account-menu logout. It requires a fictional administrator without an existing OTP credential, removes only its uniquely labeled temporary authenticator and restores the initial required actions. It writes new UI-preview evidence rather than overwriting historical identity records. Existing identity walkthroughs describe their dated baseline and should not be used to reset an enrolled account.

@@ -32,6 +32,8 @@
     "staff:provision": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/scripts/provision-staff.ts",
     "test:keycloak": "node --env-file=.env infra/scripts/identity-walkthrough.mjs",
     "test:keycloak:member": "node --env-file=.env infra/scripts/member-identity-walkthrough.mjs",
+    "test:keycloak:preview": "node --env-file=.env infra/scripts/preview-identity-walkthrough.mjs",
+    "preview:setup": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/scripts/configure-preview.ts",
     "member:provision": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/scripts/provision-member.ts"
   },
   "dependencies": {

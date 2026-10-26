@@ -14,7 +14,7 @@ async function screenshot(page:Page,name:string){if(process.env.AGAP_MEMBER_SCRE
 test.describe('Member account with real own-record API',()=>{
   test.describe.configure({mode:'serial',retries:0});
   test('shows separate sign-in and actionable identity errors without a demo role switch',async({page})=>{
-    await page.goto('/#/member?signin=access');await expect(page.getByRole('heading',{name:'Welcome to AGAP'})).toBeVisible();await expect(page.getByRole('alert')).toContainText('not linked to an active member account');await expect(page.getByRole('link',{name:'Sign in to my account'})).toHaveAttribute('href','/api/v1/member/auth/login');await expect(page.getByLabel('Demo role')).toHaveCount(0);
+    await page.goto('/#/member?signin=access');await expect(page.getByRole('heading',{name:'Welcome to AGAP'})).toBeVisible();await expect(page.getByRole('alert')).toContainText('not linked to an active member account');await expect(page.getByRole('link',{name:'Sign in',exact:true})).toHaveAttribute('href','/api/v1/member/auth/login');await expect(page.getByLabel('Demo role')).toHaveCount(0);
     await page.getByRole('link',{name:'Skip to main content'}).focus();await page.keyboard.press('Enter');await expect(page.getByRole('main')).toBeFocused();
   });
   test('uses phone layout and marks missing loan data unavailable rather than zero',async({page,context})=>{
@@ -65,6 +65,6 @@ test.describe('Member account with real own-record API',()=>{
     await page.getByRole('link',{name:'Payment help',exact:true}).click();await page.getByLabel('What changed, and what help').fill('SIMULATED: please contact me.');await page.getByRole('button',{name:'Review request'}).click();await page.getByLabel('I agree to send this message').check();await page.getByRole('button',{name:'Send request'}).click();await expect(page.getByRole('status').filter({hasText:'sent for staff review'})).toContainText('current payment terms remain unchanged');await expect(page.getByText('SIMULATED: staff will discuss the available options.',{exact:true})).toBeVisible();
   });
   test('signing out removes access to member API and clears the private view',async({page,context})=>{
-    await signIn(context);await page.goto('/#/member');await page.getByRole('button',{name:'Sign out',exact:true}).click();await expect(page.getByRole('heading',{name:'Welcome to AGAP'})).toBeVisible();const result=await page.request.get('/api/v1/member/me');expect(result.status()).toBe(401);expect(await page.evaluate(()=>Object.keys(localStorage))).toEqual([]);
+    await signIn(context);await page.goto('/#/member');await page.getByRole('button',{name:/Account menu for/}).click();await page.getByRole('menuitem',{name:'Sign out',exact:true}).click();await expect(page.getByRole('heading',{name:'Welcome to AGAP'})).toBeVisible();const result=await page.request.get('/api/v1/member/me');expect(result.status()).toBe(401);expect(await page.evaluate(()=>Object.keys(localStorage))).toEqual([]);
   });
 });

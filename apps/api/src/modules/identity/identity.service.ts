@@ -1,6 +1,7 @@
 import { createHash, createHmac, randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
 import type { Pool } from 'pg';
 import * as oidc from 'openid-client';
+import { z } from 'zod';
 import { Role } from '../../../../../packages/contracts/src/schemas.js';
 import type { ActorContext,MemberActorContext } from '../../../../../packages/contracts/src/ports.js';
 import type { Config } from '../../platform/config.js';
@@ -22,17 +23,27 @@ export function requireFreshMfa(actor: ActorContext) {
   if (!actor.authenticationMethods.includes('mfa') || age< -60_000 || age > 15 * 60_000) throw new ApiError(403,'fresh_mfa_required','Sign in with multi-factor authentication again before authorizing this action.');
 }
 export class IdentityService {
-  private discovery?: Promise<oidc.Configuration>;
+  private discoveries=new Map<string,Promise<oidc.Configuration>>();
   constructor(private readonly pool: Pool, private readonly config: Config) {}
-  private configuration() {
-    this.discovery ??= oidc.discovery(new URL(this.config.OIDC_ISSUER), this.config.OIDC_CLIENT_ID, this.config.OIDC_CLIENT_SECRET, undefined, {
-      timeout: 5, execute: this.config.NODE_ENV === 'production' ? [oidc.enableNonRepudiationChecks] : [oidc.allowInsecureRequests, oidc.enableNonRepudiationChecks],
-    }).catch(error => { this.discovery = undefined; throw error; });
-    return this.discovery;
+  private configuration(audience:'staff'|'member') {
+    const preview=audience==='staff'&&this.config.LOCAL_PREVIEW_PASSWORD_ONLY;
+    const id=preview?'agap-local-preview':this.config.OIDC_CLIENT_ID;
+    let discovery=this.discoveries.get(id);
+    if(!discovery){
+      discovery=oidc.discovery(new URL(this.config.OIDC_ISSUER),id,preview?'fictional-preview-development-client':this.config.OIDC_CLIENT_SECRET,undefined,{
+        timeout:5,execute:this.config.NODE_ENV==='production'?[oidc.enableNonRepudiationChecks]:[oidc.allowInsecureRequests,oidc.enableNonRepudiationChecks],
+      }).catch(error=>{this.discoveries.delete(id);throw error;});
+      this.discoveries.set(id,discovery);
+    }
+    return discovery;
   }
-  async beginLogin(audience:'staff'|'member'='staff'): Promise<{ cookie: string; url: string }> {
+  async beginLogin(audience:'staff'|'member'='staff',input:unknown={}): Promise<{ cookie: string; url: string }> {
+    const options=z.strictObject({assurance:z.literal('mfa').optional(),returnTo:z.string().max(240).optional()}).parse(input);
+    const returnTo=audience==='member'?'/member':options.returnTo??'/staff';
+    if(audience==='staff'&&!/^\/(?:staff(?:\/(?:members|applications|access))?|applications(?:\/[A-Za-z0-9_-]{1,80}\/(?:evidence|comparison|decision))?)(?:#source-[A-Za-z0-9_-]{1,80})?$/.test(returnTo))throw new ApiError(422,'invalid_return_path','Choose a staff or review page.');
+    const requiredAcr=audience==='staff'?(this.config.LOCAL_PREVIEW_PASSWORD_ONLY&&options.assurance!=='mfa'?'1':'2'):null;
     let client:oidc.Configuration;
-    try{client=await this.configuration();}catch{throw new ApiError(503,'identity_unavailable','Sign-in is temporarily unavailable. Try again shortly.');}
+    try{client=await this.configuration(audience);}catch{throw new ApiError(503,'identity_unavailable','Sign-in is temporarily unavailable. Try again shortly.');}
     const verifier = oidc.randomPKCECodeVerifier();
     const state = oidc.randomState();
     const nonce = oidc.randomNonce();
@@ -40,21 +51,21 @@ export class IdentityService {
     const url = oidc.buildAuthorizationUrl(client, {
       redirect_uri: `${this.config.PUBLIC_ORIGIN}/api/v1/${audience==='member'?'member/':''}auth/callback`, scope: 'openid', state, nonce,
       code_challenge: await oidc.calculatePKCECodeChallenge(verifier), code_challenge_method: 'S256', max_age: '0',
-      ...(audience==='staff'?{claims: JSON.stringify({id_token:{acr:{essential:true,values:['2']}}})}:{}),
+      ...(requiredAcr?{acr_values:requiredAcr,claims:JSON.stringify({id_token:{acr:{essential:true,values:[requiredAcr]}}})}:{}),
     });
     await this.pool.query('DELETE FROM identity.oauth_states WHERE expires_at<now()');
-    await this.pool.query("INSERT INTO identity.oauth_states(token_hash,state,verifier,nonce,expires_at,audience) VALUES($1,$2,$3,$4,now()+interval '10 minutes',$5)", [tokenHash(cookie),state,verifier,nonce,audience]);
+    await this.pool.query("INSERT INTO identity.oauth_states(token_hash,state,verifier,nonce,expires_at,audience,requested_acr,return_path) VALUES($1,$2,$3,$4,now()+interval '10 minutes',$5,$6,$7)", [tokenHash(cookie),state,verifier,nonce,audience,requiredAcr,returnTo]);
     return { cookie, url: url.href };
   }
-  async finishLogin(cookie: string | undefined, callback: URL, previousSession?: string,audience:'staff'|'member'='staff'): Promise<string> {
+  async finishLogin(cookie: string | undefined, callback: URL, previousSession?: string,audience:'staff'|'member'='staff'): Promise<{token:string;returnTo:string}> {
     if (!cookie) throw new ApiError(401,'invalid_login','Start a new sign-in from this browser.');
-    const saved = await this.pool.query<{ state: string; verifier: string; nonce: string }>('DELETE FROM identity.oauth_states WHERE token_hash=$1 AND audience=$2 AND expires_at>now() RETURNING state,verifier,nonce', [tokenHash(cookie),audience]);
+    const saved = await this.pool.query<{ state: string; verifier: string; nonce: string; requested_acr:string|null;return_path:string }>('DELETE FROM identity.oauth_states WHERE token_hash=$1 AND audience=$2 AND expires_at>now() RETURNING state,verifier,nonce,requested_acr,return_path', [tokenHash(cookie),audience]);
     if (!saved.rows[0]) throw new ApiError(401,'invalid_login','The sign-in has expired or was already used. Start again.');
     let claims: ReturnType<Awaited<ReturnType<typeof oidc.authorizationCodeGrant>>['claims']>;
     try {
       // Request fresh authentication, but allow factor enrollment to finish
       // within the ten-minute, browser-bound login window.
-      const response = await oidc.authorizationCodeGrant(await this.configuration(), callback, { expectedState: saved.rows[0].state, expectedNonce: saved.rows[0].nonce, pkceCodeVerifier: saved.rows[0].verifier, maxAge: 600 });
+      const response = await oidc.authorizationCodeGrant(await this.configuration(audience), callback, { expectedState: saved.rows[0].state, expectedNonce: saved.rows[0].nonce, pkceCodeVerifier: saved.rows[0].verifier, maxAge: 600 });
       claims = response.claims();
     } catch(error) {
       const reason=error&&typeof error==='object'&&'code' in error&&typeof error.code==='string'&&/^[A-Z_]{1,80}$/.test(error.code)?error.code:'verification_failed';
@@ -62,6 +73,7 @@ export class IdentityService {
       throw new ApiError(401,'invalid_login','The identity response could not be verified. Start a new sign-in.');
     }
     if (!claims || typeof claims.sub !== 'string' || typeof claims.auth_time !== 'number' || !Number.isSafeInteger(claims.auth_time) || claims.auth_time*1000>Date.now()+60_000) throw new ApiError(401,'invalid_login','The identity response is missing required authentication information.');
+    if(saved.rows[0].requested_acr==='2'&&claims.acr!=='2'||saved.rows[0].requested_acr==='1'&&!['1','2'].includes(String(claims.acr)))throw new ApiError(401,'assurance_required','Complete the requested sign-in verification.');
     const methods = claims.acr === '2' ? ['mfa'] : ['single_factor'];
     const session = opaque();
     const client = await this.pool.connect();
@@ -80,7 +92,7 @@ export class IdentityService {
       }
       await client.query('COMMIT');
     } catch (error) { await client.query('ROLLBACK'); throw error; } finally { client.release(); }
-    return session;
+    return {token:session,returnTo:saved.rows[0].return_path};
   }
   async authenticate(token: string | undefined, correlationId: string) {
     if (!token) throw new ApiError(401,'authentication_required','Sign in to the staff workspace.');

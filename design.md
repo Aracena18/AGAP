@@ -48,7 +48,7 @@ Polish comes from consistent type, alignment, grouping, and state behavior. Addi
 | Member, assisted by staff | Clarify circumstances and understand the outcome and next step | Plain-language explanation and printable saved brief |
 | Bookkeeper or cashier | Help clarify an existing obligation or payment fact | Supporting participant; no additional prototype role or workspace |
 
-The labeled **Demo role** switch stays in the shared header. Display the active fictional staff identity. These roles demonstrate responsibility within one browser; they are not authentication or authorization for a live institution.
+The shared header contains AGAP, a workspace selector and an actual account menu. A real staff session is required to open the review demo. Put the labeled **Demo role** switch and Reset demo inside a **Demo tools** disclosure; these simulate responsibility in fictional browser records and never grant server authority. Show the signed-in account in the account menu, not a decorative fictional staff avatar.
 
 ### Information architecture
 
@@ -409,3 +409,16 @@ The current candidate implements the four-action home, separate member sign-in/s
 Use one router-level unsaved-change warning across editable staff/member forms, including Back/Forward, plus reload/close and sign-out warnings. Lock uncertain submissions and retain the original key/request until resolved. Hide old record/version results while new checked data loads; refresh must not silently discard unrelated unsent input. Session expiry/401 clears private content. Known unavailable services show a recoverable next step and cannot display a successful save or loan adjustment.
 
 These are implemented examples awaiting human design acceptance. Automated 320px, keyboard, accessibility and workflow checks supplement representative member/staff review; they do not establish financial-health improvement or deployed lending capability.
+
+## 11. Annotation cleanup and shared account controls — 26 October
+
+This section supersedes earlier baseline header/copy/layout descriptions where they differ. The user requested less prose, stronger hierarchy, a navigation button for the review demo and a working account menu. Implementation evidence and screenshots belong to the UI verification record; human visual acceptance remains pending.
+
+- Use one shared header: AGAP, a workspace selector (Member portal / Staff workspace / Review demo), and the actual account button when signed in. Move duplicate demo links out of cards/footers. Account menus expose identity and Sign out, with keyboard navigation, Escape/outside dismissal and appropriate focus return. An avatar must not imply an account that is not authenticated.
+- Member welcome: Welcome to AGAP; a simple Apply / Track / Get help icon row; one Sign in action. Enrollment guidance belongs under Need access? Preserve actionable sign-in errors.
+- Applications: one heading, date-cycle context, search/status filters and the table. Remove the repeated workspace subtitle and three-case guide. Use one concise Demo data / browser-save notice; memory-only warnings remain truthful.
+- Case identity: name and ID/occupation on the left, status beneath; requested amount and term on the right. Stack the amount group cleanly on phones. Review steps are Evidence / Compare options / Decision.
+- Evidence: label and amount first; status, source and cash date next. Effective dates and secondary details are expandable, while deduction treatment remains visible. Short warnings point to the next action. Preserve complete source excerpts/dates, supported versus verified meanings, correction reasons/history and financial figures.
+- Review-demo role/reset controls stay under Demo tools. Review-demo access uses a real staff session; the fictional record actors and role simulation do not become server permissions or real lending decisions. Preserve browser edits on sign-out; Reset demo remains explicit.
+
+Use existing Google Sans, tokens, Material symbols and shared controls. Verify at 320px and 1101px, keyboard menus and full source/correction/decision workflows. Keep private member/staff sessions separate; a workspace switch is navigation, not an authorization grant.

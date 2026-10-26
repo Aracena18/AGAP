@@ -15,7 +15,7 @@ test.describe('Server-backed staff workspace',()=>{
   test('signed-out staff require a server session',async({page})=>{
     await page.goto('/#/staff');
     await expect(page.getByRole('heading',{name:'Sign in to your workspace'})).toBeVisible();
-    await expect(page.getByRole('link',{name:'Sign in',exact:true})).toHaveAttribute('href','/api/v1/auth/login');
+    await expect(page.getByRole('link',{name:'Sign in',exact:true})).toHaveAttribute('href','/api/v1/auth/login?returnTo=%2Fstaff');
     await expect(page.getByRole('button',{name:'Add member'})).toHaveCount(0);
     await page.getByRole('link',{name:'Skip to main content'}).focus();await page.keyboard.press('Enter');
     await expect(page.getByRole('main')).toBeFocused();await expect(page).toHaveURL(/#\/staff$/);
