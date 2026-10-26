@@ -60,4 +60,6 @@ The restore drill is local to one development host. Full application plus identi
 
 ## Publication
 
-Publish this reviewed implementation candidate to its own remote branch, following the user's preference to avoid another PR. Leave main and existing PR/issue descriptions unchanged. Publishing a branch is not an agreed integration base, a PR merge or a live deployment. Remote CI results must be recorded separately from the local passes above.
+Published implementation commit [`ea3bf5736df698083c8b997d3d59d7f4bdfa75e8`](https://github.com/Aracena18/AGAP/commit/ea3bf5736df698083c8b997d3d59d7f4bdfa75e8) to [`feat/robert-member-platform`](https://github.com/Aracena18/AGAP/tree/feat/robert-member-platform), following the user's preference to avoid another PR. Remote main remains `c51af851509f22b2cae93b020228d30e5f780060`; PR #10 remains open at its original head. Existing PR/issue descriptions were not changed. Publishing the branch does not establish an agreed integration base, a PR merge or a live deployment.
+
+[Remote run 40280409812](https://github.com/Aracena18/AGAP/actions/runs/40280409812) completed with `startup_failure` for that implementation commit, with zero check runs. This is not a remote application-check failure or pass; no job ran. Its underlying cause has not been established. The local passes above are recorded separately. This final publication note changes documentation only.
