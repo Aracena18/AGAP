@@ -152,3 +152,43 @@ The append-only module migrations are `001-ledger.sql`, `002-posting.sql` and `0
 - Generated client/OpenAPI checkout line endings were temporarily normalized for the drift check and restored afterward; their canonical content remains unchanged. `graft` and `graphify` remain unavailable.
 
 The conflict resolution is committed locally on `feat/earl-gl-01` and ready for the user to push. PR #15 exists; no remote CI pass, merge of GL-01 into main, owner acceptance or production approval is claimed. GL-01 is an implementation candidate for review, not declared integrated; Robert must reconcile the central task status, accept/register the base/service, and repeat full checks on the supported Linux environment with Benedict's actual money path.
+
+## EVAL-01 data/protocol implementation candidate — 29 October 2026
+
+Branch/base: `feat/earl-eval-01` from main `75c7e7f`. Owned changes are the offline tools/tests in `evaluation/synthetic/`, the separate research protocol in `evaluation/explainable/`, and this handoff. Shared contracts, configuration, CI, application routes and financial modules are unchanged.
+
+### Supplied boundary
+
+The [synthetic evaluation module](../../../evaluation/synthetic/README.md) supplies twelve fictional development cases, fourteen source pages and eighteen expected findings. The paired repayment/strain cases share a scenario group, leaving eleven independent development groups. Authored expectations use fixed centavos/dates and source excerpts independently of the production finance engine; independent label/format review remains pending.
+
+Tools validate records, checksums, citations, unknowns and augmentation ancestry; keep connected household/scenario/content groups together; export inputs separately from targets; and reject overlapping private holdout families/templates/content. Reviewed-release creation requires hash-bound review evidence and an external private holdout. Private scoring also requires the frozen release commitment. Default exports remain development previews, with no accepted review or holdout fabricated by the tools.
+
+The structured scorer reports exact money/availability, date, recurrence, relevance, action and source errors with case denominators, plus missing/unsolicited fields and unsupported recorded values. Simulated predictions remain harness evidence; unmeasured timing/memory stays null. Free-text question/reason meaning and participant effort require separate review/observation. No trained artifact, model comparison, runtime promotion or household-benefit result is supplied.
+
+The renderer supplies labeled text-document PNG previews and exact image/source hashes. Representative images were visually inspected. The unreadable-field example uses a transcription placeholder; these images are not a realistic degraded-scan/OCR benchmark. Image input formats and broader template coverage need consuming-owner review.
+
+The development corpus hash is `792a4a0aaccd786b910429e2ccc429c21b0b3eb7c1de5bb20ca8f71d49a7af1f`. A locally generated bundle at `node_modules/.cache/agap-eval01/preview-final` verifies against that commitment; source images are at `node_modules/.cache/agap-eval01/images-final`. Generated outputs are reproducible development artifacts outside the tracked source, not a frozen training release.
+
+The [research protocol](../../../evaluation/explainable/README.md) records required access/codebook, cohort/target/feature, preprocessing/weight, split, artifact and final-report evidence for Aaron's EBM/logistic comparison. It adopts no guessed response mapping and downloads no survey data. Actual research inputs, reviewer agreement and returned artifacts remain pending.
+
+### Verification
+
+Native Windows, Node 24.22.2; repository regression checks used the isolated fictional PostgreSQL 18.6 `agap_test` database on localhost:55440.
+
+| Check | Observed result |
+| --- | --- |
+| Focused EVAL-01 suite | **46 passed**, including malformed values/citations, transitive grouping, duplicate-content isolation, stale reviews, holdout leakage/commitments, missing-as-zero, scoring alignment and simulated-output limits |
+| Scoped typecheck and lint | `tsc -p evaluation/synthetic/tsconfig.json --noEmit` and `eslint evaluation/synthetic` passed |
+| CLI and rendering | Generated/verified the development input/target/schema bundle; rendered fourteen PNGs and inspected representative documents |
+| `npm run check` | Lint, contract drift, web/API builds and **126 domain/UI tests passed**. Backend/contracts: **127 passed, 3 failed of 130**, with all accounting tests executed |
+| Full-check limitations | The same two document-store POSIX-mode cases and one staff-provisioning case fail on native Windows. Supported Linux verification remains required; checks and controls were not weakened |
+| `npm run test:e2e` | **32 Chromium tests passed**, using dedicated 5184/4111 test ports |
+| Temporary test setup | Generated client/OpenAPI and accounting SQL working-copy newlines were temporarily normalized to LF for checksum compatibility, then restored. An initial accounting setup mismatch was resolved by confirming the LF hashes against the existing disposable test database; migration-history records and SQL logic were unchanged |
+| Tooling and cleanup | `graft`/`graphify` unavailable; navigation used `rg`/Git. Temporary test servers were stopped after verification |
+
+### Receiving owners and remaining acceptance
+
+- Robert: review the evaluation-local formats and shared-schema compatibility; register focused evaluation tests/typechecking in the shared check/CI flow. Existing root test discovery excludes `evaluation/`. Update Assignment.md from PR evidence; this handoff does not declare EVAL-01 integrated or claim a remote CI result.
+- Benedict: review the concrete source/target/schema and image formats, confirm the loader/artifact interface, then consume an agreed frozen training/validation release before QWN-01 tuning.
+- Aaron: review expected evidence/expense meanings and recurrence/deduplication cases; supply verified research access/codebook/cohort/feature/artifact evidence and agree the independent split protocol with Earl.
+- Earl: complete independent label review, evaluator-controlled holdout storage/families, actual frozen comparison criteria and release evidence. Later execute returned artifacts and report independent Qwen/checklist/plain-form and EBM/logistic comparisons. The first data/protocol candidate is not completion of final EVAL-01 evaluation.
