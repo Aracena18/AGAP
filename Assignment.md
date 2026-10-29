@@ -2,7 +2,7 @@
 
 **Updated:** 29 October 2026, Asia/Manila.
 
-**Documentation publication history:** the user authorized the 25 October PLN-01/PLN-02 publication directly to `main`. That scoped exception and its implementation history remain intact. The 29 October PLN-03 goal-guidance addition is a separate documentation review on `docs/member-goals-guidance`; it does not authorize a main push or merge, integrate application features or freeze foundation contracts.
+**Documentation publication history:** the user authorized the 25 October PLN-01/PLN-02 publication directly to `main`. That scoped exception and its implementation history remain intact. The 29 October PLN-03 goal-guidance and PLN-04 5C additions form a separate documentation review on `docs/member-goals-guidance`; it does not authorize a main push or merge, integrate application features or freeze foundation contracts.
 
 This is the sole active task/status tracker. It supersedes the 20–21 October task instructions where they differ; GitHub issues and existing PR descriptions are historical references, not an alternative backlog. Each owner starts here, then reads the current linked brief and delivery plan. The documentation revision does not implement the new features.
 
@@ -36,6 +36,10 @@ This expands the previous estimate from 48 to **64 total relative units**; it do
 
 The user requested voluntary saving/investment suggestions from confirmed household information, including emergency, travel and leisure goals. [Product requirements](docs/AGAP_Product_Solution.md#member-goals-savings-and-cooperative-product-guidance), [delivery packages](docs/AGAP_Delivery_Plan.md#additional-goal-guidance-packages), [model release extension](docs/AGAP_Model_Training_Plan.md#6-goal-guidance-training-extension-29-october-2026) and [planned design](design.md#11-planned-goals-savings-and-product-guidance-29-october-2026) are coordinated under PLN-03. New feature tasks are additional unestimated stage 2 scope; an earlier fictional slice requires explicit owner capacity review and its release checks. Their estimates are **Pending**, not zero or included in the existing 64-unit first-demo baseline. Existing feature progress and ownership remain unchanged. No new feature becomes a prerequisite for the existing core SHOW-01 path.
 
+### Additional institution-rubric 5C scope
+
+The user requests AI-assisted 5C findings, percentages based on lending practice, explanations and a staff handoff. [Product requirements](docs/AGAP_Product_Solution.md#ai-assisted-5c-review-and-explainable-handoff), [delivery](docs/AGAP_Delivery_Plan.md#additional-5c-review-packages), [training/evaluation](docs/AGAP_Model_Training_Plan.md#7-institution-rubric-5c-analysis-and-explanation-extension-29-october-2026) and [design](design.md#12-planned-5c-review-explanations-and-handoff-29-october-2026) are coordinated under PLN-04. Actual institution/product-specific criteria, weights and unknown/applicability rules remain unconfirmed; AI analysis is not a calibrated probability. New feature work is additional stage 2 scope with Pending estimates, not included in the 64-unit first-demo baseline or the separately pending goal estimates. Earlier fictional demonstration requires owner capacity review and acceptance evidence; current statuses and ownership remain intact.
+
 ## Task register
 
 Stages: **0 — documentation/contracts and review; 1 — first hackathon demonstration; 2 — complete product and live-readiness evidence.** A stage 1 slice can be reviewed while the complete package remains unfinished. The status describes evidenced package progress, not a claim that every stage is delivered.
@@ -45,6 +49,7 @@ Stages: **0 — documentation/contracts and review; 1 — first hackathon demons
 | PLN-01 | Robert | 0 | Coordinated product/architecture/assignment documentation | User-approved plan; foundation handoff | Shared documentation | Integrated | Published directly to `main` by user instruction; [historical documentation verification](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/AGAP_Plan_Revision_Verification.md); no application features |
 | PLN-02 | Robert | 0 | Coordinated model-training plan, architecture and balanced assignments | User-requested Qwen/Benedict and explainable/Aaron ownership; PLN-01 | Shared documentation | Integrated | Published directly to `main`; [publication verification](docs/AGAP_Direct_Publication_Verification.md); [historical revision verification](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/AGAP_Model_Training_Revision_Verification.md) |
 | PLN-03 | Robert | 0 | Coordinated voluntary goals, savings and cooperative-product guidance plan | PLN-02; user-requested scope | Shared documentation | Ready for review | `docs/member-goals-guidance`; [verification](docs/AGAP_Goals_Guidance_Verification.md); local documentation checks passed; no feature implementation |
+| PLN-04 | Robert | 0 | Coordinated AI-assisted institution-rubric 5C review, explanations and handoff plan | PLN-02; user-requested 5C scope | Shared documentation | Ready for review | docs/member-goals-guidance; [verification](docs/AGAP_Goals_Guidance_Verification.md); local documentation checks passed; no score implementation or validated probability |
 | FND-01 | Robert | 0 | Shared contracts/client and backend transaction foundation | Architecture baseline | Platform/contracts | Ready for review | [PR #10](https://github.com/Aracena18/AGAP/pull/10), `4b03c6b`; 0.1.0 candidate |
 | FND-02 | Robert | 0 | Staff identity, scoped access and member/application intake | FND-01 | Platform/intake | Ready for review | [Verification](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/AGAP_Robert_Verification.md); staff intake, real DB and Keycloak tests |
 | FND-03 | Robert | 0 → 1 | Member identity linkage/access, model provenance and next shared contract revision | FND-01; FND-02 | Platform/member access/shared model contracts | Not started | Planned; 0.1.0 remains a review candidate |
@@ -67,6 +72,10 @@ Stages: **0 — documentation/contracts and review; 1 — first hackathon demons
 | QWN-02 | Benedict | 2 | Qwen goal-guidance adaptation, regression and artifact handoff | QWN-01; EVAL-02 training/validation handoff | models/qwen | Not started | Additional estimate Pending; no new model family/provider client |
 | EVAL-02 | Earl | 2 | Goal/content corpus, protocol and independent guidance evaluation | FND-04; reviewed goal/content protocol | evaluation/synthetic | Not started | Data/protocol first; final scoring consumes returned QWN-02 artifacts |
 | MOB-02 | Robert | 2 | Own-record goals, contribution scenarios, guidance/review and progress UI | FND-04; CRD-02; GOL-01 | Member portal | Not started | Additional estimate Pending; no money movement |
+| FND-05 | Robert | 2 | 5C rubric provenance, findings, scoring/review/trace and handoff contracts | FND-03 | Shared contracts/platform | Not started | Additional estimate Pending; no executable or numeric-policy change |
+| CRD-03 | Aaron | 2 | Institution-rubric 5C analysis, deterministic score/trace and staff panel | FND-05; EVD-01; CRD-01 | Credit/evidence/products | Not started | Additional estimate Pending; actual institutional rubric remains unconfirmed |
+| QWN-03 | Benedict | 2 | Qwen 5C evidence/explanation adaptation and decision-handoff integration | QWN-01; EVAL-03 training/validation handoff | models/qwen and decisions | Not started | Additional estimate Pending; draft findings are not repayment probabilities |
+| EVAL-03 | Earl | 2 | Independent 5C corpus/protocol, rule/expert/checklist and model evaluation | FND-05; reviewed rubric/source protocol | evaluation/synthetic | Not started | Data/protocol first; final scoring consumes returned QWN-03 artifacts |
 | OPS-01 | Robert | 2; groundwork ongoing | Full identity/offsite restore, migration and operating evidence | FND-02; integrated PAY-01 and ACC-01 | Platform/operations | In progress | [Local encrypted restore](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/AGAP_Robert_Restore_Drill.json) passed; identity/offsite/cutover pending |
 | SHOW-01 | Robert | 1 → 2 | Integrated demonstration and model/release evidence packaging | MOB-01; EVD-01; CRD-01; AI-01; DEC-01; GL-01; PAY-01; HLT-01; ACC-01; QWN-01; XAI-01; EVAL-01 | Integration/shared wiring | Not started | Each owner contributes evidence within their owned area |
 
@@ -81,6 +90,7 @@ These task-level checks supplement the owned slices in the delivery plan and eac
 | PLN-01 | Product, design, architecture and all briefs agree; no conflicting owners | Use this published plan; feature integration still requires its own evidence and authorization |
 | PLN-02 | Model owners, exclusive paths, training/evaluation boundaries, stages and budgets agree | Start the assigned future tasks using this published plan; training remains Not started |
 | PLN-03 | Product/design/architecture/delivery/training/briefs agree; documentation links/ownership/dependencies verified | Review the goal extension; no runtime, trained guidance, product activation or merge is implied |
+| PLN-04 | Rubric semantics/provenance, evidence analysis, explainability, workflow and all owner docs agree | Review source/criterion/weight dependencies and unavailable states; no numeric policy, prediction or merge is implied |
 | FND-01 | Executable contracts and platform evidence reviewed by all consuming owners | Record Aaron/Benedict/Earl interface agreement and accepted base |
 | FND-02 | Scoped runtime-role access, revocation and staff intake reviewed | Complete staff/UI review; member access belongs to FND-03 |
 | FND-03 | Own-record access, separate member principal, domain/model provenance ports and proposed contracts reviewed | Propose member linkage, artifact/provenance, draft confirmation, support and reminder interfaces |
@@ -103,6 +113,10 @@ These task-level checks supplement the owned slices in the delivery plan and eac
 | QWN-02 | Reproducible guidance artifact, extraction regression and separate independent promotion evidence | Agree Earl's approved goal corpus and protocol before adaptation |
 | EVAL-02 | Grouped held-out guidance comparison, unsafe advice/source errors, template baseline and comprehension evidence | Hand off reviewed training/validation data first; score artifacts later without tuning on holdout |
 | MOB-02 | Voluntary member-only goal journey, accessible states, no product steering or financial commands | Implement the design blueprint after reviewed FND-04/CRD-02/GOL-01 interfaces |
+| FND-05 | Scoring, evidence coverage, probability, verification, review and decision remain distinct in agreed contracts | Propose source/rubric/review/trace/handoff fields after core member contracts |
+| CRD-03 | Source-approved rubric, exact point/weight/denominator trace, unavailable/applicability states and preserved capacity rules | Research applicable institutional criteria, then document approval/configuration before numeric activation |
+| QWN-03 | Source-grounded 5C findings and faithful supplied-score explanations; versioned handoff and human authority | Agree Earl's reviewed corpus, baseline and holdout protocol before adaptation |
+| EVAL-03 | Independent rule/expert/template comparison, appropriate unknowns, demographic/language invariance and correction burden | Hand training/validation references off first, then score returned artifacts without holdout tuning |
 | OPS-01 | Full recovery and reconciled financial cutover evidenced before live use | Retain existing drill evidence and complete remaining recovery dependencies |
 | SHOW-01 | Connected fictional journey; honest capability labels; observed usability and relevant checks | Coordinate contract reviews, then integrate completed slices without unauthorized merges |
 
@@ -125,6 +139,10 @@ Start GL-01 and independent synthetic case design in parallel with interface rev
 ## Goal-guidance handoffs
 
 Robert owns PLN-03, FND-04 and all MOB-02 member screens/facade; Aaron owns CRD-02 calculations/catalogue and the existing AI adapter; Earl owns GOL-01 goal/content/advice-review records and EVAL-02 independent data/evaluation; Benedict owns QWN-02 in the existing Qwen training path. Additional work stays in the existing exclusive directories. Domain/UI/training owners do not write one another's tables/files or add duplicate calculators/provider clients. Investment suggestions require current approved products, proportionate confirmed goal/risk/liquidity inputs and recorded authorized suitability review; planning acceptance never executes a transaction. Track implementation evidence here only; each brief records handoffs within its existing ownership.
+
+## 5C-review handoffs
+
+Robert owns PLN-04/FND-05 shared contract/integration proposals; Aaron owns CRD-03 rubric configuration, checked per-C scoring and the staff credit panel; Benedict owns QWN-03 grounded analysis/explanations and decision-handoff integration within his current model/decision paths; Earl owns EVAL-03 independent corpus/protocol/final comparisons. All consume the existing AI adapter and source-owned projections. Officer recommendations and separate reviewer decisions remain human actions; numerical rubric arithmetic is deterministic, source/verification status is preserved, and XAI-01 is not a credit-probability model. No work crosses existing path/table ownership.
 
 ## Working in parallel
 
@@ -162,3 +180,5 @@ Robert owns PLN-03, FND-04 and all MOB-02 member screens/facade; Aaron owns CRD-
 | 25 October 2026 — direct publication | User requested a direct push instead of documentation PRs. PLN-01/PLN-02 are published on main with the current assignments; feature code stays on its candidate branch. FND-01/FND-02 remain Ready for review, OPS-01 In progress, and model training Not started. |
 
 29 October 2026 — PLN-03: user requested goal-based saving/investment guidance using existing member information. Added coordinated scope, future owner packages, calculation/model/suitability boundaries and planned UI. Feature/model tasks remain Not started; additional capacity estimates are Pending. Documentation verification and review are separate from application implementation and the earlier main-publication exception.
+
+29 October 2026 — PLN-04: user clarified that the proposed 5C evaluation should draw on financial-institution practice and document/member evidence. Added institution-rubric review, grounded AI findings, deterministic percentage/trace semantics, explanations and staff handoff. Actual criteria/weights remain unconfirmed; no model-generated repayment probability or implementation is claimed. New package estimates are Pending and existing progress/budgets remain unchanged.

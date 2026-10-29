@@ -1,5 +1,7 @@
 # AGAP production architecture
 
+**5C extension:** 29 October 2026. FND-05/CRD-03/QWN-03/EVAL-03 add proposed rubric review interfaces only; numeric policy and executable contracts remain unimplemented.
+
 **Goals extension:** 29 October 2026. FND-04/CRD-02/GOL-01/MOB-02/QWN-02/EVAL-02 are proposed additional implementation packages; executable contracts, data stores and runtime remain unchanged by this document.
 
 **Baseline:** 25 October 2026, Asia/Manila. Updated for member-phone access, bounded AI assistance, Qwen training and separate explainable-model research.
@@ -158,6 +160,8 @@ Use normalized tables for operational records and append-only historical records
 | Member goal/guidance (monitoring) | Member-owned goal/version, purpose/target/deadline, consent, dedicated funds, confirmed inputs, reviewed content and immutable guidance/reviewer history; no money movement |
 | Goal planning run (credit) | Exact goal/fact/position/catalogue versions, as-of date, horizon, dated assumptions, protected allocations, integer-centavo calculations, incomplete/infeasible/conditional result and engine version |
 | Savings/investment catalogue (credit) | Institutionally approved version, availability, eligibility, liquidity/lockup, minimums, fees, risks, return disclosures, authority and review/expiry; no invented product or guaranteed return |
+| 5C rubric/assessment (credit) | Source institution/product/date, approved criterion/weight/applicability/missingness rules and version; immutable evidence/offer bindings, deterministic scores and criterion trace; no probability field |
+| 5C finding/handoff review | Source-linked AI candidate versus accepted discretionary finding, confirming actor/rationale, review/as-of/coverage/stale state and decision-snapshot references; no inferred personality or eligibility authority |
 | Conflict declaration | Case/actor declaration, applicable restriction, reassignment/recusal and resolution evidence; separate from eligibility and calculation |
 
 Concurrency version and assessment-input version have different jobs. Every application mutation changes its concurrency version. Only changes affecting evidence, verification readiness, policy applicability or available terms change the assessment-input version. Saving a reminder must not invalidate a valid assessment; changing verified income must.
@@ -177,6 +181,19 @@ Missing, conflicting, stale and unknown values remain distinguishable from zero.
 5. Compare permitted offers from checked results. Count a cost once: a reserve presentation and eventual dated spending cannot both be deducted, and repeated source mentions cannot duplicate obligations.
 
 The unchanged browser model still covers one cycle and retains its historical oracles. New multi-cycle results need independent expectations. Document quantity, asset ownership, AI confidence and draft completeness do not automatically raise a loan limit or become predictive default scores.
+
+### Institution-rubric 5C assessment and proposed FND-05 boundary
+
+Implement the [5C requirements](AGAP_Product_Solution.md#ai-assisted-5c-review-and-explainable-handoff) in existing evidence/credit/decision modules. Robert proposes FND-05 source/criterion/rubric/result/review/trace ports and integration; Aaron owns CRD-03 rubric configuration, deterministic scoring and staff 5C UI in credit; Benedict owns QWN-03 bounded analysis/explanation and decision-handoff integration through the existing AI adapter; Earl owns EVAL-03 independent data/protocol/final review. No second AI provider, calculator, member-score service or outcome-prediction model is added.
+
+1. Evidence provides authorized current facts, verification status and source references. Qwen drafts per-C evidence/criterion mappings, contradictions/questions and source-linked findings. Its output remains untrusted; it cannot define weights, fabricate rating rules or authenticate sources. Discretionary criterion interpretations require staff acceptance before reviewed scoring.
+2. Credit binds a versioned institution/product-specific approved rubric to a fixed evidence/offer/assessment snapshot. Objective values come from source-owned facts and the existing finance engine. Compute configured weighted/normalized scores in deterministic fixed-point score units, with explicit bounds/denominators/rounding and a per-criterion trace. Keep money in integer centavos. No configured rubric or missing required evidence yields unavailable/clarification, not zero or a guessed denominator. Not-applicable criteria require a documented product/rubric rule.
+3. Qwen can summarize only the supplied accepted trace/results and unresolved matters. Validate evidence references, criterion IDs, score values, explanations and statements of review/coverage. Unsupported factors, invented scores/probabilities or claims that a high score overrides a cash shortage are rejected; expose the trace/template/manual path if AI is unavailable.
+4. Decision services consume the reviewed 5C record with the checked offer/assessment and source/rubric/input versions. The officer independently recommends and the separate authorized reviewer decides. A model output never writes a decision or grants an exception. Changes to evidence, rubric applicability or terms mark affected pending findings/scores/handoff stale and require recomputation/review; immutable historic records remain intact.
+
+Proposed records/ports carry rubric provenance and approval/effective version, category/criterion, possible/awarded points and weight, required/applicable/unknown state, accepted source values, discretionary reviewer reasons, verified status separately, arithmetic and aggregate rule if any, score/review/coverage state, as-of/horizon and model/prompt/engine origin. A field labeled rubric percentage cannot be serialized or displayed as repayment probability or AI confidence. Evidence coverage has a separate definition and denominator. Apply normal server scopes, version checks, audit/access history and member correction/explanation rights; the first panel is a staff view, not a new public member ranking.
+
+Public references establish a review framework only; no current approved numeric rubric is supplied. Any fictional illustration is labeled and isolated from live configuration. EBM/logistic research keeps its existing offline emergency-funds target and has no data path here. Future credit-probability modeling requires a separate approved target/data/calibration/evaluation/architecture proposal; explaining a generated score does not validate it.
 
 ### Goal-guidance flow and proposed FND-04 boundary
 
@@ -240,6 +257,7 @@ Balances and arrears are computed from posted events as of an explicit date, inc
 | Transfer | Prepared → authorized → submitted → confirmed, failed or unknown; confirmed-but-unposted is a visible exception. Reversal/refund is a new controlled command |
 | Loan | Pending release, active, settled, restructured or written off, with separate due/arrears indicators; a health concern is not a loan-status transition |
 | Journal/period | Journal draft → separately approved posting, or source-authorized automatic posting; posted journals are reversed through new records. Period open → closing → closed |
+| 5C assessment | Evidence/criterion draft → clarification or accepted findings → configured checked score/trace → officer review/handoff; missing rubric/evidence yields unavailable, material changes require renewed review; no automatic approval |
 | Member goal | Draft → confirmed → checked plan or clarification → member choice → active/paused/completed/withdrawn; progress is member-reported or source-linked, never an assumed account balance |
 | Goal guidance | General budget/goal draft or template → member choice; product-specific investment draft stays staff-only → required suitability review → reviewed recommendation or clarification/declined → shared; material changes/expiry require renewed review; no loan or financial-command transition |
 | Health review | Scheduled → due → completed or clarification requested → next action/review. Missing check-in data does not imply a healthy member or a delinquent loan |
@@ -274,6 +292,7 @@ Use versioned HTTP JSON commands under `/api/v1`. The integration owner publishe
 | Robert | Member document/confirmation and `/member/support-requests` facade commands | Call Aaron's evidence and Earl's monitoring services with explicit member context; no duplicated verification/finance logic |
 | Aaron | Evidence AI drafts/confirmation, irregular-cost inputs and checked assessment extension | Source-linked suggestions versus confirmed facts and independent checks; one engine; explicit horizon/unavailable inputs |
 | Benedict | Conflict declarations/approval guards and amendment comparisons/acceptance | Separate authority, current basis, approved/accepted new schedule and preserved original |
+| Robert, Aaron, Benedict and Earl | FND-05 rubric provenance, 5C findings/scores/review trace and handoff references | Additional proposed schema; fixed-point rubric scores are separate from coverage, probability, money and final decision |
 | Robert, Aaron and Earl | FND-04 own-record goals, checked planning/catalogue and guidance-review ports | Later contract proposal with separate model/content release evidence; no change to 0.1.0 |
 | Earl | Support-request/check-in/task projections and confirmed sharing | Staff routing and action history; no automatic health verdict, credit penalty or contractual change |
 | Robert | Shared principal, AI draft, model artifact/provenance, confirmation and support/amendment port schemas | Consuming-owner review including both trainers and evaluator before generation; capability flags remain honest |

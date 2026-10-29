@@ -1,5 +1,7 @@
 # AGAP product solution and feature priorities
 
+**5C revision:** 29 October 2026. Adds planned evidence-based institution-rubric scores, explanations and handoff; numeric policy configuration is unresolved and no repayment probability is claimed.
+
 **Goals revision:** 29 October 2026. The member-goal, savings and cooperative-product guidance below is user-requested target scope, not implemented advice or an approved product catalogue.
 
 **Planning baseline:** 25 October 2026, Asia/Manila. This revision incorporates member-phone access, AI-assisted financial-health review and assigned Qwen/explainable-model training.
@@ -89,7 +91,7 @@ Payment processing includes controlled manual cash/bank workflows as well as pro
 
 ## 4. Trust, affordability and inclusion
 
-AGAP verifies individual claims and records their supporting evidence. It does not produce a truthfulness or character score.
+AGAP verifies individual claims and records their supporting evidence. It does not infer truthfulness or personality scores. The planned 5C Character category below is restricted to documented repayment-related evidence under an approved institutional rubric; it is not a judgment of personal honesty.
 
 More relevant, reliable evidence improves the basis for review; it does not automatically increase a loan limit. An asset or farm title is not household spendable cash. Farming/business income requires supported net amounts, costs and timing. Approved source/issuer checks and CI findings are recorded with limitations; AI cannot declare a scan true or a person dishonest.
 
@@ -129,6 +131,30 @@ Robert owns shared model contracts/dependencies, runtime wiring and evidence pac
 The member can report an income change or difficulty meeting essentials and preview/edit what will be shared. Monitoring records the confirmed request and assigns staff review. Staff discuss only institutionally permitted options, such as a due-date change, temporary arrangement, authorized restructuring or an available assistance/referral pathway. These options remain unconfirmed institutional inputs until the cooperative approves them.
 
 Servicing calculates the proposed schedule/cost effects using the approved engine and recorded loan position. An authorized person approves the amendment, the member accepts it, and a new effective schedule preserves the original. A pending request does not pause interest/fees, change balances or promise relief. Staff consider both household needs and the cooperative's approved servicing/accounting constraints. Declined or missing check-in answers remain unavailable and do not imply dishonesty or good/bad financial health.
+
+### AI-assisted 5C review and explainable handoff
+
+The user requests an assessment after document/answer analysis, organized by Character, Capacity, Capital, Collateral and Conditions, with per-category percentages, supporting explanations and a staff handoff. Add this as a planned institution-rubric review, with AI-assisted evidence analysis, deterministic scoring and human review. It is not an implemented scoring model or a repayment-probability estimate.
+
+| Category | Relevant review basis and limits |
+| --- | --- |
+| Character — repayment-related evidence | Authorized repayment records and documented verification findings under defined criteria; no inferred honesty, personality, emotion, appearance, writing-style or social-media score |
+| Capacity | Confirmed income, essentials, debts and proposed payments; dated shortages and full costs remain visible alongside any rubric result |
+| Capital | Source-linked relevant resources, member contributions and commitments with availability/restrictions; assets or share capital are not automatically spendable cash |
+| Collateral | Product applicability, verified ownership/valuation and recorded restrictions/security requirements; not applicable is distinct from missing or failed |
+| Conditions | Documented purpose, permitted terms and relevant dated household/business circumstances; no invented future income or unsupported market forecast |
+
+**Rubric provenance before numbers:** research published financial-institution practice, identify its institution/product/jurisdiction/date and distinguish educational descriptions from actual operative policies. Obtain the cooperative's approved applicable criteria, rating levels, points/weights, denominator/rounding, required evidence, exceptions, applicability, missing-data treatment, thresholds and version. The public five-Cs framework is not a universal scoring formula. Published [CDA/Landbank training](https://cda.gov.ph/updates/csf-cooperatives-elevate-expertise-on-loan-evaluation-and-credit-appraisal/) supports the framework in a CSF-cooperative context, not a DCCPEC scorecard; the [SBA overview](https://www.sba.gov/blog/2018/2018-05/five-factors-impact-your-business-credit/) describes lender variation in business-credit assessment, not Philippine eligibility rules. No researched source currently supplies an approved AGAP numerical rubric. Until configured, show evidence/findings and **Rubric score unavailable**, never made-up percentages. A fictional test/demo rubric requires explicit labeling and independent expected results; its weights cannot be described as institutional practice or validated repayment probabilities.
+
+**Assessment flow:** Qwen drafts source-linked 5C findings, identifies conflicts/gaps, suggests which defined criterion a fact supports and asks focused questions. Source confirmation and independent verification remain separate. Objective criteria use confirmed facts and checked calculations; discretionary ratings require an identified staff acceptance/correction before they contribute to a reviewed score. The credit service, not Qwen, computes each configured rubric percentage and its trace using deterministic fixed-point score units, explicit rounding and the applicable denominator. Preserve draft versus reviewed status. Missing critical evidence blocks the affected score/assessment; do not give it zero, silently shrink the denominator or mark it not applicable. Show applicability and evidence completeness separately. Do not combine the five percentages into an overall score or outcome unless an approved aggregation rule defines it, and never let an aggregate hide missing facts, a cash shortage, authority restrictions or required policy exceptions.
+
+A label such as **Capacity: institution-rubric score (%)** states the rubric version, relevant offer, as-of/horizon, reviewed status and limitations. It is neither a percent honest, AI-confidence percentage, nor the chance of repaying. AI analysis alone does not calibrate probability. A future repayment/default probability requires a separately approved outcome/horizon, representative authorized outcome data, leakage controls, independent calibration/discrimination and subgroup/operating review; the current synthetic cases and emergency-fund EBM do not provide those labels or validation. That predictive work remains outside this addition.
+
+**Explainable output and handoff:** retain a machine-checkable trace of criteria, accepted evidence/source dates, thresholds/weights, awarded/possible points, arithmetic, missing items and applicable exceptions. Qwen may express that supplied trace in plain language, with references and no invented factors, causation or reasons. A generated rationale or hidden reasoning transcript is not evidence that a score is valid. Rule traces explain rubric scores; an actual trained predictive model would require an appropriate explanation method and a separate reviewed design. Current EBM/logistic research stays offline and is not repurposed as a 5C model or as an explainer for Qwen's judgment.
+
+The officer receives original authorized sources/member answers, draft/reviewed findings, per-C results or unavailable states, unresolved questions, checked repayment scenarios and a concise source-linked handoff. The officer records their own recommendation; a separate authorized reviewer decides with their own reasons. Relevant source, offer or rubric changes invalidate pending results and require renewed review while retaining historical snapshots. Missing credit history or inapplicable collateral is not automatically dishonesty or rejection; approved alternatives and clarification remain available. An AI draft, rubric score or high total never constitutes approval, document authentication or a financial-health guarantee.
+
+FND-05 (Robert), CRD-03 (Aaron), QWN-03 (Benedict) and EVAL-03 (Earl) are additional unestimated stage 2 packages. Robert owns shared contracts/integration, Aaron the credit rubric/rules and staff 5C view, Benedict the same Qwen family's bounded analysis/explanation adaptation and decision-handoff integration, and Earl independent corpus/protocol/validation. The first-demo budgets and the separate goal-guidance tasks remain intact; an earlier labeled fictional illustration needs explicit capacity review and its checks. No live scoring, actual weights, model promotion or contract changes are implemented by this plan.
 
 ### Member goals, savings and cooperative-product guidance
 

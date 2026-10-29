@@ -48,6 +48,10 @@ Own PLN-03, FND-04 and MOB-02 within your existing shared/member-portal paths. A
 
 Keep source dates, incomplete/infeasible/conditional plans, AI draft versus reviewed advice, stale/expired recommendations, no-product and manual/template states visible. Member access remains own-record and revocation-aware. Product-specific investment suggestions require Earl's recorded authorized suitability-review state. No portal control moves money, opens an account or amends a loan. New packages are stage 2 by default and unestimated beyond the existing 16-unit first-demo slice; record an explicit capacity re-estimate before adding an earlier fictional demonstration. Coordinate EVAL-02 and eligible QWN-02 runtime evidence through Aaron's existing adapter. Existing progress is unchanged; Assignment.md alone records status.
 
+## Institution-rubric 5C addition (29 October 2026)
+
+Own PLN-04 and FND-05 within the shared-contract/registration boundary. Propose source/institution/product/version rubric references, candidate versus reviewed criteria, deterministic score/coverage/trace and handoff/decision versions; no schema/client or 0.1.0 changes occur in documentation. Aaron owns staff 5C views and credit/rule results; Benedict owns the grounded handoff/explanation and Qwen adaptation; Earl independently evaluates. Preserve actual officer/reviewer authority, member correction access, server scopes and stale-result checks. Existing member-portal ownership and goal work remain intact. Additional stage 2 estimates are Pending beyond current first-demo budgets; no universal rubric or calibrated repayment probability is supplied.
+
 ## Progress and handoff notes
 
 21 October 2026: FND-01/FND-02 are Ready for review on `feat/robert-fnd-01`, based on `875b405c3c6e5d13f8a00aed7c8712b99c5422ef`. Contract 0.1.0 is a candidate, awaiting Aaron/Benedict/Earl interface agreement. OPS-01 is In progress; its local encrypted restore drill passed, while full identity/offsite recovery and integrated financial cutover remain dependencies.
@@ -63,3 +67,5 @@ Published [draft PR #10](https://github.com/Aracena18/AGAP/pull/10), implementat
 25 October 2026 — PLN-02: the user-requested model-training revision supersedes this brief’s earlier 12-unit allocation. Current scope is the 16-unit table above and the [model training plan](../../AGAP_Model_Training_Plan.md); recorded implementation history remains unchanged. No training result or new feature implementation is claimed.
 
 29 October 2026 — PLN-03: goal-guidance responsibilities and future acceptance added by user request. Existing feature/model progress, exclusive ownership and first-demo budgets remain unchanged; new goal packages have separate pending estimates.
+
+29 October 2026 — PLN-04: added planned 5C review/trace/handoff responsibilities without changing existing feature/model progress, original first-demo budgets or the separate goal packages. Numeric rubric configuration remains pending.

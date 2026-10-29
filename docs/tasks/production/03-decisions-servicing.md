@@ -55,6 +55,10 @@ Own QWN-02 within the existing models/qwen training/artifact boundary. The [sepa
 
 Earl hands off EVAL-02 training/validation material first and retains final holdout labels. Record goal/content/catalogue/engine versions with the existing base/processor/adapter/config and dataset hashes. A document-extraction pass cannot release guidance; independently evaluate missing-data abstention, exact checked figures, source grounding, essential-needs protection, non-coercive goal choice, loss/liquidity/fee disclosures and required suitability-review status. No invented savings capacity, return, product, recurring expense, approval outcome or financial action. Runtime remains Aaron's single adapter and Robert's wiring; Earl owns GOL-01 review/follow-up. QWN-02 is stage 2 by default and unestimated beyond your existing 16-unit slice. Existing loan/amendment authority, stage 2 SRV-01 ownership and progress remain unchanged.
 
+## Institution-rubric 5C addition (29 October 2026)
+
+Own QWN-03 within existing models/qwen and decision explanation/handoff paths. Follow the [5C training extension](../../AGAP_Model_Training_Plan.md#7-institution-rubric-5c-analysis-and-explanation-extension-29-october-2026): Earl supplies approved rubric/context/trace examples and grouped development splits, retaining holdout for final review. Qwen drafts source-linked 5C findings and explains supplied CRD-03 results; it does not define weights, calculate percentages, invent repayment probabilities or produce an approval verdict. Preserve candidate versus accepted discretionary findings and snapshot the original sources, actual rubric version/trace, missing matters and checked repayment results into the officer/reviewer handoff. Actual recommendation and final decision retain their current human owners/guards. Test unsupported explanations, stale sources/rubrics and all enabled Qwen capabilities with Earl; consume Aaron's single adapter and Robert's FND-05 contracts. New stage 2 estimates are Pending beyond the current demo and goal packages.
+
 ## Progress and handoff notes
 
 No production implementation progress is recorded yet. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry.
@@ -64,3 +68,5 @@ No production implementation progress is recorded yet. For each handoff, record 
 25 October 2026 — PLN-02: the user-requested model-training revision supersedes this brief’s earlier 12-unit allocation. Current scope is the 16-unit table above and the [model training plan](../../AGAP_Model_Training_Plan.md); recorded implementation history remains unchanged. No training result or new feature implementation is claimed.
 
 29 October 2026 — PLN-03: goal-guidance responsibilities and future acceptance added by user request. Existing feature/model progress, exclusive ownership and first-demo budgets remain unchanged; new goal packages have separate pending estimates.
+
+29 October 2026 — PLN-04: added planned 5C review/trace/handoff responsibilities without changing existing feature/model progress, original first-demo budgets or the separate goal packages. Numeric rubric configuration remains pending.

@@ -58,6 +58,10 @@ Own EVAL-02 in evaluation/synthetic, with independent expected goal-planning res
 
 Apply [product scope](../../AGAP_Product_Solution.md#member-goals-savings-and-cooperative-product-guidance) and [design.md](../../../design.md#11-planned-goals-savings-and-product-guidance-29-october-2026); do not create another UI guide. GOL-01/EVAL-02 are stage 2 by default, unestimated beyond your existing 16-unit slice. Current statuses and accounting duties remain unchanged; technical scenario success or saving a plan is not evidence of real savings, goal completion or improved wellbeing.
 
+## Institution-rubric 5C addition (29 October 2026)
+
+Own EVAL-03 within evaluation/synthetic: independently reviewed fictional rubric/source/criterion examples, expected rule arithmetic, grouped household/template/rubric splits and final model/expert/checklist comparison. Hand off training/validation references to Benedict before artifact completion; reserve holdout labels and report correction burden, unsupported findings/scores/reasons, inappropriate unknown/applicability handling and source/score-trace fidelity. Counterfactually vary irrelevant demographic/language details while financial facts remain unchanged; preserve Ben's shortfall, Cora's incomplete assessment and no-history clarification without inferred dishonesty. Institutional rubric/credit experts review labels and limits; synthetic rubric agreement is not calibration of repayment probability or proof of fairness/household benefit. XAI-01 EBM/logistic research remains outside credit scoring/explanation. Consume Robert's FND-05 and Aaron's CRD-03 definitions; new stage 2 estimates are Pending beyond current demo/goal scope and do not transfer staff credit UI or decisions to you.
+
 ## Progress and handoff notes
 
 No production implementation progress is recorded yet. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry.
@@ -67,3 +71,5 @@ No production implementation progress is recorded yet. For each handoff, record 
 25 October 2026 — PLN-02: the user-requested model-training revision supersedes this brief’s earlier 12-unit allocation. Current scope is the 16-unit table above and the [model training plan](../../AGAP_Model_Training_Plan.md); recorded implementation history remains unchanged. No training result or new feature implementation is claimed.
 
 29 October 2026 — PLN-03: goal-guidance responsibilities and future acceptance added by user request. Existing feature/model progress, exclusive ownership and first-demo budgets remain unchanged; new goal packages have separate pending estimates.
+
+29 October 2026 — PLN-04: added planned 5C review/trace/handoff responsibilities without changing existing feature/model progress, original first-demo budgets or the separate goal packages. Numeric rubric configuration remains pending.

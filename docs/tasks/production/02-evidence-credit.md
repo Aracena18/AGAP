@@ -55,6 +55,10 @@ Own CRD-02 within credit/products and the single finance-package boundary after 
 
 Own approved cooperative-product catalogue versions/filtering, with institution-confirmed availability, minimums, eligibility, fees, liquidity, risk and return disclosures. Do not invent a product or equate restricted share capital with spendable cash. Earl owns member goals/content/advice-review records and prompts under GOL-01; you expose checked results through Robert's proposed FND-04 port and retain the one existing AI adapter. No member-phone UI or goal/servicing/accounting-table writes. New scope is stage 2 by default, unestimated beyond the existing 16-unit slice, and needs separate acceptance/release evidence; XAI-01 remains unrelated offline research. Existing progress is unchanged.
 
+## Institution-rubric 5C addition (29 October 2026)
+
+Own CRD-03 in existing credit/evidence/products staff and rule paths. Research published lender practice with source/institution/product/date and record applicable cooperative approval before activating numerical criteria/weights. Educational five-Cs sources are not a universal percentage rubric. Build deterministic fixed-point per-C scores and criterion/point/weight/denominator traces from confirmed facts and checked finance results; discretionary findings require identified staff acceptance. Keep missing evidence/rubric unavailable, policy-based not-applicable distinct, coverage separately defined and capacity shortages visible. Qwen drafts evidence/criterion findings and questions; it cannot invent criteria, score honesty or provide a repayment probability. Publish reviewed projections through Robert's FND-05 ports for Benedict's handoff; Earl evaluates independently. New stage 2 work is unestimated; current AI adapter, goal catalogue work, path ownership and first-demo budgets remain intact.
+
 ## Progress and handoff notes
 
 No production implementation progress is recorded yet. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry.
@@ -64,3 +68,5 @@ No production implementation progress is recorded yet. For each handoff, record 
 25 October 2026 — PLN-02: the user-requested model-training revision supersedes this brief’s earlier 12-unit allocation. Current scope is the 16-unit table above and the [model training plan](../../AGAP_Model_Training_Plan.md); recorded implementation history remains unchanged. No training result or new feature implementation is claimed.
 
 29 October 2026 — PLN-03: goal-guidance responsibilities and future acceptance added by user request. Existing feature/model progress, exclusive ownership and first-demo budgets remain unchanged; new goal packages have separate pending estimates.
+
+29 October 2026 — PLN-04: added planned 5C review/trace/handoff responsibilities without changing existing feature/model progress, original first-demo budgets or the separate goal packages. Numeric rubric configuration remains pending.
