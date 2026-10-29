@@ -101,3 +101,24 @@ No production implementation progress is recorded yet. For each handoff, record 
 29 October 2026 — PLN-03: goal-guidance responsibilities and future acceptance added by user request. Existing feature/model progress, exclusive ownership and first-demo budgets remain unchanged; new goal packages have separate pending estimates.
 
 29 October 2026 — PLN-04: added planned 5C review/trace/handoff responsibilities without changing existing feature/model progress, original first-demo budgets or the separate goal packages. Numeric rubric configuration remains pending.
+
+## GL-01 implementation candidate — 29 October 2026
+
+Task branch: `feat/earl-gl-01`, using a normal checkout by the user's explicit instruction. Development combines main `1f4cc5b` with Robert's existing member-platform candidate `4577c850dcca44393f5978648bb861e3bf390656` in local merge `079b1bd`. Conflicting shared planning files retain main's text; their historical 0.1.0 references do not change the imported candidate's executable 0.2.0 contract. This is a provisional development base, not recorded Robert/Benedict agreement, integration, a GitHub PR merge or live release. The user will push; all work remains local.
+
+### Contract and independent acceptance examples
+
+Implement the existing `PostingPort.post(tx, request)` in the owned accounting module. The caller supplies its existing transaction; only the platform unit of work commits or rolls back. Accounting validates current financial-role access, organization, PHP, positive integer-centavo lines, safe balanced totals, dated rule/account mappings, permanent source-event identity and open periods. A returned journal receipt is provisional until the caller commits.
+
+Clearly fictional accounting examples, independent of the canonical Ana/Ben/Cora registry: PHP 10,000 principal disbursement debits Loans Receivable and credits Cash; PHP 2,000 principal repayment debits Cash and credits Loans Receivable. Interest, fees, allocation/recognition and actual institution mappings require separate review; no absent component is assumed to be zero.
+
+Identical same-event requests replay one preserved journal, including after its period closes. Conflicting reuse fails. Source-event uniqueness is permanent and organization-wide, independent of user/HTTP idempotency keys. Ordinary runtime roles cannot insert or rewrite journal tables directly; the database posting function also enforces balance, accounts, mappings and actor scope. Corrections use one linked full reversal in an open period, preserving the original rule/history. Partial adjustments, inactive-account reversal policies and complete period-close acceptance remain later work. No reversal of a reversal is supported in this minimal candidate.
+
+Acceptance includes independent amounts, invalid amounts/currency/accounts/rules, safe-total overflow, role/organization/member isolation, concurrent duplicates and conflicts, original immutability, exact reversal, caller rollback and both posting/closing lock orders. The caller must acquire the module's period lock before servicing loan/command locks. Its own financial-event uniqueness must prevent duplicate loan allocations; ledger deduplication alone does not implement PAY-01.
+
+### Receiving owners and pending integration
+
+- Robert: review the base/contract and registration proposal in the [module handoff](../../../apps/api/src/modules/accounting/README.md); register the accounting migration directory and provider/capability only after review. Canonical schemas/client, bootstrap, shared migration registry, dependencies, UI and Assignment.md are not authored by this task.
+- Benedict: use the same transaction and permanent business-event identity, preserve authorization/command checks, and supply reviewed allocation/mapping details. The accounting database tests use an explicitly fictional caller-effect harness; actual loan-subledger/receipt integration remains PAY-01 work.
+- Earl: preserve module migrations/tests and versioned verification below. Account/rule/period configuration is operator-owned in this candidate; no live defaults, HTTP financial endpoint, accounting screen or complete close/report/reconciliation workflow is supplied.
+- Institutional accounting/authority approval and the exact fictional posting mappings still need owner review. Passing fictional tests cannot establish those approvals or production readiness. Robert retains the sole task/status tracker.
