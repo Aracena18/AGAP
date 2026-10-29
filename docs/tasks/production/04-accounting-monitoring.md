@@ -118,7 +118,26 @@ Acceptance includes independent amounts, invalid amounts/currency/accounts/rules
 
 ### Receiving owners and pending integration
 
-- Robert: review the base/contract and registration proposal in the [module handoff](../../../apps/api/src/modules/accounting/README.md); register the accounting migration directory and provider/capability only after review. Canonical schemas/client, bootstrap, shared migration registry, dependencies, UI and Assignment.md are not authored by this task.
+- Robert: review the base/contract and registration proposal in the [module handoff](../../../apps/api/src/modules/accounting/README.md); register the accounting migration directory and provider after review, retaining unavailable HTTP/capability defaults until the controlled PAY-01 path is integrated. Canonical schemas/client, bootstrap, shared migration registry, dependencies, UI and Assignment.md are not authored by this task.
 - Benedict: use the same transaction and permanent business-event identity, preserve authorization/command checks, and supply reviewed allocation/mapping details. The accounting database tests use an explicitly fictional caller-effect harness; actual loan-subledger/receipt integration remains PAY-01 work.
 - Earl: preserve module migrations/tests and versioned verification below. Account/rule/period configuration is operator-owned in this candidate; no live defaults, HTTP financial endpoint, accounting screen or complete close/report/reconciliation workflow is supplied.
 - Institutional accounting/authority approval and the exact fictional posting mappings still need owner review. Passing fictional tests cannot establish those approvals or production readiness. Robert retains the sole task/status tracker.
+
+### Local verification and limitations
+
+29 October 2026, native Windows, portable Node **24.22.2**, isolated PostgreSQL **18.6** on localhost:55440 using only public fictional development credentials and database `agap_test`. The installed system Node/PostgreSQL and existing databases were not changed. Earlier exploratory checks used the installed PostgreSQL 15; the final results below use 18.6. Temporary test servers are stopped after verification.
+
+| Check | Observed result |
+| --- | --- |
+| Focused GL-01 suite | **42 passed**: 11 boundary validations and 31 real database/permission/transaction tests, including period and configuration races |
+| `npm run check` | Lint, contract drift, web/API builds and **118 domain/UI tests passed**. Backend/contracts: **107 passed, 3 failed of 110**; all 42 GL-01 tests passed |
+| Full-check limits | Two unchanged `document-store.test.ts` cases require POSIX directory mode 0700; unchanged `provisioning.test.ts` requires private input mode 0600. Native Windows does not provide those mode semantics. Controls were not weakened or tests disabled; a Linux full-check pass remains required before integration |
+| `npm run test:e2e` | Final target-version rerun: **24 Chromium tests passed**, including existing keyboard, 320px, accessibility, staff/member isolation and preserved-decision journeys. Domain simulations remain labeled; these tests do not establish actual PAY-01 integration |
+| Browser rerun recovery | An intermediate rerun timed out while large portable tooling was under Vite's watched root. Moving only ignored tooling to `node_modules/.cache/agap-gl01` removed that condition; the unchanged browser suite then passed |
+| Shared artifacts | Generated client/OpenAPI working copies were temporarily normalized from CRLF to LF for the drift check; their canonical content is unchanged and checkout endings are restored afterward |
+| Documentation/whitespace | Relative-file links resolve; module handoff fragment and `git diff --check` checked |
+| Navigation graph tools | `graft` and `graphify` are unavailable on this machine; navigation used `rg` and Git, and no graph update is claimed |
+
+The append-only module migrations are `001-ledger.sql`, `002-posting.sql` and `003-configuration-locks.sql`. The last preserves used configuration and locks/rechecks account/rule versions through commit. Registration remains a proposal for Robert; no shared registry, financial HTTP capability or servicing implementation was authored here. Module tests temporarily register the directory in memory with the existing migrator and use a disposable caller-effect table to prove atomicity/retry conservation, not a real loan table.
+
+Changes are local Conventional Commits on `feat/earl-gl-01`; the user will push. No PR, remote CI pass, main merge, owner acceptance or production approval is claimed. GL-01 is an implementation candidate for review, not declared integrated; Robert must reconcile the central task status, accept/register the base/service, and repeat full checks on the supported Linux environment with Benedict's actual money path.
