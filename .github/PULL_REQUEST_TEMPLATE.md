@@ -1,12 +1,33 @@
-## Result
+## Summary
 
-Describe the concrete change and the issue it addresses.
+<!-- What changed and why? -->
 
-## Verification
+Task: <!-- ID from Assignment.md, e.g. GL-01 -->
 
-- [ ] `npm run check`
-- [ ] `npm run test:e2e`
-- [ ] Relevant spec/contracts updated
-- [ ] UI screenshots attached where appearance or interaction changed
+## What changed
 
-Record remaining limitations and whether visual/user review is still pending.
+-
+
+## Testing
+
+<!-- Record Passed, Failed, Not run or N/A with results/reasons. For docs-only changes, check links/consistency instead of unrelated app tests. Keep remote CI results separate. -->
+
+- `npm run check`:
+- `npm run test:e2e`:
+- Other checks / steps to reproduce:
+- Remote CI:
+
+## Screenshots
+
+<!-- Required for appearance/interaction changes; otherwise write N/A. -->
+
+## Limitations / handoff
+
+<!-- Known failures, dependencies, pending integration/review and receiving-owner actions. Include base/contract details or a handoff link when relevant. -->
+
+-
+
+## Checklist
+
+- [ ] Self-reviewed the diff
+- [ ] Relevant specs/tests updated, including `design.md` for UI/UX rules, or N/A explained
