@@ -2,11 +2,11 @@
 
 **Financial health lending.** AGAP's target connects member-phone applications, source-linked evidence, overlooked-expense clarification, affordable repayment scenarios, accountable human decisions and ongoing support.
 
-This frontend uses fictional people, records, offers and policies. Demo roles illustrate a workflow; they are not authentication. Browser storage is local to this browser. The review demo has no backend, payment, core-system or live AI connections. A separate server-backed staff intake workspace exists on Robert’s candidate branch, not in main; see the [platform setup guide](docs/AGAP_Platform_Foundation.md). Main receives this plan as documentation only.
+This checkout includes the fictional review demo and a server-backed staff/member intake candidate. The demo role switch and local browser storage apply only to fictional review routes. The separate staff and member portals use server sessions and PostgreSQL; they have no live lending, payment or trained-model service. See the [platform setup guide](docs/AGAP_Platform_Foundation.md) and [26 October verification](docs/AGAP_Robert_Member_Verification.md). Publishing this candidate does not record teammate acceptance or authorize merging PR #10.
 
 The target product now includes full lending operations: evidence and credit review, decisions, controlled disbursement, repayments, accounting and financial-health follow-up. Start with the [feature priorities](docs/AGAP_Product_Solution.md), [production architecture](docs/AGAP_Production_Architecture.md) and [four-person delivery plan](docs/AGAP_Delivery_Plan.md). The [platform handoff](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/AGAP_Robert_Verification.md) records what has been implemented and tested; financial modules and live readiness remain pending.
 
-The **25 October plan** adds a Robert-owned responsive member portal, member-confirmed AI document/expense suggestions, conflict-aware separate approval and payment-help requests. These are planned capabilities, not features of the current demo or staff intake. AI reads/clarifies/explains; independent source checks verify claims, tested code calculates and authorized people decide. The overlooked-expense mechanism is a research hypothesis to validate with the cooperative.
+The **25 October plan** adds a Robert-owned responsive member portal, member-confirmed AI document/expense suggestions, conflict-aware separate approval and payment-help requests. The candidate now supplies own-record application drafts/submission, member access, reminders and the portal facade/screens. Evidence, checked offers, decisions, loans and payment-help records still require their domain owners; default responses explicitly say unavailable. AI reads/clarifies/explains; independent source checks verify claims, tested code calculates and authorized people decide. The overlooked-expense mechanism is a research hypothesis to validate with the cooperative.
 
 Start team work from [Assignment.md](Assignment.md) and its current owner briefs. It is the sole task/status tracker and records four provisional **16-unit** first-demonstration budgets (64 total, expanded from 48 for model training/evaluation). Robert owns all member-phone UI/access and integration; Aaron evidence/credit/reusable inference plus EBM/logistic training; Benedict Qwen3.5-2B LoRA training plus decisions/servicing; Earl accounting/health plus independent corpus/model evaluation. Benedict’s first contractual hardship amendment moves to stage 2; demo payment-help requests still receive staff review. Existing GitHub work cards and earlier branch instructions do not override the current documents. Complete production duties remain assigned beyond the first demo.
 
@@ -27,7 +27,7 @@ Open the local URL printed by Vite. To use the verification port:
 npm run dev -- --port 5174 --strictPort
 ```
 
-For the separate staff candidate, use its isolated branch checkout and follow the [database, Keycloak and API setup](docs/AGAP_Platform_Foundation.md#run-the-local-staff-workspace). `/#/staff` and its API/database commands are not supplied by main. Demo roles do not grant staff access.
+For server-backed intake, follow the [database, Keycloak and API setup](docs/AGAP_Platform_Foundation.md#run-the-local-staff-workspace). Open `/#/member` for the fictional `member` identity or `/#/staff` for staff. Both use the public localhost training password in that guide and provider enrollment where requested. Demo roles grant neither staff nor member access. Existing Keycloak realms are not overwritten by the new import.
 
 ## Shared source of truth
 
@@ -41,12 +41,12 @@ For the separate staff candidate, use its isolated branch checkout and follow th
 | How do four people work without conflicting edits? | [Named team assignments](Assignment.md), [delivery and ownership plan](docs/AGAP_Delivery_Plan.md), and [production owner briefs](docs/tasks/production/) |
 | How was the existing browser implementation divided? | [Historical frontend plan](docs/superpowers/plans/2026-10-20-agap-frontend.md) and [earlier task briefs](docs/tasks/) |
 | How should contributors work? | [AGENTS.md](AGENTS.md) |
-| What is the shared data contract? | [Domain/demo types](src/domain/types.ts); [production schemas](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/packages/contracts/src/schemas.ts), [ports](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/packages/contracts/src/ports.ts) and [generated OpenAPI](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/packages/contracts/openapi.json) |
+| What is the shared data contract? | [Domain/demo types](src/domain/types.ts); [production schemas](packages/contracts/src/schemas.ts), [ports](packages/contracts/src/ports.ts) and [generated OpenAPI](packages/contracts/openapi.json) |
 | What visual values and controls are implemented? | [Design tokens](src/styles/tokens.css), [global styles](src/styles/global.css), and [shared UI](src/shared/ui/index.tsx) |
 | What fictional evidence and offers are implemented? | [Fictional fixtures](src/demo/cases.ts) |
 | What is currently assigned or awaiting review? | [Assignment.md](Assignment.md) tracks tasks, owners, dependencies and progress; [pull requests](https://github.com/Aracena18/AGAP/pulls) provide implementation/review evidence |
 | Which models do we train, and how? | [Model training/evaluation plan](docs/AGAP_Model_Training_Plan.md); Qwen is the runtime candidate, EBM/logistic are offline research |
-| How was this direct publication checked? | [Publication verification](docs/AGAP_Direct_Publication_Verification.md); application code is unchanged |
+| How was this direct publication checked? | [Historical documentation publication](docs/AGAP_Direct_Publication_Verification.md); current application evidence is [here](docs/AGAP_Robert_Member_Verification.md) |
 | How was the earlier model/assignment revision checked? | [Historical model revision verification](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/AGAP_Model_Training_Revision_Verification.md); documentation only |
 | How was the earlier updated plan checked? | [25 October documentation verification](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/AGAP_Plan_Revision_Verification.md); no application features changed |
 
@@ -55,7 +55,8 @@ Historical partner briefs and the earlier product freeze remain for context and 
 ## Architecture
 
 - `src/app`: routing and fictional demo state.
-- The separate platform candidate contains `apps/api`, `apps/worker`, `packages/contracts`, `packages/api-client` and `infra`; these are not imported into main by this documentation publication.
+- `apps/api`, `apps/worker`, `packages/contracts`, `packages/api-client` and `infra`: candidate server/session/intake boundary; financial domains remain contract-only.
+- `packages/finance`: the original deterministic assessment engine, extracted once with a compatibility re-export; Aaron owns subsequent finance changes.
 - `src/features`: application list, evidence, repayment comparison, decision.
 - `src/domain`: pure calculations, evidence and decision rules, template explanations.
 - `src/shared/ui` and `src/styles`: shared controls and visual tokens.
@@ -63,17 +64,18 @@ Historical partner briefs and the earlier product freeze remain for context and 
 
 Fictional review features share one `CaseRecord`. Screens call domain functions and save through the repository boundary; they do not maintain independent financial totals. Money is integer centavos and dates are calendar dates. Recorded decisions preserve their original evidence and explanation.
 
-Planned additions have exclusive owners in the delivery plan: Robert's member-portal feature/API facade, Aaron's reusable AI module, Benedict’s `models/qwen/`, Aaron’s `models/explainable/`, and Earl’s `evaluation/synthetic/` and `evaluation/explainable/` benchmarks. The [training plan](docs/AGAP_Model_Training_Plan.md) defines data and release gates; no trained model is supplied by this documentation. EBM/logistic research stays outside lending/member APIs. Member services use own-record authorization and domain ports; they do not copy staff roles, financial calculations or ledgers. Candidate contract 0.1.0 is unchanged by this documentation revision; new interfaces need the FND-03 review before implementation.
+Robert's member-portal feature/API facade is supplied in this candidate. Planned additions retain exclusive owners: Aaron's reusable AI module, Benedict’s `models/qwen/`, Aaron’s `models/explainable/`, and Earl’s `evaluation/synthetic/` and `evaluation/explainable/` benchmarks. The [training plan](docs/AGAP_Model_Training_Plan.md) defines data and release gates; no trained model is supplied by this documentation. EBM/logistic research stays outside lending/member APIs. Member services use own-record authorization and domain ports; they do not copy staff roles, financial calculations or ledgers. Executable contract 0.2.0 is a review candidate; consuming owners must review its member-domain/provenance ports before dependent integration. No trained model is connected.
 
 ## Verification
 
 ```sh
+npm run test:db
 npm run check
 npx playwright install chromium
 npm run test:e2e
 ```
 
-On main, `check` runs lint, the frontend build and existing domain/UI tests; browser tests exercise the fictional review workflow. Build output is `dist/`. API/DB/identity checks, `test:db`, staff browser tests and `dist-api/` belong to the separate platform candidate described in the [platform guide](docs/AGAP_Platform_Foundation.md#verify-and-recover). Documentation publication uses link/consistency checks rather than claiming a new application pass.
+`check` runs lint, generated-contract drift checks, web/API builds, domain/UI tests and real PostgreSQL platform tests. Run it before browser tests because both reset the dedicated fictional `agap_test` database. Browser tests cover real intake plus explicitly simulated domain-port rendering. Build outputs are `dist/` and `dist-api/`. See [exact evidence and limits](docs/AGAP_Robert_Member_Verification.md) and the [recovery guide](docs/AGAP_Platform_Foundation.md#verify-and-recover).
 
 ## Demo walkthrough
 

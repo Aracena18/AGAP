@@ -8,7 +8,7 @@
 
 **Confirmed direction:** a complete lending system, including disbursement, repayment processing, accounting, and financial-health follow-up; four developers; free software and a free development setup.
 
-**Status:** target product plan. The fictional review demo and Robert's separate staff-intake review candidate are the implemented baseline; the member portal, AI workflow and financial business modules described here remain planned. This is not partner policy approval or production certification.
+**Status, 26 October:** target product plan with a supplied platform/member-intake candidate. Own-record application drafts/submission, separate member access, reminder preferences and the portal facade/screens are implemented in that candidate. Source verification, AI inference, checked offers, decisions, loans and health/support records still await their owners; those ports default to unavailable. [Verification](AGAP_Robert_Member_Verification.md) separates real intake from simulated domain rendering. This is not partner policy approval or production certification.
 
 ## 1. Product promise and authority
 

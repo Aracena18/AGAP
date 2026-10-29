@@ -1,0 +1,23 @@
+import { z } from 'zod';
+
+const Env = z.object({
+  NODE_ENV: z.enum(['development','test','production']).default('development'),
+  DATABASE_URL: z.string().min(1), IDENTITY_DATABASE_URL: z.string().min(1),
+  PUBLIC_ORIGIN: z.url().default('http://127.0.0.1:5174'), API_PORT: z.coerce.number().int().min(1).max(65535).default(4100),
+  SESSION_SECRET: z.string().min(32), SESSION_TTL_SECONDS: z.coerce.number().int().min(60).max(3600).default(1800),
+  PRIVACY_NOTICE_VERSION: z.string().min(1).max(80).default('fictional-development-v1'),
+  OIDC_ISSUER: z.url().default('http://127.0.0.1:58080/realms/agap'), OIDC_CLIENT_ID: z.string().default('agap-staff'), OIDC_CLIENT_SECRET: z.string().min(1),
+});
+export type Config = z.infer<typeof Env>;
+export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
+  const config = Env.parse(env);
+  const origin = new URL(config.PUBLIC_ORIGIN);
+  const issuer = new URL(config.OIDC_ISSUER);
+  if (origin.origin !== config.PUBLIC_ORIGIN || origin.username || origin.password) throw new Error('PUBLIC_ORIGIN must be an exact origin without a path or credentials.');
+  if (config.NODE_ENV === 'production') {
+    if (origin.protocol !== 'https:' || issuer.protocol !== 'https:') throw new Error('Production identity and public origin require HTTPS.');
+    if (config.PRIVACY_NOTICE_VERSION.startsWith('fictional') || config.SESSION_SECRET.includes('development') || config.OIDC_CLIENT_SECRET.includes('development')) throw new Error('Development notices/secrets cannot enable a production server.');
+    for (const database of [config.DATABASE_URL,config.IDENTITY_DATABASE_URL]) if (new URL(database).searchParams.get('sslmode') !== 'verify-full') throw new Error('Production database connections require sslmode=verify-full.');
+  } else if (issuer.protocol !== 'https:' && !['127.0.0.1','localhost','[::1]'].includes(issuer.hostname)) throw new Error('Insecure OIDC is allowed only on loopback in development/test.');
+  return config;
+}
