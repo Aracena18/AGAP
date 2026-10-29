@@ -1,6 +1,6 @@
 # Aaron (B): evidence, credit, AI integration and explainable ML
 
-Tracker: [Assignment.md — Aaron](../../../Assignment.md#aaron). **Current direction: 25 October 2026.** This replaces earlier task directions where they differ, including treating AI extraction solely as an unspecified future enhancement. The model revision explicitly assigns explainable-model training to you and Qwen training to Benedict.
+Tracker: [Assignment.md — Aaron](../../../Assignment.md#aaron). **Current direction: 29 October 2026; the goal-guidance addendum below supplements the retained 25 October assignments.** This replaces earlier task directions where they differ, including treating AI extraction solely as an unspecified future enhancement. The model revision explicitly assigns explainable-model training to you and Qwen training to Benedict.
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and AGENTS.md. Assignment.md is the sole status register; this brief defines work and evidence, not another backlog.
 
@@ -49,6 +49,12 @@ Explain EBM feature contributions as associations in a cross-sectional self-repo
 - Coordinate Earl’s held-out benchmark and annual-expense checklist comparison. Domain expected results require independent review; synthetic accuracy does not establish future repayment or member wellbeing.
 - Retain complete products/policy methods, seasonal horizons, retention/holds, independent verification alternatives and approved external integrations for stage 2. New live rules still require institutional approval.
 
+## Goal-guidance addition (29 October 2026)
+
+Own CRD-02 within credit/products and the single finance-package boundary after Robert's extraction handoff. Follow [product requirements](../../AGAP_Product_Solution.md#member-goals-savings-and-cooperative-product-guidance). Supply a deterministic no-return baseline and separately labeled uncertain-return scenarios using explicit dated facts, contribution dates, horizon, goal funds and protected needs/reserves. Validate target-already-met, no contribution dates, centavo remainder, missing/stale data, variable income, duplicated earmarks, fees, loss/lockup and multiple commitments to one balance. A positive monthly total alone cannot make a plan feasible; preserve the canonical one-cycle oracles. Return incomplete/infeasible/conditional results with source/version/reason references; no AI-supplied authoritative amounts or forced percentage.
+
+Own approved cooperative-product catalogue versions/filtering, with institution-confirmed availability, minimums, eligibility, fees, liquidity, risk and return disclosures. Do not invent a product or equate restricted share capital with spendable cash. Earl owns member goals/content/advice-review records and prompts under GOL-01; you expose checked results through Robert's proposed FND-04 port and retain the one existing AI adapter. No member-phone UI or goal/servicing/accounting-table writes. New scope is stage 2 by default, unestimated beyond the existing 16-unit slice, and needs separate acceptance/release evidence; XAI-01 remains unrelated offline research. Existing progress is unchanged.
+
 ## Progress and handoff notes
 
 No production implementation progress is recorded yet. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry.
@@ -56,3 +62,5 @@ No production implementation progress is recorded yet. For each handoff, record 
 25 October 2026: PLN-01 revised this brief, ownership and first-demonstration slices. This note records documentation only; no new feature implementation or review acceptance is claimed. Use Assignment.md for the current task status and next action.
 
 25 October 2026 — PLN-02: the user-requested model-training revision supersedes this brief’s earlier 12-unit allocation. Current scope is the 16-unit table above and the [model training plan](../../AGAP_Model_Training_Plan.md); recorded implementation history remains unchanged. No training result or new feature implementation is claimed.
+
+29 October 2026 — PLN-03: goal-guidance responsibilities and future acceptance added by user request. Existing feature/model progress, exclusive ownership and first-demo budgets remain unchanged; new goal packages have separate pending estimates.

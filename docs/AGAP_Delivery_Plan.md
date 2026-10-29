@@ -1,5 +1,7 @@
 # AGAP delivery and ownership plan
 
+**Goals addendum:** 29 October 2026. New goal/planner/guidance tasks are additional unestimated scope, stage 2 by default. Current first-demo slices, 16 units per owner and existing task statuses remain unchanged. An earlier fictional goal slice requires an explicit capacity re-estimate and its acceptance evidence; it is not an additional commitment inside the 64 units.
+
 **Baseline:** 25 October 2026, Asia/Manila. Supersedes the earlier delivery instructions where they differ.
 
 **Team:** Robert (A), Aaron (B), Benedict (C) and Earl (D). [Assignment.md](../Assignment.md) is the sole task/status tracker. This document defines scope, boundaries and acceptance; it is not another status register.
@@ -99,6 +101,24 @@ Status and next action live only in [Assignment.md](../Assignment.md). A task ha
 
 Owner briefs: [Robert](tasks/production/01-platform.md), [Aaron](tasks/production/02-evidence-credit.md), [Benedict](tasks/production/03-decisions-servicing.md), [Earl](tasks/production/04-accounting-monitoring.md). Updated briefs explicitly supersede their earlier task directions; progress remains in the central tracker and dated handoff evidence.
 
+### Additional goal-guidance packages
+
+The [product scope](AGAP_Product_Solution.md#member-goals-savings-and-cooperative-product-guidance) and [model extension](AGAP_Model_Training_Plan.md#6-goal-guidance-training-extension-29-october-2026) govern these packages. They reuse the exclusive paths above and do not add another model family, provider client, calculator or deposit/investment execution service. PLN-03 is documentation only; all feature packages start Not started in Assignment.md. They are not prerequisites for the existing SHOW-01 core journey.
+
+| ID | Accountable owner | Existing owned boundary | Dependencies and acceptance |
+| --- | --- | --- | --- |
+| PLN-03 | Robert | Shared documentation | Coordinated goal scope, contracts, training, design, owner handoffs and documentation verification; no feature-status changes |
+| FND-04 | Robert | Contracts/client/platform and shared registration | After FND-03; reviewed goal/consent/catalogue/planning/advice-review ports, own-record scopes, versions and proposed release envelope; executable 0.1.0 unchanged until implemented |
+| CRD-02 | Aaron | credit/products and the single finance package after extraction handoff | FND-04, CRD-01 and EVD-01; independent dated contribution/rounding/horizon/fee/liquidity and allocation tests; incomplete/infeasible/conditional results and approved catalogue filtering |
+| GOL-01 | Earl | monitoring records, staff UI and domain prompts | FND-04, CRD-02, HLT-01 and AI-01; confirmed voluntary goals, reviewed content, checked drafts, authorized suitability review, member choice and stale/review history; no ledger/servicing writes |
+| QWN-02 | Benedict | models/qwen training/artifact handoff | QWN-01 and EVAL-02 training/validation data handoff; guidance adaptation and extraction regression through the existing pipeline; independent promotion gate, no autonomous financial authority |
+| EVAL-02 | Earl | evaluation/synthetic and independent protocol/reports | FND-04 and reviewed goal/content protocol; frozen data first, final artifact evaluation later; planner/template baseline, unsafe advice/source failures, comprehension and corrections; no QWN-02 completion prerequisite for data handoff |
+| MOB-02 | Robert | member-portal UI/facade and shared client wiring | FND-04, CRD-02 and GOL-01; member-only goal/plan/review/progress/withdrawal flow, explicit unavailable/stale states and no transfer/purchase authority |
+
+First build one no-return goal scenario with explicit contribution dates and sufficient dated household inputs, retaining the current one-cycle oracles. Test zero contribution dates, already-met target, integer-centavo remainder, protected essentials, duplicated reserves, simultaneous allocations, no surplus, missing/variable income, uncertain fees, restricted share capital and expired/absent products. Then evaluate reviewed cooperative-product considerations with liquidity/loss/preferences and mandatory investment suitability review. A fixed amount or target date cannot be silently altered to make a goal appear achievable. Changing input/catalogue versions invalidates pending guidance without rewriting historic decisions or plans.
+
+Robert requests CRD-02/GOL-01 projections rather than copying their rules. Aaron supplies the catalogue and checked runs; Earl owns the goal/content/advice review, using the single AI adapter; Benedict trains on Earl's approved manifests without editing corpus/holdout; Earl independently scores returned artifacts. All member-phone screens remain Robert's. Additional budgets and scheduling remain Pending until owners re-estimate; existing 64-unit arithmetic is the baseline for the earlier demonstration only. Institutionally approved products, advisory permissions, content, disclosures, privacy/retention and risk/fee/return rules are unresolved inputs for live product guidance, not fictional facts promoted into policy.
+
 ## 6. Conflict-prevention and verification
 
 - Use isolated worktrees/task branches based on the actual owner-agreed foundation commit. Do not reuse, reset or overwrite another worker's branch. Candidate PR #10 remains unmerged unless the user authorizes it.
@@ -111,7 +131,7 @@ Owner briefs: [Robert](tasks/production/01-platform.md), [Aaron](tasks/productio
 - QWN-01 belongs to Benedict, XAI-01 EBM/logistic training to Aaron, and independent corpus/splits/evaluation to Earl. Robert owns runtime registration and shared contracts. Do not add EBM outputs to member screens, assessments or approval; the research exhibit is separate.
 - Compare pretrained and fine-tuned Qwen with a checklist/plain form on held-out synthetic cases; compare EBM with logistic regression under the reviewed survey protocol. Report corrections, missed expenses, unsupported claims, latency and user/staff effort. Synthetic technical results are not borrower-outcome evidence.
 - Keep local verification distinct from remote CI. The [recorded remote startup issue](AGAP_Verification.md) remains unresolved unless new evidence establishes otherwise. No unrelated account/hosting/billing changes are authorized by this documentation update.
-- Keep `Assignment.md` as the sole status tracker. Existing GitHub issues and PR descriptions remain unchanged; the user authorized direct publication of this documentation to main in place of the documentation PR workflow. Preserve candidate feature branches and prior descriptions; feature merging still requires the user’s authorization.
+- Keep `Assignment.md` as the sole status tracker. The direct-main publication exception applied to the 25 October PLN-01/PLN-02 update only; PLN-03 is a separate documentation review and does not authorize a main push or merge. Preserve existing issues, PR descriptions and candidate feature branches; merging requires the user’s authorization.
 
 ## 7. Inputs that must be settled before live deployment
 
@@ -127,6 +147,7 @@ These do not prevent architecture or fictional development, but cannot be replac
 | Member account linkage/recovery, support eligibility, amendment approvals and reminder delivery | Cooperative identity/credit/servicing owners | Member access, support workflow, notifications and contract changes |
 | Privacy purposes, retention/holds and any external credit/AI processing | Institution's responsible privacy role | Documents, evidence, history and external adapters |
 | Actual hosting hardware, operator, backups, capacity and recovery objectives | Team A plus institution's operator | Deployment feasibility and ongoing cost |
+| Goal/planning assumptions, approved savings/investment catalogue, advice authority, suitability/disclosures and reviewed education | Cooperative product/privacy/responsible advisory roles with Aaron/Earl and Robert integration | FND-04, CRD-02, GOL-01, QWN-02, EVAL-02 and MOB-02; no live product guidance until confirmed |
 | Presenter format, time limit and any final-round-specific rubric | Team/organizer materials | Presentation sequence and evidence packaging |
 
 No guaranteed completion date, production certification or free hosted operating budget follows from this plan. The four-person split reduces conflicting edits; its workload and live readiness still depend on implementation and verified institutional inputs.

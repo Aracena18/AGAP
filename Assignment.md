@@ -1,8 +1,8 @@
 # AGAP team assignments
 
-**Updated:** 25 October 2026, Asia/Manila.
+**Updated:** 29 October 2026, Asia/Manila.
 
-**Documentation publication:** the user authorized publishing this coordinated plan directly to `main`, superseding the documentation PR workflow for this update. It includes model-training plan `19674ea` and the earlier AI/mobile plan. Platform/application code remains on its separate candidate branch; direct documentation publication does not integrate those features or freeze the foundation contract.
+**Documentation publication history:** the user authorized the 25 October PLN-01/PLN-02 publication directly to `main`. That scoped exception and its implementation history remain intact. The 29 October PLN-03 goal-guidance addition is a separate documentation review on `docs/member-goals-guidance`; it does not authorize a main push or merge, integrate application features or freeze foundation contracts.
 
 This is the sole active task/status tracker. It supersedes the 20–21 October task instructions where they differ; GitHub issues and existing PR descriptions are historical references, not an alternative backlog. Each owner starts here, then reads the current linked brief and delivery plan. The documentation revision does not implement the new features.
 
@@ -32,6 +32,10 @@ Equal provisional budgets of **16 relative units per owner** assume equal availa
 
 This expands the previous estimate from 48 to **64 total relative units**; it does not fit training into unchanged capacity or guarantee delivery by the event. SRV-01, including the first contractual hardship amendment, moves to **stage 2 under Benedict** to make room for Qwen. The first demo retains payment-help submission, staff response and follow-up without changed loan terms. If capacity is lower, keep uncompleted slices visibly planned; do not waive financial controls. Full servicing/accounting breadth, additional providers/channels, production operations and institutional deployment remain assigned for stage 2. OPS-01 groundwork remains In progress; its full remaining scope is not hidden inside a demo completion claim. PLN-01/PLN-02 documentation work is outside the demonstration capacity estimate. The units do not guarantee equal actual hours or a completion date.
 
+### Additional goal-guidance scope
+
+The user requested voluntary saving/investment suggestions from confirmed household information, including emergency, travel and leisure goals. [Product requirements](docs/AGAP_Product_Solution.md#member-goals-savings-and-cooperative-product-guidance), [delivery packages](docs/AGAP_Delivery_Plan.md#additional-goal-guidance-packages), [model release extension](docs/AGAP_Model_Training_Plan.md#6-goal-guidance-training-extension-29-october-2026) and [planned design](design.md#11-planned-goals-savings-and-product-guidance-29-october-2026) are coordinated under PLN-03. New feature tasks are additional unestimated stage 2 scope; an earlier fictional slice requires explicit owner capacity review and its release checks. Their estimates are **Pending**, not zero or included in the existing 64-unit first-demo baseline. Existing feature progress and ownership remain unchanged. No new feature becomes a prerequisite for the existing core SHOW-01 path.
+
 ## Task register
 
 Stages: **0 — documentation/contracts and review; 1 — first hackathon demonstration; 2 — complete product and live-readiness evidence.** A stage 1 slice can be reviewed while the complete package remains unfinished. The status describes evidenced package progress, not a claim that every stage is delivered.
@@ -40,6 +44,7 @@ Stages: **0 — documentation/contracts and review; 1 — first hackathon demons
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | PLN-01 | Robert | 0 | Coordinated product/architecture/assignment documentation | User-approved plan; foundation handoff | Shared documentation | Integrated | Published directly to `main` by user instruction; [historical documentation verification](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/AGAP_Plan_Revision_Verification.md); no application features |
 | PLN-02 | Robert | 0 | Coordinated model-training plan, architecture and balanced assignments | User-requested Qwen/Benedict and explainable/Aaron ownership; PLN-01 | Shared documentation | Integrated | Published directly to `main`; [publication verification](docs/AGAP_Direct_Publication_Verification.md); [historical revision verification](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/AGAP_Model_Training_Revision_Verification.md) |
+| PLN-03 | Robert | 0 | Coordinated voluntary goals, savings and cooperative-product guidance plan | PLN-02; user-requested scope | Shared documentation | Ready for review | `docs/member-goals-guidance`; [verification](docs/AGAP_Goals_Guidance_Verification.md); local documentation checks passed; no feature implementation |
 | FND-01 | Robert | 0 | Shared contracts/client and backend transaction foundation | Architecture baseline | Platform/contracts | Ready for review | [PR #10](https://github.com/Aracena18/AGAP/pull/10), `4b03c6b`; 0.1.0 candidate |
 | FND-02 | Robert | 0 | Staff identity, scoped access and member/application intake | FND-01 | Platform/intake | Ready for review | [Verification](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/AGAP_Robert_Verification.md); staff intake, real DB and Keycloak tests |
 | FND-03 | Robert | 0 → 1 | Member identity linkage/access, model provenance and next shared contract revision | FND-01; FND-02 | Platform/member access/shared model contracts | Not started | Planned; 0.1.0 remains a review candidate |
@@ -56,6 +61,12 @@ Stages: **0 — documentation/contracts and review; 1 — first hackathon demons
 | ACC-01 | Earl | 1 → 2 | Reconciliation, capital, reports and accounting adjustments | GL-01; PAY-01 | Accounting | Not started | No implementation evidence reported |
 | SRV-01 | Benedict | 2 | Authorized hardship amendments and remaining loan lifecycle | PAY-01; ACC-01 posting contracts; HLT-01 for support handoff | Servicing | Not started | No implementation evidence reported |
 | EVAL-01 | Earl | 1 → 2 | Synthetic corpus/splits and independent Qwen/EBM/baseline evaluation | Product hypothesis; FND-01 for API-integrated runs | `evaluation/synthetic/` and `evaluation/explainable/` | Not started | Data/protocol handoff first; final evaluation consumes QWN-01/XAI-01 artifacts without a prerequisite cycle |
+| FND-04 | Robert | 2 | Shared goal/consent/planning/catalogue/advice-review contract proposal | FND-03 | Shared contracts/platform | Not started | Additional estimate Pending; 0.1.0 unchanged |
+| CRD-02 | Aaron | 2 | Deterministic goal contributions and approved cooperative-product scenarios | FND-04; CRD-01; EVD-01 | Credit/finance/products | Not started | Additional estimate Pending; same finance engine |
+| GOL-01 | Earl | 2 | Voluntary goals, reviewed guidance, suitability-review queue and follow-up | FND-04; CRD-02; HLT-01; AI-01 | Monitoring | Not started | Additional estimate Pending; QWN-02 required only for a promoted tuned guidance artifact |
+| QWN-02 | Benedict | 2 | Qwen goal-guidance adaptation, regression and artifact handoff | QWN-01; EVAL-02 training/validation handoff | models/qwen | Not started | Additional estimate Pending; no new model family/provider client |
+| EVAL-02 | Earl | 2 | Goal/content corpus, protocol and independent guidance evaluation | FND-04; reviewed goal/content protocol | evaluation/synthetic | Not started | Data/protocol first; final scoring consumes returned QWN-02 artifacts |
+| MOB-02 | Robert | 2 | Own-record goals, contribution scenarios, guidance/review and progress UI | FND-04; CRD-02; GOL-01 | Member portal | Not started | Additional estimate Pending; no money movement |
 | OPS-01 | Robert | 2; groundwork ongoing | Full identity/offsite restore, migration and operating evidence | FND-02; integrated PAY-01 and ACC-01 | Platform/operations | In progress | [Local encrypted restore](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/AGAP_Robert_Restore_Drill.json) passed; identity/offsite/cutover pending |
 | SHOW-01 | Robert | 1 → 2 | Integrated demonstration and model/release evidence packaging | MOB-01; EVD-01; CRD-01; AI-01; DEC-01; GL-01; PAY-01; HLT-01; ACC-01; QWN-01; XAI-01; EVAL-01 | Integration/shared wiring | Not started | Each owner contributes evidence within their owned area |
 
@@ -69,6 +80,7 @@ These task-level checks supplement the owned slices in the delivery plan and eac
 | --- | --- | --- |
 | PLN-01 | Product, design, architecture and all briefs agree; no conflicting owners | Use this published plan; feature integration still requires its own evidence and authorization |
 | PLN-02 | Model owners, exclusive paths, training/evaluation boundaries, stages and budgets agree | Start the assigned future tasks using this published plan; training remains Not started |
+| PLN-03 | Product/design/architecture/delivery/training/briefs agree; documentation links/ownership/dependencies verified | Review the goal extension; no runtime, trained guidance, product activation or merge is implied |
 | FND-01 | Executable contracts and platform evidence reviewed by all consuming owners | Record Aaron/Benedict/Earl interface agreement and accepted base |
 | FND-02 | Scoped runtime-role access, revocation and staff intake reviewed | Complete staff/UI review; member access belongs to FND-03 |
 | FND-03 | Own-record access, separate member principal, domain/model provenance ports and proposed contracts reviewed | Propose member linkage, artifact/provenance, draft confirmation, support and reminder interfaces |
@@ -85,6 +97,12 @@ These task-level checks supplement the owned slices in the delivery plan and eac
 | ACC-01 | Demo receipt/subledger/GL reconciliation; later capital, reports and close acceptance retained | Implement minimal reconciliation; retain complete accounting backlog |
 | SRV-01 | Stage 2 cost comparison, human approval, member acceptance and preserved original schedule | After PAY-01/HLT-01, specify a permitted amendment; demo help requests do not promise amended terms |
 | EVAL-01 | Frozen grouped splits, independent truth, pretrained/tuned/checklist and EBM/logistic comparisons with uncertainty | Hand off training/validation data and research split protocol first; reserve holdout for final evaluation |
+| FND-04 | Own-record goal, checked planner/catalogue, reviewed-content and advice-history contracts reviewed | Propose the later shared revision without changing executable 0.1.0 in documentation |
+| CRD-02 | Independent centavo/date/horizon/fee/liquidity/allocation checks; no invented return or forced savings | Specify planner/catalogue rules and independent expected results with Earl |
+| GOL-01 | Member consent/choice, grounded drafts, qualified authorized suitability review and preserved/stale history | Define goal/content/review domain operations; keep loan/accounting records separate |
+| QWN-02 | Reproducible guidance artifact, extraction regression and separate independent promotion evidence | Agree Earl's approved goal corpus and protocol before adaptation |
+| EVAL-02 | Grouped held-out guidance comparison, unsafe advice/source errors, template baseline and comprehension evidence | Hand off reviewed training/validation data first; score artifacts later without tuning on holdout |
+| MOB-02 | Voluntary member-only goal journey, accessible states, no product steering or financial commands | Implement the design blueprint after reviewed FND-04/CRD-02/GOL-01 interfaces |
 | OPS-01 | Full recovery and reconciled financial cutover evidenced before live use | Retain existing drill evidence and complete remaining recovery dependencies |
 | SHOW-01 | Connected fictional journey; honest capability labels; observed usability and relevant checks | Coordinate contract reviews, then integrate completed slices without unauthorized merges |
 
@@ -103,6 +121,10 @@ Own QWN-01 in `models/qwen/`: baseline, LoRA training on Earl’s frozen trainin
 ## Earl
 
 Start GL-01 and independent synthetic case design in parallel with interface review. Deliver HLT-01 support requests/check-ins, ACC-01 minimum reconciliation and expanded EVAL-01: generate/own synthetic corpus/splits, independently evaluate pretrained versus tuned Qwen/checklist/plain form, and review/evaluate Aaron’s EBM versus logistic regression in `evaluation/explainable/`. Hand off data/protocol before trainer completion; final reports follow returned artifacts. Confirmed support observations do not change the loan ledger. Retain capital, reporting, close and complete reconciliation duties for stage 2. No loan-table writes or member-portal UI. [Current brief](docs/tasks/production/04-accounting-monitoring.md).
+
+## Goal-guidance handoffs
+
+Robert owns PLN-03, FND-04 and all MOB-02 member screens/facade; Aaron owns CRD-02 calculations/catalogue and the existing AI adapter; Earl owns GOL-01 goal/content/advice-review records and EVAL-02 independent data/evaluation; Benedict owns QWN-02 in the existing Qwen training path. Additional work stays in the existing exclusive directories. Domain/UI/training owners do not write one another's tables/files or add duplicate calculators/provider clients. Investment suggestions require current approved products, proportionate confirmed goal/risk/liquidity inputs and recorded authorized suitability review; planning acceptance never executes a transaction. Track implementation evidence here only; each brief records handoffs within its existing ownership.
 
 ## Working in parallel
 
@@ -138,3 +160,5 @@ Start GL-01 and independent synthetic case design in parallel with interface rev
 | 25 October 2026 | PLN-01 updates the target plan for Robert-owned phone access, AI-assisted irregular-expense discovery, accountable approval and payment help. Existing foundation/operations statuses are preserved. New tasks and 12-unit first-demo budgets are planning assignments, not implementation evidence. |
 | 25 October 2026 — model revision | PLN-02 assigns QWN-01 to Benedict and XAI-01 (EBM plus logistic baseline) to Aaron; Earl owns independent evaluation and Robert model contracts/integration. Current budgets are 16 each (64 total); SRV-01 moves to stage 2. Earlier statuses and 12-unit allocation remain historical evidence, not the current workload. |
 | 25 October 2026 — direct publication | User requested a direct push instead of documentation PRs. PLN-01/PLN-02 are published on main with the current assignments; feature code stays on its candidate branch. FND-01/FND-02 remain Ready for review, OPS-01 In progress, and model training Not started. |
+
+29 October 2026 — PLN-03: user requested goal-based saving/investment guidance using existing member information. Added coordinated scope, future owner packages, calculation/model/suitability boundaries and planned UI. Feature/model tasks remain Not started; additional capacity estimates are Pending. Documentation verification and review are separate from application implementation and the earlier main-publication exception.

@@ -401,3 +401,24 @@ The first demo ends payment help at submitted request, staff review and recorded
 Review the complete member journey with keyboard and 320px reflow, unavailable/stale/empty/error states, source confirmation/correction, saving and uncertain retries, inaccessible other-member records and revoked linkage. Check that support requests cannot silently alter a loan and original decisions/schedules remain accessible. Attach screenshots when actual UI is implemented.
 
 Compare AI-assisted expense discovery with an annual-expense checklist and AI summaries with a plain form. Observe completion, missed relevant costs, unsupported assumptions, correction effort and comprehension. Technical tests and synthetic examples do not establish actual household benefit, accepted visual design or production readiness. Track implementation/status only in [Assignment.md](Assignment.md).
+
+## 11. Planned goals, savings and product guidance (29 October 2026)
+
+**Status: planned; no new UI, accepted design, trained guidance or product availability is claimed.** This extends the member experience in section 10 and follows the [product requirements](docs/AGAP_Product_Solution.md#member-goals-savings-and-cooperative-product-guidance). Robert owns all member screens; Earl owns the staff goal/advice-review view in monitoring. Use existing tokens and controls. This addition does not replace the current first-demo path.
+
+Offer **My goals** as a voluntary secondary destination on member home; it must not block applying, checking a loan or requesting help. Start with one active goal. Support emergency savings, a known expense, travel, leisure and a member-defined purpose without moral labels or pressure to buy a cooperative product. Explain data reuse and who can see a shared request; declining or pausing guidance has no credit consequence.
+
+| Step | Planned content and primary action |
+| --- | --- |
+| Choose a goal | Purpose, target, date/flexibility and funds already dedicated; **Continue**; allow unknowns and staff assistance |
+| Check my information | Dated income/expenses/debts/loan position and upcoming needs, sources, accessible versus restricted savings and explicit reserve assumptions; **Confirm details** |
+| Explore a contribution | Required and modeled-available amounts, dated cash effect, protected essentials, horizon and assumptions; **Review this plan**; incomplete data or infeasibility precedes unavailable amounts |
+| Review guidance | Source-linked AI draft or template, rationale, limitations, missing questions and alternatives; **Choose this plan** or edit; savings-choice confirmation is not a transfer |
+| Consider a cooperative product | Neutral information about eligible approved catalogue candidates, fees, minimums, access/lockup, loss risks and return uncertainty; **Request staff review**; personalized investment recommendations appear only after review |
+| Follow my goal | Dated chosen plan, member-reported or source-linked progress, next review and **Update my plan**; accessible pause/withdraw controls and a route to payment help |
+
+Use plain language such as **Based on the information you confirmed** and **This plan needs more information**. Avoid an unexplained safe-to-invest score, guaranteed outcome, default investment selection, forced percentage, countdown/sales pressure or praise/shame about spending. Do not present a modeled amount as money already saved or an AI draft as reviewed advice. Display uncertainty and the effect on essential needs close to a contribution suggestion. A positive monthly total cannot visually override a dated shortage. Explain why data is requested without exposing provider/engine details in the member's main flow.
+
+Personalized investment drafts stay in the staff view until suitability review. The member sees **Review pending** and neutral product/educational facts; there is no purchase/transfer action. The reviewed recommendation keeps reviewer/date, approved terms, risks/costs and no-action/alternative choices inspectable. A changed goal, household fact or product condition shows **Needs review** and preserves the earlier explanation. Staff see the relevant input sources, checked run/horizon, catalogue/content origin, unresolved questions and required review rationale together; administrative access alone is not review authority.
+
+Include empty, incomplete, infeasible, stale, paused/withdrawn, target-already-met, no-eligible-product, review-pending/declined and AI-unavailable states. Retain form values on errors and use the established focus/error summary and save/retry rules. Verify keyboard use, meaningful currency/date labels, 320px reflow and source/correction access. Manual/template assistance must support the same member choice. Accepting a plan does not amend a loan, open an account or move funds. Attach implementation screenshots and record representative member/staff evaluation before declaring the blueprint accepted.

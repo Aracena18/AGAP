@@ -1,6 +1,6 @@
 # Benedict (C): Qwen training, accountable decisions and servicing
 
-Tracker: [Assignment.md — Benedict](../../../Assignment.md#benedict). **Current direction: 25 October 2026.** This supersedes earlier task directions where they differ, retaining conflict restrictions and adding your Qwen training assignment. The first contractual hardship amendment moves from the earlier demo allocation to stage 2.
+Tracker: [Assignment.md — Benedict](../../../Assignment.md#benedict). **Current direction: 29 October 2026; the goal-guidance addendum below supplements the retained 25 October assignments.** This supersedes earlier task directions where they differ, retaining conflict restrictions and adding your Qwen training assignment. The first contractual hardship amendment moves from the earlier demo allocation to stage 2.
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and AGENTS.md. Assignment.md alone records task status.
 
@@ -49,6 +49,12 @@ Earl compares pretrained/tuned Qwen and checklist performance independently. The
 - Retain partial/early/late payments, unapplied excess, reversals/refunds, broader restructures, settlement, write-off/recovery and provider reconciliation as assigned stage 2 work. Coordinate approved postings with Earl.
 - Payment status never establishes household wellbeing. No member-portal screens, monitoring table writes, parallel ledger or shared-file edits.
 
+## Goal-guidance addition (29 October 2026)
+
+Own QWN-02 within the existing models/qwen training/artifact boundary. The [separate guidance task and gate](../../AGAP_Model_Training_Plan.md#6-goal-guidance-training-extension-29-october-2026) extends Qwen with reviewed goal/budget explanations and cooperative-product considerations from confirmed facts, checked CRD-02 outputs and approved content/catalogue references. It does not transfer goal records, planner, member UI, catalogue or inference transport ownership. Reuse the training pipeline, keep an eligible extraction baseline, and regression-test QWN-01 behavior when choosing a shared artifact.
+
+Earl hands off EVAL-02 training/validation material first and retains final holdout labels. Record goal/content/catalogue/engine versions with the existing base/processor/adapter/config and dataset hashes. A document-extraction pass cannot release guidance; independently evaluate missing-data abstention, exact checked figures, source grounding, essential-needs protection, non-coercive goal choice, loss/liquidity/fee disclosures and required suitability-review status. No invented savings capacity, return, product, recurring expense, approval outcome or financial action. Runtime remains Aaron's single adapter and Robert's wiring; Earl owns GOL-01 review/follow-up. QWN-02 is stage 2 by default and unestimated beyond your existing 16-unit slice. Existing loan/amendment authority, stage 2 SRV-01 ownership and progress remain unchanged.
+
 ## Progress and handoff notes
 
 No production implementation progress is recorded yet. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry.
@@ -56,3 +62,5 @@ No production implementation progress is recorded yet. For each handoff, record 
 25 October 2026: PLN-01 revised this brief, ownership and first-demonstration slices. This note records documentation only; no new feature implementation or review acceptance is claimed. Use Assignment.md for the current task status and next action.
 
 25 October 2026 — PLN-02: the user-requested model-training revision supersedes this brief’s earlier 12-unit allocation. Current scope is the 16-unit table above and the [model training plan](../../AGAP_Model_Training_Plan.md); recorded implementation history remains unchanged. No training result or new feature implementation is claimed.
+
+29 October 2026 — PLN-03: goal-guidance responsibilities and future acceptance added by user request. Existing feature/model progress, exclusive ownership and first-demo budgets remain unchanged; new goal packages have separate pending estimates.

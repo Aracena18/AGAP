@@ -1,6 +1,6 @@
 # Earl (D): accounting, financial health and independent model evaluation
 
-Tracker: [Assignment.md — Earl](../../../Assignment.md#earl). **Current direction: 25 October 2026.** This replaces earlier task directions where they differ, adding confirmed support requests, corpus/split ownership and independent Qwen/EBM evaluation.
+Tracker: [Assignment.md — Earl](../../../Assignment.md#earl). **Current direction: 29 October 2026; the goal-guidance addendum below supplements the retained 25 October assignments.** This replaces earlier task directions where they differ, adding confirmed support requests, corpus/split ownership and independent Qwen/EBM evaluation.
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and AGENTS.md. Assignment.md is the only status register.
 
@@ -50,6 +50,14 @@ Use an early data/protocol handoff and later final-artifact evaluation, not whol
 - Technical synthetic results do not establish actual reduced defaults, better wellbeing or population fairness. The overlooked-expense mechanism and support benefit require partner validation and later appropriate outcome evaluation.
 - Retain full share-capital accounting, reports, adjustments, period close, loan/bank reconciliation and longitudinal financial-health outcomes for stage 2. No member-phone UI, loan-table writes or provider command-state changes.
 
+## Goal-guidance addition (29 October 2026)
+
+Own GOL-01 within monitoring and its staff UI/domain prompts: voluntary member goals/consent, dedicated funds/progress with source/as-of status, reviewed educational content/versioning, checked guidance drafts, authorized product-specific suitability review and preserved/stale advice history. Use Aaron's CRD-02 planner/catalogue and single AI adapter through Robert's proposed FND-04 contracts. All member-phone screens remain Robert's MOB-02. A contribution plan or member-reported saving is not a posted transaction; never change loan/accounting balances or reserve actual funds from a goal operation.
+
+Own EVAL-02 in evaluation/synthetic, with independent expected goal-planning results, reviewed fictional guidance labels and grouped household/template splits. Review financial content/product suitability labels with the cooperative's authorized responsible person; hand training/validation material to Benedict before QWN-02 completion, reserve holdout for later final scoring, and include the calculator-plus-reviewed-template baseline. Check centavo/date/horizon/fee/liquidity/allocation errors, unknowns, no surplus, stale products, invented/unsafe advice, declined/paused goals, sales pressure, source fidelity and member comprehension/correction effort. Keep EBM outputs outside goals, advice, suitability and support ranking.
+
+Apply [product scope](../../AGAP_Product_Solution.md#member-goals-savings-and-cooperative-product-guidance) and [design.md](../../../design.md#11-planned-goals-savings-and-product-guidance-29-october-2026); do not create another UI guide. GOL-01/EVAL-02 are stage 2 by default, unestimated beyond your existing 16-unit slice. Current statuses and accounting duties remain unchanged; technical scenario success or saving a plan is not evidence of real savings, goal completion or improved wellbeing.
+
 ## Progress and handoff notes
 
 No production implementation progress is recorded yet. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry.
@@ -57,3 +65,5 @@ No production implementation progress is recorded yet. For each handoff, record 
 25 October 2026: PLN-01 revised this brief, ownership and first-demonstration slices. This note records documentation only; no new feature implementation or review acceptance is claimed. Use Assignment.md for the current task status and next action.
 
 25 October 2026 — PLN-02: the user-requested model-training revision supersedes this brief’s earlier 12-unit allocation. Current scope is the 16-unit table above and the [model training plan](../../AGAP_Model_Training_Plan.md); recorded implementation history remains unchanged. No training result or new feature implementation is claimed.
+
+29 October 2026 — PLN-03: goal-guidance responsibilities and future acceptance added by user request. Existing feature/model progress, exclusive ownership and first-demo budgets remain unchanged; new goal packages have separate pending estimates.
