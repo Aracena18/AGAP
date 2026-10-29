@@ -35,6 +35,7 @@ describe('assessCase', () => {
     const before = structuredClone(record);
     const result = complete(record);
     expect(result.caseVersion).toBe(record.version);
+    expect(result.calculationVersion).toBe('cash-flow-v2');
     expect(result.scenarios).toHaveLength(2);
     expect(result.scenarios[0]).toMatchObject({
       offerId: 'requested', monthlyRemaining: 200_000, lowestBalance: -200_000,
@@ -129,6 +130,10 @@ describe('assessCase', () => {
     ['missing source', (record: CaseRecord) => { record.sources = record.sources.filter(source => source.id !== 'payslip'); }],
     ['missing source reference', (record: CaseRecord) => { record.facts[1].sourceId = null; }],
     ['duplicate source', (record: CaseRecord) => { record.sources.push({ ...record.sources[0] }); }],
+    ['blank source title', (record: CaseRecord) => { record.sources[0].title = '   '; }],
+    ['blank source excerpt', (record: CaseRecord) => { record.sources[0].excerpt = ''; }],
+    ['document supported by statement', (record: CaseRecord) => { record.facts[1].sourceId = 'statement'; }],
+    ['member report supported by document', (record: CaseRecord) => { record.facts[1].status = 'member-reported'; }],
     ['invalid source date', (record: CaseRecord) => { record.sources[0].date = '2026-02-30'; }],
     ['fractional centavos', (record: CaseRecord) => { record.facts[1].value = 123.5; }],
     ['negative expense', (record: CaseRecord) => { record.facts[2].value = -1; }],

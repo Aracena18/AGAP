@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useWorkspace } from '../../app/WorkspaceContext';
 import { applyCorrection, EvidenceCorrectionError, parsePesoInput, type CorrectionErrors } from '../../domain/evidence';
-import { dateLabel } from '../../domain/format';
+import { dateLabel, isCalendarDate } from '../../domain/format';
 import type { CaseRecord, EvidenceFact, FactCorrectionInput } from '../../domain/types';
 import { Button, Money, Notice } from '../../shared/ui';
 import styles from './evidence.module.css';
@@ -24,20 +24,25 @@ export default function CorrectionForm({ record, fact, onSourceChange, onSaved, 
   const [errors, setErrors] = useState<CorrectionErrors>({});
   const [saving, setSaving] = useState(false);
   const form = useRef<HTMLFormElement>(null);
+  const errorSummary = useRef<HTMLDivElement>(null);
   const missing = status === 'missing';
 
   useEffect(() => { form.current?.querySelector<HTMLInputElement>('input')?.focus(); }, []);
   useEffect(() => {
-    if (Object.keys(errors).length) form.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+    if (errors.form) errorSummary.current?.focus();
+    else if (Object.keys(errors).length) form.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
   }, [errors]);
 
   function chooseSource(id: string) {
     setSourceId(id);
     onSourceChange(id || null);
-    const candidate = fact.candidates?.find(item => item.sourceId === id);
-    const source = record.sources.find(item => item.id === id);
+    const sources = record.sources.filter(item => item.id === id);
+    if (sources.length !== 1) return;
+    const candidates = fact.candidates?.filter(item => item.sourceId === id) ?? [];
+    const candidate = candidates.length === 1 ? candidates[0] : undefined;
+    const source = sources[0];
     if (candidate) setAmount(String(candidate.value / 100));
-    if (candidate || source) setEffectiveDate(candidate?.effectiveDate ?? source!.date);
+    setEffectiveDate(candidate?.effectiveDate ?? source.date);
   }
 
   function fieldProps(field: keyof FactCorrectionInput) {
@@ -75,12 +80,13 @@ export default function CorrectionForm({ record, fact, onSourceChange, onSaved, 
     <h3>Correct {fact.label.toLowerCase()}</h3>
     {fact.status === 'conflicting' && fact.candidates && <div>
       <p className="small subtle">Compare the recorded sources. Choosing a source fills its candidate amount and date; review them before saving.</p>
-      <div className={styles.candidates}>{fact.candidates.map(candidate => {
-        const source = record.sources.find(item => item.id === candidate.sourceId);
-        return <div key={candidate.sourceId} className={styles.candidate}>
-          <span className="small subtle">{source?.title ?? candidate.sourceId}</span>
+      <div className={styles.candidates}>{fact.candidates.map((candidate, index) => {
+        const sources = record.sources.filter(item => item.id === candidate.sourceId);
+        const source = sources.length === 1 ? sources[0] : undefined;
+        return <div key={`${candidate.sourceId}-${index}`} className={styles.candidate}>
+          <span className="small subtle">{source?.title ?? (sources.length > 1 ? `Ambiguous source reference (${candidate.sourceId})` : `Unavailable source (${candidate.sourceId})`)}</span>
           <strong><Money value={candidate.value} /></strong>
-          <span className="small subtle">{dateLabel(candidate.effectiveDate)}</span>
+          <span className="small subtle">{isCalendarDate(candidate.effectiveDate) ? dateLabel(candidate.effectiveDate) : 'Unavailable date'}</span>
         </div>;
       })}</div>
     </div>}
@@ -99,7 +105,10 @@ export default function CorrectionForm({ record, fact, onSourceChange, onSaved, 
         </div>
         <div className="field"><label htmlFor={`correction-${fact.id}-sourceId`}>Supporting source</label>
           <select {...fieldProps('sourceId')} value={missing ? '' : sourceId} onChange={event => chooseSource(event.target.value)} disabled={missing}>
-            <option value="">Choose a source</option>{record.sources.map(source => <option key={source.id} value={source.id}>{source.title}</option>)}
+            <option value="">Choose a source</option>{[...new Set(record.sources.map(source => source.id))].map(id => {
+              const sources = record.sources.filter(source => source.id === id);
+              return <option key={id} value={id}>{sources.length === 1 ? sources[0].title : `Ambiguous source reference (${id})`}</option>;
+            })}
           </select>{fieldError('sourceId')}
         </div>
         <div className="field"><label htmlFor={`correction-${fact.id}-effectiveDate`}>Effective date</label>
@@ -111,7 +120,7 @@ export default function CorrectionForm({ record, fact, onSourceChange, onSaved, 
         <textarea {...fieldProps('reason')} value={reason} onChange={event => setReason(event.target.value)} placeholder="Explain what changed and why this evidence applies." />{fieldError('reason')}
       </div>
       {record.decisions.length > 0 && <Notice tone="warning">This correction will require renewed review. Previously recorded decisions keep their original evidence.</Notice>}
-      {errors.form && <Notice tone="danger" role="alert">{errors.form}</Notice>}
+      {errors.form && <div ref={errorSummary} tabIndex={-1} role="alert"><Notice tone="danger">{errors.form}</Notice></div>}
       <div className="actions"><Button type="submit" disabled={saving}>{saving ? 'Saving correction…' : 'Save correction'}</Button><Button variant="secondary" onClick={onCancel} disabled={saving}>Cancel</Button></div>
     </fieldset>
   </form>;

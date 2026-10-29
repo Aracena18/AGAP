@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
+import { assessCase } from './assessment';
 import { createDemoCases } from '../demo/cases';
 import type { CaseRecord, DemoActor, FactCorrectionInput } from './types';
-import { applyCorrection, parsePesoInput } from './evidence';
+import { applyCorrection, parsePesoInput, validateEvidence } from './evidence';
 
 const officer: DemoActor = { name: 'Mara Santos', role: 'officer' };
 const at = '2026-10-20T10:30:00.000Z';
@@ -20,7 +21,7 @@ function caseWithDecision(): CaseRecord {
     periodStart: record.periodStart, periodEnd: record.periodEnd,
     facts: structuredClone(record.facts), sources: structuredClone(record.sources),
     offers: structuredClone(record.offers), recommendation: null,
-    assessment: { status: 'incomplete', caseVersion: 1, calculationVersion: 'test', issues: [{ factId: 'income', message: 'Conflicting income' }] },
+    assessment: { status: 'incomplete', caseVersion: 1, calculationVersion: 'cash-flow-v1', issues: [{ factId: 'income', message: 'Conflicting income' }] },
   });
   return record;
 }
@@ -53,6 +54,8 @@ describe('applyCorrection', () => {
     expect(second.corrections[1].after.value).toBe(2_500_050);
     expect(second.decisions).toEqual(before.decisions);
     expect(second.decisions[0].caseVersion).toBe(1);
+    expect(second.decisions[0].assessment.calculationVersion).toBe('cash-flow-v1');
+    expect(assessCase(second).calculationVersion).toBe('cash-flow-v2');
     second.facts[1].value = 0;
     second.corrections[1].before.value = 0;
     expect(first.facts[1].value).toBe(2_400_000);
@@ -125,5 +128,109 @@ describe('parsePesoInput', () => {
 
   it.each(['', ' ', '-1', '1.001', '1e4', '24,000', 'Infinity', 'NaN', '90071992547409.92'])('rejects invalid PHP input %s', input => {
     expect(() => parsePesoInput(input)).toThrow(/amount/i);
+  });
+});
+
+
+describe('evidence source and identity integrity', () => {
+  it.each(['fact', 'source'] as const)('rejects an ambiguous %s without changing the record', kind => {
+    const record = caseWithDecision();
+    if (kind === 'fact') record.facts.push({ ...record.facts[1], label: 'Second income with the same reference' });
+    else record.sources.push({ ...record.sources[0], title: 'Second source with the same reference' });
+    const before = structuredClone(record);
+    expect(() => applyCorrection(record, correction, officer, at)).toThrow(/unambiguous|ambiguous/i);
+    expect(record).toEqual(before);
+  });
+
+  it.each(['date', 'title', 'excerpt'] as const)('rejects a correction using an unreadable source %s', field => {
+    const record = createDemoCases()[0];
+    record.sources[0][field] = field === 'date' ? '2026-02-30' : '   ';
+    const before = structuredClone(record);
+    expect(() => applyCorrection(record, correction, officer, at)).toThrow(/source.*valid date.*readable/i);
+    expect(record).toEqual(before);
+  });
+
+  it('permits an individual correction while an unrelated fact still needs clarification', () => {
+    const record = createDemoCases()[0];
+    record.facts[2].status = 'missing';
+    record.facts[2].value = null;
+    record.facts[2].sourceId = null;
+    const next = applyCorrection(record, correction, officer, at);
+    expect(next.corrections).toHaveLength(1);
+    expect(validateEvidence(next).some(issue => issue.factId === 'rent')).toBe(true);
+  });
+
+  it('allows a deliberate unavailable correction even when the previous source is ambiguous', () => {
+    const record = createDemoCases()[0];
+    record.sources.push({ ...record.sources[1] });
+    const next = applyCorrection(record, { ...correction, status: 'missing', value: null, sourceId: null }, officer, at);
+    expect(next.facts[1]).toMatchObject({ status: 'missing', value: null, sourceId: null });
+    expect(next.corrections).toHaveLength(1);
+  });
+});
+
+describe('validateEvidence', () => {
+  it('is pure and reports usable evidence even when cash flow fails policy', () => {
+    const record = createDemoCases()[1];
+    const before = structuredClone(record);
+    expect(validateEvidence(record)).toEqual([]);
+    expect(record).toEqual(before);
+  });
+
+  it.each([
+    ['document-supported', 'payslip'],
+    ['document-supported', 'old-worksheet'],
+    ['member-reported', 'statement'],
+  ] as const)('accepts %s evidence from %s', (status, sourceId) => {
+    const record = createDemoCases()[0];
+    Object.assign(record.facts[1], { status, sourceId });
+    expect(validateEvidence(record)).toEqual([]);
+  });
+
+  it.each([
+    ['document-supported', 'statement'],
+    ['member-reported', 'payslip'],
+    ['member-reported', 'old-worksheet'],
+  ] as const)('rejects %s evidence from %s', (status, sourceId) => {
+    const record = createDemoCases()[0];
+    Object.assign(record.facts[1], { status, sourceId });
+    expect(validateEvidence(record)).toEqual(expect.arrayContaining([
+      expect.objectContaining({ factId: 'income', message: expect.stringMatching(/requires/i) }),
+    ]));
+    expect(assessCase(record).status).toBe('incomplete');
+  });
+
+  it('ignores invalid and duplicate unused attachments, without consulting offers', () => {
+    const record = createDemoCases()[1];
+    record.sources.push(
+      { id: 'unused', title: '', kind: 'document', date: 'invalid', excerpt: '' },
+      { id: 'unused', title: '', kind: 'document', date: 'invalid', excerpt: '' },
+    );
+    record.offers = [];
+    expect(validateEvidence(record)).toEqual([]);
+    expect(assessCase(record).status).toBe('incomplete');
+  });
+
+  it('blocks an incomplete included expense regardless of its critical flag', () => {
+    const record = createDemoCases()[1];
+    Object.assign(record.facts[2], { critical: false, value: null, status: 'missing', sourceId: null });
+    expect(validateEvidence(record)).toEqual(expect.arrayContaining([
+      expect.objectContaining({ factId: 'rent' }),
+    ]));
+    expect(assessCase(record).status).toBe('incomplete');
+  });
+
+  it('accepts supported zero while keeping missing values incomplete', () => {
+    const record = createDemoCases()[1];
+    record.facts[2].value = 0;
+    expect(validateEvidence(record)).toEqual([]);
+    record.facts[2].value = null;
+    expect(validateEvidence(record).some(issue => issue.factId === 'rent')).toBe(true);
+  });
+
+  it.each(['opening', 'income', 'expense', 'obligation'] as const)('identifies a missing %s category without a fact row', category => {
+    const record = createDemoCases()[1];
+    record.facts = record.facts.filter(fact => fact.category !== category);
+    expect(validateEvidence(record).some(issue => issue.factId === category)).toBe(true);
   });
 });
