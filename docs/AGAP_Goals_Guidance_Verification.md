@@ -29,7 +29,7 @@ No application code, dependencies, generated clients, executable contracts, mode
 
 ## 5C addition verification (29 October 2026)
 
-PLN-04 adds [institution-rubric review and handoff](AGAP_Product_Solution.md#ai-assisted-5c-review-and-explainable-handoff) and a [separate Qwen/evaluation target](AGAP_Model_Training_Plan.md#7-institution-rubric-5c-analysis-and-explanation-extension-29-october-2026) across the same coordinated documents. The earlier goal-only counts above remain dated evidence for a986d04. The following audit covers the combined review against main c51af851509f22b2cae93b020228d30e5f780060 and preserves all task rows from the goal-only review commit.
+PLN-04 adds [institution-rubric review and handoff](AGAP_Product_Solution.md#ai-assisted-5c-review-and-explainable-handoff) and a [separate Qwen/evaluation target](AGAP_Model_Training_Plan.md#7-institution-rubric-5c-analysis-and-explanation-extension-29-october-2026) across the same coordinated documents. The earlier goal-only counts above remain dated evidence for a986d04. The following audit records the combined review at d8cd331 against main c51af851509f22b2cae93b020228d30e5f780060 and preserves all task rows from the goal-only review commit.
 
 | Check | Result |
 | --- | --- |
@@ -43,3 +43,19 @@ PLN-04 adds [institution-rubric review and handoff](AGAP_Product_Solution.md#ai-
 | Whitespace | git diff --check passed |
 
 Manual review confirms percentage scores require an approved versioned numerical rubric; public CDA/SBA descriptions establish a framework, not a DCCPEC scorecard. AI evidence analysis, accepted discretionary findings, deterministic score arithmetic, evidence coverage and human decisions remain distinguishable. Missing rubric/evidence yields unavailable, not a fabricated percentage. Character uses documented repayment-related evidence without personality/honesty inference; product-based not-applicable collateral is explicit; no aggregate conceals capacity shortages or missing data. Explanations must reproduce actual criterion/weight/source traces; a generated rationale is not model validation. EBM remains offline emergency-fund research and no repayment/default-probability deployment is added. New stages/estimates remain future scope and no main merge or trained capability is implied.
+
+## Owner task breakdown verification (29 October 2026)
+
+The user requested explicit tasks for every group member. Assignment.md now summarizes each owner's existing new-feature packages, and the four current briefs expand them into ordered steps, prerequisite inputs, handoff recipients and verification deliverables. This is an assignment clarification within PLN-03/PLN-04, not additional product scope or new task IDs.
+
+| Check | Result |
+| --- | --- |
+| Incremental scope from d8cd331 | Assignment.md, four current owner briefs and this verification document only |
+| Owner coverage | Robert: FND-04/FND-05/MOB-02; Aaron: CRD-02/CRD-03; Benedict: QWN-02/QWN-03; Earl: GOL-01/EVAL-02/EVAL-03; all ten match the register and delivery ownership |
+| Task detail | Every new feature has a person-level summary and a brief subsection with ordered work, inputs, receiving owner and verification; all four summary links resolve |
+| Existing work | All 32 task-register rows, prerequisite fields, stages, statuses and original first-demo budget rows unchanged from d8cd331 |
+| Combined references from main baseline | 169 local links/fragments resolve; 7 distinct pinned Git targets verified across the 12 Markdown documents |
+| Workflow and authority | No task cycles, extra provider/calculator, transferred UI/table ownership or model probability/decision authority introduced; data handoff precedes training and final evaluation follows artifacts |
+| Runtime and whitespace | Runtime, schemas, dependencies, tests and historical calculation oracles unchanged; git diff --check passed |
+
+New feature estimates remain Pending and stage 2 by default; no numerical rubric, trained artifact, accepted screen, application-test pass or merge is claimed. Documentation checks and manual task-to-spec consistency review are the verification for this change.

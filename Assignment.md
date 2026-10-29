@@ -124,17 +124,57 @@ These task-level checks supplement the owned slices in the delivery plan and eac
 
 Start with review of the existing FND-01/FND-02 candidate, then FND-03 and MOB-01. Implement all member-phone application, document submission/confirmation, status, loan, reminder-preference and payment-help UI yourself. The member facade delegates to B–D services; it does not copy financial rules. Own shared contract proposals, model-artifact/provenance review and inference integration. Package Earl’s evaluation and both trainers’ release evidence. Keep EBM outputs outside member/lending APIs. Keep existing OPS-01 evidence and its pending production obligations intact. [Current brief](docs/tasks/production/01-platform.md).
 
+### New feature tasks for Robert
+
+| Task | Your deliverable | First handoff |
+| --- | --- | --- |
+| FND-04 | Shared goal/consent, planning/catalogue, guidance/review and version contracts; own-record access | After FND-03, review Aaron's planner, Earl's goal/review and Benedict's model requirements before executable contract changes |
+| FND-05 | Shared 5C rubric, evidence findings, score/trace, review and saved-handoff contracts | After FND-03, agree rubric/result fields with Aaron, explanation fields with Benedict and independent expectations with Earl |
+| MOB-02 | All member goal setup, confirmed-input review, contribution previews, guidance/review status and progress/pause/withdrawal screens | Consume reviewed FND-04, CRD-02 and GOL-01 projections; integrate eligible Qwen through Aaron's adapter |
+
+Coordinate PLN-03/PLN-04 documentation and later integration evidence; Aaron owns the staff 5C panel. [Step-by-step deliverables](docs/tasks/production/01-platform.md#new-feature-deliverables).
+
 ## Aaron
 
 Own XAI-01: train the EBM and logistic-regression baseline in `models/explainable/` as offline research. Review your candidate interfaces; start EVD-01 and CRD-01 pure rules/tests, then AI-01 against the new reviewed ports. Extraction and expense suggestions are drafts; member confirmation, issuer verification and financial calculation are separate. Own one reusable inference adapter; Benedict owns Qwen training and supplies its artifact, not another application provider client. C/D own their domain prompts/validation and consume the adapter. EBM associations never become member credit/health scores or approval inputs. No member-portal UI. [Current brief](docs/tasks/production/02-evidence-credit.md).
+
+### New feature tasks for Aaron
+
+| Task | Your deliverable | First handoff |
+| --- | --- | --- |
+| CRD-02 | Deterministic goal contributions and approved cooperative-product catalogue/filtering, with dated costs and protected needs | Agree FND-04 proposals with Robert and independent planner expectations with Earl after core CRD-01/EVD-01 inputs |
+| CRD-03 | Institution-rubric 5C criteria/configuration, checked scores, inspectable calculation trace and staff panel | Research applicable criteria/weights and record cooperative approval; agree FND-05 before numerical activation and hand reviewed results to Benedict |
+
+Supply both features through the existing finance engine and AI adapter; missing policy/evidence stays unavailable. [Step-by-step deliverables](docs/tasks/production/02-evidence-credit.md#new-feature-deliverables).
 
 ## Benedict
 
 Own QWN-01 in `models/qwen/`: baseline, LoRA training on Earl’s frozen training/validation corpus, reproducible artifact/model card and handoff to Aaron. Start DEC-01 authority/conflict/current-version rules, then PAY-01 only against the real GL-01 posting service. Supply dated loan positions to the portal and monitoring. SRV-01, including its first hardship amendment, is retained for stage 2 with approval/member acceptance and preserved history. No ledger-table writes or member-portal UI. [Current brief](docs/tasks/production/03-decisions-servicing.md).
 
+### New feature tasks for Benedict
+
+| Task | Your deliverable | First handoff |
+| --- | --- | --- |
+| QWN-02 | Qwen adaptation for source-grounded goal/budget explanations and approved product considerations; extraction regression and reproducible artifact | After QWN-01 and Earl's EVAL-02 training/validation handoff, return candidate artifacts to Earl for independent evaluation |
+| QWN-03 | Qwen 5C evidence/criterion findings, explanations of supplied scores and versioned officer/reviewer handoff integration | After QWN-01 and EVAL-03 training/validation handoff, consume Aaron's checked CRD-03 results through FND-05 for integrated handoff |
+
+Use the same Qwen family and Aaron's adapter; AI outputs do not approve a loan or calculate scores. These two extensions have separate release checks, without requiring one to finish before the other. [Step-by-step deliverables](docs/tasks/production/03-decisions-servicing.md#new-feature-deliverables).
+
 ## Earl
 
 Start GL-01 and independent synthetic case design in parallel with interface review. Deliver HLT-01 support requests/check-ins, ACC-01 minimum reconciliation and expanded EVAL-01: generate/own synthetic corpus/splits, independently evaluate pretrained versus tuned Qwen/checklist/plain form, and review/evaluate Aaron’s EBM versus logistic regression in `evaluation/explainable/`. Hand off data/protocol before trainer completion; final reports follow returned artifacts. Confirmed support observations do not change the loan ledger. Retain capital, reporting, close and complete reconciliation duties for stage 2. No loan-table writes or member-portal UI. [Current brief](docs/tasks/production/04-accounting-monitoring.md).
+
+### New feature tasks for Earl
+
+| Task | Your deliverable | First handoff |
+| --- | --- | --- |
+| GOL-01 | Voluntary goal/consent and progress records, reviewed content, grounded guidance, staff suitability-review queue and follow-up history | Agree FND-04 with Robert; consume CRD-02, HLT-01 and AI-01 before integrated guidance; supply projections for MOB-02 |
+| EVAL-02 | Independent goal-planning expectations, reviewed guidance corpus/splits and baseline/model comparison | Review goal/content protocol after FND-04; hand training/validation material to Benedict before QWN-02 completes, retain final holdout |
+| EVAL-03 | Independently reviewed 5C examples, expected rule traces, grouped splits and expert/checklist/model comparison | Review rubric/source protocol after FND-05 with Aaron; hand training/validation material to Benedict before QWN-03 completes, retain final holdout |
+
+Return separate promotion/non-promotion evidence for each capability; model fluency and synthetic agreement do not establish household benefit. [Step-by-step deliverables](docs/tasks/production/04-accounting-monitoring.md#new-feature-deliverables).
+
+All ten feature packages above remain **Not started**, stage 2 by default, with **Pending** additional estimates. Preparation follows each task's prerequisites; it does not displace the existing first-demo priorities or silently expand the 64-unit budget. These person-level instructions expand existing task IDs, not another task/status register. Re-estimate capacity before committing an earlier demonstration.
 
 ## Goal-guidance handoffs
 
@@ -182,3 +222,5 @@ Robert owns PLN-04/FND-05 shared contract/integration proposals; Aaron owns CRD-
 29 October 2026 — PLN-03: user requested goal-based saving/investment guidance using existing member information. Added coordinated scope, future owner packages, calculation/model/suitability boundaries and planned UI. Feature/model tasks remain Not started; additional capacity estimates are Pending. Documentation verification and review are separate from application implementation and the earlier main-publication exception.
 
 29 October 2026 — PLN-04: user clarified that the proposed 5C evaluation should draw on financial-institution practice and document/member evidence. Added institution-rubric review, grounded AI findings, deterministic percentage/trace semantics, explanations and staff handoff. Actual criteria/weights remain unconfirmed; no model-generated repayment probability or implementation is claimed. New package estimates are Pending and existing progress/budgets remain unchanged.
+
+29 October 2026 — owner task breakdown: user requested explicit assignments for every member following the new plans. Expanded Robert/Aaron/Benedict/Earl summaries and each current brief with implementation steps, prerequisite inputs, receiving owners and verification deliverables for the existing ten goal/5C feature packages. No task ID, feature status, dependency, ownership boundary or estimate changed.

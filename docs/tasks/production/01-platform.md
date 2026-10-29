@@ -1,12 +1,12 @@
 # Robert (A): platform, member portal and integration
 
-Tracker: [Assignment.md — Robert](../../../Assignment.md#robert). **Current direction: 29 October 2026; the goal-guidance addendum below supplements the retained 25 October assignments.** This brief supersedes earlier task directions where they differ; dated implementation evidence below remains intact.
+Tracker: [Assignment.md — Robert](../../../Assignment.md#robert). **Current direction: 29 October 2026; the goal-guidance and 5C additions below supplement the retained 25 October assignments.** This brief supersedes earlier task directions where they differ; dated implementation evidence below remains intact.
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and root AGENTS.md. Assignment.md alone records current statuses. The first foundation is a review candidate, not an accepted integration base or production release.
 
 ## Work packages and ownership
 
-Own PLN-01/PLN-02, FND-01/FND-02/FND-03, MOB-01, OPS-01 and SHOW-01. Preserve supplied FND-01/FND-02 evidence and pending consuming-owner agreement. New member access is FND-03; it must not be described as supplied staff authentication.
+Own PLN-01/PLN-02/PLN-03/PLN-04, FND-01/FND-02/FND-03/FND-04/FND-05, MOB-01/MOB-02, OPS-01 and SHOW-01. Preserve supplied FND-01/FND-02 evidence and pending consuming-owner agreement. New member access is FND-03; it must not be described as supplied staff authentication.
 
 **All phone-facing work is reserved for you.** Own planned `src/features/member-portal/` and API module `member-portal/`, plus existing platform/identity/member/application and shared paths in the delivery table. B–D supply their services and staff screens, not portal screens. The facade delegates to their authorized services and never copies calculators, writes financial tables or impersonates a staff actor.
 
@@ -51,6 +51,30 @@ Keep source dates, incomplete/infeasible/conditional plans, AI draft versus revi
 ## Institution-rubric 5C addition (29 October 2026)
 
 Own PLN-04 and FND-05 within the shared-contract/registration boundary. Propose source/institution/product/version rubric references, candidate versus reviewed criteria, deterministic score/coverage/trace and handoff/decision versions; no schema/client or 0.1.0 changes occur in documentation. Aaron owns staff 5C views and credit/rule results; Benedict owns the grounded handoff/explanation and Qwen adaptation; Earl independently evaluates. Preserve actual officer/reviewer authority, member correction access, server scopes and stale-result checks. Existing member-portal ownership and goal work remain intact. Additional stage 2 estimates are Pending beyond current first-demo budgets; no universal rubric or calibrated repayment probability is supplied.
+
+## New-feature deliverables
+
+These steps expand the existing task IDs. Preserve first-demo priorities; new feature work defaults to stage 2 with separate Pending estimates. Use the tracker for current status and the delivery plan for exact paths. Proposals can be reviewed before implementation; canonical contracts change only through your reviewed integration work.
+
+### FND-04 — goal and guidance contracts
+
+1. After FND-03, collect Aaron's planner/catalogue, Earl's goal/content/review and Benedict's model/provenance requirements. Propose own-record commands/results, consent, dated inputs/horizon, explicit unavailable states and version/review history.
+2. Record consuming-owner agreement, then implement the canonical schemas/client and registration in your owned paths. Do not copy financial logic or goal tables into the member facade.
+3. Hand the reviewed contract version and examples to Aaron/Earl/Benedict. Supply cross-member denial, revoked linkage, stale-version and retry evidence for integrated operations.
+
+### FND-05 — 5C review contracts
+
+1. After FND-03, agree Aaron's rubric provenance/criteria/points/weights and calculation-trace projections, Benedict's finding/explanation/handoff needs and Earl's independent expected records. Keep candidate, accepted, verified, unavailable and not-applicable meanings distinct.
+2. Propose and review versioned rubric/finding/result/coverage/review/handoff ports, including source/offer bindings and material-change invalidation; then implement the agreed canonical contract/client/registration changes. Do not invent numerical policy.
+3. Hand the same version to all three owners with schema, scoped-access, stale-input and preserved-snapshot evidence. Coordinate later wiring without taking ownership of Aaron's staff panel or Benedict's decisions.
+
+### MOB-02 — member goals and progress
+
+1. After FND-04, CRD-02 and GOL-01 provide reviewed interfaces, implement the existing design blueprint: voluntary goal setup, relevant-data confirmation, checked contribution preview, guidance/review status, member choice, progress and pause/withdrawal.
+2. Consume domain-owned projections and eligible Qwen through Aaron's adapter. Display incomplete/infeasible/conditional, no-product, AI-unavailable, stale and suitability-review-pending states; keep staff-only investment drafts behind review.
+3. Supply own-record/revocation and workflow checks, keyboard/320px evidence and UI screenshots. Integrate only after required application checks and owner evidence; no control opens accounts, moves funds or changes loan terms.
+
+For each handoff, record task ID, branch/base, contract/model versions, owned files, relevant checks, unresolved inputs and receiving owner. PLN-03/PLN-04 document this scope; they are not runtime completion evidence.
 
 ## Progress and handoff notes
 

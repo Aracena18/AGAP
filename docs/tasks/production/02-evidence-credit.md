@@ -1,12 +1,12 @@
 # Aaron (B): evidence, credit, AI integration and explainable ML
 
-Tracker: [Assignment.md — Aaron](../../../Assignment.md#aaron). **Current direction: 29 October 2026; the goal-guidance addendum below supplements the retained 25 October assignments.** This replaces earlier task directions where they differ, including treating AI extraction solely as an unspecified future enhancement. The model revision explicitly assigns explainable-model training to you and Qwen training to Benedict.
+Tracker: [Assignment.md — Aaron](../../../Assignment.md#aaron). **Current direction: 29 October 2026; the goal-guidance and 5C additions below supplement the retained 25 October assignments.** This replaces earlier task directions where they differ, including treating AI extraction solely as an unspecified future enhancement. The model revision explicitly assigns explainable-model training to you and Qwen training to Benedict.
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and AGENTS.md. Assignment.md is the sole status register; this brief defines work and evidence, not another backlog.
 
 ## Work packages and ownership
 
-Own EVD-01, CRD-01, AI-01 and XAI-01. Retain evidence/comparison/products staff UI, `src/domain/evidence.ts` and `assessment.ts` with tests, API modules `evidence/`, `credit/` and planned `ai/`; add exclusive `models/explainable/` for EBM/logistic training, preprocessing/configs and research model/run cards. Benedict owns `models/qwen/`; Earl owns both evaluation directories. Own `packages/finance/` implementation only after Robert's extraction/re-export handoff. No shared schema, fixture, wiring, dependency or generated-client edits; request these through Robert.
+Own EVD-01, CRD-01/CRD-02/CRD-03, AI-01 and XAI-01. Retain evidence/comparison/products staff UI, `src/domain/evidence.ts` and `assessment.ts` with tests, API modules `evidence/`, `credit/` and planned `ai/`; add exclusive `models/explainable/` for EBM/logistic training, preprocessing/configs and research model/run cards. Benedict owns `models/qwen/`; Earl owns both evaluation directories. Own `packages/finance/` implementation only after Robert's extraction/re-export handoff. No shared schema, fixture, wiring, dependency or generated-client edits; request these through Robert.
 
 **Do not implement member-phone screens or the member facade.** Robert owns both. Supply member-authorized domain operations and projections through reviewed ports, not an officer impersonation shortcut. Never write decisions, loan balances, accounting or monitoring tables.
 
@@ -58,6 +58,24 @@ Own approved cooperative-product catalogue versions/filtering, with institution-
 ## Institution-rubric 5C addition (29 October 2026)
 
 Own CRD-03 in existing credit/evidence/products staff and rule paths. Research published lender practice with source/institution/product/date and record applicable cooperative approval before activating numerical criteria/weights. Educational five-Cs sources are not a universal percentage rubric. Build deterministic fixed-point per-C scores and criterion/point/weight/denominator traces from confirmed facts and checked finance results; discretionary findings require identified staff acceptance. Keep missing evidence/rubric unavailable, policy-based not-applicable distinct, coverage separately defined and capacity shortages visible. Qwen drafts evidence/criterion findings and questions; it cannot invent criteria, score honesty or provide a repayment probability. Publish reviewed projections through Robert's FND-05 ports for Benedict's handoff; Earl evaluates independently. New stage 2 work is unestimated; current AI adapter, goal catalogue work, path ownership and first-demo budgets remain intact.
+
+## New-feature deliverables
+
+These steps expand the existing task IDs in your credit/evidence/products boundaries. Preserve first-demo priorities; new feature work defaults to stage 2 with separate Pending estimates. Coordinate contract proposals with Robert before dependent integration; use Assignment.md for status.
+
+### CRD-02 — goal planner and product scenarios
+
+1. Review FND-04 with Robert and independent expectations with Earl. After CRD-01/EVD-01 and the reviewed contract are available, implement a no-return planner using confirmed dated income/expenses, existing commitments, dedicated funds, explicit contribution dates/horizon and protected needs.
+2. Handle no surplus, already-met targets, missing inputs, centavo remainders, double-counted reserves and infeasible deadlines without inventing income or changing the member's goal. Add catalogue versions/filtering only from approved product terms, preserving fees, liquidity, restrictions and risk disclosures; a no-product baseline remains usable.
+3. Supply independent centavo/date/allocation and catalogue-state checks. Hand checked result/reason/source/version projections to Earl's GOL-01 and Robert's MOB-02, and reviewed context examples to Earl for QWN-02 data; AI does not calculate contributions or promise returns.
+
+### CRD-03 — 5C rubric, scoring and staff panel
+
+1. Research and record institution/product/jurisdiction/date sources. Obtain the cooperative's applicable criteria, rating levels, weights, evidence/applicability/missingness/rounding rules and approval; until then, support findings with unavailable scores or an explicitly fictional test rubric. Review FND-05 proposals with Robert and criterion expectations with Earl.
+2. After FND-05/EVD-01/CRD-01, implement deterministic fixed-point rubric scores and source/criterion/point/weight/denominator traces. Require staff acceptance of discretionary findings; keep evidence coverage separate and preserve actual cash-flow shortages, unknowns and product-based not-applicable criteria.
+3. Implement the staff panel under design.md, with original-source/criterion inspection, correction and review states. Supply calculation, unavailable/applicability, changed-version, access and workflow checks plus UI screenshots. Hand reviewed results/traces to Benedict's QWN-03 integration and Robert's shared wiring; Earl independently evaluates them.
+
+Retain one finance engine and one AI adapter. Per-C scores are rubric results, not repayment probabilities; XAI-01 remains separate research. Record each handoff's task ID, branch/base, contract/rubric/engine versions, checks, unresolved institutional inputs and receiving owner in your brief/PR.
 
 ## Progress and handoff notes
 

@@ -1,12 +1,12 @@
 # Benedict (C): Qwen training, accountable decisions and servicing
 
-Tracker: [Assignment.md — Benedict](../../../Assignment.md#benedict). **Current direction: 29 October 2026; the goal-guidance addendum below supplements the retained 25 October assignments.** This supersedes earlier task directions where they differ, retaining conflict restrictions and adding your Qwen training assignment. The first contractual hardship amendment moves from the earlier demo allocation to stage 2.
+Tracker: [Assignment.md — Benedict](../../../Assignment.md#benedict). **Current direction: 29 October 2026; the goal-guidance and 5C additions below supplement the retained 25 October assignments.** This supersedes earlier task directions where they differ, retaining conflict restrictions and adding your Qwen training assignment. The first contractual hardship amendment moves from the earlier demo allocation to stage 2.
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and AGENTS.md. Assignment.md alone records task status.
 
 ## Work packages and ownership
 
-Own QWN-01, DEC-01, PAY-01 and stage 2 SRV-01. Add exclusive planned `models/qwen/` for baseline/LoRA notebooks, training/configs, artifact manifests and model/run cards. Retain decision/loans/payments staff features, `src/domain/review.ts`, `explanation.ts` and tests, API modules `decisions/` and `servicing/` with payment adapters. Robert owns member-phone screens/facade and shared contracts/wiring. Earl owns accounting and support-request records; do not write their tables or create a separate ledger.
+Own QWN-01/QWN-02/QWN-03, DEC-01, PAY-01 and stage 2 SRV-01. Add exclusive planned `models/qwen/` for baseline/LoRA notebooks, training/configs, artifact manifests and model/run cards. Retain decision/loans/payments staff features, `src/domain/review.ts`, `explanation.ts` and tests, API modules `decisions/` and `servicing/` with payment adapters. Robert owns member-phone screens/facade and shared contracts/wiring. Earl owns accounting and support-request records; do not write their tables or create a separate ledger.
 
 Use Aaron's checked assessments and one reusable AI adapter. Your domain owns source/figure validation and reviewed explanation prompts, with deterministic fallback. AI never supplies approval authority, authoritative figures or payment commands.
 
@@ -58,6 +58,25 @@ Earl hands off EVAL-02 training/validation material first and retains final hold
 ## Institution-rubric 5C addition (29 October 2026)
 
 Own QWN-03 within existing models/qwen and decision explanation/handoff paths. Follow the [5C training extension](../../AGAP_Model_Training_Plan.md#7-institution-rubric-5c-analysis-and-explanation-extension-29-october-2026): Earl supplies approved rubric/context/trace examples and grouped development splits, retaining holdout for final review. Qwen drafts source-linked 5C findings and explains supplied CRD-03 results; it does not define weights, calculate percentages, invent repayment probabilities or produce an approval verdict. Preserve candidate versus accepted discretionary findings and snapshot the original sources, actual rubric version/trace, missing matters and checked repayment results into the officer/reviewer handoff. Actual recommendation and final decision retain their current human owners/guards. Test unsupported explanations, stale sources/rubrics and all enabled Qwen capabilities with Earl; consume Aaron's single adapter and Robert's FND-05 contracts. New stage 2 estimates are Pending beyond the current demo and goal packages.
+
+## New-feature deliverables
+
+These steps expand your existing Qwen/decision tasks, preserving first-demo priorities. The new extensions default to stage 2 with separate Pending estimates and independent release checks. Both consume QWN-01 and their own data handoff; neither requires completion of the other. Assignment.md alone records current status.
+
+### QWN-02 — goal-guidance adaptation
+
+1. Agree goal-guidance outputs with Earl and provenance/contracts with Robert/Aaron. After QWN-01 and Earl's EVAL-02 training/validation handoff, evaluate the eligible baseline and adapt the existing Qwen pipeline using confirmed facts, checked CRD-02 results and approved content/product references.
+2. Produce source-grounded budget/goal explanations, clarification and product considerations that preserve supplied amounts, assumptions, risks and review status. Test missing-data abstention, no surplus, stale catalogue inputs, invented returns/products and pressure to save; do not train the model to supply authoritative numbers or suitability approval.
+3. Return pinned base/processor/adapter versions, configuration/checksums, dataset/split references, logs, resource limits and reproducible inference/model card to Earl for independent EVAL-02. Regress extraction and any other enabled Qwen capability. Hand only an independently eligible artifact to Aaron/Robert; retain the template/manual path if no supported improvement is found.
+
+### QWN-03 — 5C findings, explanation and handoff
+
+1. Agree the source-linked finding/criterion and explanation format with Aaron/Robert/Earl. After QWN-01 and EVAL-03 training/validation handoff, compare the baseline and adapt Qwen on reviewed source/rubric/trace examples. Do not use model-generated scores or rationales as ground truth or tune on final holdout labels.
+2. Draft supported per-C findings and focused questions, and explain supplied accepted scoring traces. Test unsupported factors/probabilities, missing history, inapplicable collateral, malicious document instructions and stale sources/rubrics. Return reproducible candidate artifacts to Earl for independent EVAL-03, with extraction/goal regression for enabled capabilities.
+3. For integrated handoff after reviewed FND-05 and CRD-03 projections are available, use Aaron's single adapter in your decision-owned paths. Preserve original authorized sources, candidate versus accepted findings, per-C score or unavailable state, calculation trace, missing matters and officer recommendation; enforce separate reviewer authority and material-change review without rewriting historical snapshots.
+4. Supply source/trace/workflow checks and screenshots for decision UI changes. Send handoff projections to Robert and artifact/release evidence to Earl/Aaron/Robert; no model output approves a loan, calculates a percentage, authenticates a document or changes terms.
+
+Domain evidence, catalogue/planner, goal records and member screens retain their existing owners. Each handoff records task ID, branch/base, contract/model/rubric/data versions, owned paths, relevant checks, unresolved inputs and receiving owner; model training and runtime integration are distinct evidence.
 
 ## Progress and handoff notes
 
