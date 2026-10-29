@@ -6,11 +6,11 @@
 
 **Baseline:** 25 October 2026, Asia/Manila. Updated for member-phone access, bounded AI assistance, Qwen training and separate explainable-model research.
 
-**Status:** target design for a four-person team. The first platform/intake implementation is a separate-branch [review candidate](AGAP_Platform_Foundation.md), not code imported into main; payment integration and accounting remain unimplemented. This architecture does not certify live readiness.
+**Status, 26 October:** target design with a supplied [platform/member-intake candidate](AGAP_Platform_Foundation.md) on `feat/robert-member-platform`. Real member access/intake and the domain facade are implemented; lending/evidence/AI/health/accounting services remain unimplemented. [Current evidence](AGAP_Robert_Member_Verification.md) distinguishes real intake from simulated domain rendering. Consuming-owner agreement and live readiness are not claimed.
 
 **Scope authority:** [product solution and priorities](AGAP_Product_Solution.md). Named owners and task progress are in [Assignment.md](../Assignment.md); exact path ownership and delivery gates are in the [delivery plan](AGAP_Delivery_Plan.md). A–D map to Robert, Aaron, Benedict and Earl respectively.
 
-This revision supersedes the earlier staff-first/later-member-channel sequencing. Robert exclusively owns the member portal and its access facade. It changes documentation only: candidate contract 0.1.0, generated clients, schemas and migrations remain unchanged. New interfaces below, including model artifact/provenance, are proposals for FND-03 review, not implemented endpoints or an accepted integration base. [Training/evaluation details](AGAP_Model_Training_Plan.md) distinguish Benedict’s Qwen work, Aaron’s research training/inference adapter and Earl’s independent evaluation.
+This revision supersedes the earlier staff-first/later-member-channel sequencing. Robert exclusively owns the member portal and its access facade. The later FND-03 candidate implements contract 0.2.0, its generated client/OpenAPI and append-only member migrations 008–010 after the [written proposal](AGAP_Member_Contract_Proposal.md). Shared member-domain/provenance interfaces remain subject to consuming-owner review; default business-domain implementations are unavailable. [Training/evaluation details](AGAP_Model_Training_Plan.md) distinguish Benedict’s Qwen work, Aaron’s research training/inference adapter and Earl’s independent evaluation.
 
 ## 1. Architecture decisions
 
@@ -107,12 +107,12 @@ Important cross-module interfaces:
 - `Servicing.getPosition(loanId, asOfDate)`: principal, accrued components, due/paid amounts and freshness from posted events, not a browser total.
 - `PaymentProvider.submit(command, idempotencyKey)` and `getStatus(providerReference)`: distinguish confirmed success, confirmed failure and unknown outcome.
 - `DocumentStore`: immutable version put/read/delete-under-retention-policy; no public-path exposure.
-- Proposed `MemberActorContext`: verified server linkage and own-record permissions, separate from existing staff `ActorContext`; domain ports explicitly authorize member operations.
+- Candidate `MemberActorContext`: verified server linkage and own-record permissions, separate from existing staff `ActorContext`; domain ports explicitly authorize member operations.
 - Proposed `AiDraftPort`: approved necessary source excerpts or checked results → untrusted draft with source/origin references; never an accepted fact, decision or calculated amount.
 - Proposed evidence draft/confirmation operations: source version, candidate text/value, confirmation/correction actor and time, with independent verification separate.
 - Proposed monitoring support-request port: member-confirmed request → staff-review task; servicing alone owns amendment comparisons, approval, acceptance and effective schedules.
 
-The integration owner encodes request/response schemas and these ports in the foundation task. Proposed interfaces here do not replace the existing executable `src/domain/types.ts` until the migration is implemented.
+The integration owner supplies candidate schemas/ports in `packages/contracts`. Demo/domain types remain in `src/domain/types.ts`. The original `assessCase` implementation now lives in `packages/finance` with `src/domain/assessment.ts` re-exporting it; Aaron owns subsequent finance implementation. This extraction changes no arithmetic or historical fixture.
 
 Aaron implements the single provider adapter in planned module `ai/`. Domain prompts/result validation stay in `evidence/` and `credit/` (Aaron), `decisions/` (Benedict), and `monitoring/` (Earl). Robert owns canonical schema/port edits, dependencies/configuration and registration. Benedict owns planned `models/qwen/` for offline baseline/LoRA/config/artifact handoff; Aaron owns planned `models/explainable/` for EBM/logistic training. Earl’s `evaluation/synthetic/` owns generated sources, independent truth and grouped manifests; `evaluation/explainable/` owns independent research split/evaluation protocols and reports. These are not operational databases or duplicate demo fixture registries. Shared dependencies, manifest/wire schemas and runtime registration remain Robert’s.
 
@@ -205,7 +205,7 @@ The [product requirements](AGAP_Product_Solution.md#member-goals-savings-and-coo
 4. General member-visible budget/goal drafts retain their status and correction route. Product-specific investment drafts are staff-only until authorized suitability review; members receive a pending-review status and neutral educational/product facts, then any reviewed personalized recommendation. Preserve reviewer reasons, member choice, content/catalogue/results versions, expiry and any limitations. Neither an administrator role alone nor a model release gives advisory authority.
 5. Material changes to income, needs, goal funding, loan position or product conditions mark affected pending plans/recommendations stale. Recalculate and renew any required review; preserve earlier snapshots. An ordinary goal edit does not itself rewrite a loan assessment or contract. Changed household facts follow the existing evidence/assessment invalidation rules when actually adopted there.
 
-FND-04 proposes own-record goal commands/read models, a checked goal-planning port, approved-catalogue lookup, domain-specific AI draft references and advice-review operations. These are not added to candidate 0.1.0 by documentation. Include expected versions, purpose/consent, as-of/horizon, input/result/engine/catalogue/content/model provenance, explicit missing-data reasons and separate review/publication status. Use server-established member/reviewer scopes, idempotent creates/retries, normal optimistic concurrency, revoked-linkage checks and private source access. Do not add a second provider client, finance package, fixture registry or owner-independent goal database.
+FND-04 proposes own-record goal commands/read models, a checked goal-planning port, approved-catalogue lookup, domain-specific AI draft references and advice-review operations. These are not added to candidate 0.2.0 by documentation. Include expected versions, purpose/consent, as-of/horizon, input/result/engine/catalogue/content/model provenance, explicit missing-data reasons and separate review/publication status. Use server-established member/reviewer scopes, idempotent creates/retries, normal optimistic concurrency, revoked-linkage checks and private source access. Do not add a second provider client, finance package, fixture registry or owner-independent goal database.
 
 Saving or accepting a plan is a planning event, not a servicing payment, share-capital contribution or journal. No goal service can write servicing/accounting tables, reserve real funds or execute investments. Actual transactions remain in the separately authorized cooperative process; future transaction integration needs its own approved boundaries. Projection earmarks conserve household money while exposing reduced unallocated/accessibly spendable funds. The no-return baseline and any uncertain-return scenario are distinguishable; missing expected-return data is not a promised zero and required gains cannot justify feasibility. Keep reviewed educational sources/versioning and source-reference checks separate from user-provided documents, which remain untrusted data.
 
@@ -284,7 +284,7 @@ Use versioned HTTP JSON commands under `/api/v1`. The integration owner publishe
 | D: monitoring | `/health-reviews`, `/review-tasks` | Dated member responses with explicit unavailable states, staff action and next date; recorded review and task state |
 | C/A: adapters | `/integrations/payments/{provider}/events`, `/jobs/{id}` | Provider-authenticated durable inbox; sanitized job status. These do not share staff-session authorization assumptions |
 
-### Proposed next revision — not in executable contract 0.1.0
+### Member candidate and remaining domain extensions
 
 | Accountable owner | Proposed family/port | Required boundary |
 | --- | --- | --- |
@@ -293,11 +293,11 @@ Use versioned HTTP JSON commands under `/api/v1`. The integration owner publishe
 | Aaron | Evidence AI drafts/confirmation, irregular-cost inputs and checked assessment extension | Source-linked suggestions versus confirmed facts and independent checks; one engine; explicit horizon/unavailable inputs |
 | Benedict | Conflict declarations/approval guards and amendment comparisons/acceptance | Separate authority, current basis, approved/accepted new schedule and preserved original |
 | Robert, Aaron, Benedict and Earl | FND-05 rubric provenance, 5C findings/scores/review trace and handoff references | Additional proposed schema; fixed-point rubric scores are separate from coverage, probability, money and final decision |
-| Robert, Aaron and Earl | FND-04 own-record goals, checked planning/catalogue and guidance-review ports | Later contract proposal with separate model/content release evidence; no change to 0.1.0 |
+| Robert, Aaron and Earl | FND-04 own-record goals, checked planning/catalogue and guidance-review ports | Later contract proposal with separate model/content release evidence; no change to 0.2.0 |
 | Earl | Support-request/check-in/task projections and confirmed sharing | Staff routing and action history; no automatic health verdict, credit penalty or contractual change |
 | Robert | Shared principal, AI draft, model artifact/provenance, confirmation and support/amendment port schemas | Consuming-owner review including both trainers and evaluator before generation; capability flags remain honest |
 
-These are intended capabilities, not finalized wire shapes. FND-03 records the next reviewed schema/version before dependent implementation. PLN-01/PLN-02 change no existing staff route, executable schema, generated client or migration; current code does not silently accept new member/linkage fields.
+Contract 0.2.0 now contains the member principal, source/draft/confirmation, model artifact, checked option/decision/loan/support and reminder candidate schemas. Own-record intake and preferences have real persistence; the member facade validates ownership, cleared-source/provenance and projection consistency before calling `MemberDomainPorts`. Uploads are bounded and hashed by the server; downloads require cleared own-record sources. The default domain ports return explicit unavailable views or `501 module_not_available`, never simulated successes. Aaron/Benedict/Earl still implement and review their domain authorization, versions, durable deduplication, histories and lifecycle rules before integration. Contractual amendments and full training/runtime promotion interfaces remain future review items. See the [proposal](AGAP_Member_Contract_Proposal.md) and [handoff](AGAP_Robert_Member_Verification.md).
 
 For rows listing child resources, e.g. `/corrections`, the full scoped route is `/api/v1/applications/{id}/corrections`; the generated specification removes any shorthand ambiguity.
 
@@ -361,3 +361,17 @@ Existing members, balances, capital, accruals and outstanding schedules require 
 The cooperative's accountant and responsible institutional officers must settle applicability of current reporting, lending, privacy and payment requirements, including later amendments. The CDA chart/reporting sources are research inputs, not a claim that an unreviewed account mapping is compliant. [CDA chart of accounts](https://cda.gov.ph/memorandum-circulars/mc-2022-24-revised-standard-chart-of-accounts-for-cooperatives/), [CDA reporting framework](https://cda.gov.ph/memorandum-circulars/mc-2022-25-amended-philippines-financial-reporting-framework-for-cooperatives/)
 
 Architecture decisions above are sufficient to divide foundation and module work. Real institutional product rules, provider credentials/contracts, operational capacity and accounting/retention mappings remain explicitly unresolved deployment inputs. They are not silently filled by fictional defaults or claimed complete for the hackathon.
+
+## 11. Supplied member identity boundary — 26 October candidate
+
+Member OIDC state/callback/cookie/session and `MemberActorContext` are separate from staff. Operator-only verified issuer/subject links establish access; no member ID, phone change, upload or provider role claim grants membership. Narrow database functions recheck and lock active links/sessions through transactions. Own-member RLS cannot expose staff platform commands, audit/outbox/job records or assignment reasons. Revocation ends existing sessions; operator verification/history is preserved. Enrollment/recovery needs actual institutional verification before live use.
+
+Members create/edit only their own draft and submit it once. Submitted intake may remain unassigned until a fresh-MFA administrator assigns an active same-branch officer with a recorded reason. The member cannot pick an officer or bypass the future independent approval process. Member commands use their own transactional idempotency/events; version conflicts and uncertain retries preserve the original request.
+
+In-portal notices depend on an authoritative dated servicing projection; preferences alone create no due date. Support sharing is explicit and does not amend a loan. The facade supplies no AI adapter, trained weights, evidence-scanning service, financial approval or posting engine. Browser-only domain simulations are labeled and limited to tests. Real Keycloak member sign-in and PostgreSQL isolation are separately verified; they do not establish a production release.
+
+### Local staff preview and review-demo entry
+
+The user-approved UI revision adds a separate fictional local Keycloak preview client selected only by `LOCAL_PREVIEW_PASSWORD_ONLY=true` in loopback development. Default staff authentication retains the existing MFA client; member authentication is unchanged. Production rejects the preview flag/client configuration. Reuse the seeded administrator without granting extra roles; simulated demo roles never become API authority.
+
+Staff login persists requested assurance and an allowlisted return path in one-use OAuth state (append-only migration 011). Callback validates the requested signed assurance; only a genuine signed level 2 supplies MFA methods. Assignment/revocation continue to require fresh MFA. Review routes now require a real staff session; account menus call the existing logout endpoint. Session/cookie JSON contracts and financial module interfaces are unchanged. Existing fictional realms are updated through a bounded idempotent setup command, preserving credentials/databases. See the [written proposal](AGAP_UI_Auth_Proposal.md).

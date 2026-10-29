@@ -4,6 +4,10 @@ Tracker: [Assignment.md — Earl](../../../Assignment.md#earl). **Current direct
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and AGENTS.md. Assignment.md is the only status register.
 
+## 26 October candidate handoff
+
+Start interface review from [the current platform guide](../../AGAP_Platform_Foundation.md), [member contract proposal](../../AGAP_Member_Contract_Proposal.md) and [verification/limits](../../AGAP_Robert_Member_Verification.md) on `feat/robert-member-platform`. Executable 0.2.0 is supplied for review; no consuming-owner agreement is recorded. Member actor/transactions are separate from staff, and domain defaults are unavailable. This supersedes earlier future-tense instructions about creating the member contracts from scratch. Assignment.md remains the only status tracker.
+
 ## Work packages and ownership
 
 Own GL-01, HLT-01, GOL-01, ACC-01 and EVAL-01/EVAL-02/EVAL-03. Retain staff accounting/monitoring UI, API modules `accounting/` and `monitoring/`, their rules/migrations/read models/tests; add planned `evaluation/synthetic/` for the corpus/splits/Qwen benchmark and `evaluation/explainable/` for independent survey split/protocol/evaluation reports. Trainers own their model directories, not these evaluation paths. Robert owns every member-phone screen/facade and shared schemas/wiring. Benedict owns loan accounts/amendments; do not write servicing tables or change balances.

@@ -48,7 +48,7 @@ Polish comes from consistent type, alignment, grouping, and state behavior. Addi
 | Member, assisted by staff | Clarify circumstances and understand the outcome and next step | Plain-language explanation and printable saved brief |
 | Bookkeeper or cashier | Help clarify an existing obligation or payment fact | Supporting participant; no additional prototype role or workspace |
 
-The labeled **Demo role** switch stays in the shared header. Display the active fictional staff identity. These roles demonstrate responsibility within one browser; they are not authentication or authorization for a live institution.
+The shared header contains AGAP, a workspace selector and an actual account menu. A real staff session is required to open the review demo. Put the labeled **Demo role** switch and Reset demo inside a **Demo tools** disclosure; these simulate responsibility in fictional browser records and never grant server authority. Show the signed-in account in the account menu, not a decorative fictional staff avatar.
 
 ### Information architecture
 
@@ -337,12 +337,12 @@ Labels remain visible, targets are at least 44px, and fields stack on narrow scr
 
 Show server saving, saved, loading, unavailable, stale/validation failure and uncertain save results separately. On uncertain saves, lock editing and offer “Retry same submission”; preserve the original request/key/sender. Warn before navigation loses unsaved values or uncertain retry details. On confirmed conflict, allow cancel/reload; never silently overwrite a changed record. An audit/history or financial approval UI is not implied by intake save confirmations.
 
-[Members example](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/screenshots/platform/staff-members.png) · [Applications example](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/screenshots/platform/staff-applications.png) · [Staff access example](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/screenshots/platform/staff-access.png). API-only application corrections/reassignment and broader staff grant/recovery screens remain pending designs, not accepted or implemented screens.
+[Members example](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/screenshots/platform/staff-members.png) · [Applications example](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/screenshots/platform/staff-applications.png) · [Staff access example](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/screenshots/platform/staff-access.png). The 26 October candidate adds assigned-draft correction and submitted-request assignment screens. Broader staff grant/recovery screens remain pending designs; automated evidence does not establish visual acceptance.
 
 
 ## 10. Planned member and support workflows (25 October 2026)
 
-**Status: planned; implementation, screenshots, team acceptance and representative evaluation are pending.** This section supersedes the earlier later-member-channel sequencing. It does not change the implemented demo/staff examples above. Robert exclusively owns every member-phone screen and the member-portal facade. Other owners build their staff/domain views and provide the reviewed projections in the delivery plan.
+**Status, 26 October: candidate member UI supplied; domain services, team acceptance and representative evaluation remain pending.** This section preserves the complete target and supersedes earlier later-member-channel sequencing. Real intake/reminder behavior and simulated downstream rendering are distinguished in [current verification](docs/AGAP_Robert_Member_Verification.md). Robert exclusively owns every member-phone screen and the member-portal facade. Other owners build their staff/domain views and provide the reviewed projections in the delivery plan.
 
 ### Member navigation and page hierarchy
 
@@ -402,6 +402,14 @@ Review the complete member journey with keyboard and 320px reflow, unavailable/s
 
 Compare AI-assisted expense discovery with an annual-expense checklist and AI summaries with a plain form. Observe completion, missed relevant costs, unsupported assumptions, correction effort and comprehension. Technical tests and synthetic examples do not establish actual household benefit, accepted visual design or production readiness. Track implementation/status only in [Assignment.md](Assignment.md).
 
+### Supplied member candidate and review evidence — 26 October
+
+The current candidate implements the four-action home, separate member sign-in/sign-out, own draft/application review/submission, unavailable-domain states and persisted reminder preferences. Source upload/confirmation, checked options/decision acceptance, loan/receipt and payment-help screens connect to owner ports; their default domain services are unavailable. Screenshots containing simulated domain data are named and labeled accordingly. See [home at 320px](docs/screenshots/member-platform/member-home-320.png), [application form](docs/screenshots/member-platform/member-apply.png), [submitted request](docs/screenshots/member-platform/member-submitted.png), [unavailable support](docs/screenshots/member-platform/member-help-unavailable.png) and [staff assignment](docs/screenshots/member-platform/staff-member-assignment.png).
+
+Use one router-level unsaved-change warning across editable staff/member forms, including Back/Forward, plus reload/close and sign-out warnings. Lock uncertain submissions and retain the original key/request until resolved. Hide old record/version results while new checked data loads; refresh must not silently discard unrelated unsent input. Session expiry/401 clears private content. Known unavailable services show a recoverable next step and cannot display a successful save or loan adjustment.
+
+These are implemented examples awaiting human design acceptance. Automated 320px, keyboard, accessibility and workflow checks supplement representative member/staff review; they do not establish financial-health improvement or deployed lending capability.
+
 ## 11. Planned goals, savings and product guidance (29 October 2026)
 
 **Status: planned; no new UI, accepted design, trained guidance or product availability is claimed.** This extends the member experience in section 10 and follows the [product requirements](docs/AGAP_Product_Solution.md#member-goals-savings-and-cooperative-product-guidance). Robert owns all member screens; Earl owns the staff goal/advice-review view in monitoring. Use existing tokens and controls. This addition does not replace the current first-demo path.
@@ -436,3 +444,26 @@ Capacity retains the actual dated cash-flow shortage, monthly remaining, full of
 Primary action is **Review findings**, then **Prepare handoff** after required confirmation; neither action approves the loan. The handoff preserves authorized original sources/member answers, accepted/candidate findings, per-C score or unavailable state, missing items, calculation/trace and officer recommendation. The separate reviewer sees the same saved versions and records their own decision/reason. Changed inputs/rubrics show a recoverable review-needed state and preserve historic snapshots. A member's existing plain-language explanation/correction route remains available; do not expose staff-only notes or create a public member ranking.
 
 Use shared table/form/notice styles with keyboard-operable source/criterion controls, accessible labels and 320px reflow. Missing, stale, no-rubric, inapplicable, correction, forbidden access and AI-unavailable states must remain usable with a checklist/template fallback. Future implementation needs meaningful financial/workflow/source/rubric tests, screenshots and representative staff review; a generated explanation does not establish accepted design, score validity or measured impact.
+
+## 13. Annotation cleanup and shared account controls — 26 October
+
+This section supersedes earlier baseline header/copy/layout descriptions where they differ. The user requested less prose, stronger hierarchy, a navigation button for the review demo and a working account menu. Implementation evidence and screenshots belong to the UI verification record; human visual acceptance remains pending.
+
+- Use one shared header: AGAP, a workspace selector (Member portal / Staff workspace / Review demo), and the actual account button when signed in. Move duplicate demo links out of cards/footers. Account menus expose identity and Sign out, with keyboard navigation, Escape/outside dismissal and appropriate focus return. An avatar must not imply an account that is not authenticated.
+- Member welcome: Welcome to AGAP; a simple Apply / Track / Get help icon row; one Sign in action. Enrollment guidance belongs under Need access? Preserve actionable sign-in errors.
+- Staff/review sign-in: a static, full-viewport background with soft blue corner gradients from the existing palette, a white header and an opaque white sign-in card. Keep the background confined to signed-out staff/review entry screens, with readable focus/error states and 320px reflow.
+- Applications: one heading, date-cycle context, search/status filters and the table. Remove the repeated workspace subtitle and three-case guide. Use one concise Demo data / browser-save notice; memory-only warnings remain truthful.
+- Case identity: name and ID/occupation on the left, status beneath; requested amount and term on the right. Stack the amount group cleanly on phones. Review steps are Evidence / Compare options / Decision.
+- Evidence: label and amount first; status, source and cash date next. Effective dates and secondary details are expandable, while deduction treatment remains visible. Short warnings point to the next action. Preserve complete source excerpts/dates, supported versus verified meanings, correction reasons/history and financial figures.
+- Review-demo role/reset controls stay under Demo tools. Review-demo access uses a real staff session; the fictional record actors and role simulation do not become server permissions or real lending decisions. Preserve browser edits on sign-out; Reset demo remains explicit.
+
+Use existing Google Sans, tokens, Material symbols and shared controls. Verify at 320px and 1101px, keyboard menus and full source/correction/decision workflows. Keep private member/staff sessions separate; a workspace switch is navigation, not an authorization grant.
+
+
+### Source and staff action cards — follow-up annotations
+
+Keep source identity separate from Type/Date metadata, the complete excerpt, the linked field and the concise verification qualification. Use a wider desktop source column, readable quote typography and a contained excerpt surface; stack below the evidence on phones. Do not turn source text into invented facts or replace the original excerpt.
+
+Assignment and access-revocation forms use the same action-card pattern: short action heading and target identity; an Authenticator required policy hint with a separate Verify link; aligned labeled fields; and a bordered footer with Cancel before the primary action. Verify remains outside the submit/cancel group. Destructive actions retain their red treatment and a short consequence statement. On phones, stack fields and keep the primary action prominent without horizontal overflow. Staff tabs use compact spacing and single-line labels.
+
+Remove redundant Loan intake/Administration eyebrows and descriptive page subtitles from staff Applications/Staff access. Keep the page heading, workspace navigation, field labels, errors, required reasons, uncertain-result recovery and MFA authority checks. The user explicitly requested these presentation refinements; domain behavior and ownership remain unchanged.

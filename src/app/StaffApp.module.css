@@ -1,0 +1,12 @@
+.header{display:flex;align-items:center;justify-content:space-between;gap:var(--space-5);padding:var(--space-4) var(--space-6);background:var(--surface);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:var(--space-2);font-size:24px;color:var(--ink);text-decoration:none}.brand svg{color:var(--primary)}.brand span{font-size:14px;color:var(--muted);margin-left:var(--space-2)}
+.account{display:flex;align-items:center;gap:var(--space-4)}.main{max-width:1280px;min-height:72vh;margin:0 auto;padding:var(--space-5);outline:none}.main h1{font-size:28px;font-weight:400;margin:0 0 var(--space-2)}
+.nav{display:flex;gap:var(--space-2);margin-bottom:var(--space-6);border-bottom:1px solid var(--line)}.nav a{display:inline-flex;align-items:center;min-height:44px;padding:var(--space-2) var(--space-4);text-decoration:none;border-radius:var(--control-radius) var(--control-radius) 0 0}.nav a[aria-current]{background:var(--primary-container);color:var(--on-primary-container)}
+.signIn{max-width:560px;margin:var(--space-7) auto;display:grid;gap:var(--space-5)}.primaryLink{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:var(--space-2) var(--space-5);border-radius:var(--button-radius);background:var(--primary);color:var(--surface);text-decoration:none;width:max-content}
+.signInPage{min-height:100svh;display:flex;flex-direction:column;background:radial-gradient(ellipse at 8% 12%,var(--primary-container),transparent 52%),radial-gradient(ellipse at 95% 88%,var(--primary-soft),transparent 55%),var(--canvas)}
+.signInMain{flex:1;width:100%;max-width:none;min-height:0;margin:0;padding-block:clamp(40px,8vh,80px)}.signInMain .signIn{width:100%;margin:0 auto}
+.footer{max-width:1280px;margin:0 auto;padding:var(--space-5);color:var(--muted);font-size:13px;display:flex;justify-content:space-between;gap:var(--space-4)}.footer a{min-height:44px;display:inline-flex;align-items:center}
+.skip{position:fixed;left:var(--space-4);top:-100px;background:var(--surface);padding:var(--space-4);z-index:50}.skip:focus{top:var(--space-2)}
+@media(max-width:767px){.header{padding:var(--space-4);flex-wrap:wrap}.brand span{display:none}.main,.footer{padding:var(--space-4)}.nav{overflow-x:auto}.account{width:100%;justify-content:space-between}}
+
+@media(max-width:767px){.nav{gap:var(--space-1)}.nav a{flex-shrink:0;white-space:nowrap;font-size:14px;padding-inline:var(--space-3)}}

@@ -81,7 +81,7 @@ describe('EvidencePage', () => {
 
   it('keeps reviewer evidence read-only while allowing source inspection', async () => {
     const user = renderPage(0, 'reviewer');
-    expect(screen.getByText(/demo officer updates evidence/i)).toBeVisible();
+    expect(screen.getByText(/read-only review/i)).toBeVisible();
     expect(screen.queryByRole('button', { name: /resolve conflict|correct|clarify/i })).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /view source for rent/i }));
     expect(within(screen.getByRole('complementary', { name: /source details/i })).getByText(/Opening spendable cash PHP 9,000/)).toBeVisible();
@@ -96,6 +96,6 @@ describe('EvidencePage', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('Storage is unavailable. Try saving again.');
     expect(screen.getByRole('form')).toBeVisible();
     expect(within(form).getByLabelText('Reason for correction')).toHaveValue('Confirmed the existing amount.');
-    expect(screen.getByText(/No corrections recorded/i)).toBeVisible();
+    expect(screen.getByText(/No corrections yet/i)).toBeVisible();
   });
 });

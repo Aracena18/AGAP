@@ -4,9 +4,13 @@ Tracker: [Assignment.md — Aaron](../../../Assignment.md#aaron). **Current dire
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and AGENTS.md. Assignment.md is the sole status register; this brief defines work and evidence, not another backlog.
 
+## 26 October candidate handoff
+
+Start interface review from [the current platform guide](../../AGAP_Platform_Foundation.md), [member contract proposal](../../AGAP_Member_Contract_Proposal.md) and [verification/limits](../../AGAP_Robert_Member_Verification.md) on `feat/robert-member-platform`. Executable 0.2.0 is supplied for review; no consuming-owner agreement is recorded. Member actor/transactions are separate from staff, and domain defaults are unavailable. This supersedes earlier future-tense instructions about creating the member contracts from scratch. Assignment.md remains the only status tracker.
+
 ## Work packages and ownership
 
-Own EVD-01, CRD-01/CRD-02/CRD-03, AI-01 and XAI-01. Retain evidence/comparison/products staff UI, `src/domain/evidence.ts` and `assessment.ts` with tests, API modules `evidence/`, `credit/` and planned `ai/`; add exclusive `models/explainable/` for EBM/logistic training, preprocessing/configs and research model/run cards. Benedict owns `models/qwen/`; Earl owns both evaluation directories. Own `packages/finance/` implementation only after Robert's extraction/re-export handoff. No shared schema, fixture, wiring, dependency or generated-client edits; request these through Robert.
+Own EVD-01, CRD-01/CRD-02/CRD-03, AI-01 and XAI-01. Retain evidence/comparison/products staff UI, `src/domain/evidence.ts` and `assessment.ts` with tests, API modules `evidence/`, `credit/` and planned `ai/`; add exclusive `models/explainable/` for EBM/logistic training, preprocessing/configs and research model/run cards. Benedict owns `models/qwen/`; Earl owns both evaluation directories. Robert's 26 October candidate supplies the extraction/re-export handoff: own `packages/finance/src/assessment.ts` and its future finance implementation after reviewing that candidate. Original arithmetic and historical fixtures are preserved; do not create another engine. No shared schema, fixture, wiring, dependency or generated-client edits; request these through Robert.
 
 **Do not implement member-phone screens or the member facade.** Robert owns both. Supply member-authorized domain operations and projections through reviewed ports, not an officer impersonation shortcut. Never write decisions, loan balances, accounting or monitoring tables.
 
