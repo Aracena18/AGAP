@@ -2,7 +2,7 @@
 
 **Financial health lending.** AGAP's target connects member-phone applications, source-linked evidence, overlooked-expense clarification, affordable repayment scenarios, accountable human decisions and ongoing support.
 
-This checkout includes the fictional review demo and a server-backed staff/member intake candidate. The demo role switch and local browser storage apply only to fictional review routes. The separate staff and member portals use server sessions and PostgreSQL; they have no live lending, payment or trained-model service. See the [platform setup guide](docs/AGAP_Platform_Foundation.md) and [26 October verification](docs/AGAP_Robert_Member_Verification.md). Publishing this candidate does not record teammate acceptance or authorize merging PR #10.
+This checkout includes the fictional review demo and a server-backed staff/member intake candidate. Review routes now require a real staff session. The Demo tools role switch and local browser storage apply only to fictional review records; simulation roles grant no server authority. The separate staff and member portals use server sessions and PostgreSQL; they have no live lending, payment or trained-model service. See the [platform setup guide](docs/AGAP_Platform_Foundation.md) and [26 October verification](docs/AGAP_Robert_Member_Verification.md). Publishing this candidate does not record teammate acceptance or authorize merging PR #10.
 
 The target product now includes full lending operations: evidence and credit review, decisions, controlled disbursement, repayments, accounting and financial-health follow-up. Start with the [feature priorities](docs/AGAP_Product_Solution.md), [production architecture](docs/AGAP_Production_Architecture.md) and [four-person delivery plan](docs/AGAP_Delivery_Plan.md). The [platform handoff](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/AGAP_Robert_Verification.md) records what has been implemented and tested; financial modules and live readiness remain pending.
 
@@ -14,7 +14,7 @@ The [UI/UX design system](design.md) defines the user's Google-inspired visual d
 
 ## Start locally
 
-Use Node 24 and npm.
+Use Node 24, npm and the local API/database/identity setup below. The web server alone cannot authenticate a review or staff account.
 
 ```sh
 npm ci
@@ -101,3 +101,9 @@ Robert's foundation has separate [verification and critique](https://github.com/
 [Evidence](docs/screenshots/evidence.png) · [Repayment comparison](docs/screenshots/comparison.png) · [Decision](docs/screenshots/decision.png) · [Fictional member brief](docs/screenshots/ana-member-brief.pdf). These show implementation, with team visual acceptance still pending.
 
 Staff implementation: [Members](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/screenshots/platform/staff-members.png) · [Applications](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/screenshots/platform/staff-applications.png) · [Staff access](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/screenshots/platform/staff-access.png).
+
+## Shared local administrator preview
+
+The seeded account is `administrator` / `Fictional-training-123!`. To use password-only staff access on the fictional localhost preview, set `LOCAL_PREVIEW_PASSWORD_ONLY=true` in the private `.env`, run `npm run preview:setup`, then start the API/web servers. This optional setting defaults to false and is rejected outside loopback development. The setup updates only the fictional preview client and pending administrator OTP enrollment; it does not reset databases or delete credentials.
+
+Open `/#/applications`, sign in and use the account menu to Sign out. Workspace navigation also offers Member portal and Staff workspace. Sensitive staff actions still require an authenticator through explicit step-up; member sign-in is unchanged. See the [platform guide](docs/AGAP_Platform_Foundation.md#shared-local-administrator-preview) for setup/verification.

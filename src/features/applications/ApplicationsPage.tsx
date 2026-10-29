@@ -8,14 +8,14 @@ import { dateLabel } from '../../domain/format';
 import styles from './ApplicationsPage.module.css';
 
 export default function ApplicationsPage() {
-  const { records } = useWorkspace();
+  const { records,storageWarning } = useWorkspace();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
   const query = search.trim().toLowerCase();
   const visible = records.filter(record => `${record.member.name} ${record.id}`.toLowerCase().includes(query) && (status === 'all' || caseStatus(record).label === status));
   return <>
     <div className="page-heading">
-      <div><p className="eyebrow">Loan review workspace</p><h1 className={styles.title}>Loan applications</h1><p>Evidence, repayment options, and decisions in one place.</p></div>
+      <div><h1>Loan applications</h1></div>
       <span className={styles.cycle}><span className={styles.dot} /> November 2026 cycle</span>
     </div>
     <section className="panel" aria-label="Applications">
@@ -45,8 +45,8 @@ export default function ApplicationsPage() {
         </table>
       </div>
       {visible.length === 0 && <div className={styles.empty}><Description size={32} aria-hidden="true" /><h2>No matching applications</h2><p className="subtle">Try another name or review status.</p><Button variant="secondary" onClick={() => { setSearch(''); setStatus('all'); }}>Clear filters</Button></div>}
-      <div className={styles.tableFooter}><span>Fictional member records</span><span>Changes are saved in this browser</span></div>
+      <div className={styles.tableFooter}>Demo data · {storageWarning?'Local changes only':'Saved in this browser'}</div>
     </section>
-    <aside className={styles.demoGuide} aria-label="Demonstration cases"><span className="eyebrow">Three different reviews</span><p><strong>Ana</strong> · conflicting income <span aria-hidden="true">/</span> <strong>Ben</strong> · monthly shortfall <span aria-hidden="true">/</span> <strong>Cora</strong> · missing information</p></aside>
+
   </>;
 }

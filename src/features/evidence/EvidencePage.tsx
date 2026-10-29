@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ArrowForward, CalendarToday, FindInPage, Edit, History } from '../../shared/icons';
+import { ArrowForward, CalendarToday, FindInPage, Edit, History, Info } from '../../shared/icons';
 import type { CaseRecord, EvidenceFact, EvidenceStatus } from '../../domain/types';
 import { dateLabel } from '../../domain/format';
 import { useWorkspace } from '../../app/WorkspaceContext';
@@ -12,11 +12,11 @@ const statusLabels: Record<EvidenceStatus, string> = {
   'document-supported': 'Document-supported', 'member-reported': 'Member-reported',
   conflicting: 'Conflicting', missing: 'Missing',
 };
-const groups: { category: EvidenceFact['category']; title: string; description: string }[] = [
-  { category: 'income', title: 'Income', description: 'Take-home pay available for household needs.' },
-  { category: 'expense', title: 'Everyday expenses', description: 'Recorded essentials and when they are paid.' },
-  { category: 'obligation', title: 'Existing obligation', description: 'Payments already committed before this application.' },
-  { category: 'opening', title: 'Opening balance', description: 'Spendable cash at the start of the review period.' },
+const groups: { category: EvidenceFact['category']; title: string }[] = [
+  { category: 'income', title: 'Income' },
+  { category: 'expense', title: 'Everyday expenses' },
+  { category: 'obligation', title: 'Existing obligation' },
+  { category: 'opening', title: 'Opening balance' },
 ];
 
 function FactValue({ fact }: { fact: EvidenceFact }) {
@@ -54,18 +54,18 @@ function EvidenceWorkspace({ record, requestedSource }: { record: CaseRecord; re
 
   return <>
     <div className="page-heading">
-      <div><h1>Evidence and circumstances</h1><p>Check the figures, their sources, and what still needs clarification.</p></div>
+      <div><h1>Evidence</h1></div>
       <Badge tone={pending.length ? 'warning' : 'success'}>
         {pending.length ? `${pending.length} ${pending.length === 1 ? 'fact needs' : 'facts need'} attention` : 'Evidence ready'}
       </Badge>
     </div>
     <div className={styles.notices}>
-      {role === 'reviewer' && <Notice>The demo officer updates evidence. As reviewer, you can inspect sources and history, then return the case for clarification from Decision.</Notice>}
+      {role === 'reviewer' && <Notice>Read-only review. Ask the loan officer to correct missing or conflicting information.</Notice>}
       {pending.length > 0 && <Notice tone="warning">
-        <strong>{unresolvedIncome ? 'Income sources disagree.' : 'Clarification is needed.'}</strong>{' '}
+        <strong>{unresolvedIncome ? 'Income mismatch.' : 'Missing information.'}</strong>{' '}
         {unresolvedIncome
-          ? 'The older worksheet and current payslip show different take-home pay. Review both sources and record the applicable amount.'
-          : 'Unavailable information stays unavailable. Record a supported figure or a member statement before a complete assessment.'}
+          ? 'Check both sources.'
+          : 'Add a supported value before comparing repayments.'}
       </Notice>}
       {saved && <Notice tone="success" role="status">{saved}</Notice>}
     </div>
@@ -75,7 +75,6 @@ function EvidenceWorkspace({ record, requestedSource }: { record: CaseRecord; re
           {groups.map(group => <section key={group.category} className={styles.group} aria-labelledby={`group-${group.category}`}>
             <div className={styles.groupHeading}>
               <h2 id={`group-${group.category}`}>{group.title}</h2>
-              <p className="small subtle">{group.description}</p>
             </div>
             {record.facts.filter(fact => fact.category === group.category).map(fact => {
               const factSource = record.sources.find(item => item.id === fact.sourceId);
@@ -86,32 +85,32 @@ function EvidenceWorkspace({ record, requestedSource }: { record: CaseRecord; re
                 </div>
                 <div className={styles.factMetadata}>
                   <Badge tone={fact.status === 'conflicting' || fact.status === 'missing' ? 'warning' : 'neutral'}>{statusLabels[fact.status]}</Badge>
-                  <span className="small subtle">Effective {dateLabel(fact.effectiveDate)}</span>
+                  <span className={`${styles.cashDate} small subtle`}><CalendarToday size={16}/>{fact.category==='opening'?'Opening':'Cash date'} {dateLabel(fact.cashDate)}</span>
                 </div>
                 <div className={styles.factBottom}>
                   <div className={styles.provenance}>
-                    {factSource ? <Button variant="quiet" className={styles.sourceButton} aria-label={`View source for ${fact.label}`} onClick={() => inspect(fact)}>
+                    {factSource ? <Button variant="quiet" className={styles.sourceButton} aria-label={`View source for ${fact.label}: ${factSource.title}`} onClick={() => inspect(fact)}>
                       <FindInPage size={16} aria-hidden="true" />{factSource.title}
                     </Button> : <span className="small subtle">No source recorded</span>}
-                    <span className={`${styles.cashDate} small subtle`}><CalendarToday size={16} aria-hidden="true" />{fact.category === 'opening' ? 'Opening on' : 'Cash date'} {dateLabel(fact.cashDate)}</span>
                   </div>
-                  {role === 'officer' && editingId !== fact.id && <Button variant={fact.status === 'conflicting' || fact.status === 'missing' ? 'primary' : 'quiet'}
+                  {role === 'officer' && editingId !== fact.id && <Button variant={pending[0]?.id===fact.id?'primary':'quiet'}
                     aria-label={`${action}${fact.status === 'conflicting' ? ' for' : ''} ${fact.label}`}
                     onClick={() => { inspect(fact); setEditingId(fact.id); setSaved(''); }}>
                     <Edit size={16} aria-hidden="true" />{action}
                   </Button>}
                 </div>
-                {fact.category === 'obligation' && <p className="small subtle">{fact.alreadyDeducted ? 'Already deducted from take-home pay; counted once.' : 'Not deducted from take-home pay; included separately.'}</p>}
+                <details className={styles.factDetails}><summary>Details<span className="sr-only"> for {fact.label}</span></summary><p className="small subtle">Effective {dateLabel(fact.effectiveDate)}</p></details>
+                {fact.category === 'obligation' && <p className="small subtle">{fact.alreadyDeducted ? 'Already deducted · counted once.' : 'Separate payment · included once.'}</p>}
                 {editingId === fact.id && role === 'officer' && <CorrectionForm key={fact.id} record={record} fact={fact} onSourceChange={setSourceId}
                   onCancel={() => setEditingId(null)}
-                  onSaved={() => { setEditingId(null); setSaved('Correction saved. Earlier facts and recorded decisions remain in history.'); }} />}
+                  onSaved={() => { setEditingId(null); setSaved('Correction saved.'); }} />}
               </div>;
             })}
           </section>)}
         </div>
         <section className="panel" aria-label="Evidence correction history">
           {record.corrections.length === 0 ? <div className={styles.emptyHistory}>
-            <History size={20} aria-hidden="true" /><div><h2>Correction history</h2><p className="small subtle">No corrections recorded. Earlier values and reasons will appear here.</p></div>
+            <History size={20} aria-hidden="true" /><div><h2>Correction history</h2><p className="small subtle">No corrections yet.</p></div>
           </div> : <details className={styles.history}>
             <summary>Correction history <span className="subtle">({record.corrections.length})</span></summary>
             <div className={styles.historyList}>{[...record.corrections].reverse().map(correction => <article key={correction.id} className={styles.historyEntry}>
@@ -130,21 +129,19 @@ function EvidenceWorkspace({ record, requestedSource }: { record: CaseRecord; re
           </details>}
         </section>
         <div className={styles.nextStep}>
-          {pending.length === 0 ? <><p className="small subtle">Evidence is ready for a dated repayment comparison.</p><Link to="../comparison" relative="path" className={styles.nextLink}>Compare repayments<ArrowForward size={20} aria-hidden="true" /></Link></>
-            : <p className="small subtle"><strong>Next:</strong> {pending[0].status === 'conflicting' ? 'Resolve' : 'Clarify'} {pending[0].label.toLowerCase()} to complete the repayment assessment. You can still move between review screens.</p>}
+          {pending.length === 0 ? <><p className="small subtle">Ready to compare repayments.</p><Link to="../comparison" relative="path" className={styles.nextLink}>Compare repayments<ArrowForward size={20} aria-hidden="true" /></Link></>
+            : <p className="small subtle"><strong>Next:</strong> {pending[0].status === 'conflicting' ? 'Resolve' : 'Clarify'} {pending[0].label.toLowerCase()} before comparing repayments.</p>}
         </div>
       </div>
       <aside ref={sourcePanel} id={source ? `source-${source.id}` : undefined} tabIndex={-1} aria-label="Source details" className={`panel ${styles.sourcePanel}`}>
         <div className="panel-header"><h2>Source details</h2><FindInPage size={20} aria-hidden="true" /></div>
         <div className={`panel-body ${styles.sourceBody}`}>
-          <Badge tone="brand">Fictional source</Badge>
-          <div aria-live="polite">
-            <h3>{source?.title ?? 'No source recorded'}</h3>
-            {source && <p className="small subtle">{source.kind === 'statement' ? 'Member statement' : source.kind === 'worksheet' ? 'Assessment worksheet' : 'Document'} · {dateLabel(source.date)}</p>}
+          <div className={styles.sourceIdentity} aria-live="polite"><h3>{source?.title ?? 'No source recorded'}</h3>
+            {source&&<dl className={styles.sourceMetadata}><div><dt>Type</dt><dd>{source.kind==='statement'?'Member statement':source.kind==='worksheet'?'Assessment worksheet':'Document'}</dd></div><div><dt>Date</dt><dd>{dateLabel(source.date)}</dd></div></dl>}
           </div>
-          <p className={styles.sourceExcerpt}>{source?.excerpt ?? 'This fact has no supporting source yet. An officer can record a clarification and link it to the existing member discussion.'}</p>
-          {selectedFact && <div className={styles.sourceContext}><p className="eyebrow">Reviewing</p><p>{selectedFact.label}</p></div>}
-          <p className="small subtle">All documents and circumstances in this demo are fictional. A source link shows provenance; it does not establish authenticity.</p>
+          {source?<figure className={styles.sourceExcerpt}><figcaption>Excerpt</figcaption><blockquote>{source.excerpt}</blockquote></figure>:<p className="small subtle">No supporting source. Ask the member for clarification.</p>}
+          {selectedFact&&<dl className={styles.sourceContext}><dt>Linked field</dt><dd>{selectedFact.label}</dd></dl>}
+          <p className={styles.verificationNote}><Info size={16}/>Verification is separate.</p>
         </div>
       </aside>
     </div>

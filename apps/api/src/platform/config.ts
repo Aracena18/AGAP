@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 const Env = z.object({
+  LOCAL_PREVIEW_PASSWORD_ONLY: z.enum(['true','false']).default('false').transform(value=>value==='true'),
   NODE_ENV: z.enum(['development','test','production']).default('development'),
   DATABASE_URL: z.string().min(1), IDENTITY_DATABASE_URL: z.string().min(1),
   PUBLIC_ORIGIN: z.url().default('http://127.0.0.1:5174'), API_PORT: z.coerce.number().int().min(1).max(65535).default(4100),
@@ -14,6 +15,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   const origin = new URL(config.PUBLIC_ORIGIN);
   const issuer = new URL(config.OIDC_ISSUER);
   if (origin.origin !== config.PUBLIC_ORIGIN || origin.username || origin.password) throw new Error('PUBLIC_ORIGIN must be an exact origin without a path or credentials.');
+  const loopback=(url:URL)=>['127.0.0.1','localhost','[::1]'].includes(url.hostname);
+  if(config.LOCAL_PREVIEW_PASSWORD_ONLY&&(config.NODE_ENV!=='development'||!loopback(origin)||!loopback(issuer)||![config.DATABASE_URL,config.IDENTITY_DATABASE_URL].every(value=>loopback(new URL(value))&&['/agap','/agap_test'].includes(new URL(value).pathname))))throw new Error('Password-only preview requires the fictional loopback development environment.');
+  if(config.OIDC_CLIENT_ID==='agap-local-preview')throw new Error('The preview client is selected only by the guarded local preview setting.');
   if (config.NODE_ENV === 'production') {
     if (origin.protocol !== 'https:' || issuer.protocol !== 'https:') throw new Error('Production identity and public origin require HTTPS.');
     if (config.PRIVACY_NOTICE_VERSION.startsWith('fictional') || config.SESSION_SECRET.includes('development') || config.OIDC_CLIENT_SECRET.includes('development')) throw new Error('Development notices/secrets cannot enable a production server.');

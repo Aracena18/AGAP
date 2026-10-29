@@ -1,9 +1,10 @@
-import { describe, beforeEach, expect, it } from 'vitest';
+import { describe, beforeEach, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { WorkspaceProvider } from './WorkspaceContext';
 import App from './App';
+vi.mock('../features/access/StaffContext',()=>({useStaff:()=>({session:null,signedOut:()=>{}})}));
 
 describe('application workspace', () => {
   beforeEach(() => localStorage.clear());
@@ -21,6 +22,7 @@ describe('application workspace', () => {
   it('names the demo role and preserves a keyboard-accessible review link', async () => {
     open();
     await screen.findByText('Ana Dela Cruz');
+    await userEvent.click(screen.getByText('Demo tools',{exact:true}));
     await userEvent.selectOptions(screen.getByLabelText('Demo role'), 'reviewer');
     expect(screen.getByLabelText('Demo role')).toHaveValue('reviewer');
     expect(screen.getByRole('link', { name: 'Review Ana Dela Cruz' })).toHaveAttribute('href', '/applications/AG-001/evidence');

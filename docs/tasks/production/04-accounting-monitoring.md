@@ -104,7 +104,9 @@ No production implementation progress is recorded yet. For each handoff, record 
 
 ## GL-01 implementation candidate — 29 October 2026
 
-Task branch: `feat/earl-gl-01`, using a normal checkout by the user's explicit instruction. Development combines main `1f4cc5b` with Robert's existing member-platform candidate `4577c850dcca44393f5978648bb861e3bf390656` in local merge `079b1bd`. Conflicting shared planning files retain main's text; their historical 0.1.0 references do not change the imported candidate's executable 0.2.0 contract. This is a provisional development base, not recorded Robert/Benedict agreement, integration, a GitHub PR merge or live release. The user will push; all work remains local.
+Task branch: `feat/earl-gl-01`, using a normal checkout by the user's explicit instruction. Initial development combined main `1f4cc5b` with Robert's existing member-platform candidate `4577c850dcca44393f5978648bb861e3bf390656` in local merge `079b1bd`. That merge retained main's then-current shared planning text; its historical 0.1.0 references did not change the imported candidate's executable 0.2.0 contract. This was a provisional development base, not recorded Robert/Benedict agreement, integration or a live release.
+
+The user subsequently published the GL-01 candidate at `93d1e60` as [PR #15](https://github.com/Aracena18/AGAP/pull/15), targeting `main`. The local conflict resolution brings in updated main `34aa9f8`, which already contains Robert's platform/member and UI work. Shared planning documents retain that main version, including the newer goal/5C assignments and platform/UI evidence; the accounting implementation and this GL-01 handoff are preserved. Repository publication still does not establish consuming-owner acceptance or activate the financial path. The user remains responsible for pushing the local resolution; no GitHub PR merge is performed here.
 
 ### Contract and independent acceptance examples
 
@@ -140,4 +142,13 @@ Acceptance includes independent amounts, invalid amounts/currency/accounts/rules
 
 The append-only module migrations are `001-ledger.sql`, `002-posting.sql` and `003-configuration-locks.sql`. The last preserves used configuration and locks/rechecks account/rule versions through commit. Registration remains a proposal for Robert; no shared registry, financial HTTP capability or servicing implementation was authored here. Module tests temporarily register the directory in memory with the existing migrator and use a disposable caller-effect table to prove atomicity/retry conservation, not a real loan table.
 
-Changes are local Conventional Commits on `feat/earl-gl-01`; the user will push. No PR, remote CI pass, main merge, owner acceptance or production approval is claimed. GL-01 is an implementation candidate for review, not declared integrated; Robert must reconcile the central task status, accept/register the base/service, and repeat full checks on the supported Linux environment with Benedict's actual money path.
+### Verification after synchronizing with main `34aa9f8`
+
+29 October 2026, same Windows/Node 24.22.2/PostgreSQL 18.6 test environment. The accounting source, migrations and tests are unchanged by the conflict resolution. The branch differs from main only in the accounting module, this handoff and the shared PR template.
+
+- `npm run check`: lint, contract drift and web/API builds passed; **126 domain/UI tests passed**. Backend/contracts: **127 passed, 3 failed of 130**, including all **42 GL-01 tests passing**. The same two document-store permission cases and one staff-provisioning case fail under native Windows; Linux full-check verification remains required.
+- `AGAP_E2E_WEB_PORT=5184 AGAP_E2E_API_PORT=4111 npm run test:e2e`: **32 Chromium tests passed**, using dedicated local ports and the guarded fictional database. Test servers are stopped afterward.
+- Documentation audit: **169 local links/anchors across 10 Markdown files resolved**; no conflict markers or diff whitespace errors remain. The seven shared planning files involved in the GitHub conflicts match updated main; this brief preserves its GL-01 additions.
+- Generated client/OpenAPI checkout line endings were temporarily normalized for the drift check and restored afterward; their canonical content remains unchanged. `graft` and `graphify` remain unavailable.
+
+Follow-up changes use local Conventional Commits on `feat/earl-gl-01`; the user will push. PR #15 exists; no remote CI pass, merge of GL-01 into main, owner acceptance or production approval is claimed. GL-01 is an implementation candidate for review, not declared integrated; Robert must reconcile the central task status, accept/register the base/service, and repeat full checks on the supported Linux environment with Benedict's actual money path.

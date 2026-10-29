@@ -1,0 +1,16 @@
+{
+  "executedAt": "2026-10-26T13:04:40.362Z",
+  "result": "passed",
+  "fictional": true,
+  "runId": "bc33b158-c918-46ef-91df-0a2a95e9f457",
+  "keycloakVersion": "26.4.7",
+  "passwordOnlyStaffLogin": true,
+  "privilegedActionDeniedWithoutMfa": true,
+  "explicitSignedMfaStepUp": true,
+  "serverSelfRevocationGuardPreserved": true,
+  "realAccountMenuSignOut": true,
+  "localSessionEnded": true,
+  "reviewRoutesRequireSession": true,
+  "temporaryAuthenticatorRemoved": true,
+  "secretsWrittenToArtifacts": false
+}

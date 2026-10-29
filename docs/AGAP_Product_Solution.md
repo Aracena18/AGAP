@@ -52,7 +52,7 @@ All five are core product features. Goal-based guidance below adds a planned fin
 
 | Capability | Existing browser implementation | Target work still needed |
 | --- | --- | --- |
-| Member access | No member login or member portal; separate staff intake review candidate | Own-record identity linkage, phone application/status/dashboard, reminder preferences and payment-help UI, all owned by Robert |
+| Member access | Supplied 0.2.0 candidate: linked own-record access, phone application drafts/submission/status and reminder preferences; domain screens have explicit unavailable defaults | Connect actual evidence, decision, loan and support services; representative member review and remaining production controls, with phone UI owned by Robert |
 | Evidence and AI | Fictional source excerpts, conflicting/missing facts, corrections and history; no live AI | Controlled uploads, candidate extraction/clarification, member-confirmed irregular costs, independent verification and server persistence |
 | Assessment/comparison | Checked one-cycle cash flow and costs for explicit fictional offers | Approved product/schedule generation, configurable institutional rules and authoritative server runs |
 | Decisions/explanations | Browser role demonstration, saved snapshots and deterministic member brief | Real identities/permissions, approval limits/quorum, member acceptance and durable server history |

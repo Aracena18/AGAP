@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 // Optional localhost-only member check on the fresh fictional realm. Existing
 // credentials are never replaced. Temporary OTP enrollment is removed afterward.
 const origin='http://127.0.0.1:5174',provider='http://127.0.0.1:58080',subject='10000000-0000-4000-8000-000000000004';
+const temporaryLabel=`AGAP UI verification ${randomUUID()}`;
 let step='environment';
 function totp(base32){
   const alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
@@ -29,11 +30,12 @@ async function main(){
     assert(result.ok,`Local provider setup request failed (${result.status}).`);return result;
   };
   assert((await (await admin('')).json()).displayName==='AGAP fictional training','Unexpected realm; refusing to modify credentials.');
+  step='preserve existing member authenticator';
   const user=await (await admin(`/users/${subject}`)).json();assert(user.username==='member'&&(await (await admin(`/users/${subject}/credentials`)).json()).every(item=>item.type!=='otp'),'Expected fictional member without an existing authenticator.');
   const browser=await chromium.launch();let enrolled=false,success=false,page;const originalActions=user.requiredActions??[];
   try{
     page=await browser.newPage();page.setDefaultTimeout(15000);step='password sign-in';
-    await page.goto(`${origin}/#/member`);await page.getByRole('link',{name:'Sign in to my account',exact:true}).click();
+    await page.goto(`${origin}/#/member`);await page.getByRole('link',{name:'Sign in',exact:true}).click();
     assert(new URL(page.url()).origin===provider,'Unexpected identity origin.');
     await page.locator('#username').fill('member');await page.locator('#password').fill('Fictional-training-123!');await page.locator('#kc-login').click();
     step='optional OTP enrollment';
@@ -41,7 +43,7 @@ async function main(){
     if(await page.locator('#totp').isVisible()){
       const manual=page.locator('#mode-manual');if(await manual.isVisible())await manual.click();
       const secret=await page.locator('#kc-totp-secret-key').innerText();await page.locator('#totp').fill(totp(secret));
-      if(await page.locator('#userLabel').isVisible())await page.locator('#userLabel').fill('Temporary AGAP member verification');
+      if(await page.locator('#userLabel').isVisible())await page.locator('#userLabel').fill(temporaryLabel);
       enrolled=true;await page.locator('[type="submit"]').click();
     }
     step='separate member session and own intake';await page.waitForURL(`${origin}/#/member`);
@@ -51,7 +53,7 @@ async function main(){
     });
     assert.deepEqual(result,{status:200,kind:'member',memberId:'20000000-0000-4000-8000-000000000003',staffStatus:401,contractVersion:'0.2.0'});
     await page.getByRole('heading',{name:'Your member account',exact:true}).waitFor();
-    await page.getByRole('button',{name:'Sign out',exact:true}).click();await page.getByRole('heading',{name:'Welcome to AGAP'}).waitFor();
+    await page.getByRole('button',{name:/Account menu for/}).click();await page.getByRole('menuitem',{name:'Sign out',exact:true}).click();await page.getByRole('heading',{name:'Welcome to AGAP'}).waitFor();
     assert.equal(await page.evaluate(async()=>(await fetch('/api/v1/member/session')).status),401);
     success=true;
   }catch(error){
@@ -62,11 +64,11 @@ async function main(){
     if(enrolled){
       step=success?'restore fictional enrollment':step;
       const credentials=await (await admin(`/users/${subject}/credentials`)).json();
-      for(const credential of credentials.filter(item=>item.type==='otp'))await admin(`/users/${subject}/credentials/${credential.id}`,'DELETE');
+      for(const credential of credentials.filter(item=>item.type==='otp'&&item.userLabel===temporaryLabel))await admin(`/users/${subject}/credentials/${credential.id}`,'DELETE');
       await admin(`/users/${subject}`,'PUT',{requiredActions:originalActions});await admin(`/users/${subject}/logout`,'POST');
     }
   }
   const evidence={executedAt:new Date().toISOString(),result:'passed',fictional:true,keycloakVersion:'26.4.7',realSignedMemberLoginPassed:true,memberPrincipalVerified:true,staffAccessDenied:true,temporaryOtpEnrollment:enrolled,localSessionEnded:true,fictionalEnrollmentReset:true,secretsWrittenToTestArtifacts:false,runId:randomUUID()};
-  await writeFile('docs/AGAP_Member_Identity_Walkthrough.json',JSON.stringify(evidence,null,2)+'\n');console.log(JSON.stringify(evidence,null,2));
+  await writeFile('docs/AGAP_UI_Member_Identity.json',JSON.stringify(evidence,null,2)+'\n');console.log(JSON.stringify(evidence,null,2));
 }
 void main().catch(()=>{console.error(JSON.stringify({result:'failed',step,message:'Check the local fictional setup. No tokens or OTP secrets are logged.'}));process.exitCode=1;});

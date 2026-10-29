@@ -110,7 +110,7 @@ The [product scope](AGAP_Product_Solution.md#member-goals-savings-and-cooperativ
 | ID | Accountable owner | Existing owned boundary | Dependencies and acceptance |
 | --- | --- | --- | --- |
 | PLN-03 | Robert | Shared documentation | Coordinated goal scope, contracts, training, design, owner handoffs and documentation verification; no feature-status changes |
-| FND-04 | Robert | Contracts/client/platform and shared registration | After FND-03; reviewed goal/consent/catalogue/planning/advice-review ports, own-record scopes, versions and proposed release envelope; executable 0.1.0 unchanged until implemented |
+| FND-04 | Robert | Contracts/client/platform and shared registration | After FND-03; reviewed goal/consent/catalogue/planning/advice-review ports, own-record scopes, versions and proposed release envelope; executable 0.2.0 unchanged until implemented |
 | CRD-02 | Aaron | credit/products and the single finance package after extraction handoff | FND-04, CRD-01 and EVD-01; independent dated contribution/rounding/horizon/fee/liquidity and allocation tests; incomplete/infeasible/conditional results and approved catalogue filtering |
 | GOL-01 | Earl | monitoring records, staff UI and domain prompts | FND-04, CRD-02, HLT-01 and AI-01; confirmed voluntary goals, reviewed content, checked drafts, authorized suitability review, member choice and stale/review history; no ledger/servicing writes |
 | QWN-02 | Benedict | models/qwen training/artifact handoff | QWN-01 and EVAL-02 training/validation data handoff; guidance adaptation and extraction regression through the existing pipeline; independent promotion gate, no autonomous financial authority |
@@ -128,7 +128,7 @@ The user requests institution-practice-based 5C assessment with analysis, explan
 | ID | Accountable owner | Existing owned boundary | Dependencies and acceptance |
 | --- | --- | --- | --- |
 | PLN-04 | Robert | Shared documentation | Coordinated rubric semantics, criteria/source/weight dependencies, explainability and ownership; documentation only |
-| FND-05 | Robert | Shared contracts/client/registration | FND-03; reviewed rubric provenance/configuration, accepted findings, score/coverage/review/trace and handoff-version ports; candidate 0.1.0 unchanged |
+| FND-05 | Robert | Shared contracts/client/registration | FND-03; reviewed rubric provenance/configuration, accepted findings, score/coverage/review/trace and handoff-version ports; candidate 0.2.0 unchanged |
 | CRD-03 | Aaron | credit/evidence/products staff views and rules | FND-05, EVD-01 and CRD-01; approved versioned rubric, deterministic fixed-point scores/trace, missing/applicability guards and preserved cash-flow checks |
 | QWN-03 | Benedict | models/qwen and decision explanation/handoff | QWN-01 and EVAL-03 training/validation handoff; source-grounded criterion findings/explanations and saved handoff through the same adapter, extraction regression and independent gate |
 | EVAL-03 | Earl | evaluation/synthetic and independent protocol/reports | FND-05 and reviewed rubric/source protocol; data handoff first, independent rule/expert/checklist comparison and final artifact scoring later |
@@ -168,3 +168,7 @@ These do not prevent architecture or fictional development, but cannot be replac
 | Presenter format, time limit and any final-round-specific rubric | Team/organizer materials | Presentation sequence and evidence packaging |
 
 No guaranteed completion date, production certification or free hosted operating budget follows from this plan. The four-person split reduces conflicting edits; its workload and live readiness still depend on implementation and verified institutional inputs.
+
+## 8. User-requested UI refinement
+
+UI-01 is Robert's requested navigation/account/local-preview refinement within platform, member and integration work; the provisional four-person capacity estimates are unchanged, not actual-hours claims. The user explicitly authorized presentation-only changes in Aaron's evidence screen for the seven annotations. Aaron retains evidence/domain ownership; no financial/evidence rules or fixtures are reassigned. Work is isolated on `codex/ui-review-cleanup` over the current member-platform candidate. Design.md section 11 and the authentication proposal govern the revision; Assignment.md records its status. Existing uncommitted notes and historical evidence remain untouched.

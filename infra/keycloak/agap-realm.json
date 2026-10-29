@@ -150,6 +150,31 @@
         "basic",
         "acr"
       ]
+    },
+    {
+      "clientId": "agap-local-preview",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "fictional-preview-development-client",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "http://127.0.0.1:5174/api/v1/auth/callback"
+      ],
+      "webOrigins": [],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "acr.loa.map": "{\"1\": 1, \"2\": 2}",
+        "default.acr.values": "1",
+        "minimum.acr.value": "1",
+        "agap.local-preview": "true"
+      },
+      "defaultClientScopes": [
+        "basic",
+        "acr"
+      ]
     }
   ],
   "users": [

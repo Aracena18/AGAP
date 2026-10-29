@@ -59,7 +59,7 @@ class PlatformController {
   }
   @Get('auth/login') async login(@Req() request:StaffRequest,@Res() response: Response) {
     await limitLogin(this.services.identityDatabase,this.services.config.SESSION_SECRET,request.socket.remoteAddress??'unknown');
-    const result = await this.services.identity.beginLogin();
+    const result = await this.services.identity.beginLogin('staff',request.query);
     response.cookie('agap_login',result.cookie,{httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax',path:'/api/v1/auth',maxAge:600_000});
     response.redirect(302,result.url);
   }
@@ -67,9 +67,9 @@ class PlatformController {
     const login = cookieValue(request.headers.cookie,'agap_login');
     const previous = cookieValue(request.headers.cookie,'agap_session');
     response.clearCookie('agap_login',{path:'/api/v1/auth',httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax'});
-    const token = await this.services.identity.finishLogin(login,new URL(request.originalUrl,this.services.config.PUBLIC_ORIGIN),previous);
-    response.cookie('agap_session',token,{httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax',path:'/',maxAge:this.services.config.SESSION_TTL_SECONDS*1000});
-    response.redirect(302,`${this.services.config.PUBLIC_ORIGIN}/#/staff`);
+    const result = await this.services.identity.finishLogin(login,new URL(request.originalUrl,this.services.config.PUBLIC_ORIGIN),previous);
+    response.cookie('agap_session',result.token,{httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax',path:'/',maxAge:this.services.config.SESSION_TTL_SECONDS*1000});
+    response.redirect(302,`${this.services.config.PUBLIC_ORIGIN}/#${result.returnTo}`);
   }
   @Post('auth/logout') async logout(@Req() request: StaffRequest,@Res() response: Response) {
     await this.services.identity.logout(cookieValue(request.headers.cookie,'agap_session')!);
