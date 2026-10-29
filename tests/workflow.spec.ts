@@ -1,5 +1,9 @@
 import { test, expect, type Locator, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { signInStaff } from './staff-session';
+test.beforeEach(async({context})=>{await signInStaff(context);});
+async function openDemoTools(page:Page){if(!await page.getByLabel('Demo role').isVisible())await page.getByText('Demo tools',{exact:true}).click();}
+async function setDemoRole(page:Page,role:'officer'|'reviewer'){await openDemoTools(page);await page.getByLabel('Demo role').selectOption(role);}
 
 async function resolveAna(page: Page) {
   await page.goto('/#/applications/AG-001/evidence');
@@ -33,7 +37,7 @@ test('the complete Ana review can be performed with the keyboard', async ({ page
   await tabTo(page, page.getByLabel('Reason for correction')); await page.keyboard.type('Current payslip confirmed with the member.');
   await tabTo(page, page.getByRole('button', { name: 'Save correction', exact: true })); await page.keyboard.press('Enter');
   await expect(page.getByRole('status')).toContainText('Correction saved');
-  await tabTo(page, page.getByRole('link', { name: 'Repayment comparison', exact: true })); await page.keyboard.press('Enter');
+  await tabTo(page, page.getByRole('link', { name: 'Compare options', exact: true })); await page.keyboard.press('Enter');
   await page.getByRole('heading', { name: 'Repayment comparison', exact: true }).waitFor();
   await tabTo(page, page.getByRole('radio', { name: /Requested schedule/ })); await page.keyboard.press('ArrowRight');
   await expect(page.getByRole('radio', { name: /After-payday schedule/ })).toBeChecked();
@@ -42,6 +46,7 @@ test('the complete Ana review can be performed with the keyboard', async ({ page
   await expect(page.getByRole('status')).toContainText('Recommendation saved');
   await tabTo(page, page.getByRole('link', { name: /Continue to decision/ })); await page.keyboard.press('Enter');
   await page.getByRole('heading', { name: 'Decision and explanation' }).waitFor();
+  await tabTo(page,page.getByText('Demo tools',{exact:true}));await page.keyboard.press('Enter');
   await tabTo(page, page.getByLabel('Demo role')); await page.keyboard.press('ArrowDown'); await page.keyboard.press('Enter');
   await tabTo(page, page.getByLabel('Decision rationale', { exact: true })); await page.keyboard.type('Checked evidence, full costs and household cash timing.');
   await tabTo(page, page.getByText('Read the explanation to be recorded', { exact: true })); await page.keyboard.press('Enter');
@@ -56,7 +61,7 @@ test('Ana: correct evidence, compare timing, hand off and preserve a printed dec
   await resolveAna(page);
   await page.reload();
   await expect(page.getByRole('button', { name: 'Resolve conflict for Monthly take-home pay' })).toHaveCount(0);
-  await page.getByRole('link', { name: 'Repayment comparison', exact: true }).click();
+  await page.getByRole('link', { name: 'Compare options', exact: true }).click();
   await expect(page.getByRole('region', { name: 'Monthly remaining', exact: true })).toContainText('₱2,000');
   await expect(page.getByRole('region', { name: 'Lowest dated cash balance', exact: true })).toContainText('−₱2,000');
   await page.getByRole('radio', { name: /After-payday schedule/ }).check();
@@ -70,7 +75,7 @@ test('Ana: correct evidence, compare timing, hand off and preserve a printed dec
   await page.getByRole('button', { name: 'Save recommendation' }).click();
   await expect(page.getByRole('status')).toContainText('Recommendation saved');
   await page.getByRole('link', { name: /Continue to decision/ }).click();
-  await page.getByLabel('Demo role').selectOption('reviewer');
+  await setDemoRole(page,'reviewer');
   await page.getByLabel('Decision rationale', { exact: true }).fill('Reviewed current payslip, essentials, full costs and remaining uncertainty with the member.');
   await page.getByLabel('Review date', { exact: true }).fill('2026-12-01');
   await page.getByText('Read the explanation to be recorded', { exact: true }).click();
@@ -89,14 +94,14 @@ test('Ana: correct evidence, compare timing, hand off and preserve a printed dec
   await page.emulateMedia({ media: 'screen' });
   await page.reload();
   await expect(brief).toContainText('₱36,000');
-  await page.getByLabel('Demo role').selectOption('officer');
+  await setDemoRole(page,'officer');
   await page.getByRole('link', { name: 'Evidence', exact: true }).click();
   await page.getByRole('button', { name: 'Correct Monthly take-home pay', exact: true }).click();
   await page.getByLabel('Amount (PHP)', { exact: true }).fill('23000');
   await page.getByLabel('Reason for correction').fill('Fictional updated circumstances reported for renewed review.');
   await page.getByRole('button', { name: 'Save correction', exact: true }).click();
   await expect(page.getByText('Review again', { exact: true })).toBeVisible();
-  await page.getByRole('link', { name: 'Decision & explanation', exact: true }).click();
+  await page.getByRole('link', { name: 'Decision', exact: true }).click();
   await expect(brief).toContainText('Historical decision');
   await expect(brief).toContainText('monthly remaining money is ₱2,000');
   expect(errors).toEqual([]);
@@ -107,8 +112,8 @@ test('Ben retains the monthly shortfall after a date change; Cora can be returne
   await expect(page.getByRole('region', { name: 'Monthly remaining', exact: true })).toContainText('−₱4,000');
   await page.getByRole('radio', { name: /After-payday schedule/ }).check();
   await expect(page.getByRole('region', { name: 'Monthly remaining', exact: true })).toContainText('−₱4,000');
-  await page.getByRole('link', { name: 'Decision & explanation', exact: true }).click();
-  await page.getByLabel('Demo role').selectOption('reviewer');
+  await page.getByRole('link', { name: 'Decision', exact: true }).click();
+  await setDemoRole(page,'reviewer');
   await page.getByLabel('Clarification needed and next step').fill('Discuss the monthly shortfall and clarify household circumstances.');
   await page.getByLabel(/I reviewed the template explanation/).check();
   await page.getByRole('button', { name: 'Record decision', exact: true }).click();
@@ -116,8 +121,8 @@ test('Ben retains the monthly shortfall after a date change; Cora can be returne
   await page.goto('/#/applications/AG-003/comparison');
   await expect(page.getByRole('heading', { name: 'Evidence needs clarification' })).toBeVisible();
   await expect(page.getByRole('region', { name: 'Monthly remaining', exact: true })).toHaveCount(0);
-  await page.getByRole('link', { name: 'Decision & explanation', exact: true }).click();
-  await page.getByLabel('Demo role').selectOption('reviewer');
+  await page.getByRole('link', { name: 'Decision', exact: true }).click();
+  await setDemoRole(page,'reviewer');
   await page.getByLabel('Clarification needed and next step').fill('Confirm take-home income with a dated member statement or document.');
   await page.getByLabel(/I reviewed the template explanation/).check();
   await page.getByRole('button', { name: 'Record decision', exact: true }).click();
@@ -126,7 +131,7 @@ test('Ben retains the monthly shortfall after a date change; Cora can be returne
 
 test('source tracing, keyboard entry and reset work with hash routing', async ({ page }) => {
   await resolveAna(page);
-  await page.getByRole('link', { name: 'Repayment comparison', exact: true }).click();
+  await page.getByRole('link', { name: 'Compare options', exact: true }).click();
   await page.getByRole('button', { name: 'View dated movements' }).click();
   await page.getByRole('link', { name: 'Current payslip', exact: true }).click();
   await expect(page.getByRole('complementary', { name: 'Source details' })).toContainText('Current payslip');
@@ -139,12 +144,12 @@ test('source tracing, keyboard entry and reset work with hash routing', async ({
   await expect(page.getByRole('main')).toBeFocused();
   await expect(page).toHaveURL(/\/applications$/);
   await page.goto('/#/applications/AG-001/evidence');
-  await page.getByRole('button', { name: 'Reset demo', exact: true }).click();
+  await openDemoTools(page);await page.getByRole('button', { name: 'Reset demo', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: 'Reset this demo?' });
   await expect(dialog.getByRole('button', { name: 'Keep changes' })).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(dialog).toBeHidden();
-  await page.getByRole('button', { name: 'Reset demo', exact: true }).click();
+  await openDemoTools(page);await page.getByRole('button', { name: 'Reset demo', exact: true }).click();
   await dialog.getByRole('button', { name: 'Reset demo', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Resolve conflict for Monthly take-home pay' })).toBeVisible();
 });
@@ -154,7 +159,7 @@ test('incompatible storage is preserved until explicit reset', async ({ page }) 
   await page.goto('/');
   await expect(page.getByRole('status')).toContainText('preserved');
   expect(await page.evaluate(() => localStorage.getItem('agap.demo.v1'))).toBe('{incompatible');
-  await page.getByRole('button', { name: 'Reset demo', exact: true }).first().click();
+  await openDemoTools(page);await page.getByRole('button', { name: 'Reset demo', exact: true }).first().click();
   await page.getByRole('dialog').getByRole('button', { name: 'Reset demo', exact: true }).click();
   await expect(page.getByRole('status')).toHaveCount(0);
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('agap.demo.v1')!).schemaVersion)).toBe(1);
@@ -171,7 +176,7 @@ test('core screens pass automated accessibility checks and reflow at 320 CSS pix
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), path).toBe(true);
     await page.setViewportSize({ width: 1366, height: 768 });
   }
-  await page.getByLabel('Demo role').selectOption('reviewer');
+  await setDemoRole(page,'reviewer');
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
   expect(results.violations).toEqual([]);
 });

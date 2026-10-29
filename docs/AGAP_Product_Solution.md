@@ -8,7 +8,7 @@
 
 **Confirmed direction:** a complete lending system, including disbursement, repayment processing, accounting, and financial-health follow-up; four developers; free software and a free development setup.
 
-**Status:** target product plan. The fictional review demo and Robert's separate staff-intake review candidate are the implemented baseline; the member portal, AI workflow and financial business modules described here remain planned. This is not partner policy approval or production certification.
+**Status, 26 October:** target product plan with a supplied platform/member-intake candidate. Own-record application drafts/submission, separate member access, reminder preferences and the portal facade/screens are implemented in that candidate. Source verification, AI inference, checked offers, decisions, loans and health/support records still await their owners; those ports default to unavailable. [Verification](AGAP_Robert_Member_Verification.md) separates real intake from simulated domain rendering. This is not partner policy approval or production certification.
 
 ## 1. Product promise and authority
 
@@ -52,7 +52,7 @@ All five are core product features. Goal-based guidance below adds a planned fin
 
 | Capability | Existing browser implementation | Target work still needed |
 | --- | --- | --- |
-| Member access | No member login or member portal; separate staff intake review candidate | Own-record identity linkage, phone application/status/dashboard, reminder preferences and payment-help UI, all owned by Robert |
+| Member access | Supplied 0.2.0 candidate: linked own-record access, phone application drafts/submission/status and reminder preferences; domain screens have explicit unavailable defaults | Connect actual evidence, decision, loan and support services; representative member review and remaining production controls, with phone UI owned by Robert |
 | Evidence and AI | Fictional source excerpts, conflicting/missing facts, corrections and history; no live AI | Controlled uploads, candidate extraction/clarification, member-confirmed irregular costs, independent verification and server persistence |
 | Assessment/comparison | Checked one-cycle cash flow and costs for explicit fictional offers | Approved product/schedule generation, configurable institutional rules and authoritative server runs |
 | Decisions/explanations | Browser role demonstration, saved snapshots and deterministic member brief | Real identities/permissions, approval limits/quorum, member acceptance and durable server history |

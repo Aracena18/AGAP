@@ -4,6 +4,10 @@ Tracker: [Assignment.md — Earl](../../../Assignment.md#earl). **Current direct
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and AGENTS.md. Assignment.md is the only status register.
 
+## 26 October candidate handoff
+
+Start interface review from [the current platform guide](../../AGAP_Platform_Foundation.md), [member contract proposal](../../AGAP_Member_Contract_Proposal.md) and [verification/limits](../../AGAP_Robert_Member_Verification.md) on `feat/robert-member-platform`. Executable 0.2.0 is supplied for review; no consuming-owner agreement is recorded. Member actor/transactions are separate from staff, and domain defaults are unavailable. This supersedes earlier future-tense instructions about creating the member contracts from scratch. Assignment.md remains the only status tracker.
+
 ## Work packages and ownership
 
 Own GL-01, HLT-01, GOL-01, ACC-01 and EVAL-01/EVAL-02/EVAL-03. Retain staff accounting/monitoring UI, API modules `accounting/` and `monitoring/`, their rules/migrations/read models/tests; add planned `evaluation/synthetic/` for the corpus/splits/Qwen benchmark and `evaluation/explainable/` for independent survey split/protocol/evaluation reports. Trainers own their model directories, not these evaluation paths. Robert owns every member-phone screen/facade and shared schemas/wiring. Benedict owns loan accounts/amendments; do not write servicing tables or change balances.
@@ -97,3 +101,94 @@ No production implementation progress is recorded yet. For each handoff, record 
 29 October 2026 — PLN-03: goal-guidance responsibilities and future acceptance added by user request. Existing feature/model progress, exclusive ownership and first-demo budgets remain unchanged; new goal packages have separate pending estimates.
 
 29 October 2026 — PLN-04: added planned 5C review/trace/handoff responsibilities without changing existing feature/model progress, original first-demo budgets or the separate goal packages. Numeric rubric configuration remains pending.
+
+## GL-01 implementation candidate — 29 October 2026
+
+Task branch: `feat/earl-gl-01`, using a normal checkout by the user's explicit instruction. Initial development combined main `1f4cc5b` with Robert's existing member-platform candidate `4577c850dcca44393f5978648bb861e3bf390656` in local merge `079b1bd`. That merge retained main's then-current shared planning text; its historical 0.1.0 references did not change the imported candidate's executable 0.2.0 contract. This was a provisional development base, not recorded Robert/Benedict agreement, integration or a live release.
+
+The user subsequently published the GL-01 candidate at `93d1e60` as [PR #15](https://github.com/Aracena18/AGAP/pull/15), targeting `main`. The local conflict resolution brings in updated main `34aa9f8`, which already contains Robert's platform/member and UI work. Shared planning documents retain that main version, including the newer goal/5C assignments and platform/UI evidence; the accounting implementation and this GL-01 handoff are preserved. Repository publication still does not establish consuming-owner acceptance or activate the financial path. The user remains responsible for pushing the local resolution; no GitHub PR merge is performed here.
+
+### Contract and independent acceptance examples
+
+Implement the existing `PostingPort.post(tx, request)` in the owned accounting module. The caller supplies its existing transaction; only the platform unit of work commits or rolls back. Accounting validates current financial-role access, organization, PHP, positive integer-centavo lines, safe balanced totals, dated rule/account mappings, permanent source-event identity and open periods. A returned journal receipt is provisional until the caller commits.
+
+Clearly fictional accounting examples, independent of the canonical Ana/Ben/Cora registry: PHP 10,000 principal disbursement debits Loans Receivable and credits Cash; PHP 2,000 principal repayment debits Cash and credits Loans Receivable. Interest, fees, allocation/recognition and actual institution mappings require separate review; no absent component is assumed to be zero.
+
+Identical same-event requests replay one preserved journal, including after its period closes. Conflicting reuse fails. Source-event uniqueness is permanent and organization-wide, independent of user/HTTP idempotency keys. Ordinary runtime roles cannot insert or rewrite journal tables directly; the database posting function also enforces balance, accounts, mappings and actor scope. Corrections use one linked full reversal in an open period, preserving the original rule/history. Partial adjustments, inactive-account reversal policies and complete period-close acceptance remain later work. No reversal of a reversal is supported in this minimal candidate.
+
+Acceptance includes independent amounts, invalid amounts/currency/accounts/rules, safe-total overflow, role/organization/member isolation, concurrent duplicates and conflicts, original immutability, exact reversal, caller rollback and both posting/closing lock orders. The caller must acquire the module's period lock before servicing loan/command locks. Its own financial-event uniqueness must prevent duplicate loan allocations; ledger deduplication alone does not implement PAY-01.
+
+### Receiving owners and pending integration
+
+- Robert: review the base/contract and registration proposal in the [module handoff](../../../apps/api/src/modules/accounting/README.md); register the accounting migration directory and provider after review, retaining unavailable HTTP/capability defaults until the controlled PAY-01 path is integrated. Canonical schemas/client, bootstrap, shared migration registry, dependencies, UI and Assignment.md are not authored by this task.
+- Benedict: use the same transaction and permanent business-event identity, preserve authorization/command checks, and supply reviewed allocation/mapping details. The accounting database tests use an explicitly fictional caller-effect harness; actual loan-subledger/receipt integration remains PAY-01 work.
+- Earl: preserve module migrations/tests and versioned verification below. Account/rule/period configuration is operator-owned in this candidate; no live defaults, HTTP financial endpoint, accounting screen or complete close/report/reconciliation workflow is supplied.
+- Institutional accounting/authority approval and the exact fictional posting mappings still need owner review. Passing fictional tests cannot establish those approvals or production readiness. Robert retains the sole task/status tracker.
+
+### Local verification and limitations
+
+29 October 2026, native Windows, portable Node **24.22.2**, isolated PostgreSQL **18.6** on localhost:55440 using only public fictional development credentials and database `agap_test`. The installed system Node/PostgreSQL and existing databases were not changed. Earlier exploratory checks used the installed PostgreSQL 15; the final results below use 18.6. Temporary test servers are stopped after verification.
+
+| Check | Observed result |
+| --- | --- |
+| Focused GL-01 suite | **42 passed**: 11 boundary validations and 31 real database/permission/transaction tests, including period and configuration races |
+| `npm run check` | Lint, contract drift, web/API builds and **118 domain/UI tests passed**. Backend/contracts: **107 passed, 3 failed of 110**; all 42 GL-01 tests passed |
+| Full-check limits | Two unchanged `document-store.test.ts` cases require POSIX directory mode 0700; unchanged `provisioning.test.ts` requires private input mode 0600. Native Windows does not provide those mode semantics. Controls were not weakened or tests disabled; a Linux full-check pass remains required before integration |
+| `npm run test:e2e` | Final target-version rerun: **24 Chromium tests passed**, including existing keyboard, 320px, accessibility, staff/member isolation and preserved-decision journeys. Domain simulations remain labeled; these tests do not establish actual PAY-01 integration |
+| Browser rerun recovery | An intermediate rerun timed out while large portable tooling was under Vite's watched root. Moving only ignored tooling to `node_modules/.cache/agap-gl01` removed that condition; the unchanged browser suite then passed |
+| Shared artifacts | Generated client/OpenAPI working copies were temporarily normalized from CRLF to LF for the drift check; their canonical content is unchanged and checkout endings are restored afterward |
+| Documentation/whitespace | Relative-file links resolve; module handoff fragment and `git diff --check` checked |
+| Navigation graph tools | `graft` and `graphify` are unavailable on this machine; navigation used `rg` and Git, and no graph update is claimed |
+
+The append-only module migrations are `001-ledger.sql`, `002-posting.sql` and `003-configuration-locks.sql`. The last preserves used configuration and locks/rechecks account/rule versions through commit. Registration remains a proposal for Robert; no shared registry, financial HTTP capability or servicing implementation was authored here. Module tests temporarily register the directory in memory with the existing migrator and use a disposable caller-effect table to prove atomicity/retry conservation, not a real loan table.
+
+### Verification after synchronizing with main `34aa9f8`
+
+29 October 2026, same Windows/Node 24.22.2/PostgreSQL 18.6 test environment. The accounting source, migrations and tests are unchanged by the conflict resolution. The branch differs from main only in the accounting module, this handoff and the shared PR template.
+
+- `npm run check`: lint, contract drift and web/API builds passed; **126 domain/UI tests passed**. Backend/contracts: **127 passed, 3 failed of 130**, including all **42 GL-01 tests passing**. The same two document-store permission cases and one staff-provisioning case fail under native Windows; Linux full-check verification remains required.
+- `AGAP_E2E_WEB_PORT=5184 AGAP_E2E_API_PORT=4111 npm run test:e2e`: **32 Chromium tests passed**, using dedicated local ports and the guarded fictional database. Test servers are stopped afterward.
+- Documentation audit: **169 local links/anchors across 10 Markdown files resolved**; no conflict markers or diff whitespace errors remain. The seven shared planning files involved in the GitHub conflicts match updated main; this brief preserves its GL-01 additions.
+- Generated client/OpenAPI checkout line endings were temporarily normalized for the drift check and restored afterward; their canonical content remains unchanged. `graft` and `graphify` remain unavailable.
+
+The conflict resolution is committed locally on `feat/earl-gl-01` and ready for the user to push. PR #15 exists; no remote CI pass, merge of GL-01 into main, owner acceptance or production approval is claimed. GL-01 is an implementation candidate for review, not declared integrated; Robert must reconcile the central task status, accept/register the base/service, and repeat full checks on the supported Linux environment with Benedict's actual money path.
+
+## EVAL-01 data/protocol implementation candidate — 29 October 2026
+
+Branch/base: `feat/earl-eval-01` from main `75c7e7f`. Owned changes are the offline tools/tests in `evaluation/synthetic/`, the separate research protocol in `evaluation/explainable/`, and this handoff. Shared contracts, configuration, CI, application routes and financial modules are unchanged.
+
+### Supplied boundary
+
+The [synthetic evaluation module](../../../evaluation/synthetic/README.md) supplies twelve fictional development cases, fourteen source pages and eighteen expected findings. The paired repayment/strain cases share a scenario group, leaving eleven independent development groups. Authored expectations use fixed centavos/dates and source excerpts independently of the production finance engine; independent label/format review remains pending.
+
+Tools validate records, checksums, citations, unknowns and augmentation ancestry; keep connected household/scenario/content groups together; export inputs separately from targets; and reject overlapping private holdout families/templates/content. Reviewed-release creation requires hash-bound review evidence and an external private holdout. Private scoring also requires the frozen release commitment. Default exports remain development previews, with no accepted review or holdout fabricated by the tools.
+
+The structured scorer reports exact money/availability, date, recurrence, relevance, action and source errors with case denominators, plus missing/unsolicited fields and unsupported recorded values. Simulated predictions remain harness evidence; unmeasured timing/memory stays null. Free-text question/reason meaning and participant effort require separate review/observation. No trained artifact, model comparison, runtime promotion or household-benefit result is supplied.
+
+The renderer supplies labeled text-document PNG previews and exact image/source hashes. Representative images were visually inspected. The unreadable-field example uses a transcription placeholder; these images are not a realistic degraded-scan/OCR benchmark. Image input formats and broader template coverage need consuming-owner review.
+
+The development corpus hash is `792a4a0aaccd786b910429e2ccc429c21b0b3eb7c1de5bb20ca8f71d49a7af1f`. A locally generated bundle at `node_modules/.cache/agap-eval01/preview-final` verifies against that commitment; source images are at `node_modules/.cache/agap-eval01/images-final`. Generated outputs are reproducible development artifacts outside the tracked source, not a frozen training release.
+
+The [research protocol](../../../evaluation/explainable/README.md) records required access/codebook, cohort/target/feature, preprocessing/weight, split, artifact and final-report evidence for Aaron's EBM/logistic comparison. It adopts no guessed response mapping and downloads no survey data. Actual research inputs, reviewer agreement and returned artifacts remain pending.
+
+### Verification
+
+Native Windows, Node 24.22.2; repository regression checks used the isolated fictional PostgreSQL 18.6 `agap_test` database on localhost:55440.
+
+| Check | Observed result |
+| --- | --- |
+| Focused EVAL-01 suite | **46 passed**, including malformed values/citations, transitive grouping, duplicate-content isolation, stale reviews, holdout leakage/commitments, missing-as-zero, scoring alignment and simulated-output limits |
+| Scoped typecheck and lint | `tsc -p evaluation/synthetic/tsconfig.json --noEmit` and `eslint evaluation/synthetic` passed |
+| CLI and rendering | Generated/verified the development input/target/schema bundle; rendered fourteen PNGs and inspected representative documents |
+| `npm run check` | Lint, contract drift, web/API builds and **126 domain/UI tests passed**. Backend/contracts: **127 passed, 3 failed of 130**, with all accounting tests executed |
+| Full-check limitations | The same two document-store POSIX-mode cases and one staff-provisioning case fail on native Windows. Supported Linux verification remains required; checks and controls were not weakened |
+| `npm run test:e2e` | **32 Chromium tests passed**, using dedicated 5184/4111 test ports |
+| Temporary test setup | Generated client/OpenAPI and accounting SQL working-copy newlines were temporarily normalized to LF for checksum compatibility, then restored. An initial accounting setup mismatch was resolved by confirming the LF hashes against the existing disposable test database; migration-history records and SQL logic were unchanged |
+| Tooling and cleanup | `graft`/`graphify` unavailable; navigation used `rg`/Git. Temporary test servers were stopped after verification |
+
+### Receiving owners and remaining acceptance
+
+- Robert: review the evaluation-local formats and shared-schema compatibility; register focused evaluation tests/typechecking in the shared check/CI flow. Existing root test discovery excludes `evaluation/`. Update Assignment.md from PR evidence; this handoff does not declare EVAL-01 integrated or claim a remote CI result.
+- Benedict: review the concrete source/target/schema and image formats, confirm the loader/artifact interface, then consume an agreed frozen training/validation release before QWN-01 tuning.
+- Aaron: review expected evidence/expense meanings and recurrence/deduplication cases; supply verified research access/codebook/cohort/feature/artifact evidence and agree the independent split protocol with Earl.
+- Earl: complete independent label review, evaluator-controlled holdout storage/families, actual frozen comparison criteria and release evidence. Later execute returned artifacts and report independent Qwen/checklist/plain-form and EBM/logistic comparisons. The first data/protocol candidate is not completion of final EVAL-01 evaluation.

@@ -4,8 +4,9 @@ import hooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 
 export default tseslint.config(
-  { ignores: ['dist', 'node_modules', '.worktrees', '.superpowers', 'graft', 'graphify-out', 'playwright-report', 'test-results'] },
+  { ignores: ['dist', 'dist-api', 'node_modules', '.worktrees', '.superpowers', 'graft', 'graphify-out', 'playwright-report', 'test-results', 'backups', '.backups', 'private-documents', '.platform-test'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  { files: ['infra/scripts/*.mjs'], languageOptions: { globals: globals.node } },
   { files: ['**/*.{ts,tsx}'], languageOptions: { globals: { ...globals.browser, ...globals.node } }, plugins: { 'react-hooks': hooks }, rules: { ...hooks.configs.recommended.rules } },
 );

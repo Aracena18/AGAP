@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { createDemoCases } from '../demo/cases';
 import type { CaseRecord } from './types';
 import { assessCase } from './assessment';
+import { assessCase as sharedAssessCase } from '../../packages/finance/src/assessment';
 
 function correctedAna(): CaseRecord {
   const record = createDemoCases()[0];
@@ -19,6 +20,16 @@ function complete(record: CaseRecord) {
 }
 
 describe('assessCase', () => {
+  it('uses the shared finance implementation for browser and server consumers', () => {
+    expect(assessCase).toBe(sharedAssessCase);
+    const record = correctedAna();
+    record.facts.find(fact => fact.id === 'income')!.sourceId = 'statement';
+    expect(sharedAssessCase(record)).toMatchObject({
+      status: 'incomplete', calculationVersion: 'cash-flow-v2',
+      issues: expect.arrayContaining([expect.objectContaining({ factId: 'income', message: expect.stringContaining('document or worksheet') })]),
+    });
+  });
+
   it('withholds results for Ana’s unresolved income and Cora’s missing income', () => {
     for (const record of [createDemoCases()[0], createDemoCases()[2]]) {
       const result = assessCase(record);

@@ -1,0 +1,13 @@
+{
+  "executedAt": "2026-10-21T03:09:17.486Z",
+  "result": "passed",
+  "fictional": true,
+  "keycloakVersion": "26.4.7",
+  "passwordAndOtpEnrollment": true,
+  "realSignedMfaGuardPassed": true,
+  "selfRevocationDenied": true,
+  "localSessionEnded": true,
+  "fictionalEnrollmentReset": true,
+  "secretsWrittenToTestArtifacts": false,
+  "runId": "c33a4116-a668-4670-bc78-e34a879e62d3"
+}

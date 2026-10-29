@@ -4,9 +4,13 @@ Tracker: [Assignment.md — Aaron](../../../Assignment.md#aaron). **Current dire
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and AGENTS.md. Assignment.md is the sole status register; this brief defines work and evidence, not another backlog.
 
+## 26 October candidate handoff
+
+Start interface review from [the current platform guide](../../AGAP_Platform_Foundation.md), [member contract proposal](../../AGAP_Member_Contract_Proposal.md) and [verification/limits](../../AGAP_Robert_Member_Verification.md) on `feat/robert-member-platform`. Executable 0.2.0 is supplied for review; no consuming-owner agreement is recorded. Member actor/transactions are separate from staff, and domain defaults are unavailable. This supersedes earlier future-tense instructions about creating the member contracts from scratch. Assignment.md remains the only status tracker.
+
 ## Work packages and ownership
 
-Own EVD-01, CRD-01/CRD-02/CRD-03, AI-01 and XAI-01. Retain evidence/comparison/products staff UI, `src/domain/evidence.ts` and `assessment.ts` with tests, API modules `evidence/`, `credit/` and planned `ai/`; add exclusive `models/explainable/` for EBM/logistic training, preprocessing/configs and research model/run cards. Benedict owns `models/qwen/`; Earl owns both evaluation directories. Own `packages/finance/` implementation only after Robert's extraction/re-export handoff. No shared schema, fixture, wiring, dependency or generated-client edits; request these through Robert.
+Own EVD-01, CRD-01/CRD-02/CRD-03, AI-01 and XAI-01. Retain evidence/comparison/products staff UI, `src/domain/evidence.ts` and `assessment.ts` with tests, API modules `evidence/`, `credit/` and planned `ai/`; add exclusive `models/explainable/` for EBM/logistic training, preprocessing/configs and research model/run cards. Benedict owns `models/qwen/`; Earl owns both evaluation directories. Robert's 26 October candidate supplies the extraction/re-export handoff: own `packages/finance/src/assessment.ts` and its future finance implementation after reviewing that candidate. Original arithmetic and historical fixtures are preserved; do not create another engine. No shared schema, fixture, wiring, dependency or generated-client edits; request these through Robert.
 
 **Do not implement member-phone screens or the member facade.** Robert owns both. Supply member-authorized domain operations and projections through reviewed ports, not an officer impersonation shortcut. Never write decisions, loan balances, accounting or monitoring tables.
 
@@ -117,3 +121,19 @@ Canonical documentation amendments proposed to Robert for coordinated publicatio
 - **Design — Evidence and circumstances / feedback:** Document that the readiness warning lists specific evidence issues, including missing categories without a fact row. An optional included fact can still block readiness; unrelated unused sources do not. Ambiguous source references are labeled explicitly, rejected corrections preserve their draft, source errors identify/focus their field, and ambiguous target errors focus a form alert. Retain existing navigation and fictional-source/authenticity notices.
 
 Receiving owner: Robert for the shared documentation/tracker and integration review; Benedict consumes the unchanged assessment result shape after review. Remaining integration items are coordinated canonical documentation, disposition of the independently reproduced keyboard-test failure, and owner review. PR publication was subsequently authorized by the user. No merge or main-branch edit was performed.
+
+### PR #17 conflict resolution against main — 29 October 2026
+
+Robert's integration follow-up merges main `9bea803` into the browser-validation candidate. The assessment conflict is resolved by keeping `src/domain/assessment.ts` as the compatibility re-export and applying the shared `validateEvidence` check and `cash-flow-v2` version in the sole implementation at `packages/finance/src/assessment.ts`. No second calculator is restored. The evidence screen retains main's concise heading, expandable effective dates, source metadata/excerpt card, accessible source names and correction-history copy while preserving specific readiness issues, safe missing/ambiguous source handling and one correction editor per row.
+
+The proposed shared frontend-spec and design amendments above are now documented in their canonical files. New browser regressions exercise ambiguous sources and target facts through the authenticated review route and actual fictional browser persistence. They verify retained input/reasons, field or form-alert focus, unchanged stored records and accessible layouts at 1101px and 320px. Canonical fixtures/types, production contract 0.2.0, API routes and migration registration are unchanged. Historical verification and original screenshots above remain intact.
+
+Verification on Linux with Node 24.14.0, npm 11.9.0 and the dedicated fictional PostgreSQL 18 `agap_test` database:
+
+- `npm run check`: passed lint, generated-contract drift, web/API builds, **165 domain/UI tests** and **130 backend/contract tests**, including all 42 GL-01 tests.
+- `npx eslint tests/evidence-readiness.spec.ts` and `npx tsc -b`: passed after adding the browser regressions.
+- `AGAP_E2E_WEB_PORT=5184 AGAP_E2E_API_PORT=4111 AGAP_PR17_SCREENSHOTS=1 npm run test:e2e`: **34 Chromium tests passed**, including the original keyboard-only Ana test without altering that test or the source choices.
+- The two new browser regressions were rerun after restoring their error focus for captures. New implementation captures: [source error, desktop](../../screenshots/pr17-conflicts/source-error-1101.png), [source error, phone](../../screenshots/pr17-conflicts/source-error-320.png), [fact error, desktop](../../screenshots/pr17-conflicts/fact-error-1101.png), [fact error, phone](../../screenshots/pr17-conflicts/fact-error-320.png). These use malformed fictional copies only; no canonical fixture was edited.
+- `git diff origin/main --check` and local links in the changed documentation were checked. `graphify update .` refreshed the code graph; SQL extraction is unavailable because `tree_sitter_sql` is missing, and the tool reports partial extraction of the existing contract re-export file.
+
+These are local conflict-resolution checks, not a remote CI pass, user visual acceptance, completed production EVD-01/CRD-01 or PR merge approval. The original macOS keyboard diagnostic remains historical evidence; the updated Linux browser run is green. Assignment.md remains the sole task/status tracker and is not marked integrated by this follow-up.
