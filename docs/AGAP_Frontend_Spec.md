@@ -21,6 +21,7 @@ For fictional review routes: one lockfile and one shared CaseRecord. Review feat
 Canonical contracts: `src/domain/types.ts`.
 
 - `assessCase(record): AssessmentResult` — complete/incomplete discriminated result.
+- `validateEvidence(record): EvidenceIssue[]` — pure shared evidence-input validation; `EvidenceIssue` is `{ factId, message }` in `src/domain/evidence.ts`.
 - `applyCorrection(record, input, actor, at): CaseRecord` — evidence validation and immutable correction.
 - `makeRecommendation(record, offerId, note, actor, at): CaseRecord`.
 - `validateDecision(record, input): DecisionValidation`.
@@ -34,6 +35,7 @@ Domain modules do not import React, browser storage or feature components. Scree
 Calendar rules: explicit first cycle 2026-11-01 through 2026-11-30; group movements by calendar date and calculate end-of-day balances. No intraday or future-cycle guarantee.
 Monthly remaining excludes opening cash and purchase-reserved proceeds. Already-deducted obligations appear in evidence but do not reduce take-home pay twice.
 Offer total repayment is sum of all scheduled payments; financing cost is repayment + separately paid fees − net received. Fees withheld from proceeds are already reflected in net received.
+Evidence readiness and the single assessment engine in `packages/finance/src/assessment.ts` use the same validator for every included cash-flow fact and its referenced source, regardless of `critical`. Referenced sources must be unique, readable and correctly dated; document-supported values require a document/worksheet, and member-reported values require a statement. Unused sources do not block readiness. Readiness excludes offer/cost/policy checks and does not establish authenticity. `src/domain/assessment.ts` remains a compatibility re-export. Fresh assessments use `cash-flow-v2`; historical decision snapshots retain their stored calculation versions and figures.
 Demo policies: nonnegative monthly remaining (`monthly-capacity`) and nonnegative daily cash balance (`cash-timing`). Available offers remain explicit; failed policy checks require reviewer exceptions for an approval. Critical evidence gaps cannot be overridden into a complete assessment.
 Evidence changes and recommendation changes increase case version. A recommendation carries its resulting case version. Decisions preserve their referenced version; recording a decision and recording follow-up notes do not revise its evidence.
 Recommendation and evidence editing are officer actions. Final decisions are reviewer actions. These browser checks demonstrate workflow, not security.

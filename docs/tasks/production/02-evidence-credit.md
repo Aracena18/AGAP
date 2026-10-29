@@ -92,3 +92,48 @@ No production implementation progress is recorded yet. For each handoff, record 
 29 October 2026 — PLN-03: goal-guidance responsibilities and future acceptance added by user request. Existing feature/model progress, exclusive ownership and first-demo budgets remain unchanged; new goal packages have separate pending estimates.
 
 29 October 2026 — PLN-04: added planned 5C review/trace/handoff responsibilities without changing existing feature/model progress, original first-demo budgets or the separate goal packages. Numeric rubric configuration remains pending.
+
+
+## EVD-01 / CRD-01 browser validation slice — 29 October 2026
+
+Implementation candidate on `fix/aaron-evidence-readiness`, based on browser-baseline commit `1f4cc5b`. This is a bounded fictional-browser slice, not completed production EVD-01/CRD-01, backend integration, or merge approval. Robert remains responsible for the sole task/status tracker and canonical documentation publication.
+
+Changed owned paths: evidence/assessment domain modules and tests; the evidence screen, correction form and screen tests; this owner brief. Review captures and diagnostic evidence are in `output/playwright/`. Shared types, schema version 1, fixtures, routes, dependencies/configuration, teammate modules and shared specifications are unchanged. No backend contract version was adopted or frozen.
+
+The evidence screen and assessment now share the pure `validateEvidence(record)` check. All recorded cash-flow facts need usable values/dates/statuses and unambiguous, readable matching sources regardless of `critical`; unused sources are ignored. Offer validation and financial calculations remain in assessment. New assessment results use `cash-flow-v2`; recorded snapshots retain their original versions and arithmetic.
+
+Correction commands reject ambiguous target/source references before cloning, versioning or persistence. A failed submission retains its entered values and reason, with source errors attached to the field and target ambiguity in a focused form alert. Duplicate sources are explicitly labeled in the source selector and preview, without selecting a first matching document. Deliberately unavailable corrections and individual corrections while other facts remain incomplete are preserved.
+
+Verification (Node 24.22.1, macOS ARM64; Chromium 156.0.8078.4 / Playwright build 1248):
+
+- Focused evidence/assessment/domain/screen run: 130 tests passed, including new identity/source/readiness regressions.
+- Final `npm run check`: lint, TypeScript/production build and all 153 tests passed (8 files).
+- Final `npm run test:e2e`: 5 of 6 scenarios passed, including Ana's preserved printed decision, Ben/Cora handling, source tracing/reset, storage recovery, and automated accessibility/320px reflow. The keyboard-only Ana scenario fails at the existing `Home → ArrowDown → Enter` source-selection assertion: expected `payslip`, received `old-worksheet`.
+- Reproduced that identical failure against an untouched temporary archive of `1f4cc5b` under the same browser/environment. See [baseline diagnostic](../../../output/playwright/baseline-keyboard-error.md) and [current diagnostic](../../../output/playwright/current-keyboard-error.md). This does not establish whether every other platform fails; the complete browser suite is not claimed green. The shared browser test was not modified.
+- The required browser was installed in a temporary cache; reruns here use `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/agap-playwright-browsers`. The first browser attempts encountered a blocked local listener and missing Chromium; the final run above used a permitted local preview and the installed browser. Dependency links used for the isolated checkout were kept untracked/ignored; local fonts were copied into its ignored dependency directory for correct preview serving.
+- `git diff --check` passed. `graft` and `graphify` are unavailable on the configured PATH, so indexed navigation/graph refresh could not run.
+
+Visually inspected review captures use explicitly fictional malformed records in an isolated browser session, not changes to canonical fixtures: [evidence warning](../../../output/playwright/01-evidence-warning.png), [source error with draft retained](../../../output/playwright/02-source-error-draft.png), and [fact error with draft retained](../../../output/playwright/03-fact-error-draft.png). Automated component tests additionally verify no persistence call, unchanged record/history/version, retained fields and focus after rejection. These captures are review evidence, not institutional or usability acceptance.
+
+Canonical documentation amendments proposed to Robert for coordinated publication:
+
+- **Frontend specification — Architecture and contracts:** Add `validateEvidence(record): EvidenceIssue[]`, with `{ factId, message }` defined in Aaron's evidence module. State that readiness and assessment share evidence validation for all included cash-flow facts and referenced sources; readiness excludes offer/cost/policy outcomes and does not establish authenticity. New assessments use `cash-flow-v2`; saved decision snapshots retain their stored versions.
+- **Design — Evidence and circumstances / feedback:** Document that the readiness warning lists specific evidence issues, including missing categories without a fact row. An optional included fact can still block readiness; unrelated unused sources do not. Ambiguous source references are labeled explicitly, rejected corrections preserve their draft, source errors identify/focus their field, and ambiguous target errors focus a form alert. Retain existing navigation and fictional-source/authenticity notices.
+
+Receiving owner: Robert for the shared documentation/tracker and integration review; Benedict consumes the unchanged assessment result shape after review. Remaining integration items are coordinated canonical documentation, disposition of the independently reproduced keyboard-test failure, and owner review. PR publication was subsequently authorized by the user. No merge or main-branch edit was performed.
+
+### PR #17 conflict resolution against main — 29 October 2026
+
+Robert's integration follow-up merges main `9bea803` into the browser-validation candidate. The assessment conflict is resolved by keeping `src/domain/assessment.ts` as the compatibility re-export and applying the shared `validateEvidence` check and `cash-flow-v2` version in the sole implementation at `packages/finance/src/assessment.ts`. No second calculator is restored. The evidence screen retains main's concise heading, expandable effective dates, source metadata/excerpt card, accessible source names and correction-history copy while preserving specific readiness issues, safe missing/ambiguous source handling and one correction editor per row.
+
+The proposed shared frontend-spec and design amendments above are now documented in their canonical files. New browser regressions exercise ambiguous sources and target facts through the authenticated review route and actual fictional browser persistence. They verify retained input/reasons, field or form-alert focus, unchanged stored records and accessible layouts at 1101px and 320px. Canonical fixtures/types, production contract 0.2.0, API routes and migration registration are unchanged. Historical verification and original screenshots above remain intact.
+
+Verification on Linux with Node 24.14.0, npm 11.9.0 and the dedicated fictional PostgreSQL 18 `agap_test` database:
+
+- `npm run check`: passed lint, generated-contract drift, web/API builds, **165 domain/UI tests** and **130 backend/contract tests**, including all 42 GL-01 tests.
+- `npx eslint tests/evidence-readiness.spec.ts` and `npx tsc -b`: passed after adding the browser regressions.
+- `AGAP_E2E_WEB_PORT=5184 AGAP_E2E_API_PORT=4111 AGAP_PR17_SCREENSHOTS=1 npm run test:e2e`: **34 Chromium tests passed**, including the original keyboard-only Ana test without altering that test or the source choices.
+- The two new browser regressions were rerun after restoring their error focus for captures. New implementation captures: [source error, desktop](../../screenshots/pr17-conflicts/source-error-1101.png), [source error, phone](../../screenshots/pr17-conflicts/source-error-320.png), [fact error, desktop](../../screenshots/pr17-conflicts/fact-error-1101.png), [fact error, phone](../../screenshots/pr17-conflicts/fact-error-320.png). These use malformed fictional copies only; no canonical fixture was edited.
+- `git diff origin/main --check` and local links in the changed documentation were checked. `graphify update .` refreshed the code graph; SQL extraction is unavailable because `tree_sitter_sql` is missing, and the tool reports partial extraction of the existing contract re-export file.
+
+These are local conflict-resolution checks, not a remote CI pass, user visual acceptance, completed production EVD-01/CRD-01 or PR merge approval. The original macOS keyboard diagnostic remains historical evidence; the updated Linux browser run is green. Assignment.md remains the sole task/status tracker and is not marked integrated by this follow-up.

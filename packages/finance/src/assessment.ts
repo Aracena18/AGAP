@@ -1,8 +1,8 @@
 import { isCalendarDate, money } from '../../../src/domain/format.js';
+import { validateEvidence, type EvidenceIssue } from '../../../src/domain/evidence.js';
 import type { AssessmentResult, CaseRecord, CashMovement, LoanOffer, ScenarioResult } from '../../../src/domain/types.js';
 
-const calculationVersion = 'cash-flow-v1';
-type Issue = { factId: string; message: string };
+const calculationVersion = 'cash-flow-v2';
 
 const nonnegativeMoney = (value: unknown): value is number => Number.isSafeInteger(value) && Number(value) >= 0;
 
@@ -12,51 +12,9 @@ function checkedSum(values: number[]): number {
   return result;
 }
 
-function validateInputs(record: CaseRecord, offers: LoanOffer[]): Issue[] {
-  const issues: Issue[] = [];
+function validateInputs(record: CaseRecord, offers: LoanOffer[]): EvidenceIssue[] {
+  const issues = validateEvidence(record);
   const issue = (factId: string, message: string) => issues.push({ factId, message });
-  if (!isCalendarDate(record.periodStart) || !isCalendarDate(record.periodEnd) || record.periodStart > record.periodEnd) {
-    issue('period', 'Record a valid modeled start and end date, in calendar order.');
-  }
-  for (const category of ['opening', 'income', 'expense', 'obligation'] as const) {
-    const facts = record.facts.filter(fact => fact.category === category);
-    if (facts.length === 0 || (category === 'opening' && facts.length !== 1)) {
-      issue(category, category === 'opening'
-        ? 'Record exactly one opening spendable cash balance.'
-        : `Record ${category} information explicitly, including a supported zero when applicable.`);
-    }
-  }
-  const factIds = new Set<string>();
-  for (const fact of record.facts) {
-    if (!fact.id || factIds.has(fact.id)) issue(fact.id || 'facts', 'Each cash-flow fact needs a unique reference.');
-    factIds.add(fact.id);
-    if (!['opening', 'income', 'expense', 'obligation'].includes(fact.category)) {
-      issue(fact.id, `${fact.label}: record a valid cash-flow category.`);
-    }
-    if (!['document-supported', 'member-reported'].includes(fact.status) || fact.value === null) {
-      issue(fact.id, `${fact.label} needs a confirmed value and supporting source.`);
-    } else if (!nonnegativeMoney(fact.value)) {
-      issue(fact.id, `${fact.label}: record a nonnegative amount in whole centavos within the supported range.`);
-    }
-    if (!isCalendarDate(fact.effectiveDate)) issue(fact.id, `${fact.label}: record a valid effective date.`);
-    if (!isCalendarDate(fact.cashDate) || fact.cashDate < record.periodStart || fact.cashDate > record.periodEnd) {
-      issue(fact.id, `${fact.label}: record a valid cash date inside the modeled period.`);
-    }
-    if (fact.category === 'opening' && fact.cashDate !== record.periodStart) {
-      issue(fact.id, 'Opening cash must describe the start of the modeled period.');
-    }
-    if (typeof fact.alreadyDeducted !== 'boolean' || (fact.alreadyDeducted && fact.category !== 'obligation')) {
-      issue(fact.id, `${fact.label}: clarify whether this is an obligation already deducted from take-home pay.`);
-    }
-    const sources = record.sources.filter(source => source.id === fact.sourceId);
-    const source = sources[0];
-    if (!fact.sourceId || sources.length !== 1) {
-      issue(fact.id, `${fact.label}: link one available, unambiguous supporting source.`);
-    } else if (!isCalendarDate(source.date) || !source.title.trim() || !source.excerpt.trim()
-      || !['document', 'statement', 'worksheet'].includes(source.kind)) {
-      issue(fact.id, `${fact.label}: the supporting source needs a valid date and readable details.`);
-    }
-  }
   if (offers.length === 0) issue('offers', 'No explicitly available offer has been recorded.');
   const offerIds = new Set<string>();
   for (const offer of offers) {
