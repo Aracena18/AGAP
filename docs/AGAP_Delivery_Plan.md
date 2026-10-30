@@ -105,7 +105,7 @@ Owner briefs: [Robert](tasks/production/01-platform.md), [Aaron](tasks/productio
 
 ### Additional goal-guidance packages
 
-The [product scope](AGAP_Product_Solution.md#member-goals-savings-and-cooperative-product-guidance) and [model extension](AGAP_Model_Training_Plan.md#6-goal-guidance-training-extension-29-october-2026) govern these packages. They reuse the exclusive paths above and do not add another model family, provider client, calculator or deposit/investment execution service. PLN-03 is documentation only; all feature packages start Not started in Assignment.md. They are not prerequisites for the existing SHOW-01 core journey.
+The [product scope](AGAP_Product_Solution.md#member-goals-savings-and-cooperative-product-guidance) and [model extension](AGAP_Model_Training_Plan.md#6-goal-guidance-training-extension-29-october-2026) govern these packages. They reuse the exclusive paths above and do not add another model family, provider client, calculator or deposit/investment execution service. PLN-03 is documentation only; use Assignment.md for current status. Robert's [FND-04 field-level proposal](AGAP_Goal_Guidance_Contract_Proposal.md) is preparatory review evidence; canonical implementation still requires FND-03 agreement and actual receiving-owner acceptance. These packages are not prerequisites for the existing SHOW-01 core journey.
 
 | ID | Accountable owner | Existing owned boundary | Dependencies and acceptance |
 | --- | --- | --- | --- |
@@ -123,6 +123,8 @@ Robert requests CRD-02/GOL-01 projections rather than copying their rules. Aaron
 
 ### Additional 5C-review packages
 
+Review Robert's [FND-05 field-level proposal](AGAP_5C_Review_Contract_Proposal.md) for proposed scoring/review/trace/handoff records and operations. It supplies no executable schema, institutional weights or model artifact; actual consuming-owner agreement remains required after FND-03.
+
 The user requests institution-practice-based 5C assessment with analysis, explanations and staff handoff. [Product meaning](AGAP_Product_Solution.md#ai-assisted-5c-review-and-explainable-handoff), [architecture](AGAP_Production_Architecture.md#institution-rubric-5c-assessment-and-proposed-fnd-05-boundary), [model gate](AGAP_Model_Training_Plan.md#7-institution-rubric-5c-analysis-and-explanation-extension-29-october-2026) and [design](../design.md#12-planned-5c-review-explanations-and-handoff-29-october-2026) govern this additional unestimated stage 2 scope. Existing goal packages, ownership and first-demo budgets remain intact. No numerical weights are supplied by this document and no current model probability is validated.
 
 | ID | Accountable owner | Existing owned boundary | Dependencies and acceptance |
@@ -133,7 +135,7 @@ The user requests institution-practice-based 5C assessment with analysis, explan
 | QWN-03 | Benedict | models/qwen and decision explanation/handoff | QWN-01 and EVAL-03 training/validation handoff; source-grounded criterion findings/explanations and saved handoff through the same adapter, extraction regression and independent gate |
 | EVAL-03 | Earl | evaluation/synthetic and independent protocol/reports | FND-05 and reviewed rubric/source protocol; data handoff first, independent rule/expert/checklist comparison and final artifact scoring later |
 
-Robert requests domain projections, Aaron owns the 5C staff panel and rule trace, Benedict owns reviewed explanations/handoff integration, and Earl supplies independent data/expectations and evaluation. Actual institutional criteria/weights/applicability are unresolved dependencies before numeric activation. Public educational framework sources are not adopted policy; fictional test rubrics must be labeled. Evaluate unknown evidence and missing history without adverse character inference, inapplicable collateral, denominator/rounding, source/rubric changes, faithful explanations, critical capacity gaps and human overrides. All new feature tasks start Not started; estimates are Pending beyond the current 64-unit demonstration. An earlier fictional slice requires explicit owner capacity re-estimate and its evidence. No new member-scoring API, predictive-credit model or second AI provider is introduced.
+Robert requests domain projections, Aaron owns the 5C staff panel and rule trace, Benedict owns reviewed explanations/handoff integration, and Earl supplies independent data/expectations and evaluation. Actual institutional criteria/weights/applicability are unresolved dependencies before numeric activation. Public educational framework sources are not adopted policy; fictional test rubrics must be labeled. Evaluate unknown evidence and missing history without adverse character inference, inapplicable collateral, denominator/rounding, source/rubric changes, faithful explanations, critical capacity gaps and human overrides. Use Assignment.md for current progress; preparatory FND-04/FND-05 proposals do not start the other feature packages. Estimates remain Pending beyond the current 64-unit demonstration. An earlier fictional slice requires explicit owner capacity re-estimate and its evidence. No new member-scoring API, predictive-credit model or second AI provider is introduced.
 
 ## 6. Conflict-prevention and verification
 
