@@ -192,3 +192,32 @@ Native Windows, Node 24.22.2; repository regression checks used the isolated fic
 - Benedict: review the concrete source/target/schema and image formats, confirm the loader/artifact interface, then consume an agreed frozen training/validation release before QWN-01 tuning.
 - Aaron: review expected evidence/expense meanings and recurrence/deduplication cases; supply verified research access/codebook/cohort/feature/artifact evidence and agree the independent split protocol with Earl.
 - Earl: complete independent label review, evaluator-controlled holdout storage/families, actual frozen comparison criteria and release evidence. Later execute returned artifacts and report independent Qwen/checklist/plain-form and EBM/logistic comparisons. The first data/protocol candidate is not completion of final EVAL-01 evaluation.
+
+## ACC-01 comparison implementation candidate — 1 November 2026
+
+Branch/base: `feat/earl-acc-01` from `266379a`. The [accounting module](../../../apps/api/src/modules/accounting/README.md#acc-01-principal-reconciliation-candidate) now supplies a pure principal-disbursement/repayment checker, independent fictional tests, and a concrete evidence-format proposal for Robert/Benedict review. This is the first comparison slice, not integrated PAY-01 reconciliation.
+
+The checker compares complete event/allocation/receipt and journal inventories by permanent source-event identity. It detects missing/orphan/duplicate records, reused IDs, wrong loan/reference/date, incorrect principal/direction and account/side/amount mismatches. Per-event checks retain offsetting errors even when totals agree. Missing components never become zero; journal summation is exact. Prepared/unknown movements and confirmed-but-unposted exceptions remain visible. Missing mappings, incomplete sources, mismatched snapshots and unsupported nonprincipal/correction cases do not receive a clean result.
+
+The local input proposal reuses canonical financial primitives and posting/command schemas; it is not a published shared API. Consistent snapshot/completeness assertions must be established by the eventual owner adapters/platform coordinator. Organization validation in this pure function is not authentication or reporting authorization. No source reader, servicing-table access, report persistence, HTTP endpoint, staff/member UI, new migration or capability activation is supplied by this slice.
+
+### Remaining integration and receiving owners
+
+- Benedict: review/provide complete PAY-01 event/allocation/receipt projections with permanent source-event, loan, receipt/journal references, timestamps, status and snapshot/version semantics. Confirm fictional principal mappings before integration; current loan balances/member receipt fields alone are insufficient.
+- Robert: review/publish accepted shared schema/port, organization/branch reporting permissions, consistent transaction/snapshot orchestration and route/client/provider registration. Update `Assignment.md` from reviewed evidence; it is unchanged here.
+- Earl: build the accounting evidence reader and recorded staff results once those boundaries are agreed, then exercise actual PAY-01/GL runtime authorization, concurrency, rollback and corrections. Full bank/provider reconciliation, capital/reports and period-close acceptance remain later work.
+
+### Verification
+
+1 November 2026, native Windows, Node 24.22.2. Database regression checks used the isolated fictional PostgreSQL 18.6 `agap_test` database on localhost:55440.
+
+| Check | Observed result |
+| --- | --- |
+| Focused ACC-01 checker | **72 tests passed**, without a database; independent expected values cover matching/missing/orphan/duplicate evidence, references, offsetting errors, states, mappings, exact totals, snapshots, unknowns and validation |
+| `npm run check` | Lint, generated-contract checks and web/API builds passed; **165 domain/UI tests passed**. Backend/contracts: **199 passed, 3 failed of 202**, including the ACC-01 tests |
+| Remaining full-check failures | Two unchanged document-store cases require POSIX directory mode 0700; the unchanged staff-provisioning case requires private input mode 0600. Native Windows full-check failure remains; controls/tests were not weakened and supported Linux verification is still required |
+| `npm run test:e2e` | **34 Chromium tests passed**. These are existing regression journeys, not an integrated ACC-01 UI/PAY-01 demonstration. Windows cleanup stalled after all cases reported pass; stopping only the verified task API/Vite processes allowed the runner to complete with exit 0 |
+| Test environment | An initial sandboxed check stopped at API bundling on denied ancestor-directory access. Rerunning with process access resolved that build issue. Unchanged generated/SQL working-copy newlines were temporarily normalized after HEAD/checksum verification, then restored; migration history/content was not changed |
+| Documentation/tooling | **18 local links/anchors resolved** across the module README and this brief; diff whitespace checked. `graft` and `graphify` are unavailable, so navigation used `rg`/Git. Temporary database/test servers were stopped |
+
+No consuming-owner approval, successful remote CI, full ACC-01 integration or production readiness is claimed by this evidence.
