@@ -139,7 +139,7 @@ Robert requests domain projections, Aaron owns the 5C staff panel and rule trace
 
 ## 6. Conflict-prevention and verification
 
-- Use isolated worktrees/task branches based on the actual owner-agreed foundation commit. Do not reuse, reset or overwrite another worker's branch. Candidate PR #10 remains unmerged unless the user authorizes it.
+- Use isolated worktrees/task branches based on the actual owner-agreed foundation commit. Do not reuse, reset or overwrite another worker's branch. Published PR #10 remains historical foundation evidence; a repository merge does not substitute for consuming-owner acceptance or authorize another merge.
 - Only Robert edits shared contracts/client, configuration/dependencies, route/provider/migration registration, tokens and canonical demo data. Workers submit proposed interface/wiring changes in their own brief/PR, with task ID and dependencies.
 - Robert's 26 October candidate performs the one-time finance extraction/re-export handoff: `packages/finance/src/assessment.ts` is the original function with import changes only, and `src/domain/assessment.ts` re-exports it. Aaron owns subsequent finance implementation; no parallel calculator is allowed.
 - B–D retain staff/domain ownership while Robert alone builds member-portal screens and facade. Aaron's shared AI adapter has no decision/payment/posting authority; domain callers validate drafts and preserve confirmation provenance.
@@ -174,3 +174,16 @@ No guaranteed completion date, production certification or free hosted operating
 ## 8. User-requested UI refinement
 
 UI-01 is Robert's requested navigation/account/local-preview refinement within platform, member and integration work; the provisional four-person capacity estimates are unchanged, not actual-hours claims. The user explicitly authorized presentation-only changes in Aaron's evidence screen for the seven annotations. Aaron retains evidence/domain ownership; no financial/evidence rules or fixtures are reassigned. Work is isolated on `codex/ui-review-cleanup` over the current member-platform candidate. Design.md section 11 and the authentication proposal govern the revision; Assignment.md records its status. Existing uncommitted notes and historical evidence remain untouched.
+
+## 9. Policy-source amendment and ongoing-work checkpoint
+
+The user authorizes the [2 November policy-source refinement](AGAP_Policy_Clarification_Register.md) while ongoing implementation continues. Keep current task IDs, accountable owners, exclusive paths, prerequisites, stages and provisional 16-unit-per-owner/64-unit baseline. The register is a list of source questions and acceptance inputs, not a second task/status tracker, numerical policy or an adopted spreadsheet calculator.
+
+At the next handoff each owner records actual branch/base, delivered slice, checks, dependencies, P/W coverage and remaining effort. Robert reconciles Assignment.md from task-specific evidence; no member is assumed idle because their latest work is unreported. Before shared changes, record consuming-owner agreement, a compatibility proposal and actual capacity impact. Include a refinement in the existing slice only after review; otherwise schedule it after the current handoff or estimate it as later scope. Unresolved policy blocks affected institutional configuration, not unaffected development or existing labeled fictional scenarios.
+
+- Robert: FND-03/MOB-01/SHOW-01 coordinate policy-source/version and amount-basis requirements, conditional member evidence and integration. Shared contracts/wiring and all member UI remain Robert's.
+- Aaron: EVD-01/CRD-01/AI-01 continue merged validation and production-domain work; map applicable document/financial inputs and check rate units, period semantics, missing/zero values, duplicate deductions and final centavos. Existing code is checked before a source-workbook finding becomes a fix.
+- Benedict: DEC-01/PAY-01/QWN-01 retain current human authority, money integrity and extraction/expense training. Review source/policy/result references through existing ports; the amendment does not request new training objectives or automatic retraining.
+- Earl: GL-01/ACC-01/EVAL-01 continue merged posting, principal comparison and evaluation tools. Review agreed fee/component mappings and independent fictional edge cases; version new corpus changes and preserve frozen releases/holdout independence.
+
+Supporting all source products, complete reloan automation, SRV-01 contractual changes, goals and numerical 5C scoring retain existing later scope and Pending additional estimates. No raw supplied records become fixtures/training data, no existing snapshots are rewritten and no feature is declared integrated by this amendment. UI rules remain in [design.md](../design.md#14-planned-policy-and-cash-flow-review-refinement); actual behavior changes require their owner tests/spec updates and the normal feature integration checks.

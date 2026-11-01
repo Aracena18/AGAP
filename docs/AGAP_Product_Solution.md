@@ -89,6 +89,12 @@ The first supported product family is PHP-denominated, fixed-term instalment len
 
 Payment processing includes controlled manual cash/bank workflows as well as provider-backed workflows. A manual voucher records an actual externally executed movement; it is not an electronic transfer. The presentation must identify which mode is demonstrated. Provider access, contracts, settlement behavior and transaction fees are separate from the free software stack.
 
+### Supplied policy and cash-flow sources — 2 November 2026
+
+The [policy clarification register](AGAP_Policy_Clarification_Register.md) refines existing evidence, credit and human-review requirements using the privately supplied guide/workbook. Record institution/product/operation, source and effective policy versions, approved requirements/alternatives and calculation conventions before activating the affected institutional configuration. Product eligibility, complete household cash flow and human authorization remain separate outputs. Checking/payment guarantees are distinct from collateral. Source status, income period/gross-net basis, deduction inclusion and accessible versus restricted resources remain explicit; unclear policy or critical inputs yield clarification/unavailable results.
+
+Review source formula findings against existing code before assigning a defect. Preserve the single engine, canonical fictional oracles and historic decisions; no workbook percentage, period shortcut, business-cost estimate or fee method becomes a default by this amendment. Use independent rate-unit, period, double-counting and final-centavo checks for affected behavior. Product-specific checklist refinements follow [design.md](../design.md#14-planned-policy-and-cash-flow-review-refinement) and shared-contract review. All-ten-product coverage, full reloan automation, servicing amendments, goals and numerical 5C review retain their current stages/estimates; the files provide no approved 5C weights. Follow the [ongoing-work checkpoint](AGAP_Policy_Clarification_Register.md#ongoing-work-checkpoint) before committing additional scope. This is planned refinement, not implemented policy or a verified operational release.
+
 ## 4. Trust, affordability and inclusion
 
 AGAP verifies individual claims and records their supporting evidence. It does not infer truthfulness or personality scores. The planned 5C Character category below is restricted to documented repayment-related evidence under an approved institutional rubric; it is not a judgment of personal honesty.

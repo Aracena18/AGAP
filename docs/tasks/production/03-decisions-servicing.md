@@ -1,6 +1,6 @@
 # Benedict (C): Qwen training, accountable decisions and servicing
 
-Tracker: [Assignment.md — Benedict](../../../Assignment.md#benedict). **Current direction: 29 October 2026; the goal-guidance and 5C additions below supplement the retained 25 October assignments.** This supersedes earlier task directions where they differ, retaining conflict restrictions and adding your Qwen training assignment. The first contractual hardship amendment moves from the earlier demo allocation to stage 2.
+Tracker: [Assignment.md — Benedict](../../../Assignment.md#benedict). **Current direction: 2 November 2026; the policy-source refinement below supplements ongoing work and the retained goal/5C assignments.** This supersedes earlier task directions where they differ, retaining conflict restrictions and adding your Qwen training assignment. The first contractual hardship amendment moves from the earlier demo allocation to stage 2.
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and AGENTS.md. Assignment.md alone records task status.
 
@@ -82,9 +82,17 @@ These steps expand your existing Qwen/decision tasks, preserving first-demo prio
 
 Domain evidence, catalogue/planner, goal records and member screens retain their existing owners. Each handoff records task ID, branch/base, contract/model/rubric/data versions, owned paths, relevant checks, unresolved inputs and receiving owner; model training and runtime integration are distinct evidence.
 
+## Policy-source refinement — 2 November 2026
+
+Preserve current DEC-01/PAY-01/QWN-01 work and the reviewed training objectives. At the [owner checkpoint](../../AGAP_Policy_Clarification_Register.md#ongoing-work-checkpoint), supply actual branch/base, delivered slice, consumed interfaces, checks, dependencies and remaining effort. Review policy/source/result-version references, conditional prerequisites and stale-review behavior through existing ports; new shared fields require Robert's coordinated proposal and actual owner agreement.
+
+Use P07–P11 to clarify reloan, operation-specific authority and servicing components with the institution and Earl/Aaron. Do not treat the restructuring Board threshold as a universal origination rule, count semi-monthly receipts as monthly progress or collect a charge both upfront and in a new balance. Full reloan automation and SRV-01 amendments retain later scope and need confirmed rules/estimates. Preserve the one transaction, actual PAY-01/GL handoff, separate human authorization/acceptance and historical terms.
+
+New policy context does not itself order a retraining run or expand QWN-01 into scoring/advice. Any agreed fictional data refinement follows Earl's versioned reviewed release and holdout rules; return regression evidence before artifact promotion. Supplied named workbook records are not training examples. Do not invent policy weights, financial figures or accepted authority.
+
 ## Progress and handoff notes
 
-No production implementation progress is recorded yet. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry.
+Historical baseline note: no production implementation progress was recorded in the earlier brief. Read dated handoffs, where present, and Assignment.md for subsequent evidence; confirm unreported current progress at the owner checkpoint. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry.
 
 25 October 2026: PLN-01 revised this brief, ownership and first-demonstration slices. This note records documentation only; no new feature implementation or review acceptance is claimed. Use Assignment.md for the current task status and next action.
 
