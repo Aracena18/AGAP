@@ -1,6 +1,6 @@
 # Aaron (B): evidence, credit, AI integration and explainable ML
 
-Tracker: [Assignment.md — Aaron](../../../Assignment.md#aaron). **Current direction: 29 October 2026; the goal-guidance and 5C additions below supplement the retained 25 October assignments.** This replaces earlier task directions where they differ, including treating AI extraction solely as an unspecified future enhancement. The model revision explicitly assigns explainable-model training to you and Qwen training to Benedict.
+Tracker: [Assignment.md — Aaron](../../../Assignment.md#aaron). **Current direction: 2 November 2026; the policy-source refinement below supplements ongoing work and the retained goal/5C assignments.** This replaces earlier task directions where they differ, including treating AI extraction solely as an unspecified future enhancement. The model revision explicitly assigns explainable-model training to you and Qwen training to Benedict.
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and AGENTS.md. Assignment.md is the sole status register; this brief defines work and evidence, not another backlog.
 
@@ -81,9 +81,15 @@ These steps expand the existing task IDs in your credit/evidence/products bounda
 
 Retain one finance engine and one AI adapter. Per-C scores are rubric results, not repayment probabilities; XAI-01 remains separate research. Record each handoff's task ID, branch/base, contract/rubric/engine versions, checks, unresolved institutional inputs and receiving owner in your brief/PR.
 
+## Policy-source refinement — 2 November 2026
+
+Continue the merged EVD-01/CRD-01 browser/readiness slice and remaining production work under your existing ownership. Use the [source register](../../AGAP_Policy_Clarification_Register.md) to record which P/W questions affect the current slice, what is already covered, independent expected behavior and the smallest proposed change. Rate representation, supported payment-mode results, period/gross-net basis, missing versus confirmed zero, business/household/debt double counting and centavo remainders are review checks; do not presume the workbook's defects exist in AGAP.
+
+Map approved product-specific requirements, conditional documents/alternatives and evidence freshness through current interfaces. Record estimates such as contingency/raw-material ratios as assumptions pending institutional confirmation; no 30/35/40 percentage or workbook conversion is adopted. Preserve the one engine, original fixture arithmetic, cash-flow-v2 history and unavailable critical values. Propose any shared contract change through Robert before integration. AI-01 uses applicable approved source/context and checked results only; XAI-01 remains offline and QWN-01 training ownership/objectives stay unchanged. Resolve affected institutional settings without stopping unrelated fictional development; full product/reloan and numerical 5C breadth keeps its staged estimate.
+
 ## Progress and handoff notes
 
-No production implementation progress is recorded yet. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry.
+Historical baseline note: no production implementation progress was recorded in the earlier brief. Read dated handoffs, where present, and Assignment.md for subsequent evidence; confirm unreported current progress at the owner checkpoint. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry.
 
 25 October 2026: PLN-01 revised this brief, ownership and first-demonstration slices. This note records documentation only; no new feature implementation or review acceptance is claimed. Use Assignment.md for the current task status and next action.
 

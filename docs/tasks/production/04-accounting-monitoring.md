@@ -1,6 +1,6 @@
 # Earl (D): accounting, financial health and independent model evaluation
 
-Tracker: [Assignment.md — Earl](../../../Assignment.md#earl). **Current direction: 29 October 2026; the goal-guidance and 5C additions below supplement the retained 25 October assignments.** This replaces earlier task directions where they differ, adding confirmed support requests, corpus/split ownership and independent Qwen/EBM evaluation.
+Tracker: [Assignment.md — Earl](../../../Assignment.md#earl). **Current direction: 2 November 2026; the policy-source refinement below supplements ongoing work and the retained goal/5C assignments.** This replaces earlier task directions where they differ, adding confirmed support requests, corpus/split ownership and independent Qwen/EBM evaluation.
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and AGENTS.md. Assignment.md is the only status register.
 
@@ -90,9 +90,15 @@ These steps expand the existing goal/monitoring/evaluation tasks. Preserve first
 
 Keep evaluation expectations independent of the engine under test; reference canonical fixtures/oracles rather than duplicating them. Record task ID, branch/base, contract/rubric/model/data versions, split hashes, checks, unresolved review inputs and receiving owner for every handoff. EBM stays in its separate offline research boundary.
 
+## Policy-source refinement — 2 November 2026
+
+Continue the merged GL-01 posting, ACC-01 principal-comparison and EVAL-01 corpus/paired-comparison tools. The [source register](../../AGAP_Policy_Clarification_Register.md) supplements existing acceptance; it does not require a new ledger or evaluation framework. Review P04/P05/P10 component, fee and capital interpretations with the responsible institution and Aaron/Benedict before adopting posting mappings. Keep actual PAY-01 evidence readers, consistent snapshots, authorization and atomic integration distinct from the pure checker and fictional caller harness.
+
+At the owner checkpoint supply branch/base, delivered slice, checks, actual integration gaps and remaining effort. Independently review agreed rate/period/rounding, unknown/zero and double-counting expectations in fictional cases. New corpus changes require explicit versions and reviewed manifests; preserve any already frozen training release and private holdout rather than silently adding labels or forcing trainer restarts. Keep accounting, model evaluation and participant/household outcomes distinct. Full product/reloan/SRV-01 and numerical 5C breadth retains staged scope. Robert coordinates shared schema/registration; draft PR #18 is separate. No supplied named record becomes a fixture, model input or operational import.
+
 ## Progress and handoff notes
 
-No production implementation progress is recorded yet. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry.
+Historical baseline note: no production implementation progress was recorded in the earlier brief. Read dated handoffs, where present, and Assignment.md for subsequent evidence; confirm unreported current progress at the owner checkpoint. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry.
 
 25 October 2026: PLN-01 revised this brief, ownership and first-demonstration slices. This note records documentation only; no new feature implementation or review acceptance is claimed. Use Assignment.md for the current task status and next action.
 

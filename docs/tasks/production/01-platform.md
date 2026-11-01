@@ -1,6 +1,6 @@
 # Robert (A): platform, member portal and integration
 
-Tracker: [Assignment.md — Robert](../../../Assignment.md#robert). **Current direction: 29 October 2026; the goal-guidance and 5C additions below supplement the retained 25 October assignments.** This brief supersedes earlier task directions where they differ; dated implementation evidence below remains intact.
+Tracker: [Assignment.md — Robert](../../../Assignment.md#robert). **Current direction: 2 November 2026; the policy-source refinement below supplements ongoing work and the retained goal/5C assignments.** This brief supersedes earlier task directions where they differ; dated implementation evidence below remains intact.
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and root AGENTS.md. Assignment.md alone records current statuses. The first foundation is a review candidate, not an accepted integration base or production release.
 
@@ -83,6 +83,12 @@ Prepared review input: [field-level FND-05 proposal](../../AGAP_5C_Review_Contra
 3. Supply own-record/revocation and workflow checks, keyboard/320px evidence and UI screenshots. Integrate only after required application checks and owner evidence; no control opens accounts, moves funds or changes loan terms.
 
 For each handoff, record task ID, branch/base, contract/model versions, owned files, relevant checks, unresolved inputs and receiving owner. PLN-03/PLN-04 document this scope; they are not runtime completion evidence.
+
+## Policy-source refinement — 2 November 2026
+
+Under FND-03/MOB-01/SHOW-01, coordinate the [policy-source checkpoint](../../AGAP_Policy_Clarification_Register.md#ongoing-work-checkpoint) and reconcile the sole tracker with merged handoff evidence. Preserve active branches and all existing owner paths. Gather actual branch/base, delivered slice, contract consumption, checks, dependencies and remaining effort; do not invent acceptance or estimate new work as zero.
+
+Review whether policy/source version, product-conditional evidence and amount period/basis/deduction information fit current contracts. Publish only a reviewed compatible proposal before canonical edits or dependent integration. Keep UI details in design.md section 14. The existing 64-unit baseline and later goals/5C/SRV-01 gates remain intact. Draft PR #18 registration/check work is separate and unmerged by this amendment; do not duplicate it or imply its code is present. Supplied private workbook/meeting records remain outside repository fixtures and model inputs.
 
 ## Progress and handoff notes
 
