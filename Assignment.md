@@ -1,6 +1,6 @@
 # AGAP team assignments
 
-**Updated:** 29 October 2026, Asia/Manila.
+**Updated:** 30 October 2026, Asia/Manila.
 
 **Publication history:** PLN-01/PLN-02 were published directly to `main` under the earlier scoped user authorization. The newer goals/5C documentation was published through PR #14. The user now explicitly authorizes merging `codex/ui-review-cleanup` and its platform/member foundation into `main`; preserve the newer plans and the supplied implementation evidence. Repository publication does not freeze candidate contracts, implement outstanding domain/model tasks or certify production readiness. See [merge verification](docs/AGAP_UI_Main_Merge_Verification.md).
 
@@ -69,13 +69,13 @@ Stages: **0 — documentation/contracts and review; 1 — first hackathon demons
 | ACC-01 | Earl | 1 → 2 | Reconciliation, capital, reports and accounting adjustments | GL-01; PAY-01 | Accounting | Not started | No implementation evidence reported |
 | SRV-01 | Benedict | 2 | Authorized hardship amendments and remaining loan lifecycle | PAY-01; ACC-01 posting contracts; HLT-01 for support handoff | Servicing | Not started | No implementation evidence reported |
 | EVAL-01 | Earl | 1 → 2 | Synthetic corpus/splits and independent Qwen/EBM/baseline evaluation | Product hypothesis; FND-01 for API-integrated runs | `evaluation/synthetic/` and `evaluation/explainable/` | Not started | Data/protocol handoff first; final evaluation consumes QWN-01/XAI-01 artifacts without a prerequisite cycle |
-| FND-04 | Robert | 2 | Shared goal/consent/planning/catalogue/advice-review contract proposal | FND-03 | Shared contracts/platform | Not started | Additional estimate Pending; supplied 0.2.0 candidate unchanged |
+| FND-04 | Robert | 2 | Shared goal/consent/planning/catalogue/advice-review contract proposal | FND-03 | Shared contracts/platform | Ready for review | `codex/member-goals-fivec-contracts`; [field-level proposal](docs/AGAP_Goal_Guidance_Contract_Proposal.md) and [documentation checks](docs/AGAP_Goal_5C_Contract_Verification.md); receiving-owner acceptance and implementation pending; estimate Pending; candidate 0.2.0 unchanged |
 | CRD-02 | Aaron | 2 | Deterministic goal contributions and approved cooperative-product scenarios | FND-04; CRD-01; EVD-01 | Credit/finance/products | Not started | Additional estimate Pending; same finance engine |
 | GOL-01 | Earl | 2 | Voluntary goals, reviewed guidance, suitability-review queue and follow-up | FND-04; CRD-02; HLT-01; AI-01 | Monitoring | Not started | Additional estimate Pending; QWN-02 required only for a promoted tuned guidance artifact |
 | QWN-02 | Benedict | 2 | Qwen goal-guidance adaptation, regression and artifact handoff | QWN-01; EVAL-02 training/validation handoff | models/qwen | Not started | Additional estimate Pending; no new model family/provider client |
 | EVAL-02 | Earl | 2 | Goal/content corpus, protocol and independent guidance evaluation | FND-04; reviewed goal/content protocol | evaluation/synthetic | Not started | Data/protocol first; final scoring consumes returned QWN-02 artifacts |
 | MOB-02 | Robert | 2 | Own-record goals, contribution scenarios, guidance/review and progress UI | FND-04; CRD-02; GOL-01 | Member portal | Not started | Additional estimate Pending; no money movement |
-| FND-05 | Robert | 2 | 5C rubric provenance, findings, scoring/review/trace and handoff contracts | FND-03 | Shared contracts/platform | Not started | Additional estimate Pending; no executable or numeric-policy change |
+| FND-05 | Robert | 2 | 5C rubric provenance, findings, scoring/review/trace and handoff contracts | FND-03 | Shared contracts/platform | Ready for review | `codex/member-goals-fivec-contracts`; [field-level proposal](docs/AGAP_5C_Review_Contract_Proposal.md) and [documentation checks](docs/AGAP_Goal_5C_Contract_Verification.md); receiving-owner/rubric acceptance and implementation pending; estimate Pending; no executable or numeric-policy change |
 | CRD-03 | Aaron | 2 | Institution-rubric 5C analysis, deterministic score/trace and staff panel | FND-05; EVD-01; CRD-01 | Credit/evidence/products | Not started | Additional estimate Pending; actual institutional rubric remains unconfirmed |
 | QWN-03 | Benedict | 2 | Qwen 5C evidence/explanation adaptation and decision-handoff integration | QWN-01; EVAL-03 training/validation handoff | models/qwen and decisions | Not started | Additional estimate Pending; draft findings are not repayment probabilities |
 | EVAL-03 | Earl | 2 | Independent 5C corpus/protocol, rule/expert/checklist and model evaluation | FND-05; reviewed rubric/source protocol | evaluation/synthetic | Not started | Data/protocol first; final scoring consumes returned QWN-03 artifacts |
@@ -113,13 +113,13 @@ These task-level checks supplement the owned slices in the delivery plan and eac
 | ACC-01 | Demo receipt/subledger/GL reconciliation; later capital, reports and close acceptance retained | Implement minimal reconciliation; retain complete accounting backlog |
 | SRV-01 | Stage 2 cost comparison, human approval, member acceptance and preserved original schedule | After PAY-01/HLT-01, specify a permitted amendment; demo help requests do not promise amended terms |
 | EVAL-01 | Frozen grouped splits, independent truth, pretrained/tuned/checklist and EBM/logistic comparisons with uncertainty | Hand off training/validation data and research split protocol first; reserve holdout for final evaluation |
-| FND-04 | Own-record goal, checked planner/catalogue, reviewed-content and advice-history contracts reviewed | Propose the later shared revision without changing the supplied executable 0.2.0 candidate in documentation |
+| FND-04 | Own-record goal, checked planner/catalogue, reviewed-content and advice-history contracts reviewed | Review the field-level proposal with Aaron/Earl/Benedict; record accepted base and actual inputs/authority after FND-03 agreement before canonical implementation |
 | CRD-02 | Independent centavo/date/horizon/fee/liquidity/allocation checks; no invented return or forced savings | Specify planner/catalogue rules and independent expected results with Earl |
 | GOL-01 | Member consent/choice, grounded drafts, qualified authorized suitability review and preserved/stale history | Define goal/content/review domain operations; keep loan/accounting records separate |
 | QWN-02 | Reproducible guidance artifact, extraction regression and separate independent promotion evidence | Agree Earl's approved goal corpus and protocol before adaptation |
 | EVAL-02 | Grouped held-out guidance comparison, unsafe advice/source errors, template baseline and comprehension evidence | Hand off reviewed training/validation data first; score artifacts later without tuning on holdout |
 | MOB-02 | Voluntary member-only goal journey, accessible states, no product steering or financial commands | Implement the design blueprint after reviewed FND-04/CRD-02/GOL-01 interfaces |
-| FND-05 | Scoring, evidence coverage, probability, verification, review and decision remain distinct in agreed contracts | Propose source/rubric/review/trace/handoff fields after core member contracts |
+| FND-05 | Scoring, evidence coverage, probability, verification, review and decision remain distinct in agreed contracts | Review the field-level proposal/score encoding with Aaron/Benedict/Earl; obtain actual rubric rules and accepted base after FND-03 agreement before canonical implementation |
 | CRD-03 | Source-approved rubric, exact point/weight/denominator trace, unavailable/applicability states and preserved capacity rules | Research applicable institutional criteria, then document approval/configuration before numeric activation |
 | QWN-03 | Source-grounded 5C findings and faithful supplied-score explanations; versioned handoff and human authority | Agree Earl's reviewed corpus, baseline and holdout protocol before adaptation |
 | EVAL-03 | Independent rule/expert/template comparison, appropriate unknowns, demographic/language invariance and correction burden | Hand training/validation references off first, then score returned artifacts without holdout tuning |
@@ -180,7 +180,7 @@ Start GL-01 and independent synthetic case design in parallel with interface rev
 
 Return separate promotion/non-promotion evidence for each capability; model fluency and synthetic agreement do not establish household benefit. [Step-by-step deliverables](docs/tasks/production/04-accounting-monitoring.md#new-feature-deliverables).
 
-All ten feature packages above remain **Not started**, stage 2 by default, with **Pending** additional estimates. Preparation follows each task's prerequisites; it does not displace the existing first-demo priorities or silently expand the 64-unit budget. These person-level instructions expand existing task IDs, not another task/status register. Re-estimate capacity before committing an earlier demonstration.
+FND-04/FND-05 now have written proposals ready for receiving-owner review; the other eight feature packages remain **Not started**. All ten remain stage 2 by default, with **Pending** additional estimates. Preparatory documentation does not bypass FND-03 acceptance or start dependent implementation, displace first-demo priorities or expand the 64-unit budget. These person-level instructions expand existing task IDs, not another task/status register. Re-estimate capacity before committing an earlier demonstration.
 
 ## Goal-guidance handoffs
 
@@ -216,6 +216,8 @@ Robert owns PLN-04/FND-05 shared contract/integration proposals; Aaron owns CRD-
 | Institutional rules | Relevant cooperative roles; affected owner records dependencies | Unconfirmed | Evidence alternatives, approval/conflict rules, support options, accounting, retention and external processing need confirmation before live activation |
 
 ## Progress updates
+
+30 October 2026 — FND-04/FND-05: prepared field-level goal/planning/guidance and institution-rubric/trace/handoff proposals on `codex/member-goals-fivec-contracts`, based on main `266379ac293572de91a603a72c1a01750a1c3101`. Only these two tasks advance to Ready for review for written proposal evidence; actual receiving-owner acceptance, FND-03 agreement, institutional rubric/advisory inputs and dependent implementation remain pending. See [verification](docs/AGAP_Goal_5C_Contract_Verification.md). Existing task IDs, owners, stages, prerequisites and demonstration budgets are unchanged; this does not merge or replace draft PR #18.
 
 | Date | Update |
 | --- | --- |

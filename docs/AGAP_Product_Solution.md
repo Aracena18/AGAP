@@ -134,6 +134,8 @@ Servicing calculates the proposed schedule/cost effects using the approved engin
 
 ### AI-assisted 5C review and explainable handoff
 
+The [FND-05 contract proposal](AGAP_5C_Review_Contract_Proposal.md) translates these requirements into proposed records/operations for team review; it changes no numeric policy or executable interface.
+
 The user requests an assessment after document/answer analysis, organized by Character, Capacity, Capital, Collateral and Conditions, with per-category percentages, supporting explanations and a staff handoff. Add this as a planned institution-rubric review, with AI-assisted evidence analysis, deterministic scoring and human review. It is not an implemented scoring model or a repayment-probability estimate.
 
 | Category | Relevant review basis and limits |
@@ -157,6 +159,8 @@ The officer receives original authorized sources/member answers, draft/reviewed 
 FND-05 (Robert), CRD-03 (Aaron), QWN-03 (Benedict) and EVAL-03 (Earl) are additional unestimated stage 2 packages. Robert owns shared contracts/integration, Aaron the credit rubric/rules and staff 5C view, Benedict the same Qwen family's bounded analysis/explanation adaptation and decision-handoff integration, and Earl independent corpus/protocol/validation. The first-demo budgets and the separate goal-guidance tasks remain intact; an earlier labeled fictional illustration needs explicit capacity review and its checks. No live scoring, actual weights, model promotion or contract changes are implemented by this plan.
 
 ### Member goals, savings and cooperative-product guidance
+
+The [FND-04 contract proposal](AGAP_Goal_Guidance_Contract_Proposal.md) translates these requirements into proposed goal/planning/guidance records and operations; review does not activate a product or implement this journey.
 
 The member may voluntarily ask AGAP how to work toward an emergency fund, a planned expense, travel, leisure or another personal goal. AGAP reuses only relevant, authorized records with visible dates and a changed-circumstances check; old application data is not permanently current. Declining guidance, choosing a leisure goal, changing a priority or pausing a voluntary plan must not affect loan eligibility, collections treatment or a character/health score.
 
