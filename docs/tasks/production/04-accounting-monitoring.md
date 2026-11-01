@@ -221,3 +221,31 @@ The local input proposal reuses canonical financial primitives and posting/comma
 | Documentation/tooling | **18 local links/anchors resolved** across the module README and this brief; diff whitespace checked. `graft` and `graphify` are unavailable, so navigation used `rg`/Git. Temporary database/test servers were stopped |
 
 No consuming-owner approval, successful remote CI, full ACC-01 integration or production readiness is claimed by this evidence.
+
+## EVAL-01 comparison-report candidate — 1 November 2026
+
+Branch/base: `feat/earl-eval-01-comparison` from `1776d9f`, which contains the merged ACC-01 checker. The owned [comparison implementation](../../../evaluation/synthetic/src/compare.ts) and [usage contract](../../../evaluation/synthetic/README.md#paired-comparison-reports) add a `compare` CLI command without changing application/shared contracts or the financial modules.
+
+Two to sixteen supplied prediction files are scored through the existing scorer on the same corpus, with a selected baseline and common declared protocol hash. Reports retain raw count/accuracy deltas and each expected field's improved/regressed/both-correct/both-incorrect outcome. Missing answers stay in the denominator, additional findings remain counted, and equal accuracy does not hide offsetting improvements/regressions. Model prompt/output-schema mismatches, duplicate identities/labels, incompatible corpus/case inventories and mixed simulated/declared evidence fail before output creation.
+
+An exclusive output directory contains machine-readable JSON, readable Markdown and an artifact-hash manifest written last. Canonical prediction hashes retain run provenance; no actual inference, authenticity, independent protocol acceptance or model promotion is attested. Simulated reports remain `harness_only`; paired resource metrics require jointly observed cases under the same declared environment, with unavailable values left null. Existing external-holdout/frozen-release guards are shared by scoring and comparison. Related case/household groups are not treated as independent statistical observations.
+
+A generated local demonstration at `node_modules/.cache/agap-eval-comparison/demo-v1/report/comparison.md` uses hand-authored fictional outputs only. Its three simulated runs each match 17 of 18 expected fields, while each candidate fixes one baseline error and introduces one different error. This demonstrates the checker/report format, not model or participant performance. The generated report/input files remain ignored development artifacts.
+
+Receiving owners: Benedict/Aaron review the prediction/protocol handoff and later supply fixed, independently executed baseline/model/checklist outputs under the agreed conditions. Robert reviews the local formats and registers focused evaluation checks in shared CI. Earl still completes independent label review, protected holdout, frozen comparison criteria/release and final artifact execution/reporting. The comparison framework does not complete EVAL-01; the separate EBM/logistic evaluator and final research inputs remain pending.
+
+### Verification
+
+1 November 2026, native Windows, Node 24.22.2. Required database regressions used the isolated fictional PostgreSQL 18.6 `agap_test` database on localhost:55440.
+
+| Check | Observed result |
+| --- | --- |
+| Focused evaluation suite | **76 passed**: 46 existing cases and 30 comparison cases covering per-field gains/regressions, missing/additional answers, alignment/provenance/protocol validation, paired resource denominators, inert labels, exclusive artifact output and private-release guards |
+| Evaluation typecheck/lint | `tsc -p evaluation/synthetic/tsconfig.json --noEmit` and `eslint evaluation/synthetic` passed |
+| `npm run check` | Lint, generated contracts and web/API builds passed; **165 domain/UI tests passed**. Backend/contracts: **199 passed, 3 failed of 202**. These root suites still exclude the separately executed evaluation suite |
+| Remaining full-check failures | Same two document-store POSIX 0700 checks and private staff-provisioning 0600 check fail on native Windows; no control/test was weakened. Supported Linux full-check evidence remains required |
+| `npm run test:e2e` | **34 Chromium tests passed**, using dedicated 5184/4111 ports; these verify existing browser journeys, not actual model execution |
+| Artifact/document audit | Generated the three-run fictional comparison through the real CLI, inspected Markdown, verified report/protocol hashes; **29 local documentation links/anchors resolved** and diff/new-source whitespace checks passed |
+| Environment/tooling | Unchanged generated/SQL checkout newlines were temporarily normalized after HEAD/checksum verification and restored afterward; migration records/content are unchanged. `graft`/`graphify` unavailable. Temporary database/browser servers stopped and dedicated ports released |
+
+No actual model or participant result, completed reviewed training release, accepted research evaluation, remote CI pass or runtime promotion is claimed.
