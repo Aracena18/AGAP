@@ -1,6 +1,6 @@
 # Robert (A): platform, member portal and integration
 
-Tracker: [Assignment.md — Robert](../../../Assignment.md#robert). **Current direction: 29 October 2026; the goal-guidance and 5C additions below supplement the retained 25 October assignments.** This brief supersedes earlier task directions where they differ; dated implementation evidence below remains intact.
+Tracker: [Assignment.md — Robert](../../../Assignment.md#robert). **Current direction: 2 November 2026; the policy-source refinement below supplements ongoing work and the retained goal/5C assignments.** This brief supersedes earlier task directions where they differ; dated implementation evidence below remains intact.
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and root AGENTS.md. Assignment.md alone records current statuses. The first foundation is a review candidate, not an accepted integration base or production release.
 
@@ -62,11 +62,15 @@ These steps expand the existing task IDs. Preserve first-demo priorities; new fe
 
 ### FND-04 — goal and guidance contracts
 
+Prepared review input: [field-level FND-04 proposal](../../AGAP_Goal_Guidance_Contract_Proposal.md). Confirm Aaron's planner/catalogue projections, Earl's records/content/reviewer mapping and Benedict's bounded model provenance before canonical changes; receiving-owner acceptance is pending.
+
 1. After FND-03, collect Aaron's planner/catalogue, Earl's goal/content/review and Benedict's model/provenance requirements. Propose own-record commands/results, consent, dated inputs/horizon, explicit unavailable states and version/review history.
 2. Record consuming-owner agreement, then implement the canonical schemas/client and registration in your owned paths. Do not copy financial logic or goal tables into the member facade.
 3. Hand the reviewed contract version and examples to Aaron/Earl/Benedict. Supply cross-member denial, revoked linkage, stale-version and retry evidence for integrated operations.
 
 ### FND-05 — 5C review contracts
+
+Prepared review input: [field-level FND-05 proposal](../../AGAP_5C_Review_Contract_Proposal.md). Confirm Aaron's approved rubric/score trace, Benedict's explanation/handoff and Earl's independent expectations; proposed score serialization and actual institutional criteria are not accepted defaults.
 
 1. After FND-03, agree Aaron's rubric provenance/criteria/points/weights and calculation-trace projections, Benedict's finding/explanation/handoff needs and Earl's independent expected records. Keep candidate, accepted, verified, unavailable and not-applicable meanings distinct.
 2. Propose and review versioned rubric/finding/result/coverage/review/handoff ports, including source/offer bindings and material-change invalidation; then implement the agreed canonical contract/client/registration changes. Do not invent numerical policy.
@@ -80,7 +84,15 @@ These steps expand the existing task IDs. Preserve first-demo priorities; new fe
 
 For each handoff, record task ID, branch/base, contract/model versions, owned files, relevant checks, unresolved inputs and receiving owner. PLN-03/PLN-04 document this scope; they are not runtime completion evidence.
 
+## Policy-source refinement — 2 November 2026
+
+Under FND-03/MOB-01/SHOW-01, coordinate the [policy-source checkpoint](../../AGAP_Policy_Clarification_Register.md#ongoing-work-checkpoint) and reconcile the sole tracker with merged handoff evidence. Preserve active branches and all existing owner paths. Gather actual branch/base, delivered slice, contract consumption, checks, dependencies and remaining effort; do not invent acceptance or estimate new work as zero.
+
+Review whether policy/source version, product-conditional evidence and amount period/basis/deduction information fit current contracts. Publish only a reviewed compatible proposal before canonical edits or dependent integration. Keep UI details in design.md section 14. The existing 64-unit baseline and later goals/5C/SRV-01 gates remain intact. Draft PR #18 registration/check work is separate and unmerged by this amendment; do not duplicate it or imply its code is present. Supplied private workbook/meeting records remain outside repository fixtures and model inputs.
+
 ## Progress and handoff notes
+
+30 October 2026 — FND-04/FND-05: written proposals prepared on `codex/member-goals-fivec-contracts`, base `266379ac293572de91a603a72c1a01750a1c3101`; [documentation verification](../../AGAP_Goal_5C_Contract_Verification.md). Changed only Robert-owned shared Markdown. Goal/planning/guidance and 5C/rubric/trace/handoff fields, operations, version guards and per-owner review inputs are concrete review drafts. Canonical 0.2.0, runtime, financial fixtures and the other owners' files are unchanged. FND-03/receiving-owner agreement, actual institutional rules and stage 2 capacity remain dependencies; no accepting actor/version is fabricated. Foundation registration draft PR #18 remains a separate unmerged change. Use Assignment.md for current status.
 
 21 October 2026: FND-01/FND-02 are Ready for review on `feat/robert-fnd-01`, based on `875b405c3c6e5d13f8a00aed7c8712b99c5422ef`. Contract 0.1.0 is a candidate, awaiting Aaron/Benedict/Earl interface agreement. OPS-01 is In progress; its local encrypted restore drill passed, while full identity/offsite recovery and integrated financial cutover remain dependencies.
 

@@ -12,6 +12,8 @@
 
 This revision supersedes the earlier staff-first/later-member-channel sequencing. Robert exclusively owns the member portal and its access facade. The later FND-03 candidate implements contract 0.2.0, its generated client/OpenAPI and append-only member migrations 008–010 after the [written proposal](AGAP_Member_Contract_Proposal.md). Shared member-domain/provenance interfaces remain subject to consuming-owner review; default business-domain implementations are unavailable. [Training/evaluation details](AGAP_Model_Training_Plan.md) distinguish Benedict’s Qwen work, Aaron’s research training/inference adapter and Earl’s independent evaluation.
 
+**2 November policy-source note:** the 26 October implementation statements above are historical. Current partial evidence/credit, posting, principal-comparison and evaluation deliveries are recorded in [Assignment.md](../Assignment.md); merged components do not establish an integrated financial path. The [policy-source register](AGAP_Policy_Clarification_Register.md) uses existing source-owned facts, versioned credit configuration, checked assessments and immutable human handoffs. It introduces no service, table, schema or provider. Robert reviews any proposed shared-field change with consuming owners before implementation; unresolved institutional settings block only the affected rule. Draft foundation registration PR #18 remains separate from this documentation amendment.
+
 ## 1. Architecture decisions
 
 Build a **modular monolith**: one application backend, one PostgreSQL database, and a worker using the same domain modules. A financial operation can then update the loan subledger and general ledger in one database transaction. Modules have separate owners and public interfaces; they do not need separate services to support parallel development.
@@ -184,6 +186,8 @@ The unchanged browser model still covers one cycle and retains its historical or
 
 ### Institution-rubric 5C assessment and proposed FND-05 boundary
 
+The [FND-05 field-level proposal](AGAP_5C_Review_Contract_Proposal.md) specifies candidate records, operations, independent review states, score encoding, immutable basis/trace and acceptance examples. It is a receiving-owner review draft, not an executable schema revision or approved institutional rubric.
+
 Implement the [5C requirements](AGAP_Product_Solution.md#ai-assisted-5c-review-and-explainable-handoff) in existing evidence/credit/decision modules. Robert proposes FND-05 source/criterion/rubric/result/review/trace ports and integration; Aaron owns CRD-03 rubric configuration, deterministic scoring and staff 5C UI in credit; Benedict owns QWN-03 bounded analysis/explanation and decision-handoff integration through the existing AI adapter; Earl owns EVAL-03 independent data/protocol/final review. No second AI provider, calculator, member-score service or outcome-prediction model is added.
 
 1. Evidence provides authorized current facts, verification status and source references. Qwen drafts per-C evidence/criterion mappings, contradictions/questions and source-linked findings. Its output remains untrusted; it cannot define weights, fabricate rating rules or authenticate sources. Discretionary criterion interpretations require staff acceptance before reviewed scoring.
@@ -196,6 +200,8 @@ Proposed records/ports carry rubric provenance and approval/effective version, c
 Public references establish a review framework only; no current approved numeric rubric is supplied. Any fictional illustration is labeled and isolated from live configuration. EBM/logistic research keeps its existing offline emergency-funds target and has no data path here. Future credit-probability modeling requires a separate approved target/data/calibration/evaluation/architecture proposal; explaining a generated score does not validate it.
 
 ### Goal-guidance flow and proposed FND-04 boundary
+
+The [FND-04 field-level proposal](AGAP_Goal_Guidance_Contract_Proposal.md) specifies goal/choice/basis/planner/catalogue/guidance/review records and scoped operations. It preserves private investment drafts, explicit unavailable values and current-version checks; no route, permission mapping, product or executable contract is activated by the proposal.
 
 The [product requirements](AGAP_Product_Solution.md#member-goals-savings-and-cooperative-product-guidance) govern what guidance may say. Add the capability to existing modules rather than another autonomous agent service: monitoring owns goal consent/state, reviewed educational references, domain prompts and advice-review history (Earl); credit owns catalogue/configuration and the single deterministic planning extension (Aaron); the member portal owns own-record UI/orchestration (Robert). Benedict supplies QWN-02 artifacts in the existing training path. Qwen inference uses Aaron's one adapter. EBM/logistic outputs remain outside this flow.
 

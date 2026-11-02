@@ -2,14 +2,14 @@ import { mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
 import { isAbsolute, join, relative, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { afterAll, describe, expect, it, vi } from 'vitest';
-import { freezeBundle, inferenceInput, previewBundle, requireExternalHoldout, splitDevelopment, verifyBundle, writeBundle, type ReleaseReview } from '../src/bundle.js';
+import { freezeBundle, inferenceInput, previewBundle, requireExternalHoldout, splitDevelopment, verifyBundle, writeBundle } from '../src/bundle.js';
 import { main, parseArgs } from '../src/cli.js';
-import { corpusHash, serialize, sha256, stableId, validateCorpus, type Corpus, type Predictions } from '../src/model.js';
+import { corpusHash, serialize, sha256, stableId, validateCorpus, type Corpus } from '../src/model.js';
 import { developmentPilot } from '../src/pilot.js';
 import { documentHtml } from '../src/render.js';
 import { scorePredictions } from '../src/score.js';
+import { pilot, predictions, privateFixture, review } from './fixtures.js';
 
-const pilot = () => developmentPilot();
 const temporary: string[] = [];
 async function temp() {
   const folder = await mkdtemp(join(tmpdir(), 'agap-eval01-'));
@@ -24,36 +24,6 @@ afterAll(async () => {
     await rm(target, { recursive: true });
   }
 });
-function predictions(corpus = pilot()): Predictions {
-  return {
-    schemaVersion: 'eval-01-predictions/v1', inputCorpusSha256: corpusHash(corpus),
-    run: { id: 'hand-authored-harness-fixture', origin: 'simulated', artifact: null, environment: 'Fictional test outputs; no model executed.' },
-    cases: corpus.cases.map(item => ({ caseId: item.id, findings: structuredClone(item.expected), elapsedMs: null, peakMemoryBytes: null })),
-  };
-}
-// All private/review records here are fictional unit fixtures. They are never exported as an actual frozen corpus/review.
-function privateFixture(): Corpus {
-  const value = pilot();
-  value.id = 'private-fixture'; value.purpose = 'reserved_holdout';
-  value.provenance = { method: 'private_authored', seed: 'PRIVATE-FIXTURE-SEED', authoredOn: '2026-10-29' };
-  value.cases = value.cases.slice(0, 1);
-  const item = value.cases[0];
-  item.id = 'private-fixture-case'; item.householdGroup = 'private-fixture-household'; item.scenarioGroup = 'private-fixture-scenario';
-  const source = item.sources[0], oldId = source.id;
-  source.id = stableId('PRIVATE-FIXTURE-IDENTITY'); source.templateFamily = 'private-fixture-template';
-  source.text = source.text.replace('Household ev-01', 'Household PRIVATE-FIXTURE-TEXT').replace('Monthly payslip.', 'Distinct private fixture statement.');
-  source.sha256 = sha256(source.text);
-  for (const finding of item.expected) for (const citation of finding.sources) if (citation.sourceId === oldId) citation.sourceId = source.id;
-  return validateCorpus(value);
-}
-function review(development: Corpus, holdout: Corpus): ReleaseReview {
-  return {
-    developmentSha256: corpusHash(development), holdoutSha256: corpusHash(holdout),
-    labelReviewers: ['Fictional unit-test label reviewer'], interfaceReviewers: ['Fictional unit-test interface reviewer'],
-    reviewedOn: '2026-10-29', protocolVersion: 'fictional-test-protocol', primaryMeasure: 'Fixture-only exact structured fields', regressionCriteria: ['Fixture-only source and unsupported-value error checks'],
-  };
-}
-
 describe('fictional corpus validation', () => {
   it('reproduces records and identities with the same seed, without producing a holdout', () => {
     expect(serialize(pilot())).toBe(serialize(pilot()));
