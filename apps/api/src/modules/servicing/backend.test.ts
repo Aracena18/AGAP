@@ -67,8 +67,8 @@ async function submitted() {
 }
 async function count(table: string) { return Number((await owner.query(`SELECT count(*) FROM servicing.${table}`)).rows[0].count); }
 beforeAll(async () => {
-  const directory = 'apps/api/src/modules/servicing/migrations'; migrationDirectories.push(directory);
-  try { await prepareDatabase(); } finally { migrationDirectories.splice(migrationDirectories.indexOf(directory), 1); }
+  const directories = ['apps/api/src/modules/accounting/migrations', 'apps/api/src/modules/servicing/migrations']; migrationDirectories.push(...directories);
+  try { await prepareDatabase(); } finally { for (const directory of directories) migrationDirectories.splice(migrationDirectories.indexOf(directory), 1); }
   await owner.query(`CREATE TABLE IF NOT EXISTS servicing.test_context(organization_id uuid NOT NULL REFERENCES platform.organizations(id),application_id uuid PRIMARY KEY,body jsonb NOT NULL);
     ALTER TABLE servicing.test_context ENABLE ROW LEVEL SECURITY; ALTER TABLE servicing.test_context FORCE ROW LEVEL SECURITY;
     DROP POLICY IF EXISTS fixture_scope ON servicing.test_context;

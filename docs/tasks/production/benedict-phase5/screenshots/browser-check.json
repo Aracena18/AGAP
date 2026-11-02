@@ -1,0 +1,15 @@
+{
+  "scope": "fictional_ui_simulation_only",
+  "connectedApi": false,
+  "checks": [
+    "pending: 1366px reflow and axe",
+    "pending: 320px reflow and axe",
+    "pending: effective 200% desktop viewport",
+    "Keyboard submission through fictional gateway",
+    "posted: 1366px reflow and axe",
+    "posted: 320px reflow and axe",
+    "posted: effective 200% desktop viewport",
+    "A4 receipt content/privacy and peso amount"
+  ],
+  "pageErrors": []
+}

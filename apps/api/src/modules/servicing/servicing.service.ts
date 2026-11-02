@@ -10,7 +10,7 @@ import { ObservationInputSchema, OperationContextSchema } from './context.js';
 import { authorizeCommand, inspectCommand, preparePendingOrigination, prepareReleaseCommand, prepareSubmission, recordObservation, recoveryAdvice, ServicingRuleError } from './command-rules.js';
 import { ServicingRepository } from './servicing.repository.js';
 
-async function operation<T>(work: () => Promise<T>) {
+export async function servicingOperation<T>(work: () => Promise<T>) {
   try { return await work(); } catch (error) {
     if (error instanceof ApiError) throw error;
     if (error instanceof ZodError) throw new ApiError(422, 'invalid_servicing_input', 'Check the servicing fields and current references.',
@@ -26,6 +26,7 @@ async function operation<T>(work: () => Promise<T>) {
     throw failure;
   }
 }
+const operation = servicingOperation;
 /** Simulation-only persistence candidate. No provider call, posting or route registration. */
 export class ServicingService {
   constructor(private readonly uow: UnitOfWork, private readonly ports: ServicingBackendPorts = unavailableServicingPorts,

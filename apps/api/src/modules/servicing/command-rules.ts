@@ -24,7 +24,7 @@ export function businessDay(at: string) {
 const actorShape = z.object({ userId: Id, organizationId: Id, branchIds: z.array(Id), roles: z.array(Role), sessionId: Id,
   authenticatedAt: z.date(), authenticationMethods: z.array(z.string()) });
 type Scope = Pick<PendingOrigination, 'organizationId' | 'branchId' | 'offer'>;
-function permission(actor: ActorContext, c: Pick<OperationContext, 'authority'>, scope: Scope, action: 'prepare' | 'authorize' | 'submit' | 'observe' | 'reconcile', at: string, amount: number, method: string) {
+export function permission(actor: ActorContext, c: Pick<OperationContext, 'authority'>, scope: Scope, action: 'prepare' | 'authorize' | 'submit' | 'observe' | 'reconcile', at: string, amount: number, method: string) {
   const a = actorShape.parse(actor), p = c.authority;
   requireRule(a.organizationId === scope.organizationId && a.branchIds.includes(scope.branchId), 'actor_scope', 'This actor cannot operate on this origination.');
   const role = action === 'authorize' ? 'financial_authorizer' : action === 'prepare' ? 'cashier' : null;
@@ -60,7 +60,7 @@ function releaseBasis(c: OperationContext, at: string) {
   requireRule(offer?.available, 'offer_unavailable', 'The approved offer is unavailable.');
   return { snapshot: s, offer, application, acceptance: a };
 }
-function binding(loan: PendingOrigination, c: OperationContext, at: string) {
+export function binding(loan: PendingOrigination, c: OperationContext, at: string) {
   requireRule(fingerprint(loan.offer) === loan.scheduleHash, 'schedule_changed', 'The exact saved schedule changed.');
   const b = releaseBasis(c, at);
   requireRule(loan.applicationId === b.application.id && loan.organizationId === b.application.organizationId && loan.branchId === b.application.branchId

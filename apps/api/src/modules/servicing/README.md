@@ -1,5 +1,7 @@
 # PAY-01 Phase 4 — servicing foundation candidate
 
+**Phase 5 continuation:** the [versioned atomic money-path specification](MONEY.md) now describes the isolated posted release/repayment/receipt candidate. This file retains Phase 4 behavior; its legacy read stream is historical after v2 adoption. Shared registration remains unavailable pending integration.
+
 **Owner:** Benedict. **Implemented:** 2 November 2026. The original P4-B rules/fictional driver are retained. The continuation adds candidate P4-C persistence and P4-D/E/F transactional preparation, authorization, submission-intent, settlement-observation and recovery services. See the [backend specification](BACKEND.md) and [implementation evidence](../../../../../docs/tasks/production/benedict-phase4/IMPLEMENTATION.md).
 
 Producer/lock acceptance remains unrecorded. The owned SQL/repository/service are an isolated implementation candidate with real database tests and explicitly fictional upstream adapters. No HTTP controller, external dispatch worker, runtime provider, app registration or capability activation is added. Main and earlier feature candidates remain separate worktrees/commits. Missing producers fail unavailable; only simulation mode is supported.

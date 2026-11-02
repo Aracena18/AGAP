@@ -9,14 +9,14 @@ export class ServicingRepository {
     await tx.query("SELECT pg_advisory_xact_lock(hashtextextended('servicing:application:'||$1||':'||$2,0))", [tx.actor.organizationId, applicationId]);
   }
   async originForApplication(tx: TransactionContext, applicationId: string) {
-    const result = await tx.query('SELECT body,body_hash FROM servicing.originations WHERE organization_id=$1 AND application_id=$2', [tx.actor.organizationId, applicationId]);
+    const result = await tx.query('SELECT body,body_hash FROM servicing.staff_originations WHERE organization_id=$1 AND application_id=$2', [tx.actor.organizationId, applicationId]);
     if (!result.rows[0]) return null;
     const body = PendingOriginationSchema.parse(result.rows[0].body);
     if (fingerprint(body) !== result.rows[0].body_hash) throw new ApiError(503, 'servicing_integrity', 'The saved origination cannot be verified.');
     return body;
   }
   async origin(tx: TransactionContext, id: string) {
-    const result = await tx.query('SELECT application_id FROM servicing.originations WHERE organization_id=$1 AND id=$2', [tx.actor.organizationId, id]);
+    const result = await tx.query('SELECT application_id FROM servicing.staff_originations WHERE organization_id=$1 AND id=$2', [tx.actor.organizationId, id]);
     if (!result.rows[0]) throw notFound();
     return (await this.originForApplication(tx, result.rows[0].application_id as string))!;
   }

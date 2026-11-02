@@ -8,7 +8,7 @@ import { OperationContextSchema } from '../context.js';
 import { authorizeCommand, preparePendingOrigination, prepareReleaseCommand, prepareSubmission } from '../command-rules.js';
 export const times = { assessment: '2026-11-01T00:00:00Z', recommendation: '2026-11-02T01:00:00Z', decision: '2026-11-02T01:01:00Z', acceptance: '2026-11-02T01:02:00Z',
   authentication: '2026-11-02T01:03:00Z', prepare: '2026-11-02T01:04:00Z', authorize: '2026-11-02T01:05:00Z', submit: '2026-11-02T01:06:00Z', observe: '2026-11-02T01:07:00Z', later: '2026-11-02T01:08:00Z' };
-export function ruleFixture(withheldFee = false) {
+export function ruleFixture(withheldFee = false, paymentDate = '2026-11-25') {
   const organizationId = randomUUID(), branchId = randomUUID(), officerId = randomUUID(), reviewerId = randomUUID();
   const actor = (id: string, roles: ActorContext['roles']): ActorContext => ({ userId: id, organizationId, branchIds: [branchId], roles, sessionId: randomUUID(), authenticatedAt: new Date(times.authentication), authenticationMethods: ['mfa'], correlationId: randomUUID() });
   const officer = actor(officerId, ['officer']), reviewer = actor(reviewerId, ['reviewer']);
@@ -17,6 +17,7 @@ export function ruleFixture(withheldFee = false) {
     requestedPrincipalCentavos: 1_000_000, requestedTermMonths: 1, currency: 'PHP', status: 'assessment_ready', version: 1, assessmentInputVersion: 1, assignedOfficerId: officerId,
     createdAt: times.assessment, updatedAt: times.assessment });
   const current = fictionalBasis(application, reviewerId); current.assessment!.createdAt = times.assessment;
+  current.offers[0].payments[0].date = paymentDate;
   if (withheldFee) { current.offers[0].netReceivedCentavos = 900_000; if (current.assessment?.status === 'complete') current.assessment.scenarios[0].financingCostCentavos = 100_000; }
   current.recommendation = prepareRecommendation(officer, current, { id: randomUUID(), at: times.recommendation, expectedVersion: 1,
     request: { assessmentId: current.assessment!.id, offerVersionId: current.offers[0].id, inputVersion: 1, reason: 'Fictional supplied checked schedule.' } });
