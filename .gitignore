@@ -34,3 +34,5 @@ graphify-out/
 /models/qwen/datasets/
 /models/qwen/notebooks/
 /03-decisions-servicing.md
+
+dist-worker/

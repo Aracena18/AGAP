@@ -23,6 +23,8 @@ import { PostgresMemberUnitOfWork } from './platform/member-database.js';
 import { MemberApplicationsService } from './modules/applications/member-applications.service.js';
 import { MemberPortalService } from './modules/member-portal/member-portal.service.js';
 import { MemberController,MEMBER_PLATFORM,type MemberRequest } from './modules/member-portal/member.controller.js';
+import { WorkflowController,WORKFLOW } from './modules/evidence/workflow.controller.js';
+import { configureWorkflow,requireRelease } from './modules/evidence/configure.js';
 import type { MemberDomainPorts } from '../../../packages/contracts/src/ports.js';
 
 interface StaffRequest extends Request,MemberRequest { staff?: Awaited<ReturnType<IdentityService['authenticate']>> }
@@ -55,7 +57,7 @@ class PlatformController {
   @Get('health') async health() { await Promise.all([this.services.database.query('SELECT 1'),this.services.identityDatabase.query('SELECT 1')]); return {status:'ok',contractVersion:CONTRACT_VERSION}; }
   @Get('openapi.json') async openapi() { return JSON.parse(await readFile('packages/contracts/openapi.json','utf8')) as unknown; }
   @Get('capabilities') capabilities() {
-    return {contractVersion:CONTRACT_VERSION,modules:[{name:'platform',owner:'Robert',state:'available'},{name:'identity',owner:'Robert',state:'available'},{name:'members',owner:'Robert',state:'available'},{name:'applications',owner:'Robert',state:'available'},{name:'member_portal',owner:'Robert',state:'available'},{name:'evidence',owner:'Aaron',state:'contract_only'},{name:'credit',owner:'Aaron',state:'contract_only'},{name:'decisions',owner:'Benedict',state:'contract_only'},{name:'servicing',owner:'Benedict',state:'contract_only'},{name:'accounting',owner:'Earl',state:'contract_only'},{name:'monitoring',owner:'Earl',state:'contract_only'}]};
+    return {contractVersion:CONTRACT_VERSION,modules:[{name:'platform',owner:'Robert',state:'available'},{name:'identity',owner:'Robert',state:'available'},{name:'members',owner:'Robert',state:'available'},{name:'applications',owner:'Robert',state:'available'},{name:'member_portal',owner:'Robert',state:'available'},{name:'evidence',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'credit',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'decisions',owner:'Benedict',state:'contract_only'},{name:'servicing',owner:'Benedict',state:'contract_only'},{name:'accounting',owner:'Earl',state:'contract_only'},{name:'monitoring',owner:'Earl',state:'contract_only'}]};
   }
   @Get('auth/login') async login(@Req() request:StaffRequest,@Res() response: Response) {
     await limitLogin(this.services.identityDatabase,this.services.config.SESSION_SECRET,request.socket.remoteAddress??'unknown');
@@ -78,7 +80,7 @@ class PlatformController {
   }
   @Get('session') session(@Req() request: StaffRequest) {
     const current = actor(request);
-    return {user:{id:current.userId,displayName:request.staff!.displayName,organizationId:current.organizationId,branchIds:current.branchIds,branches:request.staff!.branches,roles:current.roles},csrfToken:request.staff!.csrfToken,expiresAt:request.staff!.expiresAt,privacyNoticeVersion:this.services.config.PRIVACY_NOTICE_VERSION,contractVersion:CONTRACT_VERSION};
+    return {user:{id:current.userId,displayName:request.staff!.displayName,organizationId:current.organizationId,branchIds:current.branchIds,branches:request.staff!.branches,roles:current.roles},csrfToken:request.staff!.csrfToken,expiresAt:request.staff!.expiresAt,privacyNoticeVersion:this.services.config.PRIVACY_NOTICE_VERSION,contractVersion:CONTRACT_VERSION,recordMode:this.services.config.EVIDENCE_RECORD_MODE};
   }
   @Get('members') listMembers(@Req() request: StaffRequest,@Query() query: unknown) { return this.services.members.list(actor(request),query); }
   @Get('staff') listStaff(@Req() request: StaffRequest,@Query() query: unknown) { return this.services.staff.list(actor(request),query); }
@@ -94,22 +96,24 @@ class PlatformController {
 }
 
 export async function createApp(config: Config,memberDomains?:MemberDomainPorts) {
+  if(config.EVIDENCE_RECORD_MODE==='real'){if(config.NODE_ENV!=='production')throw new Error('Real records require production and institutional release.');await requireRelease(process.env);}
   const database = createPool(config.DATABASE_URL);
   const identityDatabase = createPool(config.IDENTITY_DATABASE_URL);
   try {
     for (const pool of [database,identityDatabase]) {
       const result = await pool.query<{rolsuper:boolean;rolbypassrls:boolean}>("SELECT rolsuper,rolbypassrls FROM pg_roles WHERE rolname=current_user");
       if (result.rows[0].rolsuper || result.rows[0].rolbypassrls) throw new Error('API database credentials must not be superuser or BYPASSRLS roles.');
-      const owned=await pool.query("SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('platform','identity','members','applications','portal') AND c.relkind IN ('r','p') AND pg_has_role(current_user,c.relowner,'MEMBER') LIMIT 1");
+      const owned=await pool.query("SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('platform','identity','members','applications','portal','evidence','credit') AND c.relkind IN ('r','p') AND pg_has_role(current_user,c.relowner,'MEMBER') LIMIT 1");
       if(owned.rowCount)throw new Error('API database credentials must not own application tables or inherit their owner role.');
     }
     const uow = new PostgresUnitOfWork(database);
+    const workflow=config.EVIDENCE_WORKFLOW_ENABLED?await configureWorkflow(config,uow,new PostgresMemberUnitOfWork(database)):null;
     const members = new MembersService(uow,config.PRIVACY_NOTICE_VERSION);
     const identity = new IdentityService(identityDatabase,config);
     const services: PlatformServices = {config,database,identityDatabase,identity,staff:new StaffService(new PostgresUnitOfWork(identityDatabase)),members,applications:new ApplicationsService(uow,members),async onModuleDestroy(){await Promise.all([database.end(),identityDatabase.end()]);}};
     const memberUow=new PostgresMemberUnitOfWork(database);
     const portal=new MemberPortalService(memberUow,new MemberApplicationsService(memberUow,config.PRIVACY_NOTICE_VERSION),config.PRIVACY_NOTICE_VERSION,memberDomains);
-    @Module({controllers:[PlatformController,MemberController],providers:[{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal}}]})
+    @Module({controllers:[PlatformController,MemberController,WorkflowController],providers:[{provide:WORKFLOW,useValue:workflow},{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal,workflow}}]})
     class AppModule {}
     const app = await NestFactory.create<NestExpressApplication>(AppModule,{logger:false,bodyParser:false,abortOnError:false});
     app.set('trust proxy',false);

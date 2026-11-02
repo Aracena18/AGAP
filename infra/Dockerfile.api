@@ -1,0 +1,24 @@
+FROM node:24-bookworm AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --no-audit --no-fund
+COPY . .
+RUN npm run contracts:check && npm run api:build && npm run worker:build
+RUN npm prune --omit=dev
+FROM node:24-bookworm AS api
+ENV NODE_ENV=production API_HOST=0.0.0.0
+WORKDIR /app
+COPY --from=build --chown=node:node /app/node_modules ./node_modules
+COPY --from=build --chown=node:node /app/dist-api ./dist-api
+COPY --from=build --chown=node:node /app/packages/contracts/openapi.json ./packages/contracts/openapi.json
+COPY --from=build --chown=node:node /app/models/qwen/model_manifest.json ./models/qwen/model_manifest.json
+COPY --from=build --chown=node:node /app/package.json ./package.json
+USER node
+EXPOSE 4100
+CMD ["node","dist-api/main.js"]
+FROM api AS worker
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends poppler-utils tesseract-ocr tesseract-ocr-eng python3-pil && rm -rf /var/lib/apt/lists/*
+COPY --from=build --chown=node:node /app/dist-worker ./dist-worker
+USER node
+CMD ["node","dist-worker/main.js"]

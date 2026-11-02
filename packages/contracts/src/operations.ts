@@ -6,6 +6,15 @@ export interface Operation {
   versioned?: boolean; idempotent?: boolean; public?: boolean; principal?:'member'; binary?:boolean; binaryResponse?:boolean;
 }
 export const operations = [
+  {"id": "getStaffWorkflow", "method": "GET", "path": "/applications/{id}/evidence", "response": "WorkflowView", "owner": "Aaron", "implemented": true},
+  {"id": "saveStaffFact", "method": "POST", "path": "/applications/{id}/facts", "response": "CommandReceipt", "owner": "Aaron", "implemented": true, "request": "WorkflowFactInput", "idempotent": true, "versioned": true},
+  {"id": "reviewStaffDraft", "method": "POST", "path": "/applications/{id}/draft-reviews", "response": "CommandReceipt", "owner": "Aaron", "implemented": true, "request": "WorkflowDraftReview", "idempotent": true, "versioned": true},
+  {"id": "getEvidenceHistory", "method": "GET", "path": "/applications/{id}/evidence/history", "response": "WorkflowHistory", "owner": "Aaron", "implemented": true},
+  {"id": "uploadStaffDocument", "method": "POST", "path": "/applications/{id}/documents", "response": "MemberSource", "owner": "Aaron", "implemented": true, "request": "MemberUpload", "idempotent": true, "versioned": false, "binary": true},
+  {"id": "downloadStaffDocument", "method": "GET", "path": "/applications/{id}/documents/{sourceId}", "response": "MemberSource", "owner": "Aaron", "implemented": true, "binaryResponse": true},
+  {"id": "getMemberWorkflow", "method": "GET", "path": "/member/applications/{id}/workflow", "response": "WorkflowView", "owner": "Aaron", "implemented": true, "principal": "member"},
+  {"id": "saveMemberFact", "method": "POST", "path": "/member/applications/{id}/facts", "response": "CommandReceipt", "owner": "Aaron", "implemented": true, "request": "WorkflowFactInput", "principal": "member", "idempotent": true, "versioned": true},
+
   {id:'getMemberSession',method:'GET',path:'/member/session',response:'MemberSession',owner:'Robert',implemented:true,principal:'member'},
   {id:'getMemberProfile',method:'GET',path:'/member/me',response:'MemberProfile',owner:'Robert',implemented:true,principal:'member'},
   {id:'listMemberApplications',method:'GET',path:'/member/applications',response:'MemberApplicationPage',owner:'Robert',implemented:true,principal:'member'},
@@ -38,9 +47,9 @@ export const operations = [
   { id: 'getApplication', method: 'GET', path: '/applications/{id}', response: 'Application', owner: 'Robert', implemented: true },
   { id: 'updateApplication', method: 'PATCH', path: '/applications/{id}', request: 'ApplicationUpdate', response: 'Application', owner: 'Robert', implemented: true, versioned: true, idempotent: true },
   { id: 'assignApplication', method: 'POST', path: '/applications/{id}/assignments', request: 'AssignmentCreate', response: 'Application', owner: 'Robert', implemented: true, versioned: true, idempotent: true },
-  { id: 'correctEvidence', method: 'POST', path: '/applications/{id}/corrections', request: 'EvidenceCorrection', response: 'CommandReceipt', owner: 'Aaron', implemented: false, versioned: true, idempotent: true },
-  { id: 'recordVerification', method: 'POST', path: '/applications/{id}/verifications', request: 'Verification', response: 'CommandReceipt', owner: 'Aaron', implemented: false, versioned: true, idempotent: true },
-  { id: 'createAssessment', method: 'POST', path: '/applications/{id}/assessments', request: 'AssessmentCreate', response: 'Assessment', owner: 'Aaron', implemented: false, versioned: true, idempotent: true },
+  { id: 'correctEvidence', method: 'POST', path: '/applications/{id}/corrections', request: 'EvidenceCorrection', response: 'CommandReceipt', owner: 'Aaron', implemented: true, versioned: true, idempotent: true },
+  { id: 'recordVerification', method: 'POST', path: '/applications/{id}/verifications', request: 'Verification', response: 'CommandReceipt', owner: 'Aaron', implemented: true, versioned: true, idempotent: true },
+  { id: 'createAssessment', method: 'POST', path: '/applications/{id}/assessments', request: 'AssessmentCreate', response: 'WorkflowAssessment', owner: 'Aaron', implemented: true, versioned: true, idempotent: true },
   { id: 'recommendOffer', method: 'POST', path: '/applications/{id}/recommendations', request: 'RecommendationCreate', response: 'CommandReceipt', owner: 'Benedict', implemented: false, versioned: true, idempotent: true },
   { id: 'recordDecision', method: 'POST', path: '/applications/{id}/decisions', request: 'DecisionCreate', response: 'Decision', owner: 'Benedict', implemented: false, versioned: true, idempotent: true },
   { id: 'recordAcceptance', method: 'POST', path: '/applications/{id}/acceptances', request: 'AcceptanceCreate', response: 'CommandReceipt', owner: 'Benedict', implemented: false, versioned: true, idempotent: true },

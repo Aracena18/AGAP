@@ -1,0 +1,27 @@
+{
+  "blockers": [
+    "missing_package:torch",
+    "missing_package:transformers",
+    "missing_package:peft",
+    "missing_package:unsloth",
+    "missing_package:safetensors",
+    "nvidia_driver_or_gpu_unavailable"
+  ],
+  "gpu": {
+    "available": false,
+    "returnCode": null,
+    "summary": null
+  },
+  "modelExecuted": false,
+  "packages": {
+    "peft": null,
+    "safetensors": null,
+    "torch": null,
+    "transformers": null,
+    "unsloth": null
+  },
+  "promotion": "not_promoted",
+  "python": "3.12.3",
+  "readyToAttemptGpuLoad": false,
+  "schemaVersion": "agap-qwn-preflight/v1"
+}

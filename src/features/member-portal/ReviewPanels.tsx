@@ -40,7 +40,7 @@ function DraftReview({draft,record,saved}:{draft:Output<'AiDraft'>;record:Output
   const currentInput=JSON.stringify({action,unknown,amount,date,reason}),[savedInput,setSavedInput]=useState(currentInput);
   useUnsavedChanges(currentInput!==savedInput||command.uncertain,command.uncertain);
   async function save(e:FormEvent){
-    e.preventDefault();setError('');let value:Output<'DraftConfirmation'>['value'];
+    e.preventDefault();setError('');let value:Output<'AiDraft'>['value'];
     if(unknown||action==='not_applicable')value={availability:'unavailable',reason};
     else try{value={availability:'recorded',amountCentavos:parsePesoInput(amount)};}catch{setError('Enter a nonnegative PHP amount with no more than two decimal places.');return;}
     const data={draftId:draft.id,sourceId:draft.source.sourceId,sourceVersion:draft.source.sourceVersion,action,value,effectiveDate:date||null,reason};

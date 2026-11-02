@@ -13,7 +13,8 @@ import { dateLabel } from '../../domain/format';
 import { Badge,Button,Money,Notice } from '../../shared/ui';
 import { ArrowForward } from '../../shared/icons';
 import { CommandError,ReadState } from './MemberFeedback';
-import { EvidencePanel,OptionsPanel,DecisionPanel } from './ReviewPanels';
+import { MemberWorkflow } from '../workflow/WorkflowPanel';
+import { DecisionPanel } from './ReviewPanels';
 import styles from './MemberApp.module.css';
 type Output<K extends keyof typeof schemas>=z.output<(typeof schemas)[K]>;
 export const statusLabel:Record<Output<'MemberApplication'>['status'],string>={draft:'Draft',submitted:'Submitted for review',evidence_review:'Information review',clarification:'More information requested',assessment_ready:'Options ready',recommended:'With a reviewer',decision_recorded:'Decision recorded'};
@@ -61,7 +62,7 @@ export function ApplicationPage(){
   async function submit(event:FormEvent){event.preventDefault();const record=read.data!;const saved=await command.submit({noticeVersion:session!.privacyNoticeVersion,acknowledgment:reviewed as true},(body,key)=>client.submitMemberApplication(record.id,body,{version:record.version,idempotencyKey:key,csrfToken:session!.csrfToken}));if(saved){setReviewed(false);read.refresh();}}
   return <div className="stack"><Link className={styles.link} to="/member/applications">Back to my applications</Link><ReadState {...read}/>{read.data&&<><div className={styles.intro}><p className="eyebrow">{statusLabel[read.data.status]}</p><h1>{read.data.purpose}</h1><p>{read.data.status==='draft'?'Your draft is saved. Review it before submitting.':read.data.status==='submitted'?'Your request has been submitted. The cooperative will review the information and contact you if needed.':'See the information and recorded next steps below.'}</p></div><section className="panel panel-body stack"><h2>Your requested terms</h2><dl className={styles.summary}><div><dt>Requested amount</dt><dd><Money value={read.data.requestedPrincipalCentavos}/></dd></div><div><dt>Requested term</dt><dd>{read.data.requestedTermMonths} months</dd></div><div><dt>Status</dt><dd>{statusLabel[read.data.status]}</dd></div><div><dt>Last saved</dt><dd>{dateLabel(read.data.updatedAt)}</dd></div></dl><p className="small subtle">These are requested terms. Approval, an offered schedule and your acceptance are separate steps.</p>
     {read.data.status==='draft'&&<form className={styles.form} onSubmit={e=>void submit(e)}><CommandError error={command.error} fields={command.fields}/><label className={styles.check}><input required disabled={command.saving||command.uncertain} type="checkbox" checked={reviewed} onChange={e=>setReviewed(e.target.checked)}/>I reviewed my requested amount, term and purpose.</label><div className="actions"><Button type="submit" disabled={command.saving}>{command.saving?'Submitting…':command.uncertain?'Retry same submission':'Submit application'}</Button>{!command.uncertain&&<Link className={styles.link} to={`/member/applications/${id}/edit`}>Edit draft</Link>}</div></form>}</section>
-    <EvidencePanel record={read.data} changed={read.refreshKeepingData}/><OptionsPanel applicationId={read.data.id} version={read.data.version}/><DecisionPanel record={read.data} changed={read.refreshKeepingData}/></>}</div>;
+    <MemberWorkflow record={read.data} changed={read.refreshKeepingData}/><DecisionPanel record={read.data} changed={read.refreshKeepingData}/></>}</div>;
 }
 export function LoansPage(){
   const {client,session}=useMember(),load=useCallback((signal:AbortSignal)=>client.listMemberLoans({signal}),[client]),read=useResource(load),prefLoad=useCallback((signal:AbortSignal)=>client.getReminderPreferences({signal}),[client]),preferences=useResource(prefLoad);

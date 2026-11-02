@@ -1,6 +1,7 @@
 import { useEffect,useRef } from 'react';
 import { Link,NavLink,Navigate,Route,Routes,useLocation } from 'react-router-dom';
 import { useStaff } from '../features/access/StaffContext';
+import StaffWorkflowPage from '../features/workflow/WorkflowPanel';
 import MembersPage from '../features/members/MembersPage';
 import IntakePage from '../features/applications/IntakePage';
 import AccessPage from '../features/access/AccessPage';
@@ -18,9 +19,9 @@ function StaffWorkspace(){
     <WorkspaceHeader workspace="staff" account={{name:session.user.displayName,kind:'staff',csrfToken:session.csrfToken,signedOut}}/>
     <main ref={main} id="staff-main" tabIndex={-1} className={styles.main}>
         <nav className={styles.nav} aria-label="Staff workspace"><NavLink to="/staff/members">Members</NavLink><NavLink to="/staff/applications">Applications</NavLink>{session.user.roles.includes('administrator')&&<NavLink to="/staff/access">Staff access</NavLink>}</nav>
-        <Routes><Route path="/staff" element={<Navigate to="/staff/members" replace/>}/><Route path="/staff/members" element={<MembersPage/>}/><Route path="/staff/applications" element={<IntakePage/>}/><Route path="/staff/access" element={<AccessPage/>}/><Route path="*" element={<section><h1>Page not found</h1><Link to="/staff/members">Return to members</Link></section>}/></Routes>
+        <Routes><Route path="/staff" element={<Navigate to="/staff/members" replace/>}/><Route path="/staff/members" element={<MembersPage/>}/><Route path="/staff/applications" element={<IntakePage/>}/><Route path="/staff/applications/:id/evidence" element={<StaffWorkflowPage/>}/><Route path="/staff/access" element={<AccessPage/>}/><Route path="*" element={<section><h1>Page not found</h1><Link to="/staff/members">Return to members</Link></section>}/></Routes>
     </main>
-    <footer className={styles.footer}>Local preview · Fictional records</footer>
+    <footer className={styles.footer}>{session.recordMode==='real'?'Cooperative workspace':'Fictional environment · Fictional records'}</footer>
   </>;
 }
 export default function StaffApp(){return <StaffWorkspace/>;}

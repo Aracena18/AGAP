@@ -1,0 +1,6 @@
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: var(--space-4); }
+.source { padding: var(--space-4); border: 1px solid var(--line); border-radius: var(--radius); min-width: 0; overflow-wrap: anywhere; }
+.text { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; max-height: 24rem; overflow: auto; }
+.editor { padding: var(--space-4); border: 1px solid var(--line); border-radius: var(--radius); }
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: var(--space-4); }
+.summary dd { margin: 0; font-weight: 600; }

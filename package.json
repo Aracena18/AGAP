@@ -36,9 +36,14 @@
     "test:keycloak:member": "node --env-file=.env infra/scripts/member-identity-walkthrough.mjs",
     "test:keycloak:preview": "node --env-file=.env infra/scripts/preview-identity-walkthrough.mjs",
     "preview:setup": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/scripts/configure-preview.ts",
-    "member:provision": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/scripts/provision-member.ts"
+    "member:provision": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/scripts/provision-member.ts",
+    "policy:publish": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/scripts/publish-credit-policy.ts",
+    "worker:build": "tsc -p tsconfig.platform.json --noEmit && esbuild --tsconfig=tsconfig.platform.json apps/worker/src/main.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-worker/main.js",
+    "evidence:retire": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/scripts/retire-evidence.ts"
   },
   "dependencies": {
+    "@azure/identity": "4.14.1",
+    "@azure/storage-blob": "12.34.0",
     "@fontsource-variable/google-sans": "^5.3.2",
     "@nestjs/common": "11.2.7",
     "@nestjs/core": "11.2.7",

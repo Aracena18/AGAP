@@ -1,3 +1,4 @@
+import { cashFlow, sumMoney } from './cash-flow.js';
 import { isCalendarDate, money } from '../../../src/domain/format.js';
 import { validateEvidence, type EvidenceIssue } from '../../../src/domain/evidence.js';
 import type { AssessmentResult, CaseRecord, CashMovement, LoanOffer, ScenarioResult } from '../../../src/domain/types.js';
@@ -6,11 +7,7 @@ const calculationVersion = 'cash-flow-v2';
 
 const nonnegativeMoney = (value: unknown): value is number => Number.isSafeInteger(value) && Number(value) >= 0;
 
-function checkedSum(values: number[]): number {
-  const result = Number(values.reduce((sum, value) => sum + BigInt(value), 0n));
-  if (!Number.isSafeInteger(result)) throw new RangeError('Money exceeds the supported integer range.');
-  return result;
-}
+const checkedSum = sumMoney;
 
 function validateInputs(record: CaseRecord, offers: LoanOffer[]): EvidenceIssue[] {
   const issues = validateEvidence(record);
@@ -39,16 +36,6 @@ function validateInputs(record: CaseRecord, offers: LoanOffer[]): EvidenceIssue[
   return issues;
 }
 
-function calendarDates(start: string, end: string): string[] {
-  const dates: string[] = [];
-  const cursor = new Date(`${start}T12:00:00Z`);
-  while (cursor.toISOString().slice(0, 10) <= end) {
-    dates.push(cursor.toISOString().slice(0, 10));
-    cursor.setUTCDate(cursor.getUTCDate() + 1);
-  }
-  return dates;
-}
-
 function calculateScenario(record: CaseRecord, offer: LoanOffer): ScenarioResult {
   const opening = record.facts.find(fact => fact.category === 'opening')!.value!;
   const movements = new Map<string, CashMovement[]>();
@@ -68,17 +55,8 @@ function calculateScenario(record: CaseRecord, offer: LoanOffer): ScenarioResult
   if (offer.feesPaidSeparately > 0) {
     add(offer.payments[0].date, { label: `${offer.label} separate fee`, amount: -offer.feesPaidSeparately });
   }
-  let balance = opening;
-  let monthlyRemaining = 0;
-  let lowestBalance = opening;
-  const dailyBalances = calendarDates(record.periodStart, record.periodEnd).map(date => {
-    const today = movements.get(date) ?? [];
-    const net = checkedSum(today.map(movement => movement.amount));
-    monthlyRemaining = checkedSum([monthlyRemaining, net]);
-    balance = checkedSum([balance, net]);
-    lowestBalance = Math.min(lowestBalance, balance);
-    return { date, balance, movements: today };
-  });
+  const flow = cashFlow(opening, record.periodStart, record.periodEnd, movements);
+  const { remaining: monthlyRemaining, lowest: lowestBalance, closing: balance, daily: dailyBalances } = flow;
   const totalRepayment = checkedSum(offer.payments.map(payment => payment.amount));
   return {
     offerId: offer.id, monthlyRemaining, lowestBalance, closingBalance: balance, dailyBalances,

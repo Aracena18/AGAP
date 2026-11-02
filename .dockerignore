@@ -1,0 +1,16 @@
+.git
+node_modules
+dist
+dist-api
+dist-worker
+.env
+.env.*
+!.env.example
+.platform-test
+playwright-report
+test-results
+graft
+.graphify
+models/qwen/base_model
+models/qwen/adapter
+**/__pycache__

@@ -484,6 +484,20 @@ Keep amount period, gross/net basis and whether an obligation is already include
 
 Robert owns member UI/shared changes; Aaron owns evidence/comparison/product staff views; Benedict owns the decision handoff. Agree affected contracts and capacity before implementation, then verify retained values/error recovery, keyboard/source access, 320px reflow, accurate states and screenshots. Existing numerical 5C and servicing amendments retain their staged scope.
 
+## 15. Evidence and affordability workspace candidate — 3 November 2026
+
+The user authorizes the coordinated member/staff evidence workflow; the [delivery evidence](docs/AGAP_Evidence_Workflow_Delivery.md) supplies implementation screenshots and distinguishes release blockers from implemented examples. Preserve the existing Google-inspired shell, shared controls/tokens and historical demo routes. Representative-user acceptance is pending.
+
+Staff enter from Applications → Review evidence; members remain on their own application page. Show source identity and file-check/processing status first, separate suggested values from confirmed facts and independent verification, then present the saved assessment. Statements are labeled Recorded statement; a file's passed safety checks never imply authenticated financial claims. Explain unavailable scanning/AI and provide manual entry with an explicit source or statement. Keep page excerpts and model provenance inspectable without treating them as verified facts.
+
+The fact editor exposes amount/unavailable reason, dates/coverage, gross/net basis, period, deduction inclusion and confirmation/correction reason. Preserve fields after validation/stale errors; freeze ambiguous submissions and provide Retry same submission using the same request/key. Source and history inspection remain keyboard reachable. Member views omit private verification methods/limitations.
+
+Use responsive source cards and stacked forms at 320px. Saved results distinguish each reviewed calendar-month segment, whole-horizon remaining money, lowest/closing balances and complete contractual costs. Show actual and configured minimum amounts together. Explain that loan proceeds are reserved for their purpose and that balances are measured at end of day. Changed inputs show renewed-review status while retaining earlier results. Do not imply approval or hide missing configuration behind zeroes. Visual/accessibility checks establish implementation evidence, not institutional or representative-user sign-off.
+
+The fact editor includes an explicit “Does not apply to this household (keep history)” choice. Retain the original amount and explanation; display the not-applicable state in the confirmed-fact list. It must not look like zero or disappear from history.
+
+Authenticated workspace footers use the server's record mode to distinguish a fictional environment from a cooperative account; a real-data workspace must not be labeled fictional. Missing mode preserves the fictional label for historical projections.
+
 ## 16. Planned Gabay rebranding — 3 November 2026
 
 **Status: user-requested direction and concrete adoption proposal; application implementation is pending.** The user supplied Gabay artwork, member concepts, motion examples and candidate components, and requested analysis before refactoring the current site's face. [Verified material analysis](design-library/ANALYSIS.md) and [asset manifest](design-library/manifest.json) supply evidence; this section remains the UI/UX authority. UI-05 covers the asset/analysis handoff; UI-06 is the subsequent implementation task in Assignment.md.
