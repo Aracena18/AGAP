@@ -78,4 +78,3 @@ export type AcceptancePreparation = z.input<typeof AcceptancePreparationSchema>;
 export type DecisionCandidate = z.infer<typeof DecisionCandidateSchema>;
 export type DeepReadonly<T> = T extends readonly (infer Item)[] ? readonly DeepReadonly<Item>[]
   : T extends object ? { readonly [Key in keyof T]: DeepReadonly<T[Key]> } : T;
-
