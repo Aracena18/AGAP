@@ -3,8 +3,19 @@
   "source_archive": "AGAP_Accepted_Design_Archive_2026-11-03.zip (ChatGPT Library)",
   "source_type": "optimized derivatives, originals retained",
   "production_integrated": false,
-  "standalone_master_transfer_status": "not transferred",
+  "standalone_master_transfer_status": "original transferred",
   "files": [
+    {
+      "path": "design-library/assets/gabay/master/gabay_3d_transparent.webp",
+      "bytes": 535718,
+      "git_blob_sha": "3a8c2ac6f000163cdb802e3306b37f7c41f7c4e3",
+      "sha256": "b644efe5a919c30bdcaf4fbe26a0186ef4a1e3c427d28e44b5d00ecefa7d8b4c",
+      "width": 1024,
+      "height": 1024,
+      "has_alpha": true,
+      "format": "webp",
+      "role": "source-quality original from accepted archive"
+    },
     {
       "path": "design-library/concepts/member-experience/01-onboarding.webp",
       "bytes": 68216,

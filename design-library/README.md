@@ -25,7 +25,7 @@ This folder records the user-reviewed design direction developed in ChatGPT thro
 
 ## Source and asset status
 
-**Transfer status — 3 November 2026:** Optimized individual WebPs, the motion/interactive gallery, React component candidate and mobile visual concepts are now included under this directory. These are derivative, resolution-preserving design exports; the 28.5 MB original `AGAP_Accepted_Design_Archive_2026-11-03.zip` remains the source-quality package in the owner's ChatGPT Library. The original standalone 1024px Gabay master image was **not** in the GitHub binary transfer set and must not be marked uploaded. All eight 2048px empty-state illustrations are individual transparent images. These files are not integrated production UI.
+**Transfer status — 3 November 2026:** Optimized individual WebPs, the motion/interactive gallery, React component candidate and mobile visual concepts are now included under this directory. These are derivative, resolution-preserving design exports; the 28.5 MB original `AGAP_Accepted_Design_Archive_2026-11-03.zip` remains the source-quality package in the owner's ChatGPT Library. The original standalone **1024 × 1024 transparent Gabay master** has also been transferred byte-for-byte from the source ZIP into `assets/gabay/master/`. The remaining transferred variants use resolution-preserving WebP optimization. All eight 2048px empty-state illustrations are individual transparent images. These files are not integrated production UI.
 
 The corrected transparent empty-state package should supersede the first low-resolution, opaque cropped package. Old illustrations and superseded palette boards are historical references, not selected production assets.
 
@@ -40,7 +40,7 @@ The corrected transparent empty-state package should supersede the first low-res
 
 ## Next work
 
-Review the archived prototype and approve an on-screen member/staff palette comparison. Adopt the palette through `design.md` and canonical shared tokens only after review, with appropriate tests and screenshots. The master mascot original remains in the source-quality ZIP until separately transferred. Do not integrate a preview asset into lending UI without accessibility and financial-integrity checks.
+Review [the member/staff brand adoption preview](prototypes/brand-adoption-preview.html), then compare the candidate palette against the running application before approving any canonical token change. Adopt the palette through `design.md` and canonical shared tokens only after review, with appropriate tests and screenshots. The master mascot original now appears under `assets/gabay/master/`; the complete original ZIP remains separately archived. Do not integrate a preview asset into lending UI without accessibility and financial-integrity checks.
 
 Browse `prototypes/component-library/index.html` for a portable UI gallery; `react-candidate/` is a non-integrated TypeScript candidate; `prototypes/gabay-motion.html` and the four-screen concepts illustrate the Gabay motion and member experience. `manifest.json` indexes the transferred optimized files and their Git blob IDs.
 
