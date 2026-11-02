@@ -11,3 +11,4 @@
 @media(max-width:600px){.header,.main,.footer{padding:var(--space-4)}.brand span{font-size:13px}.account{width:100%;justify-content:space-between}.actions,.fields,.summary{grid-template-columns:1fr}.nav{gap:var(--space-1);margin-bottom:var(--space-5)}.nav a{padding:var(--space-2) var(--space-3)}.record{padding:var(--space-4)}.check{align-items:flex-start;padding:var(--space-3) 0}}
 
 .welcomeActions{display:flex;gap:var(--space-6);padding:var(--space-4) 0;margin:0;list-style:none;flex-wrap:wrap}.welcomeActions li{display:grid;justify-items:center;gap:var(--space-2);font-size:14px}.welcomeActions svg{color:var(--primary)}.accessHelp summary{cursor:pointer;min-height:44px;align-content:center;font-size:14px}.accessHelp p{font-size:14px;color:var(--muted);margin-top:var(--space-2)}
+.supportRequest{min-width:0;overflow-wrap:anywhere}

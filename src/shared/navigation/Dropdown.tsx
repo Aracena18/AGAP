@@ -13,7 +13,7 @@ export function Dropdown({label,trigger,children}:{label:string;trigger:ReactNod
   },[open]);
   return <div ref={root} className={styles.anchor}>
     <button ref={button} className={styles.trigger} aria-label={label} aria-haspopup="menu" aria-expanded={open} aria-controls={id} onClick={()=>{last.current=false;setOpen(value=>!value);}} onKeyDown={event=>{if(event.key==='ArrowDown'||event.key==='ArrowUp'){event.preventDefault();last.current=event.key==='ArrowUp';setOpen(true);}}}>{trigger}<ExpandMore size={18}/></button>
-    {open&&<div ref={menu} id={id} role="menu" aria-label={label} className={styles.popup} onClick={event=>{if(event.target instanceof Element&&event.target.closest('[role="menuitem"]'))setOpen(false);}} onKeyDown={event=>{
+    {open&&<div ref={menu} id={id} role="menu" aria-label={label} className={styles.popup} onClick={event=>{if(event.target instanceof Element&&event.target.closest('[role="menuitem"]')){setOpen(false);button.current?.focus();}}} onKeyDown={event=>{
       if(event.key==='Escape'){event.preventDefault();event.stopPropagation();setOpen(false);button.current?.focus();return;}
       if(event.key==='Tab'){setOpen(false);button.current?.focus();return;}
       const items=[...menu.current!.querySelectorAll<HTMLElement>('[role="menuitem"]')],index=items.indexOf(document.activeElement as HTMLElement);

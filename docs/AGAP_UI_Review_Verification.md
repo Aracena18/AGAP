@@ -49,3 +49,53 @@ These are implemented examples supplied for user review, not a claim of represen
 ## Publication boundary
 
 Delivery branch: [`codex/ui-review-cleanup`](https://github.com/Aracena18/AGAP/tree/codex/ui-review-cleanup), pushed without creating or merging a PR. Preserve the original member-platform worktree's uncommitted verification note and existing PR/issue descriptions. The existing push workflow filters `main` and `feat/**`; a `codex/**` branch without a PR does not schedule that workflow. Local verification is reported separately, and no remote application-check pass is claimed. Main and earlier candidate branches are not merged by this revision.
+
+## UI-04 — focused skill-guided audit — 3 November 2026
+
+Robert implements this user-requested audit and targeted improvement on `codex/ui-skills-audit`, based on `main` at `312c6f8`. Scope is shared account navigation and the member payment-help review. This is a further implementation example, pending representative-user and visual acceptance; it does not complete MOB-01 or any support-domain service. The existing four-owner responsibilities and capacity estimates remain unchanged.
+
+### Findings and supplied corrections
+
+| Priority | Verified finding | Supplied correction and evidence |
+| --- | --- | --- |
+| P1 | The sharing acknowledgement remained checked after Edit message, allowing a revised request to inherit confirmation of earlier content | Editing or opening another preview clears the acknowledgement. Browser tests check the revised text and confirm that Send request makes no POST until the required checkbox is checked again |
+| P2 | Cancelling the unsaved-change sign-out warning closed the menu and left focus on the document body | Selected menu actions restore trigger focus. A browser test activates sign-out with Enter, dismisses the warning and verifies both account focus and the untouched draft |
+| P2 | Review request and Edit message left focus on the old action or a removed control | Review focuses the sharing heading; Edit focuses the message field. Keyboard checks cover both 320px and 1366px layouts |
+| P2 | A long unbroken request reference expanded its grid item and was clipped by the history card, despite a passing page-width check | Scope wrapping and minimum-width handling to support-history items. The browser test now checks descendant bounds inside the card as well as page reflow; complete text remains displayed |
+
+The existing menu action test also asserts trigger focus after selection. Browser audit tests use a separately provisioned fictional member through the existing fixture helper so the original member logout journey cannot invalidate their session. Existing session expiry/logout, stale/uncertain command, real intake and fictional financial regression tests remain applicable. No new product field, money rule, API/CSRF/idempotency behavior, dependency, canonical fixture or persisted snapshot is introduced.
+
+### Skill use and audit limits
+
+- **Impeccable:** applied its audit, hardening and craft guidance against AGAP's existing Operate interface. The context engine could not finish its release download and was stopped; existing project documents were read directly. No completed Impeccable detector run is claimed.
+- **21st.dev:** its CLI reviewed 89 source files and reported one error, three warnings and 24 suggestions. The menu's delegated click handler already operates native menu items with keyboard handlers, so the interactive-div error is not evidence of a missing button. The three autofocus cases are deliberate focus on user-opened forms or the reset dialog. Twenty color suggestions point into the canonical palette itself; four others concern existing shadow/backdrop literals. The final scan repeats the same counts; it is not reported as a clean scanner result. These were reviewed rather than automatically rewritten. The confirmed fixes above come from browser/source inspection, not a claim that every scanner finding is an AGAP defect.
+- **React Bits:** reviewed the installed integration skill for motion/component suitability. This pass needs native focus and confirmation controls; no registry component or decorative motion was added. Existing reduced-motion treatment and AGAP primitives remain in use.
+- The contributor contract now records how these skills apply when available. `design.md` remains the sole visual/interaction authority; no competing design context, external registry upload, hosted AI generation, new dependency or product capability was created.
+
+| Audit dimension | Scope and limits |
+| --- | --- |
+| Accessibility | Keyboard focus and native required confirmation checked; automated axe checks cover the exercised preview/history states. No complete WCAG conformance or assistive-technology study is claimed |
+| Performance | Existing build and dependency checks; no animation/library added. No new runtime performance benchmark |
+| Theming | Existing Google Sans, Material icons, tokens and controls retained; existing shadow/backdrop literals remain a low-priority follow-up |
+| Responsive layout | Chromium viewport checks at 320px and 1366px, including a long simulated request reference; descendant bounds check card containment as well as page-level reflow. No physical-device gesture claim |
+| Workflow integrity | Edited content requires renewed sharing confirmation; cancelled sign-out preserves the draft; unavailable support remains unavailable and loan terms are unchanged |
+
+No overall health score is assigned from this scoped audit. Representative member/staff review, production service integration and release approval remain separate.
+
+### Verification and screenshots
+
+Passed the final `npm run check`: lint, generated-contract drift, web/API builds, **193 UI/domain tests**, **496 platform/backend tests** and **76 evaluation tests**. Passed all **38 Chromium browser tests** with `AGAP_SKILLS_SCREENSHOTS=after npm run test:e2e`, including four new focused browser cases. The final screenshots were inspected at 320px/1366px; the strengthened containment assertion verifies that long history text is inside its card, not merely hidden from page overflow.
+
+Checked **146 local documentation links/anchors** and `git diff --check`. Protected canonical types, tokens, demo fixtures, finance/contracts, dependency manifests and lockfile are unchanged. Completed `graphify update .`; its optional `tree_sitter_sql` parser remains unavailable and the existing contracts barrel is only partially extracted. Those graph limitations do not substitute for the passing build/database tests.
+
+Verification uses an isolated `agap-ui-skills-tests` PostgreSQL container at port 55440, only the fictional `agap_test` database, and browser ports 5185/4112; other local databases/previews and unrelated untracked files are preserved. An initial full-browser attempt exposed reuse of the original member logout session; the dedicated audit member fixes that fixture interference. Earlier setup attempts lacked the test database and then reached a local disk-space limit; the audit's temporary dependency copy was removed, and final checks used existing installed packages with local fonts/cache.
+
+UI-04 follows the user-authorized direct-main publication workflow with no PR or force push. Local checks are distinct from remote CI; no remote CI pass, consuming-owner acceptance, representative-user acceptance or production release is claimed. The task remains **Ready for review** in the sole tracker.
+
+| State | Desktop | Phone |
+| --- | --- | --- |
+| Sharing preview with renewed confirmation | [1366px](screenshots/ui-skills-audit/after-help-review-1366.png) | [320px](screenshots/ui-skills-audit/after-help-review-320.png) |
+| Simulated long-message history | [1366px](screenshots/ui-skills-audit/after-help-history-1366.png) | [320px](screenshots/ui-skills-audit/after-help-history-320.png) |
+| Account menu / cancelled sign-out | Shared control | [Menu](screenshots/ui-skills-audit/after-account-menu-320.png), [restored focus and draft](screenshots/ui-skills-audit/after-cancelled-signout-320.png) |
+
+Screenshots are fictional implementation evidence. Support history explicitly uses simulated responses, while the sharing-preview service remains honestly unavailable.

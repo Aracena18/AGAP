@@ -13,6 +13,6 @@ describe('account/workspace dropdown interaction',()=>{
   });
   it('dismisses on outside interaction and runs a selected action once',async()=>{
     const user=userEvent.setup(),action=vi.fn();render(<><Dropdown label="Account menu" trigger="Account"><button role="menuitem" onClick={action}>Sign out</button></Dropdown><button>Outside</button></>);
-    await user.click(screen.getByRole('button',{name:'Account menu'}));await user.click(screen.getByRole('button',{name:'Outside'}));expect(screen.queryByRole('menu')).not.toBeInTheDocument();expect(screen.getByRole('button',{name:'Outside'})).toHaveFocus();await user.click(screen.getByRole('button',{name:'Account menu'}));await user.click(screen.getByRole('menuitem',{name:'Sign out'}));expect(action).toHaveBeenCalledTimes(1);expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button',{name:'Account menu'}));await user.click(screen.getByRole('button',{name:'Outside'}));expect(screen.queryByRole('menu')).not.toBeInTheDocument();expect(screen.getByRole('button',{name:'Outside'})).toHaveFocus();await user.click(screen.getByRole('button',{name:'Account menu'}));await user.click(screen.getByRole('menuitem',{name:'Sign out'}));expect(action).toHaveBeenCalledTimes(1);expect(screen.queryByRole('menu')).not.toBeInTheDocument();expect(screen.getByRole('button',{name:'Account menu'})).toHaveFocus();
   });
 });

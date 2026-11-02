@@ -80,6 +80,8 @@ The current UI revision requires a real staff session for `/applications/*` revi
 
 All workspaces use the shared workspace/account header. Actual account menus replace decorative fictional avatars; Sign out invokes the appropriate server endpoint with the existing CSRF token. Menu navigation supports arrows/Home/End/Escape, outside dismissal and focus restoration. Demo role/reset controls move into Demo tools. Copy, case/evidence grouping and retained financial details follow design.md section 13.
 
+3 November UI-04 refinement: a selected menu action restores trigger focus, including after a cancelled unsaved-change sign-out warning. The member payment-help form focuses the sharing heading on Review request and restores the message field on Edit message. Editing and reopening the preview clear the sharing acknowledgement; the browser requires fresh confirmation before sending. Message/contact values, uncertain retries, the existing support command and unavailable defaults are preserved. Long request-history messages and staff responses wrap inside their card without truncating the stored text. No financial calculation, API schema or stored record format changes.
+
 Staff login accepts optional `assurance=mfa` and an internal `returnTo` for supported staff/review routes, including source fragments. OAuth state stores the validated route and requested signed assurance. Local password-only preview is opt-in and loopback-development-only, using a separate client; sensitive staff commands still require fresh MFA. Step-up returns to the saved page without automatically resubmitting an action. The member flow, cookie separation, canonical session JSON schemas and contract 0.2.0 are unchanged.
 
 

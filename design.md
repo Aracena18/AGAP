@@ -375,6 +375,10 @@ If extraction fails, keep manual entry and source inspection available. If AI is
 
 Explain who will receive the shared request before submission. Let the member preview/edit their words and proposed summary, skip unnecessary sensitive detail, or use staff assistance. A missing/declined check-in response remains unavailable. The first check-in can ask about difficulty meeting essentials, borrowing to repay and changed income/circumstances; no emotion/character inference is displayed.
 
+**3 November focused audit refinement:** Review request focuses the sharing-preview heading. Edit message returns focus to the message field and clears the sharing acknowledgement; each new preview requires a fresh confirmation before sending. Keep the entered message and preferred response while moving between these steps. These interaction refinements do not implement the unavailable support service or change loan terms.
+
+Long member messages and staff responses in request history wrap within their card, including an unbroken reference. Keep the complete text readable; hidden card overflow must not silently truncate it. Check the text's bounds inside the card as well as page-level reflow.
+
 After submission, show **Sent for review** and the recorded response when available. A pending request does not say payments, fees or interest have paused. When an amendment is proposed, the member sees old/new cost and dates before acceptance; keep the original terms inspectable. Notification preferences do not alter contractual due dates. First-demo reminders are in-portal notices; simulated external delivery is labeled, and real delivery failures remain visible/recoverable.
 
 | Staff view and owner | Required planned behavior |
@@ -450,6 +454,7 @@ Use shared table/form/notice styles with keyboard-operable source/criterion cont
 This section supersedes earlier baseline header/copy/layout descriptions where they differ. The user requested less prose, stronger hierarchy, a navigation button for the review demo and a working account menu. Implementation evidence and screenshots belong to the UI verification record; human visual acceptance remains pending.
 
 - Use one shared header: AGAP, a workspace selector (Member portal / Staff workspace / Review demo), and the actual account button when signed in. Move duplicate demo links out of cards/footers. Account menus expose identity and Sign out, with keyboard navigation, Escape/outside dismissal and appropriate focus return. An avatar must not imply an account that is not authenticated.
+- **3 November focused audit refinement:** selecting a menu action restores focus to its trigger while the action resolves. Cancelling an unsaved-change sign-out warning leaves the account control focused and the unfinished form intact; successful route changes keep the existing main-region focus behavior.
 - Member welcome: Welcome to AGAP; a simple Apply / Track / Get help icon row; one Sign in action. Enrollment guidance belongs under Need access? Preserve actionable sign-in errors.
 - Staff/review sign-in: a static, full-viewport background with soft blue corner gradients from the existing palette, a white header and an opaque white sign-in card. Keep the background confined to signed-out staff/review entry screens, with readable focus/error states and 320px reflow.
 - Applications: one heading, date-cycle context, search/status filters and the table. Remove the repeated workspace subtitle and three-case guide. Use one concise Demo data / browser-save notice; memory-only warnings remain truthful.
