@@ -1,0 +1,28 @@
+.page { display: grid; gap: var(--space-5); }
+.form, .brief { display: grid; gap: var(--space-4); }
+.figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: var(--space-4); margin: 0; }
+.figures dt { color: var(--muted); }
+.figures dd { margin: 0; font-size: 20px; font-weight: 500; }
+.choices { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+.choices label, .choice { display: flex; align-items: center; gap: var(--space-2); min-height: 44px; }
+.preview { border: 1px solid var(--line); background: var(--canvas); border-radius: var(--radius); padding: var(--space-4); display: grid; gap: var(--space-4); }
+.text, .page pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.page pre { font: inherit; }
+.page :is(p, li, dd, h2, h3, select) { overflow-wrap: anywhere; }
+.page select, .page fieldset { min-width: 0; max-width: 100%; }
+.brief header { display: grid; gap: var(--space-3); border-bottom: 1px solid var(--line); padding-bottom: var(--space-4); }
+.brief table { width: 100%; }
+.saved { min-width: 0; }
+@media (max-width: 767px) { .choices { flex-direction: column; } }
+.previewShell { max-width: 1200px; margin: 0 auto; padding: var(--space-5); }
+@media print {
+  :global(html):has(.page) { background: var(--surface); }
+  .previewShell { padding: 0; max-width: none; }
+  .page, .saved { display: block; margin: 0; }
+  .brief { gap: 14pt; padding: 0; }
+  .brief header { break-inside: avoid; }
+  .brief :is(p, li, td) { overflow-wrap: anywhere; }
+  .brief :is(p, li) { orphans: 2; widows: 2; }
+  .brief thead { display: table-header-group; }
+}
+.page :global(.panel-header) { flex-wrap: wrap; }
