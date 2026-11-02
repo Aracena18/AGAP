@@ -38,6 +38,14 @@ The corrected transparent empty-state package should supersede the first low-res
 5. Do not claim applications, loans, approvals, reminders, or support requests are live when underlying services are unavailable.
 6. Test 320px layouts and financial comprehension with representative members before publication.
 
+## Member-journey candidate — 3 November 2026
+
+[Open the interactive member journey](prototypes/member-journey-preview.html) to inspect a **new design candidate** for six connected destinations: welcome with the four required actions, application draft and review, source-linked simulated suggestion with confirmation/correction/not-applicable, a fictional stage tracker, an explicitly unavailable posted-loan/full-cost view, and payment-help sharing preview and simulated completion. The design uses existing individual Gabay files and proposed green/white/yellow colors, **not** a new image crop or production palette change.
+
+Controls remain local to the open HTML document: they do not authenticate, persist an application, upload a document, run AI, calculate an offer, transmit a support request or change repayment terms. The sample suggestion is visibly **Simulated**, while any independent source verification remains unavailable. The help preview requires a fresh sharing acknowledgment, returns focus appropriately after editing, and states that payments remain due. Layout modes expose desktop, 360px and 320px widths.
+
+**Verification:** GitHub file write and read-back succeeded; the artifact was checked for all six screen IDs, referenced approved Gabay filenames, truthful unavailable/simulated states, focus styling, reduced-motion and 320px support, and absence of remote scripts. These are structural checks **only**: interactive browser testing, contrast/zoom review, keyboard/screen-reader testing, screenshots, representative-member comprehension, and visual sign-off are still pending. This is supporting context for existing **MOB-01**, not a new production feature or accepted design.
+
 ## Next work
 
 Review [the member/staff brand adoption preview](prototypes/brand-adoption-preview.html), then compare the candidate palette against the running application before approving any canonical token change. Adopt the palette through `design.md` and canonical shared tokens only after review, with appropriate tests and screenshots. The master mascot original now appears under `assets/gabay/master/`; the complete original ZIP remains separately archived. Do not integrate a preview asset into lending UI without accessibility and financial-integrity checks.
