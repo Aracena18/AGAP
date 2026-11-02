@@ -1,0 +1,30 @@
+{
+  "status": "candidate_pending_cooperative_and_independent_review",
+  "base_commit": "c51af85",
+  "created_on": "2026-10-29",
+  "families": 12,
+  "tasks": 60,
+  "all_development_only": true,
+  "untouched_holdout_exists": false,
+  "training_export_allowed": false,
+  "generator": "build.py + pilot_cases.py",
+  "seed": null,
+  "deterministic_no_sampling": true,
+  "hashes": {
+    "candidate/examples.jsonl": "b3f39e46876369e15a25eb2ac58bac9c6566d2373320133f42d8909d5f718f40",
+    "candidate/families.json": "03c23311d30e93286dcd11fb333d3ebc7dcc6768c9cec4afeaa8e18452664931",
+    "review/CASEBOOK.html": "2590bec3949f2ff8c2e8736f9d0a119decdc54f9a63b3d3e4f216812026401e0",
+    "build.py": "1efd186f7179b38ceef41b3a831ed5c3c6c16e80f6f6852b4e7781ab93bf0c84",
+    "pilot_cases.py": "b176e8f060ab8252e53f009b3301204d7d3c92861cd70a3a3f37e3ac1d3b5b25",
+    "validate.py": "df1476d9292cca66bd640a40969eae3102fbb6bf7ff5013a83db36731303bbec",
+    "acquire_sources.py": "f9d8e42a3ec0f30935df4a183d90588f6244fc0fa6467821d0785f2468e415aa",
+    "tests/test_integrity.py": "4251b8581c839f413af441fea112f3e33b0f9a213ff606102c76c30584a0201b",
+    "spec/field_dictionary.csv": "ee761f91a5fa25309b1ad26c58080456ee0d18feaa2ea19d0f3da78877ec7211",
+    "spec/FIVE_C_PROTOCOL.md": "8add905c1f7dd1dad18f1715e78d13078f7202181d1ed5c18d4c5db090d8a187",
+    "review/gaps.csv": "4b234f9b9b3c793c9885ef0e6113e5aae2b7318a0ca3c06edea6ad08a726377c",
+    "review/policy_questions.csv": "80465600eef27d249fd1590b662fe1d89350cc6c27aa91bb370a6598660b67c6",
+    "sources/cooperative_inventory.json": "1a79fa3cf934e0ab272b273151d993f1945fe419ca7437000f71c2055e24741d",
+    "sources/public_sources.json": "d9617149d52bc153a1fd752df25da61020c8a9215fe67243d1a817284bf1416a",
+    "sources/gretel_sample_audit.json": "e73f2f8cadb74ec6e56b229191efafd59dfecbb2718fc22885e3ef782b884ad1"
+  }
+}

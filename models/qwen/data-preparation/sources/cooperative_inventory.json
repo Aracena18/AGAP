@@ -1,0 +1,96 @@
+{
+  "inventoried_on": "2026-10-29",
+  "original_files_in_separate_user_worktree": true,
+  "review_method": "DOCX body/tables/headers extracted locally; embedded workflow images visually inspected; application PDF inspected; text offsets in extracted DOCX are not page numbers",
+  "limitations": "No operative policy certification, completed member records, or approved gold 5C assessments supplied",
+  "documents": [
+    {
+      "id": "COOP-01",
+      "path": "docs/DCCPEC-Docs/DCCPEC MPC COMPLETE LOAN AND COLLECTION OPERATIONS MANUAL.docx",
+      "sha256": "9650d81412a54ce81e6b2f3c2a1551ca49617490bdb0ac42c75aed5a0094b4bd",
+      "bytes": 12032457,
+      "structural_use": "Policy and 20 blank operational templates",
+      "limitation": "Version/effective date and listed conflicts need confirmation",
+      "kind": "user_supplied_blank_template_or_policy",
+      "raw_bundled": false,
+      "permission_for_external_model_training": "not_established"
+    },
+    {
+      "id": "COOP-02",
+      "path": "docs/DCCPEC-Docs/LOAN APPLICATION FORM.docx",
+      "sha256": "5c61d2081206a19d848d811362c8cacca2d0dfbfcd7c939c15e1ebb8cb466077",
+      "bytes": 225893,
+      "structural_use": "Blank borrower application fields",
+      "limitation": "Same logical form as COOP-03; not independent examples",
+      "kind": "user_supplied_blank_template_or_policy",
+      "raw_bundled": false,
+      "permission_for_external_model_training": "not_established"
+    },
+    {
+      "id": "COOP-03",
+      "path": "docs/DCCPEC-Docs/LOAN APPLICATION FORM - PDF.pdf",
+      "sha256": "cf5ea6493954f8836588b0491b04c204e479945201a275a17fa418077deb6893",
+      "bytes": 88041,
+      "structural_use": "Two-page blank application rendering",
+      "limitation": "Same logical form as COOP-02; keep all renders in one family",
+      "kind": "user_supplied_blank_template_or_policy",
+      "raw_bundled": false,
+      "permission_for_external_model_training": "not_established"
+    },
+    {
+      "id": "COOP-04",
+      "path": "docs/DCCPEC-Docs/AUTHORITY TO DEDUCT WITH SPA.docx",
+      "sha256": "325769bd860763531036fa16447dbd09e3c752ddeec7b076face63bd9dba0f9d",
+      "bytes": 32069,
+      "structural_use": "Salary deduction and authority template",
+      "limitation": "Exclude credential solicitation and unreviewed enforcement instructions",
+      "kind": "user_supplied_blank_template_or_policy",
+      "raw_bundled": false,
+      "permission_for_external_model_training": "not_established"
+    },
+    {
+      "id": "COOP-05",
+      "path": "docs/DCCPEC-Docs/AFFIDAVIT-OF-UNDERTAKING-ASSIGNEMENT, AUTHORIZATIONAND-WAVIER-DCCPEC.docx",
+      "sha256": "39ce87c8753197642fb6eab548055e7b17f2891e2895979f9997f26a55b41eb4",
+      "bytes": 219131,
+      "structural_use": "Undertaking and assignment template",
+      "limitation": "Exclude credential solicitation and unreviewed enforcement instructions",
+      "kind": "user_supplied_blank_template_or_policy",
+      "raw_bundled": false,
+      "permission_for_external_model_training": "not_established"
+    },
+    {
+      "id": "COOP-06",
+      "path": "docs/DCCPEC-Docs/HOLD-OUT-AGREEMENT.docx",
+      "sha256": "a1aca96714db1010bd7b9c21681dd398e98c11f8db25855e32a9de231a5ad5cf",
+      "bytes": 219447,
+      "structural_use": "Share/savings restrictions and default provisions",
+      "limitation": "Reconcile default trigger with note; not a spendable-cash statement",
+      "kind": "user_supplied_blank_template_or_policy",
+      "raw_bundled": false,
+      "permission_for_external_model_training": "not_established"
+    },
+    {
+      "id": "COOP-07",
+      "path": "docs/DCCPEC-Docs/Revised - COMPREHENSIVE PROMISSORY NOTE.docx",
+      "sha256": "3b17985886f80be8b7214aebd65299b2566dfa3c3886a1c6bb0148377e5b52b1",
+      "bytes": 223382,
+      "structural_use": "Loan terms and payment/default clauses",
+      "limitation": "Blank terms; reconcile allocation/default with manual and hold-out",
+      "kind": "user_supplied_blank_template_or_policy",
+      "raw_bundled": false,
+      "permission_for_external_model_training": "not_established"
+    },
+    {
+      "id": "COOP-08",
+      "path": "docs/DCCPEC-Docs/DATA PRIVACY CONSENT FORM.docx",
+      "sha256": "f26caa34feadf54dc9ab5a823cd9f4dd1ec71d8c05dbca13879432dce594ad83",
+      "bytes": 60604,
+      "structural_use": "Lending/data-sharing consent template",
+      "limitation": "Does not expressly authorize model fine-tuning or external AI processing",
+      "kind": "user_supplied_blank_template_or_policy",
+      "raw_bundled": false,
+      "permission_for_external_model_training": "not_established"
+    }
+  ]
+}
