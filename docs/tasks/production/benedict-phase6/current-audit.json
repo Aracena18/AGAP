@@ -1,0 +1,73 @@
+{
+  "adapter": null,
+  "blockers": [
+    {
+      "code": "run_provenance",
+      "detail": "Actual completed model run evidence is required"
+    },
+    {
+      "code": "file_adapter_config",
+      "detail": "A relative evidence path is required"
+    },
+    {
+      "code": "file_adapter_weights",
+      "detail": "A relative evidence path is required"
+    },
+    {
+      "code": "file_baseline",
+      "detail": "A relative evidence path is required"
+    },
+    {
+      "code": "file_environment",
+      "detail": "A relative evidence path is required"
+    },
+    {
+      "code": "file_output_schema",
+      "detail": "A relative evidence path is required"
+    },
+    {
+      "code": "file_preprocessing",
+      "detail": "A relative evidence path is required"
+    },
+    {
+      "code": "file_prompt",
+      "detail": "A relative evidence path is required"
+    },
+    {
+      "code": "file_reload_smoke",
+      "detail": "A relative evidence path is required"
+    },
+    {
+      "code": "file_trainer_state",
+      "detail": "A relative evidence path is required"
+    },
+    {
+      "code": "file_training_code",
+      "detail": "A relative evidence path is required"
+    },
+    {
+      "code": "file_training_config",
+      "detail": "A relative evidence path is required"
+    },
+    {
+      "code": "file_tuned",
+      "detail": "A relative evidence path is required"
+    },
+    {
+      "code": "reviewed_data_release",
+      "detail": "Reviewed training/validation release and published expected hash are missing"
+    }
+  ],
+  "data": null,
+  "declaredStatus": "not_captured",
+  "developmentOutputs": {},
+  "executionAttested": false,
+  "files": {},
+  "performanceClaim": null,
+  "promotion": "not_promoted",
+  "readyForIndependentEvaluation": false,
+  "reviewAuthenticated": false,
+  "runId": "existing-colab-unlocated",
+  "runRecordSha256": "e8ceaa196ee63bfe9cd1d2708688221788774669a1f0e7376e1addf45b1770ac",
+  "schemaVersion": "agap-qwn-audit/v1"
+}

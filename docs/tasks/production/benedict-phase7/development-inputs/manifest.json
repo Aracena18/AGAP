@@ -1,0 +1,33 @@
+{
+  "caseIds": [
+    "ev-01",
+    "ev-02",
+    "ev-03",
+    "ev-04",
+    "ev-05",
+    "ev-06",
+    "ev-07",
+    "ev-08",
+    "ev-09",
+    "ev-10",
+    "ev-11",
+    "ev-12"
+  ],
+  "files": {
+    "cases.json": "366de494c5a72e49b00371a134709340e24b41c2c02bf89900274fcb43b35710",
+    "finding.schema.json": "ce953e224d7f8f83d9e8bc4de6e87f2aa69bef8c5f1120449dbbcaa246b752f2",
+    "prompt.txt": "e4af9746dd746cf5881ea37898518a59de03223aeedb0d3e1d4d4cb3be8e615f"
+  },
+  "inputCorpusSha256": "792a4a0aaccd786b910429e2ccc429c21b0b3eb7c1de5bb20ca8f71d49a7af1f",
+  "producerManifestSha256": "c2adc67e6909a604af8a2052775ce9bdbb0a118215b0d92e1936196357a10682",
+  "promotion": "not_promoted",
+  "schemaVersion": "agap-qwn-development-inputs/v1",
+  "scope": "public_development_not_independent_evaluation",
+  "settings": {
+    "doSample": false,
+    "maxInputTokens": 4096,
+    "maxNewTokens": 512,
+    "maxTimeSeconds": 120,
+    "seed": 42
+  }
+}
