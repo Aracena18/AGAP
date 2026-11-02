@@ -1,0 +1,557 @@
+{
+  "version": 1,
+  "recordedDate": "2026-11-03",
+  "sourceArchive": "AGAP_Accepted_Design_Archive_2026-11-03.zip",
+  "sourceArchiveSha256": "fde6dccc054d7639f4813a2db09b6cbeb1e2d19f58eae87ccd71472ed30aff25",
+  "scope": "Archived design assets and specimens; not imported by the application. Original bytes preserved; repository paths restore the specimen README layout.",
+  "files": [
+    {
+      "sourcePath": "MANIFEST.json",
+      "repositoryPath": "design-library/source-manifests/accepted-design-2026-11-03.json",
+      "sizeBytes": 10566,
+      "sha256": "f1dea96c55a3f5b9fe06847bc88784df84345cdacc20448c4eaef3a933de9010"
+    },
+    {
+      "sourcePath": "components/AGAPComponents.css",
+      "repositoryPath": "design-library/specimens/ui-kit/react/AGAPComponents.css",
+      "sizeBytes": 5280,
+      "sha256": "ca21d72a96f6d3dd323fc6c2539cf66ceeb02be0a47bf7ceb1d21863771b65e8"
+    },
+    {
+      "sourcePath": "components/AGAPComponents.tsx",
+      "repositoryPath": "design-library/specimens/ui-kit/react/AGAPComponents.tsx",
+      "sizeBytes": 5231,
+      "sha256": "317607696da897eef693478dd45c7db0c9a405854ce90af31d4037681e26cd7d"
+    },
+    {
+      "sourcePath": "components/DECISIONS.md",
+      "repositoryPath": "design-library/specimens/ui-kit/docs/DECISIONS.md",
+      "sizeBytes": 4689,
+      "sha256": "c1fdd176bd4303c30673206ae6eaf1c2089e4c9e230e2d9933d6d37da9d3a5cd"
+    },
+    {
+      "sourcePath": "components/ExampleUsage.tsx",
+      "repositoryPath": "design-library/specimens/ui-kit/react/ExampleUsage.tsx",
+      "sizeBytes": 1828,
+      "sha256": "cfd4d4df15659191071747289015dde290e1724bd4654eedec6b984c1cab23ab"
+    },
+    {
+      "sourcePath": "components/README.md",
+      "repositoryPath": "design-library/specimens/ui-kit/README.md",
+      "sizeBytes": 3962,
+      "sha256": "f82f36bdec3ad927dca3bf8529b4364346755d369508d4d085e859f00bdddbfb"
+    },
+    {
+      "sourcePath": "components/agap-tokens.css",
+      "repositoryPath": "design-library/specimens/ui-kit/react/agap-tokens.css",
+      "sizeBytes": 1328,
+      "sha256": "20d24676052792a321a2f21ceccfecd836cbb3efe2fa7a57ad68000d2c309d8c"
+    },
+    {
+      "sourcePath": "components/gabay-document.webp",
+      "repositoryPath": "design-library/specimens/ui-kit/assets/gabay-document.webp",
+      "sizeBytes": 87114,
+      "sha256": "e602a190b0428b0776ae544e521962d1430a6bd5556642e38fc9dd3dfd8bb007",
+      "width": 880,
+      "height": 880,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "components/gabay-empty.webp",
+      "repositoryPath": "design-library/specimens/ui-kit/assets/gabay-empty.webp",
+      "sizeBytes": 88588,
+      "sha256": "cd1d5dd6409cdd717e9b0e00f95a169a026b1a01838e16c16ef83879caddf875",
+      "width": 880,
+      "height": 880,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "components/gabay-idle.webp",
+      "repositoryPath": "design-library/specimens/ui-kit/assets/gabay-idle.webp",
+      "sizeBytes": 90636,
+      "sha256": "c758d15a084a061a08cec42621115e5bf5201e3d20e0db3f7d01b41addf108f3",
+      "width": 880,
+      "height": 880,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "components/gabay-save.webp",
+      "repositoryPath": "design-library/specimens/ui-kit/assets/gabay-save.webp",
+      "sizeBytes": 88794,
+      "sha256": "6be91751a63671af0a6235e06a18ae0fbe147f314bd8b369f6da933e6a64bfb3",
+      "width": 880,
+      "height": 880,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "components/gabay-welcome.webp",
+      "repositoryPath": "design-library/specimens/ui-kit/assets/gabay-welcome.webp",
+      "sizeBytes": 80946,
+      "sha256": "08a94bb28ed96b685b87608c0ed8d6730f975bbef6d6f3bd9b309dfeea82de5c",
+      "width": 880,
+      "height": 880,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "components/index.html",
+      "repositoryPath": "design-library/specimens/ui-kit/index.html",
+      "sizeBytes": 22634,
+      "sha256": "cdf1177c61503b7abdcd1fb8914f9614daef98abb40928bbf3f37922eb459910"
+    },
+    {
+      "sourcePath": "components/interactions.js",
+      "repositoryPath": "design-library/specimens/ui-kit/interactions.js",
+      "sizeBytes": 4166,
+      "sha256": "5254311577f9ceb511375479c171c624383d52036419c0d5b100ca3baaed3b78"
+    },
+    {
+      "sourcePath": "components/styles.css",
+      "repositoryPath": "design-library/specimens/ui-kit/styles.css",
+      "sizeBytes": 16855,
+      "sha256": "37d56829b01e520df222dc61a64dd0a59aaa95e7cfe10e8f6a5cc92bff63ee0c"
+    },
+    {
+      "sourcePath": "components/tokens.css",
+      "repositoryPath": "design-library/specimens/ui-kit/tokens.css",
+      "sizeBytes": 1328,
+      "sha256": "20d24676052792a321a2f21ceccfecd836cbb3efe2fa7a57ad68000d2c309d8c"
+    },
+    {
+      "sourcePath": "concepts/member-experience/agap_member_experience_refined.webp",
+      "repositoryPath": "design-library/concepts/member-experience/agap_member_experience_refined.webp",
+      "sizeBytes": 381476,
+      "sha256": "d01d76615d9c22fcc634951ff869c959bfb5cbc1e72437696fc2f13623a2600b",
+      "width": 3840,
+      "height": 2360,
+      "hasAlpha": false,
+      "alphaRange": null
+    },
+    {
+      "sourcePath": "concepts/member-experience/agap_member_screen_1.webp",
+      "repositoryPath": "design-library/concepts/member-experience/agap_member_screen_1.webp",
+      "sizeBytes": 78500,
+      "sha256": "9bd579e0cf4a807a4944b9f6d144b748ae0354ad3c407c803821c10e96e6bc8b",
+      "width": 830,
+      "height": 1702,
+      "hasAlpha": false,
+      "alphaRange": null
+    },
+    {
+      "sourcePath": "concepts/member-experience/agap_member_screen_2.webp",
+      "repositoryPath": "design-library/concepts/member-experience/agap_member_screen_2.webp",
+      "sizeBytes": 68810,
+      "sha256": "002c61571815375447d53261b1d663d3acf2b3a9fd1589960a6f1d6ad5b17686",
+      "width": 832,
+      "height": 1702,
+      "hasAlpha": false,
+      "alphaRange": null
+    },
+    {
+      "sourcePath": "concepts/member-experience/agap_member_screen_3.webp",
+      "repositoryPath": "design-library/concepts/member-experience/agap_member_screen_3.webp",
+      "sizeBytes": 78354,
+      "sha256": "2b234d3ba284068e995fabf3f5039cb9c4647535524cae87976be5a3e59d77d4",
+      "width": 832,
+      "height": 1702,
+      "hasAlpha": false,
+      "alphaRange": null
+    },
+    {
+      "sourcePath": "concepts/member-experience/agap_member_screen_4.webp",
+      "repositoryPath": "design-library/concepts/member-experience/agap_member_screen_4.webp",
+      "sizeBytes": 86962,
+      "sha256": "9c6d2d8582e6ff272b19bb0e1656c4ddf0b59ee6a0f9a73f5a212150863e1baf",
+      "width": 830,
+      "height": 1702,
+      "hasAlpha": false,
+      "alphaRange": null
+    },
+    {
+      "sourcePath": "concepts/motion/AGAP_Gabay_Motion_Design_System.html",
+      "repositoryPath": "design-library/concepts/motion/AGAP_Gabay_Motion_Design_System.html",
+      "sizeBytes": 185994,
+      "sha256": "465e5ba50ce0e0f950ba8143f696e054350b77e1e087008557680bc2e3c21646"
+    },
+    {
+      "sourcePath": "concepts/motion/AGAP_Gabay_Motion_Design_System.webp",
+      "repositoryPath": "design-library/concepts/motion/AGAP_Gabay_Motion_Design_System.webp",
+      "sizeBytes": 282474,
+      "sha256": "f8de2b98b5b5776c78cf7246190042b30bf14443735b94cb0130872036f4e3eb",
+      "width": 3140,
+      "height": 2694,
+      "hasAlpha": false,
+      "alphaRange": null
+    },
+    {
+      "sourcePath": "gabay/empty-states/gabay_application_saved.webp",
+      "repositoryPath": "design-library/assets/gabay/empty-states/gabay_application_saved.webp",
+      "sizeBytes": 1630028,
+      "sha256": "fcea769bbfd141edfdd51ad10deb351c74075e92738ac5b757da78114dac20a9",
+      "width": 2048,
+      "height": 2048,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/empty-states/gabay_application_under_review.webp",
+      "repositoryPath": "design-library/assets/gabay/empty-states/gabay_application_under_review.webp",
+      "sizeBytes": 1521424,
+      "sha256": "371a9225e2d1979bb1b2359bc23093de166f206c694fe241172af34711cdd314",
+      "width": 2048,
+      "height": 2048,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/empty-states/gabay_connection_interrupted.webp",
+      "repositoryPath": "design-library/assets/gabay/empty-states/gabay_connection_interrupted.webp",
+      "sizeBytes": 1644572,
+      "sha256": "6adc0a280b83bb7d993f7ea64fb9ddeeaeeb9dd3355f6082dc470e0e597f91a7",
+      "width": 2048,
+      "height": 2048,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/empty-states/gabay_information_unavailable.webp",
+      "repositoryPath": "design-library/assets/gabay/empty-states/gabay_information_unavailable.webp",
+      "sizeBytes": 1687626,
+      "sha256": "c0de56f61a26492fbd77a531b8100aa15a276aa226f2e1ee67c5063b39ffe798",
+      "width": 2048,
+      "height": 2048,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/empty-states/gabay_missing_document.webp",
+      "repositoryPath": "design-library/assets/gabay/empty-states/gabay_missing_document.webp",
+      "sizeBytes": 1654664,
+      "sha256": "c4bd74a5408db23d12ebf017648d84986d4515e6c23290f147f3cba53e5a75f6",
+      "width": 2048,
+      "height": 2048,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/empty-states/gabay_no_applications.webp",
+      "repositoryPath": "design-library/assets/gabay/empty-states/gabay_no_applications.webp",
+      "sizeBytes": 1605888,
+      "sha256": "39810aa7e74fd82bdea6cd551070ccd7a141f9e2bdecabb578d1281584317793",
+      "width": 2048,
+      "height": 2048,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/empty-states/gabay_payment_assistance_requested.webp",
+      "repositoryPath": "design-library/assets/gabay/empty-states/gabay_payment_assistance_requested.webp",
+      "sizeBytes": 1568502,
+      "sha256": "534eb2cf69e6ec3054157e48c2bcab5cf5bb42c92d12bb2e7fc38fbcbd319701",
+      "width": 2048,
+      "height": 2048,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/empty-states/gabay_welcome_first_visit.webp",
+      "repositoryPath": "design-library/assets/gabay/empty-states/gabay_welcome_first_visit.webp",
+      "sizeBytes": 1609928,
+      "sha256": "0f6f640520cf3312bd1805ba367d610c5b17ba112d4b2ee2d2ea06267a25dd45",
+      "width": 2048,
+      "height": 2048,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/expressions/cheerful_firefly_mascot_in_flight.png",
+      "repositoryPath": "design-library/assets/gabay/expressions/cheerful_firefly_mascot_in_flight.png",
+      "sizeBytes": 1163299,
+      "sha256": "7e7d820d434c52c6217d54faa89319c43227d145debdb2623bba77c3044dd73f",
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/expressions/concerned_glowing_firefly_mascot.png",
+      "repositoryPath": "design-library/assets/gabay/expressions/concerned_glowing_firefly_mascot.png",
+      "sizeBytes": 1194589,
+      "sha256": "11a24423ece7a59e4790233931514858187122bb7f1994cd7dcddad8dde3a72f",
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/expressions/curious_gabay_firefly_mascot.png",
+      "repositoryPath": "design-library/assets/gabay/expressions/curious_gabay_firefly_mascot.png",
+      "sizeBytes": 1092300,
+      "sha256": "9f739a0dd58fd2ad4031eed6ecd9894bda7a1ee64fb66a06263373e545a0bb84",
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/expressions/excited_glowing_gabay_mascot.png",
+      "repositoryPath": "design-library/assets/gabay/expressions/excited_glowing_gabay_mascot.png",
+      "sizeBytes": 1144691,
+      "sha256": "cea78218ee5a2cc61552914cc2bfa04591c324340cef1d18b10c19e5a023e089",
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/expressions/gabay_firefly_cheerful_fist_pump.png",
+      "repositoryPath": "design-library/assets/gabay/expressions/gabay_firefly_cheerful_fist_pump.png",
+      "sizeBytes": 1272493,
+      "sha256": "8ad923135f4b2986301a6d5610b05cde1190303295bb58c9a817a0788c4edb09",
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/expressions/gabay_the_thoughtful_firefly_mascot.png",
+      "repositoryPath": "design-library/assets/gabay/expressions/gabay_the_thoughtful_firefly_mascot.png",
+      "sizeBytes": 1063326,
+      "sha256": "00764639d3fccef2c203eeb6a41752d0e668bcbf6b3fd4d289d73473be66e321",
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/expressions/reassuring_glow_bee_mascot.png",
+      "repositoryPath": "design-library/assets/gabay/expressions/reassuring_glow_bee_mascot.png",
+      "sizeBytes": 1208783,
+      "sha256": "c71b3f5d74f69cd9b352285f524f50fc16aa1cb4ea0184d56f27884b991ee13f",
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/master/gabay_3d_transparent.webp",
+      "repositoryPath": "design-library/assets/gabay/master/gabay_3d_transparent.webp",
+      "sizeBytes": 535718,
+      "sha256": "b644efe5a919c30bdcaf4fbe26a0186ef4a1e3c427d28e44b5d00ecefa7d8b4c",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/signature-poses/gabay_explaining_finances.webp",
+      "repositoryPath": "design-library/assets/gabay/signature-poses/gabay_explaining_finances.webp",
+      "sizeBytes": 799726,
+      "sha256": "a74c80a9df9b51274058109dacdd755b02ce6888ded51cdd621c9984e5bf79df",
+      "width": 1600,
+      "height": 1600,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/signature-poses/gabay_guiding_steps.webp",
+      "repositoryPath": "design-library/assets/gabay/signature-poses/gabay_guiding_steps.webp",
+      "sizeBytes": 806522,
+      "sha256": "217c789b100e1cf280fb45b7404580a54ec8fd851fb2e4b5259c265381b1b002",
+      "width": 1600,
+      "height": 1600,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/signature-poses/gabay_progress_milestones.webp",
+      "repositoryPath": "design-library/assets/gabay/signature-poses/gabay_progress_milestones.webp",
+      "sizeBytes": 830338,
+      "sha256": "3fbf8a6344213b690296eafd87bcd78dc58bf5a3a83ea0b9ae4e027a9f002910",
+      "width": 1600,
+      "height": 1600,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/signature-poses/gabay_safety_reminders.webp",
+      "repositoryPath": "design-library/assets/gabay/signature-poses/gabay_safety_reminders.webp",
+      "sizeBytes": 809098,
+      "sha256": "9ee849a4c3bbfb9dcc845048ef75bf67609d1b7c737959103c6a862d17984cf5",
+      "width": 1600,
+      "height": 1600,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/signature-poses/gabay_welcome_onboarding.webp",
+      "repositoryPath": "design-library/assets/gabay/signature-poses/gabay_welcome_onboarding.webp",
+      "sizeBytes": 731628,
+      "sha256": "900af0105880909e5d2731236099a9808b2dcba4ff7f21a2fd379ed123a4d8df",
+      "width": 1600,
+      "height": 1600,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/turnaround/gabay_back.webp",
+      "repositoryPath": "design-library/assets/gabay/turnaround/gabay_back.webp",
+      "sizeBytes": 679812,
+      "sha256": "a9cebba3d0f7721be7a91cd1a036a6cc0ba43f4758ee46eb08e40754f7e0a725",
+      "width": 1600,
+      "height": 1600,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/turnaround/gabay_front.webp",
+      "repositoryPath": "design-library/assets/gabay/turnaround/gabay_front.webp",
+      "sizeBytes": 825642,
+      "sha256": "91e1e4d01fdbfd8e64e0085b0cb654c1dff2e638afc114bc42503aa390e82b3c",
+      "width": 1600,
+      "height": 1600,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/turnaround/gabay_profile_left.webp",
+      "repositoryPath": "design-library/assets/gabay/turnaround/gabay_profile_left.webp",
+      "sizeBytes": 538324,
+      "sha256": "094380e322894171fedb49ec3759988a1c4bcbcb9b60bd13fdfb4a8d10480f37",
+      "width": 1600,
+      "height": 1600,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/turnaround/gabay_profile_right.webp",
+      "repositoryPath": "design-library/assets/gabay/turnaround/gabay_profile_right.webp",
+      "sizeBytes": 538674,
+      "sha256": "95ba8d27b8a996bdea47725f710d5928c18e7ddf7855be64cca2b5f137156ce3",
+      "width": 1600,
+      "height": 1600,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/turnaround/gabay_three_quarter_left.webp",
+      "repositoryPath": "design-library/assets/gabay/turnaround/gabay_three_quarter_left.webp",
+      "sizeBytes": 691082,
+      "sha256": "312a353225c83dc563f183cffa69d94a3dd29016d98dc48bdd3b3caebb2ad021",
+      "width": 1600,
+      "height": 1600,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "sourcePath": "gabay/turnaround/gabay_three_quarter_right.webp",
+      "repositoryPath": "design-library/assets/gabay/turnaround/gabay_three_quarter_right.webp",
+      "sizeBytes": 691176,
+      "sha256": "5a25ea264174295ec32d6fb77511153767e8dcfb4087b166227db16191035d04",
+      "width": 1600,
+      "height": 1600,
+      "hasAlpha": true,
+      "alphaRange": [
+        0,
+        255
+      ]
+    }
+  ]
+}

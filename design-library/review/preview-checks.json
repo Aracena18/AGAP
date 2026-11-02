@@ -1,0 +1,67 @@
+{
+  "date": "2026-11-03",
+  "scope": "Supplied archived specimens only; application not redesigned",
+  "views": [
+    {
+      "width": 320,
+      "missingImages": [],
+      "dimensions": {
+        "viewport": 320,
+        "page": 327
+      },
+      "axe": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "nodes": 2
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 4
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "missingImages": [],
+      "dimensions": {
+        "viewport": 768,
+        "page": 768
+      },
+      "axe": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "nodes": 2
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 4
+        }
+      ]
+    },
+    {
+      "width": 1366,
+      "missingImages": [],
+      "dimensions": {
+        "viewport": 1366,
+        "page": 1366
+      },
+      "axe": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "nodes": 2
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 4
+        }
+      ]
+    }
+  ],
+  "dialogEscapeRestoresTrigger": true
+}
