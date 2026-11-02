@@ -1,0 +1,322 @@
+{
+  "adapter": {
+    "alpha": 16,
+    "configSha256": "b6f832b880cebd23b931d085653085d9416468253c94c6f14218f87d4088a9c4",
+    "dropout": 0,
+    "r": 16,
+    "targetModules": "(?:.*?(?:language|text).*?(?:self_attn|attention|attn|mixer|mlp|feed_forward|ffn|dense|mixer).*?\\.(?:qkv|proj|linear_fc1|linear_fc2|out_proj|in_proj_qkv|in_proj_z|in_proj_b|in_proj_a|gate_proj|up_proj|down_proj|q_proj|k_proj|v_proj|o_proj))|(?:\\bmodel\\.layers\\.[\\d]{1,}(?!.*\\.experts\\.\\d)\\..*?(?:self_attn|attention|attn|mixer|mlp|feed_forward|ffn|dense|mixer).*?\\.(?:(?:qkv|proj|linear_fc1|linear_fc2|out_proj|in_proj_qkv|in_proj_z|in_proj_b|in_proj_a|gate_proj|up_proj|down_proj|q_proj|k_proj|v_proj|o_proj)))",
+    "tensorCount": 372,
+    "validation": "structure_only_not_model_execution",
+    "weightsSha256": "1df4455fcbd17630a4256a0ea4feb7ee10545ab4a27ec29aec295f70655c7c37"
+  },
+  "artifactIntegrity": "passed",
+  "base": {
+    "processorRevision": null,
+    "repository": "unsloth/Qwen3.5-2B",
+    "revision": "fffbc0d8711cf87df6d1f97938c5e50ef94aadc7"
+  },
+  "executionAttested": false,
+  "exportManifestSha256": "377ca3440cf7429d2056d500c253d4ad9313e1309c3fc91e92d2d2b6eedc90de",
+  "filesVerified": {
+    "README_LOCAL.md": {
+      "bytes": 1577,
+      "sha256": "d25c05ef6b062c7d8f6200d0ff3b1469e30680b17de66255127fd2b9dd31c8ac"
+    },
+    "adapter/README.md": {
+      "bytes": 5200,
+      "sha256": "4839c3850d0e52cafa33d37fa7a11983f5bbf5a4a689df90a3aa57a39f6cffe1"
+    },
+    "adapter/adapter_config.json": {
+      "bytes": 1728,
+      "sha256": "b6f832b880cebd23b931d085653085d9416468253c94c6f14218f87d4088a9c4"
+    },
+    "adapter/adapter_model.safetensors": {
+      "bytes": 67332688,
+      "sha256": "1df4455fcbd17630a4256a0ea4feb7ee10545ab4a27ec29aec295f70655c7c37"
+    },
+    "adapter/chat_template.jinja": {
+      "bytes": 7991,
+      "sha256": "ea210e5b4997b7b1d3af5ee3ad34e7677ffe38df7469e8d88089789b5a27fae5"
+    },
+    "adapter/processor_config.json": {
+      "bytes": 1300,
+      "sha256": "14932921ca485d458a04dafd8069fbb0a4505622a48208d19ed247115801385b"
+    },
+    "adapter/tokenizer.json": {
+      "bytes": 19989343,
+      "sha256": "87a7830d63fcf43bf241c3c5242e96e62dd3fdc29224ca26fed8ea333db72de4"
+    },
+    "adapter/tokenizer_config.json": {
+      "bytes": 7160,
+      "sha256": "1a71fa1e006db5fddc1903926f8d645a608a598504e630c1d82fb7057ee30978"
+    },
+    "base_model/.gitattributes": {
+      "bytes": 1570,
+      "sha256": "34448b82c17d60fec9b65b1f093c115ddbaadc04beb1b0140b6bfed2e012a930"
+    },
+    "base_model/LICENSE": {
+      "bytes": 11544,
+      "sha256": "bbedc3fda3305820b977265f01b8619d87570a6739de3a5582c3464840f1e57a"
+    },
+    "base_model/README.md": {
+      "bytes": 62825,
+      "sha256": "57d2726058860431889484d97e8e05157819ed897141cdfbf36f8e4f30cd19ac"
+    },
+    "base_model/added_tokens.json": {
+      "bytes": 904,
+      "sha256": "e5f9bfb644ead13bd36dd6cfc41553a93b7c264c0a2e1ac67d033aa8250c8538"
+    },
+    "base_model/chat_template.jinja": {
+      "bytes": 7991,
+      "sha256": "ea210e5b4997b7b1d3af5ee3ad34e7677ffe38df7469e8d88089789b5a27fae5"
+    },
+    "base_model/config.json": {
+      "bytes": 2551,
+      "sha256": "579cf9046b2c5598fcb1c33af126e2bf3ee6dce2727e01283c78d66bf4ae0fbe"
+    },
+    "base_model/merges.txt": {
+      "bytes": 3353273,
+      "sha256": "3bd640ba6d8da8f5844f3548b7e2184fc664dd670e1447e425a48dbaaad1ef43"
+    },
+    "base_model/model.safetensors-00001-of-00001.safetensors": {
+      "bytes": 4548221488,
+      "sha256": "aa33250c4fc64891ddfaba3a314fd9542ea371843c387178b425fbcc5ed680b1"
+    },
+    "base_model/model.safetensors.index.json": {
+      "bytes": 64460,
+      "sha256": "aca8afed9da75b0f050b408d270766fd77627f1af401e240f61c3b47d0db02f9"
+    },
+    "base_model/preprocessor_config.json": {
+      "bytes": 781,
+      "sha256": "b99182e09450f26453502b3c3390cce36b33dc8c4a1f3ee21807762e168c74ab"
+    },
+    "base_model/processor_config.json": {
+      "bytes": 1300,
+      "sha256": "14932921ca485d458a04dafd8069fbb0a4505622a48208d19ed247115801385b"
+    },
+    "base_model/special_tokens_map.json": {
+      "bytes": 876,
+      "sha256": "ce5cbe737f4aacc7696180aac743091101b59e4dc5a338d9fc8a6f716aa513f7"
+    },
+    "base_model/tokenizer.json": {
+      "bytes": 19989343,
+      "sha256": "87a7830d63fcf43bf241c3c5242e96e62dd3fdc29224ca26fed8ea333db72de4"
+    },
+    "base_model/tokenizer_config.json": {
+      "bytes": 15713,
+      "sha256": "50470511708577d43f7c18c2d8e2ab02fb8abf3add1c40f60b74579d6d16e27e"
+    },
+    "base_model/video_preprocessor_config.json": {
+      "bytes": 817,
+      "sha256": "59c5c9eb52182eb14c06ffb10ca9effd29adce5f238a95de23ca14a38dbd2cb1"
+    },
+    "base_model/vocab.json": {
+      "bytes": 5234494,
+      "sha256": "4ab0d5c096294054b66444a116a20baf6e29998fc1fae410ffe4b6fadbc56b5c"
+    },
+    "environment_versions.json": {
+      "bytes": 161,
+      "sha256": "567a8bb654c36e1ae78cdc7020f916e873fe9e2711e34f619e1c1ec13950af11"
+    },
+    "evaluation/experiment_C/evaluation_config.json": {
+      "bytes": 668,
+      "sha256": "7a540f211b3a28dfc4287dc815b850cccb343ba7b166cd1ceecfb1688760b454"
+    },
+    "evaluation/experiment_C/payslips_metrics.json": {
+      "bytes": 2926,
+      "sha256": "9605073916f052f88fda475144c6071830ea18f4d5418b8de5ab5990694b39ad"
+    },
+    "evaluation/experiment_C/tatqa_metrics.json": {
+      "bytes": 849,
+      "sha256": "5da84f0e037c8613b762eafe61d3e5cf333661cdb0cb7068b8eb71da9834e85e"
+    },
+    "evaluation/experiment_D/C_vs_D_matched_comparison.png": {
+      "bytes": 65412,
+      "sha256": "f5a0bf0e217865714e655c119edbd43c5c5bca1ea0c06f4a991c0f1593a4977c"
+    },
+    "evaluation/experiment_D/C_vs_D_matched_metric_comparison.csv": {
+      "bytes": 893,
+      "sha256": "6682d8135619c2eef75c4702cb95787ec961da9e81ea6ef64f10268af587444c"
+    },
+    "evaluation/experiment_D/C_vs_D_selection_report.json": {
+      "bytes": 693,
+      "sha256": "55b381e9563f9d1c85486b1ff13b2390671ad7c504732eb97b5d13bb2db3e604"
+    },
+    "evaluation/experiment_D/evaluation_config_matched_to_C.json": {
+      "bytes": 1316,
+      "sha256": "813049dc0c2b1d1d72b25f972ca7acf7f72e6ccc37b32f7be24e98373aa4f9b9"
+    },
+    "evaluation/experiment_D/payslips_metrics.json": {
+      "bytes": 2548,
+      "sha256": "f35a45c883de9238472f658cbe9718ac3d2d00b7cd399c614eda1bc5e9d995dd"
+    },
+    "evaluation/experiment_D/payslips_per_example.csv": {
+      "bytes": 1789,
+      "sha256": "546f35a502e2deb7022b3f62367ce928007a191201f0fe70275ebb95f28081f9"
+    },
+    "evaluation/experiment_D/tatqa_metrics.json": {
+      "bytes": 864,
+      "sha256": "6651f522c345d5cda132becb56552230feb36649b6a9f2c0ec13271ecd6bf878"
+    },
+    "evaluation/experiment_D/tatqa_per_example.csv": {
+      "bytes": 5412,
+      "sha256": "c1ca8c425c646cbb0b5fbcfc2547af679167748d4e383661acd76c5a198c8f45"
+    },
+    "evaluation/experiment_D/tatqa_schema_contract_audit_v2.json": {
+      "bytes": 900,
+      "sha256": "c6b94bf7af29f81d966047972e7e3f8297a642103643cf74a4f85e9d89a542eb"
+    }
+  },
+  "independentEvaluationReady": false,
+  "lineage": "D_continues_C_not_clean_base",
+  "notebooks": {
+    "AGAP_ExperimentD_Final_Export_and_API.ipynb": {
+      "codeCells": 30,
+      "errors": [],
+      "executedCells": 30,
+      "recordedSignals": [
+        {
+          "cell": 16,
+          "name": "modelLoaded",
+          "provenance": "saved_notebook_output_not_attested",
+          "value": false
+        },
+        {
+          "cell": 20,
+          "name": "modelLoaded",
+          "provenance": "saved_notebook_output_not_attested",
+          "value": true
+        },
+        {
+          "cell": 22,
+          "name": "httpStatus",
+          "provenance": "saved_notebook_output_not_attested",
+          "value": 200.0
+        },
+        {
+          "cell": 26,
+          "name": "gpuReloadVerified",
+          "provenance": "saved_notebook_output_not_attested",
+          "value": true
+        }
+      ],
+      "sha256": "b9094da1c6d0c924e4ba89daf183281eedd0f3d3f8e3c783ac0fb5bc5768a0de"
+    },
+    "AGAP_Experiment_B_Qwen3_5_2B_PAYSLIPS_LoRA.ipynb": {
+      "codeCells": 18,
+      "errors": [],
+      "executedCells": 18,
+      "recordedSignals": [
+        {
+          "cell": 22,
+          "name": "optimizerSteps",
+          "provenance": "saved_notebook_output_not_attested",
+          "value": 152.0
+        },
+        {
+          "cell": 22,
+          "name": "trainingLoss",
+          "provenance": "saved_notebook_output_not_attested",
+          "value": 0.0648785036816997
+        },
+        {
+          "cell": 22,
+          "name": "peakAllocatedGpuGiB",
+          "provenance": "saved_notebook_output_not_attested",
+          "value": 5.03
+        }
+      ],
+      "sha256": "c5c86057b860b24e21defaf80cfdff9e2377ca7074f238b2a5544bb1d680a26f"
+    },
+    "AGAP_Experiment_C_Qwen3_5_2B_Balanced_PAYSLIPS_TATQA_LoRA.ipynb": {
+      "codeCells": 18,
+      "errors": [],
+      "executedCells": 18,
+      "recordedSignals": [
+        {
+          "cell": 22,
+          "name": "optimizerSteps",
+          "provenance": "saved_notebook_output_not_attested",
+          "value": 302.0
+        },
+        {
+          "cell": 22,
+          "name": "trainingLoss",
+          "provenance": "saved_notebook_output_not_attested",
+          "value": 0.07538629614359496
+        },
+        {
+          "cell": 22,
+          "name": "peakAllocatedGpuGiB",
+          "provenance": "saved_notebook_output_not_attested",
+          "value": 5.03
+        }
+      ],
+      "sha256": "c3e7700b3db3226d2f8905ce037d8da59f11459fc8e13ee2d9c10f82b34b6681"
+    },
+    "AGAP_Experiment_D_Step18_Continue_From_Experiment_C_LoRA.ipynb": {
+      "codeCells": 98,
+      "errors": [
+        {
+          "cell": 29,
+          "type": "TypeError"
+        },
+        {
+          "cell": 38,
+          "type": "AssertionError"
+        },
+        {
+          "cell": 76,
+          "type": "RuntimeError"
+        },
+        {
+          "cell": 110,
+          "type": "AssertionError"
+        }
+      ],
+      "executedCells": 98,
+      "recordedSignals": [
+        {
+          "cell": 22,
+          "name": "optimizerSteps",
+          "provenance": "saved_notebook_output_not_attested",
+          "value": 362.0
+        },
+        {
+          "cell": 22,
+          "name": "trainingLoss",
+          "provenance": "saved_notebook_output_not_attested",
+          "value": 0.06277114339944655
+        },
+        {
+          "cell": 22,
+          "name": "peakAllocatedGpuGiB",
+          "provenance": "saved_notebook_output_not_attested",
+          "value": 5.03
+        }
+      ],
+      "sha256": "7a1980a023d35fbede896c03d2240053b8db6a468b015daad9604731c0052563"
+    }
+  },
+  "promotion": "not_promoted",
+  "remainingEvidence": [
+    "Research continuation C to D is not a pretrained-versus-tuned baseline comparison.",
+    "Raw C/D prediction files and original trainer/run manifests are absent from this export.",
+    "D's 722-row continuation mixture and source C adapter bytes are not supplied for reproduction.",
+    "AGAP reviewed-release/holdout acceptance and financial-semantic evaluation are not established.",
+    "Recorded Colab execution is not independently rerun or attested by this offline tool.",
+    "Standalone API source/reports are absent; application integration and QWN-02/QWN-03 are not released."
+  ],
+  "schemaVersion": "agap-qwn-research-audit/v1",
+  "scope": "public_research_development_candidate",
+  "validationInputs": {
+    "payslips": {
+      "available": true,
+      "sha256": "1597c1be6e68bdc520e9cfa8329a7e1dc1dfa95dd8c74eb1a01df9bfdf76b370"
+    },
+    "tatqa": {
+      "available": true,
+      "sha256": "b80b849a258e9515f98ee3919e2db93d7056e34343ff247dd0003dacf4469588"
+    }
+  }
+}

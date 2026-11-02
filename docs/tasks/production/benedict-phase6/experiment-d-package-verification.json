@@ -1,0 +1,9 @@
+{
+  "filesVerified": 22,
+  "independentEvaluationReady": false,
+  "integrity": "passed",
+  "manifestSha256": "890997793e3e6361da0aa41e1516172e780e506840044dc979e7a2f952e773ba",
+  "packagePath": "/tmp/agap-qwn-phase6-experiment-d-20261102",
+  "promotion": "not_promoted",
+  "schemaVersion": "agap-qwn-research-verification/v1"
+}
