@@ -12,6 +12,14 @@ This checkout supplies real Nest/PostgreSQL staff/member intake, separate member
 - The original assessment engine was extracted once to `packages/finance/src/assessment.ts`; demo imports use the compatibility re-export. Arithmetic is unchanged; Aaron owns further finance work.
 - Independent owner review/base agreement, full domain integration and OPS identity/offsite/cutover evidence remain required. First-demo reminders are in-portal and support requests never change terms.
 
+## Foundation review registration — 30 October 2026
+
+The [FND-03/SHOW-01 technical review](AGAP_Foundation_Contract_Review.md) covers current main `266379a`, including the merged GL-01/EVAL-01 and fictional-browser evidence slices. Contract 0.2.0 still needs actual consuming-owner agreement. Robert's integration branch registers the three existing accounting migrations after platform migrations in the same checksum-checked migrator. It adds no live chart, rule or period configuration, posting HTTP route, payment orchestrator or financial capability flag.
+
+`npm run check` now also runs `npm run typecheck:evaluation` and `npm run test:evaluation`, using Earl's existing local evaluation configuration. The current CI workflow already calls `npm run check`; no second runner, provider, corpus or schema is introduced. The module README's original registration requests describe its earlier handoff; the shared commands/registry and this current review record describe the integration proposal.
+
+Verification uses an isolated fictional `agap_test` instance. The normal migration path must install the ledger, preserve history on replay and reject a changed applied ledger checksum. Keep the module's full transaction/permission checks and the contributor-required browser checks. A development corpus preview is not an accepted training release or model result; [the review record](AGAP_Foundation_Contract_Review.md#verification) records observed results and pending owners.
+
 ## Run the local staff workspace
 
 Use Node 24, npm and Docker Compose on Linux. All supplied credentials, organizations and identities are public fictional development fixtures. The database and Keycloak listen on loopback. Initial image downloads require network access.

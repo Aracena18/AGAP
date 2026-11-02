@@ -45,6 +45,8 @@ The [platform guide](AGAP_Platform_Foundation.md) now records the supplied FND-0
 
 Robert supplies the 0.2.0 FND-03 candidate for review: separate member principal/linkage and own-record permissions; source-linked AI drafts and explicit confirmation; irregular-cost inputs/horizon; member support requests and approved amendment reads; reminder preferences/read models. FND-03 includes source/model artifact/provenance candidate schemas; runtime promotion/configuration remains dependent on the actual AI/training/evaluation artifacts. PLN-01/PLN-02 change documentation only, not schemas, generated clients, migrations or executable versions.
 
+30 October technical handoff: [Robert's review](AGAP_Foundation_Contract_Review.md) records the supplied GL-01 posting implementation and EVAL-01 development tools, registers accounting migrations and adds the evaluation-local checks to the existing root/CI check path. This does not implement PAY-01, accept a training release, freeze the contract or record another owner's approval. Source/migration/corpus/evaluation ownership and existing budgets remain intact; the central tracker records partial progress from the merged evidence.
+
 Required handoffs:
 
 | Producer → consumer | Boundary and acceptance |

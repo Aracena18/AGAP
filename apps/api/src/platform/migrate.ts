@@ -4,7 +4,10 @@ import { resolve } from 'node:path';
 import type { Pool } from 'pg';
 
 /** New owner modules register migrations here; integrated files are never edited. */
-export const migrationDirectories = ['apps/api/src/platform/migrations'];
+export const migrationDirectories = [
+  'apps/api/src/platform/migrations',
+  'apps/api/src/modules/accounting/migrations',
+];
 export async function migrate(pool: Pool, root = process.cwd()) {
   const client = await pool.connect();
   let discard=false;
