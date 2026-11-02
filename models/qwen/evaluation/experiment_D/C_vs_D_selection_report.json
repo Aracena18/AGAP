@@ -1,0 +1,20 @@
+{
+  "evaluation": "Matched C versus D: 58 PAYSLIPS + 102 TAT-QA",
+  "status": "DEVELOPMENT VALIDATION; NOT INDEPENDENT FINAL TEST",
+  "experiment_C_saved_metrics_reproduced": true,
+  "payslips_entity_f1": {
+    "C": 0.6197654941373535,
+    "D": 0.6806282722513088
+  },
+  "tatqa_answer_normalized_rate": {
+    "C": 0.6274509803921569,
+    "D": 0.7058823529411765
+  },
+  "payslips_strict_json_gains": 9,
+  "payslips_strict_json_losses": 4,
+  "tatqa_normalized_gains": 9,
+  "tatqa_normalized_losses": 1,
+  "recommendation": "Experiment D provisionally preferred: no regression in both primary matched metrics.",
+  "adjudicated_financial_semantics": false,
+  "checkpoint_weights_modified": false
+}
