@@ -1,0 +1,15 @@
+import { afterAll,expect,it } from 'vitest';
+import { createServer } from 'node:net';
+import { ClamScanner,NativeTextExtractor } from '../src/modules/evidence/document-processing.js';
+let verdict='stream: OK\0',version=`ClamAV/test/${new Date().toUTCString()}\0`;
+const server=createServer(socket=>{let buffer=Buffer.alloc(0);socket.on('data',chunk=>{buffer=Buffer.concat([buffer,Buffer.from(chunk)]);if(buffer.subarray(0,9).toString()==='zVERSION\0'){socket.end(version);return;}if(buffer.length>=14&&buffer.subarray(0,10).toString()==='zINSTREAM\0'&&buffer.subarray(-4).equals(Buffer.alloc(4)))socket.end(verdict);});});
+let port=0;
+const ready=new Promise<void>(resolve=>server.listen(0,'127.0.0.1',()=>{const a=server.address();if(a&&typeof a!=='string')port=a.port;resolve();}));
+afterAll(async()=>{await new Promise<void>(resolve=>server.close(()=>resolve()));});
+it('implements the ClamAV wire protocol and fails closed on stale or incomplete scanner results',async()=>{await ready;const scan=new ClamScanner('127.0.0.1',port);expect(await scan.scan(Buffer.from('fictional document'))).toBe('clean');verdict='stream: Eicar-Test-Signature FOUND\0';expect(await scan.scan(Buffer.from('fictional test signature'))).toBe('blocked');verdict='stream: scan limit reached\0';await expect(scan.scan(Buffer.from('x'))).rejects.toThrow('not completed');version='ClamAV/test/Mon, 01 Jan 2001 00:00:00 GMT\0';await expect(scan.scan(Buffer.from('x'))).rejects.toThrow('update');});
+function pdf(text:string,count=1){
+ const font=count+3,contentId=font+1,content=`BT /F1 12 Tf 10 100 Td (${text}) Tj ET`;
+ const objects=['<< /Type /Catalog /Pages 2 0 R >>',`<< /Type /Pages /Kids [${Array.from({length:count},(_,i)=>`${i+3} 0 R`).join(' ')}] /Count ${count} >>`,...Array.from({length:count},()=>`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 300 200] /Resources << /Font << /F1 ${font} 0 R >> >> /Contents ${contentId} 0 R >>`),'<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',`<< /Length ${Buffer.byteLength(content)} >>\nstream\n${content}\nendstream`];
+ let body='%PDF-1.4\n';const offsets=[0];for(let i=0;i<objects.length;i++){offsets.push(Buffer.byteLength(body));body+=`${i+1} 0 obj\n${objects[i]}\nendobj\n`;}const xref=Buffer.byteLength(body),size=objects.length+1;body+=`xref\n0 ${size}\n0000000000 65535 f \n${offsets.slice(1).map(n=>`${String(n).padStart(10,'0')} 00000 n \n`).join('')}trailer\n<< /Size ${size} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;return Buffer.from(body);
+}
+it('extracts embedded text through actual Poppler and rejects malformed/over-page-limit PDFs',async()=>{const extractor=new NativeTextExtractor();const pages=await extractor.extract(pdf('Fictional net income PHP 2000.00'),'application/pdf');expect(pages).toEqual([{page:1,text:'Fictional net income PHP 2000.00'}]);await expect(extractor.extract(Buffer.from('%PDF-1.4 broken'),'application/pdf')).rejects.toThrow();await expect(extractor.extract(pdf('Fictional',21),'application/pdf')).rejects.toThrow('20 pages');});

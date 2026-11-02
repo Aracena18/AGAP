@@ -1,0 +1,8 @@
+{
+  "authenticated": false,
+  "errorCodes": [
+    "AADSTS700082"
+  ],
+  "quotaVerified": false,
+  "resourcesProvisioned": false
+}

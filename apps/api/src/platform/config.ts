@@ -1,6 +1,10 @@
 import { z } from 'zod';
+import { RecordMode } from '../../../../packages/contracts/src/common.js';
 
 const Env = z.object({
+  EVIDENCE_RECORD_MODE:RecordMode.default('fictional'),
+  EVIDENCE_WORKFLOW_ENABLED:z.enum(['true','false']).default('false').transform(v=>v==='true'),
+  API_HOST:z.string().default('127.0.0.1'),
   LOCAL_PREVIEW_PASSWORD_ONLY: z.enum(['true','false']).default('false').transform(value=>value==='true'),
   NODE_ENV: z.enum(['development','test','production']).default('development'),
   DATABASE_URL: z.string().min(1), IDENTITY_DATABASE_URL: z.string().min(1),

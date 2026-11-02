@@ -47,7 +47,7 @@ export interface PaymentProviderPort {
   getStatus(providerReference: string): Promise<ProviderOutcome>;
 }
 export interface DocumentStorePort {
-  putQuarantined(stream: AsyncIterable<Uint8Array>, maxBytes: number): Promise<{ key: string; sha256: string; size: number }>;
+  putQuarantined(stream: AsyncIterable<Uint8Array>, maxBytes: number, reservedKey?: string): Promise<{ key: string; sha256: string; size: number }>;
   read(key: string): Promise<AsyncIterable<Uint8Array>>;
   remove(key: string): Promise<void>;
 }

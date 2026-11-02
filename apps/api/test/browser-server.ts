@@ -1,4 +1,7 @@
-import { mkdir,writeFile } from 'node:fs/promises';
+import { mkdir,writeFile,mkdtemp,rm } from 'node:fs/promises';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { WorkflowPolicy } from '../../../packages/contracts/src/workflow.js';
 import { createApp } from '../src/app.js';
 import { config,prepareDatabase,resetFixtures,closePools } from './database.js';
 import { memberFixture } from './member-fixtures.js';
@@ -20,10 +23,14 @@ const otherApplication=await memberApplications.create(otherMember.actor,{...sam
 config.PUBLIC_ORIGIN=`http://127.0.0.1:${process.env.AGAP_E2E_WEB_PORT??5174}`;
 const uiLogout=randomBytes(32).toString('base64url');
 await owner.query("INSERT INTO identity.sessions(id,token_hash,user_id,authenticated_at,methods,expires_at) VALUES($1,$2,$3,now(),$4,now()+interval '30 minutes')",[randomUUID(),tokenHash(uiLogout),fixture.administrator.actor.userId,['mfa']]);
+const documentDirectory=await mkdtemp(join(tmpdir(),'agap-browser-evidence-'));
+process.env.DOCUMENT_DIRECTORY=documentDirectory;config.EVIDENCE_WORKFLOW_ENABLED=true;
+const policy=WorkflowPolicy.parse({id:randomUUID(),label:'Fictional browser policy',status:'fictional',approvalReference:null,effectiveFrom:'2026-01-01',effectiveThrough:'2026-12-31',loanProceedsTreatment:'reserved_for_purpose',remainingRuleBasis:'each_reviewed_calendar_month_segment',minimumRemainingCentavos:0,minimumBalanceCentavos:0,offers:[{id:randomUUID(),productVersionId:randomUUID(),label:'Fictional browser offer',principalCentavos:100000,netReceivedCentavos:100000,feesPaidSeparatelyCentavos:0,termMonths:1,available:true,payments:[{date:'2026-01-25',amountCentavos:110000}],separateFees:[]}]});
+await owner.query('INSERT INTO credit.policies(id,organization_id,body) VALUES($1,$2,$3)',[policy.id,fixture.org,JSON.stringify(policy)]);
 const app=await createApp(config);
 await app.listen(Number(process.env.AGAP_E2E_API_PORT??4101),'127.0.0.1');
 await mkdir('.platform-test',{recursive:true});
 await writeFile('.platform-test/browser.json',JSON.stringify({uiAuditMember:uiAuditMember.token,uiLogout,officer:fixture.officer.token,auditor:fixture.auditor.token,administrator:fixture.administrator.token,target:fixture.revocationTarget.token,organizationId:fixture.org,branchId:fixture.branch,member:member.token,memberId:member.record.id,otherMember:otherMember.token,otherMemberId:otherMember.record.id,otherApplicationId:otherApplication.id,submittedApplicationId:submitted.id}),{mode:0o600});
 console.log('Fictional browser-test API ready.');
-const stop=async()=>{await app.close();await closePools();process.exit(0);};
+const stop=async()=>{await app.close();await closePools();await rm(documentDirectory,{recursive:true,force:true});process.exit(0);};
 process.on('SIGTERM',()=>void stop());process.on('SIGINT',()=>void stop());

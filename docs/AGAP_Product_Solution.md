@@ -234,3 +234,9 @@ Use a verifiable synthetic evaluation corpus with source documents/statements, s
 The goal-guidance extension has separate unestimated packages and release evidence; first-demo budgets do not cover it. A planning-only illustration must be labeled planned or simulated until its implementation and guidance gates pass.
 
 The event date is a presentation constraint, not evidence that full production readiness can be reached by that date. Building in phases preserves the confirmed complete-product destination.
+
+## Evidence milestone candidate — 3 November 2026
+
+The user-approved evidence/AI-extraction/affordability milestone now supplies the candidate described in [delivery evidence](AGAP_Evidence_Workflow_Delivery.md), with canonical 0.3.0 contracts. Member statements/documents, untrusted AI suggestions, human confirmation/correction, independent verification and deterministic assessment remain distinct. Missing dates/amounts/basis/coverage are unavailable; future cash movements require explicit confirmation. Monthly remaining, horizon totals, dated balances and full contractual cost remain separate. Production policy/offer/fee dates, household loan-proceeds treatment and the basis of remaining-money thresholds must be explicitly configured and approved; no fictional configuration becomes a real default.
+
+The technical candidate includes manual fallback and persistence, while actual model evaluation, scanner/OCR/container/cloud deployment evidence, institutional rules/recovery/acceptance and the [hosting budget](AGAP_Hosting_Cost_Proposal.md) remain production gates. Approval, disbursement, repayments, accounting reports, goals, EBM research and numerical 5C scoring retain their later milestones. Task status remains in Assignment.md; this amendment does not claim complete production delivery or independent approval.

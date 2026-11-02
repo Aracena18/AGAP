@@ -1,0 +1,16 @@
+# Fictional local file processing; no public ClamAV listener.
+name: agap-processing
+services:
+  clamav:
+    image: clamav/clamav:stable
+    ports: ['127.0.0.1:3310:3310']
+    volumes: ['signatures:/var/lib/clamav', './clamav/clamd.conf:/etc/clamav/clamd.conf:ro']
+    mem_limit: 4g
+    cpus: 2
+    healthcheck:
+      test: ['CMD', 'clamdcheck.sh']
+      interval: 30s
+      timeout: 10s
+      retries: 10
+volumes:
+  signatures:

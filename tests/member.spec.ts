@@ -2,6 +2,8 @@ import { mkdir,readFile } from 'node:fs/promises';
 import { expect,test,type BrowserContext,type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { fixtureId,simulatedOption } from './member-domain-fixture';
+// Historical portal fixtures deliberately exercise the 0.2 projection fallback.
+test.beforeEach(async({page})=>{await page.route('**/api/v1/member/applications/*/workflow',route=>route.fulfill({status:501,json:{error:{code:'module_not_available',message:'Historical projection test',correlationId:'fictional'}}}));});
 type Fixture={member:string;memberId:string;otherApplicationId:string;submittedApplicationId:string;administrator:string;officer:string};
 async function fixture():Promise<Fixture>{return JSON.parse(await readFile('.platform-test/browser.json','utf8'));}
 async function signIn(context:BrowserContext,role:'member'|'administrator'|'officer'='member'){

@@ -20,10 +20,10 @@ export class PrivateDocumentStore implements DocumentStorePort {
     const info=await lstat(this.root);
     if(!info.isDirectory()||info.isSymbolicLink()||(info.mode&0o077)!==0)throw new Error('Private document directory must be a real directory with mode 0700.');
   }
-  async putQuarantined(stream:AsyncIterable<Uint8Array>,maxBytes:number){
+  async putQuarantined(stream:AsyncIterable<Uint8Array>,maxBytes:number,reservedKey?:string){
     if(!Number.isSafeInteger(maxBytes)||maxBytes<1||maxBytes>100*1024*1024)throw new Error('Invalid upload size limit.');
     await this.initialize();
-    const key=randomUUID(),destination=this.path(key),temporary=join(this.root,`.upload-${key}`);
+    const key=reservedKey??randomUUID(),destination=this.path(key),temporary=join(this.root,`.upload-${key}-${randomUUID()}`);
     const file=await open(temporary,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);
     let size=0;const hash=createHash('sha256');
     try{

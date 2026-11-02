@@ -3,6 +3,14 @@ import type { z } from 'zod';
 import { schemas } from '../../contracts/src/schemas.js';
 import { ClientTransport, type RequestOptions } from './transport.js';
 export class AgapClient extends ClientTransport {
+  getStaffWorkflow(id: string, options: RequestOptions = {}) { return this.request('GET', `/applications/${encodeURIComponent(id)}/evidence`, undefined, schemas.WorkflowView, options); }
+  saveStaffFact(id: string, body: z.input<typeof schemas.WorkflowFactInput>, options: RequestOptions = {}) { return this.request('POST', `/applications/${encodeURIComponent(id)}/facts`, body, schemas.CommandReceipt, options); }
+  reviewStaffDraft(id: string, body: z.input<typeof schemas.WorkflowDraftReview>, options: RequestOptions = {}) { return this.request('POST', `/applications/${encodeURIComponent(id)}/draft-reviews`, body, schemas.CommandReceipt, options); }
+  getEvidenceHistory(id: string, options: RequestOptions = {}) { return this.request('GET', `/applications/${encodeURIComponent(id)}/evidence/history`, undefined, schemas.WorkflowHistory, options); }
+  uploadStaffDocument(id: string, file: Blob, metadata: z.input<typeof schemas.MemberUpload>, options: RequestOptions = {}) { return this.upload(`/applications/${encodeURIComponent(id)}/documents`, file, metadata, schemas.MemberSource, options); }
+  downloadStaffDocument(id: string, sourceId: string, options: RequestOptions = {}) { return this.download(`/applications/${encodeURIComponent(id)}/documents/${encodeURIComponent(sourceId)}`, options); }
+  getMemberWorkflow(id: string, options: RequestOptions = {}) { return this.request('GET', `/member/applications/${encodeURIComponent(id)}/workflow`, undefined, schemas.WorkflowView, options); }
+  saveMemberFact(id: string, body: z.input<typeof schemas.WorkflowFactInput>, options: RequestOptions = {}) { return this.request('POST', `/member/applications/${encodeURIComponent(id)}/facts`, body, schemas.CommandReceipt, options); }
   getMemberSession(options: RequestOptions = {}) { return this.request('GET', `/member/session`, undefined, schemas.MemberSession, options); }
   getMemberProfile(options: RequestOptions = {}) { return this.request('GET', `/member/me`, undefined, schemas.MemberProfile, options); }
   listMemberApplications(options: RequestOptions = {}) { return this.request('GET', `/member/applications`, undefined, schemas.MemberApplicationPage, options); }
@@ -37,7 +45,7 @@ export class AgapClient extends ClientTransport {
   assignApplication(id: string, body: z.input<typeof schemas.AssignmentCreate>, options: RequestOptions = {}) { return this.request('POST', `/applications/${encodeURIComponent(id)}/assignments`, body, schemas.Application, options); }
   correctEvidence(id: string, body: z.input<typeof schemas.EvidenceCorrection>, options: RequestOptions = {}) { return this.request('POST', `/applications/${encodeURIComponent(id)}/corrections`, body, schemas.CommandReceipt, options); }
   recordVerification(id: string, body: z.input<typeof schemas.Verification>, options: RequestOptions = {}) { return this.request('POST', `/applications/${encodeURIComponent(id)}/verifications`, body, schemas.CommandReceipt, options); }
-  createAssessment(id: string, body: z.input<typeof schemas.AssessmentCreate>, options: RequestOptions = {}) { return this.request('POST', `/applications/${encodeURIComponent(id)}/assessments`, body, schemas.Assessment, options); }
+  createAssessment(id: string, body: z.input<typeof schemas.AssessmentCreate>, options: RequestOptions = {}) { return this.request('POST', `/applications/${encodeURIComponent(id)}/assessments`, body, schemas.WorkflowAssessment, options); }
   recommendOffer(id: string, body: z.input<typeof schemas.RecommendationCreate>, options: RequestOptions = {}) { return this.request('POST', `/applications/${encodeURIComponent(id)}/recommendations`, body, schemas.CommandReceipt, options); }
   recordDecision(id: string, body: z.input<typeof schemas.DecisionCreate>, options: RequestOptions = {}) { return this.request('POST', `/applications/${encodeURIComponent(id)}/decisions`, body, schemas.Decision, options); }
   recordAcceptance(id: string, body: z.input<typeof schemas.AcceptanceCreate>, options: RequestOptions = {}) { return this.request('POST', `/applications/${encodeURIComponent(id)}/acceptances`, body, schemas.CommandReceipt, options); }

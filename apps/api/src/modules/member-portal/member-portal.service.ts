@@ -67,6 +67,8 @@ export class MemberPortalService {
   async upload(actor:MemberActorContext,id:string,input:unknown,stream:AsyncIterable<Uint8Array>,key:unknown){
     const metadata=schemas.MemberUpload.parse(input),stable=memberKey(key);
     if(/[/\\]/.test(metadata.fileName)||[...metadata.fileName].some(char=>char.charCodeAt(0)<32))throw new ApiError(422,'invalid_file_name','Use a file name without folders or control characters.');
+    // Check current ownership before consuming even the legacy projection's upload body.
+    await this.uow.run(actor,tx=>this.applications.own(tx,id));
     // Bound and hash exact bytes before delegation, including idempotent retries.
     const chunks:Buffer[]=[];let size=0;
     for await(const chunk of stream){size+=chunk.byteLength;if(size>metadata.size||size>10*1024*1024)throw new ApiError(413,'request_too_large','Choose a file no larger than 10 MB.');chunks.push(Buffer.from(chunk));}
