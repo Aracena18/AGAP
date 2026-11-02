@@ -25,7 +25,7 @@ This folder records the user-reviewed design direction developed in ChatGPT thro
 
 ## Source and asset status
 
-**Important:** The high-resolution WebP binary files and interactive prototype archives originate as files in the ChatGPT conversation. The GitHub archive must only mark a binary as uploaded after its exact file is committed and independently verified in the tree. A complete visual asset package is not established merely by this document.
+**Transfer status — 3 November 2026:** Optimized individual WebPs, the motion/interactive gallery, React component candidate and mobile visual concepts are now included under this directory. These are derivative, resolution-preserving design exports; the 28.5 MB original `AGAP_Accepted_Design_Archive_2026-11-03.zip` remains the source-quality package in the owner's ChatGPT Library. The original standalone 1024px Gabay master image was **not** in the GitHub binary transfer set and must not be marked uploaded. All eight 2048px empty-state illustrations are individual transparent images. These files are not integrated production UI.
 
 The corrected transparent empty-state package should supersede the first low-resolution, opaque cropped package. Old illustrations and superseded palette boards are historical references, not selected production assets.
 
@@ -40,6 +40,8 @@ The corrected transparent empty-state package should supersede the first low-res
 
 ## Next work
 
-Transfer the verified WebP source exports and the component-package files into this branch; create a pull request for review, then adopt the branding in separate controlled integration changes.
+Review the archived prototype and approve an on-screen member/staff palette comparison. Adopt the palette through `design.md` and canonical shared tokens only after review, with appropriate tests and screenshots. The master mascot original remains in the source-quality ZIP until separately transferred. Do not integrate a preview asset into lending UI without accessibility and financial-integrity checks.
+
+Browse `prototypes/component-library/index.html` for a portable UI gallery; `react-candidate/` is a non-integrated TypeScript candidate; `prototypes/gabay-motion.html` and the four-screen concepts illustrate the Gabay motion and member experience. `manifest.json` indexes the transferred optimized files and their Git blob IDs.
 
 *Maintained as a design-context handoff; the precise inventory is based on the user's accepted conversation direction.*
