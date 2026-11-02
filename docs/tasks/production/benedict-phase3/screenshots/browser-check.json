@@ -1,0 +1,17 @@
+{
+  "scope": "fictional_ui_simulation_only",
+  "checks": [
+    "Desktop workspace and axe",
+    "320 CSS px reflow and axe",
+    "200 percent effective desktop viewport",
+    "Keyboard actions; saved view axe; generated A4 PDF content and privacy",
+    "Negative peso glyph and retained timing concern in generated PDF",
+    "incomplete state; narrow reflow and axe",
+    "restricted state; narrow reflow and axe",
+    "stale state; narrow reflow and axe",
+    "unavailable state; narrow reflow and axe",
+    "uncertain state; narrow reflow and axe"
+  ],
+  "pageErrors": [],
+  "connectedApi": false
+}

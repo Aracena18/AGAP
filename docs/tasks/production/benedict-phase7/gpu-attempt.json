@@ -1,0 +1,25 @@
+{
+  "command": [
+    "-m",
+    "models.qwen.verification",
+    "run-gpu",
+    "--inputs",
+    "docs/tasks/production/benedict-phase7/development-inputs",
+    "--expected-input-sha256",
+    "572c401a6732f9b5325d64998c1d2aed91ecb6bef2d40faf1fa89eba35147646",
+    "--artifacts",
+    "/home/johnbenedict/CODECOWD/WEB/AGAP/models/qwen",
+    "--expected-export-sha256",
+    "377ca3440cf7429d2056d500c253d4ad9313e1309c3fc91e92d2d2b6eedc90de",
+    "--out",
+    "docs/tasks/production/benedict-phase7/gpu-run"
+  ],
+  "error": {
+    "error": "GPU runtime unavailable; run preflight and use the original compatible GPU environment",
+    "promotion": "not_promoted"
+  },
+  "exitCode": 1,
+  "modelExecuted": false,
+  "promotion": "not_promoted",
+  "successArtifactsCreated": false
+}

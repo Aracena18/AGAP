@@ -1,0 +1,292 @@
+{
+  "prepared_on": "2026-11-01",
+  "base_commit": "1776d9fdd5022e141a48ba1fda318636637e3d85",
+  "working_branch": "feat/benedict-dec-01-phase1",
+  "canonical_contract_version": "0.2.0",
+  "owner_agreed_base": null,
+  "owner_agreed_contract_version": null,
+  "acceptance_status": "not_recorded",
+  "meeting_statement_scope": "User confirms centralized UI/UX documentation; not per-interface technical acceptance",
+  "includes_real_member_records": false,
+  "sources": [
+    {
+      "source_id": "S01",
+      "path": "Assignment.md",
+      "sha256": "fea54a68df7ca1750fb5098b51efebd7dc8d2da0bb27721618af0215213a6664",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "fea54a68df7ca1750fb5098b51efebd7dc8d2da0bb27721618af0215213a6664",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S02",
+      "path": "design.md",
+      "sha256": "5ecbda5d364982945cac4ac1e5db4c3133c51fe7d64e81e934f13df153d97c38",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "5ecbda5d364982945cac4ac1e5db4c3133c51fe7d64e81e934f13df153d97c38",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S03",
+      "path": "docs/AGAP_Product_Solution.md",
+      "sha256": "9cc0f72ec4c62290a57fed843ce9f47658034e36a5ffb7c8c0d8baf6ffa90d3f",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "9cc0f72ec4c62290a57fed843ce9f47658034e36a5ffb7c8c0d8baf6ffa90d3f",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S04",
+      "path": "docs/AGAP_Production_Architecture.md",
+      "sha256": "6fbd71703d5632c66ea8c2f55308ba987c21a24fa351f97fe20aa65fd7525f3f",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "6fbd71703d5632c66ea8c2f55308ba987c21a24fa351f97fe20aa65fd7525f3f",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S05",
+      "path": "docs/AGAP_Delivery_Plan.md",
+      "sha256": "7ee52395dd58fa5a1c44466e8ac7b57f4e97f441af07f307119e93fa82a5d521",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "7ee52395dd58fa5a1c44466e8ac7b57f4e97f441af07f307119e93fa82a5d521",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S06",
+      "path": "docs/AGAP_Frontend_Spec.md",
+      "sha256": "86bc9c717a435020c274865df2414ccb099582b1e47aa1e640dbf5026fdc0340",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "86bc9c717a435020c274865df2414ccb099582b1e47aa1e640dbf5026fdc0340",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S07",
+      "path": "docs/AGAP_Platform_Foundation.md",
+      "sha256": "f8da5b087854757d06d05d8f2af6f5fa91f90e89b7a37fb27d914a295cd91ee5",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "f8da5b087854757d06d05d8f2af6f5fa91f90e89b7a37fb27d914a295cd91ee5",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S08",
+      "path": "docs/AGAP_Member_Contract_Proposal.md",
+      "sha256": "3a6ce09e8edd5195eda4e189ce0fe9ad287700393cedcd3e26ee63f63ceddfe3",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "3a6ce09e8edd5195eda4e189ce0fe9ad287700393cedcd3e26ee63f63ceddfe3",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S09",
+      "path": "docs/tasks/production/03-decisions-servicing.md",
+      "sha256": "feb640f8077824ec01ad3c799c9a6b373c066eae5862ce99cd2fccf49bbba251",
+      "kind": "uncommitted_owner_brief",
+      "tracked_at_base": true,
+      "base_sha256": "567beeb4aba81bb9ea3cd91366eb4e454a51432002cb3449b0bb3dbc4d75d4ef",
+      "content_matches_base": false
+    },
+    {
+      "source_id": "S10",
+      "path": "packages/contracts/src/schemas.ts",
+      "sha256": "0a903a9a01feec42ca5df2881cbdf934b516c53fa5c04f1f970adf05b8bbcb5e",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "0a903a9a01feec42ca5df2881cbdf934b516c53fa5c04f1f970adf05b8bbcb5e",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S11",
+      "path": "packages/contracts/src/ports.ts",
+      "sha256": "f456f51d2ffba783dd52c0f6a8bd42729b178fffc23e3e6151cab90c06890af6",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "f456f51d2ffba783dd52c0f6a8bd42729b178fffc23e3e6151cab90c06890af6",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S12",
+      "path": "packages/contracts/src/operations.ts",
+      "sha256": "3c549c21d83ee20e3c1b1b9c11764226f8b5f5f8903a6d57263fb9790435df64",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "3c549c21d83ee20e3c1b1b9c11764226f8b5f5f8903a6d57263fb9790435df64",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S13",
+      "path": "packages/api-client/src/index.ts",
+      "sha256": "be172e43acdff6c9a1e7d3f92f56695cbf27ee57df3e470f5c765659307b25d7",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "be172e43acdff6c9a1e7d3f92f56695cbf27ee57df3e470f5c765659307b25d7",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S14",
+      "path": "packages/api-client/src/transport.ts",
+      "sha256": "9a1d3bd1ad15de59ef3ad413dda6ee282c123d3c6747bc2f2cea143d1abe5ac9",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "9a1d3bd1ad15de59ef3ad413dda6ee282c123d3c6747bc2f2cea143d1abe5ac9",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S15",
+      "path": "apps/api/src/platform/commands.ts",
+      "sha256": "ba4e35d899e38ba6d1d8febbe525c07935cc80a66911d60b877146db152bbae8",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "ba4e35d899e38ba6d1d8febbe525c07935cc80a66911d60b877146db152bbae8",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S16",
+      "path": "apps/api/src/platform/database.ts",
+      "sha256": "5b65dd64f920343faf66bd2d6cd040091973f8d5a2a998c4ecf9684c7bc84f96",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "5b65dd64f920343faf66bd2d6cd040091973f8d5a2a998c4ecf9684c7bc84f96",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S17",
+      "path": "apps/api/src/platform/member-commands.ts",
+      "sha256": "3a9e3afc90b6c0300909b57d12ad166f5066f33921b2d6c33700084fbea4113e",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "3a9e3afc90b6c0300909b57d12ad166f5066f33921b2d6c33700084fbea4113e",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S18",
+      "path": "apps/api/src/platform/member-database.ts",
+      "sha256": "e003370458f213773bfb870ad42e76f3105537f956aaa3f1eb0927c1588d18a8",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "e003370458f213773bfb870ad42e76f3105537f956aaa3f1eb0927c1588d18a8",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S19",
+      "path": "apps/api/src/platform/migrate.ts",
+      "sha256": "4588833c8516e9dfb5606a78ff1010eb6612b5cee799f06ab126dcc1c911455f",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "4588833c8516e9dfb5606a78ff1010eb6612b5cee799f06ab126dcc1c911455f",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S20",
+      "path": "apps/api/src/app.ts",
+      "sha256": "c41c4805f9d049407863d203b04cfe5b55015da7539a6bf2babcd6e8b9380d5c",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "c41c4805f9d049407863d203b04cfe5b55015da7539a6bf2babcd6e8b9380d5c",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S21",
+      "path": "apps/api/src/modules/member-portal/member-portal.service.ts",
+      "sha256": "fc1bc94331d15a43ea4d41616b11b733fa40163d83b7a650a26579bb25210831",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "fc1bc94331d15a43ea4d41616b11b733fa40163d83b7a650a26579bb25210831",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S22",
+      "path": "apps/api/src/modules/applications/applications.service.ts",
+      "sha256": "e0eb0c29e6953405953859bfdca47c5fc0c9db6f88fe43c2e01782e37eff5853",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "e0eb0c29e6953405953859bfdca47c5fc0c9db6f88fe43c2e01782e37eff5853",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S23",
+      "path": "apps/api/src/modules/accounting/accounting.service.ts",
+      "sha256": "72afa8b282efdfb6cbd6f2a3a540333f9eda9a2682d5b40a5527b4225baa732d",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "72afa8b282efdfb6cbd6f2a3a540333f9eda9a2682d5b40a5527b4225baa732d",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S24",
+      "path": "apps/api/src/modules/accounting/reconciliation.ts",
+      "sha256": "02e16d90c0f2daab3ce506b0d0fccd8b3d53dc49cb691870d55d79a3a0190b43",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "02e16d90c0f2daab3ce506b0d0fccd8b3d53dc49cb691870d55d79a3a0190b43",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S25",
+      "path": "apps/api/src/modules/accounting/README.md",
+      "sha256": "13b96cada19e894d983f5bef2c53c016518052b8db531fe9fd93cff922583957",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "13b96cada19e894d983f5bef2c53c016518052b8db531fe9fd93cff922583957",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S26",
+      "path": "apps/api/src/modules/decisions/context.ts",
+      "sha256": "5be2c0eef93ba52ded4fedda72c3b69087db6bb531bb76b2be0c0819e6af3b8f",
+      "kind": "uncommitted_phase1_candidate",
+      "tracked_at_base": false,
+      "base_sha256": null,
+      "content_matches_base": false
+    },
+    {
+      "source_id": "S27",
+      "path": "apps/api/src/modules/decisions/rules.ts",
+      "sha256": "5ae64726cf37450200c657c63780a4a24cb606d9c3efad26c41dc39e1e7a5cac",
+      "kind": "uncommitted_phase1_candidate",
+      "tracked_at_base": false,
+      "base_sha256": null,
+      "content_matches_base": false
+    },
+    {
+      "source_id": "S28",
+      "path": "apps/api/src/modules/decisions/README.md",
+      "sha256": "257c5f2e44cf1c3464e13d03f4e3dec8eab0f995ebcf89358bec1aa1d94221cf",
+      "kind": "uncommitted_phase1_candidate",
+      "tracked_at_base": false,
+      "base_sha256": null,
+      "content_matches_base": false
+    },
+    {
+      "source_id": "S29",
+      "path": "src/styles/tokens.css",
+      "sha256": "26c9afb14f9b2c67cb67a55939cc93101d452711e0d6b6924b4cdce50fea4fa1",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "26c9afb14f9b2c67cb67a55939cc93101d452711e0d6b6924b4cdce50fea4fa1",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S30",
+      "path": "src/styles/global.css",
+      "sha256": "f36a320dec0d8a59c2c3fef9786b0f6ea15a42301890a859bff9e8c7c96e2124",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "f36a320dec0d8a59c2c3fef9786b0f6ea15a42301890a859bff9e8c7c96e2124",
+      "content_matches_base": true
+    },
+    {
+      "source_id": "S31",
+      "path": "src/shared/ui/index.tsx",
+      "sha256": "b5d0c1c2321d9ddc6bf8dcdda0d9573f023c159edc690571ccf7ff0379336fab",
+      "kind": "tracked_review_basis",
+      "tracked_at_base": true,
+      "base_sha256": "b5d0c1c2321d9ddc6bf8dcdda0d9573f023c159edc690571ccf7ff0379336fab",
+      "content_matches_base": true
+    }
+  ]
+}

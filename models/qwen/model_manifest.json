@@ -1,0 +1,165 @@
+{
+  "project": "AGAP",
+  "selected_model": "Experiment D",
+  "package_type": "local_base_plus_lora_unmerged",
+  "created_utc": "2026-11-02T02:52:23.914405+00:00",
+  "base_repository": "unsloth/Qwen3.5-2B",
+  "base_revision": "fffbc0d8711cf87df6d1f97938c5e50ef94aadc7",
+  "adapter_sha256": "1df4455fcbd17630a4256a0ea4feb7ee10545ab4a27ec29aec295f70655c7c37",
+  "generation_evaluation": "matched_160_cases",
+  "development_validation_only": true,
+  "corrected_tatqa_schema_audit_included": true,
+  "independent_financial_validation_completed": false,
+  "automated_lending_decisions_allowed": false,
+  "api_included": false,
+  "files": {
+    "base_model/.gitattributes": {
+      "sha256": "34448b82c17d60fec9b65b1f093c115ddbaadc04beb1b0140b6bfed2e012a930",
+      "bytes": 1570
+    },
+    "base_model/LICENSE": {
+      "sha256": "bbedc3fda3305820b977265f01b8619d87570a6739de3a5582c3464840f1e57a",
+      "bytes": 11544
+    },
+    "base_model/README.md": {
+      "sha256": "57d2726058860431889484d97e8e05157819ed897141cdfbf36f8e4f30cd19ac",
+      "bytes": 62825
+    },
+    "base_model/added_tokens.json": {
+      "sha256": "e5f9bfb644ead13bd36dd6cfc41553a93b7c264c0a2e1ac67d033aa8250c8538",
+      "bytes": 904
+    },
+    "base_model/chat_template.jinja": {
+      "sha256": "ea210e5b4997b7b1d3af5ee3ad34e7677ffe38df7469e8d88089789b5a27fae5",
+      "bytes": 7991
+    },
+    "base_model/config.json": {
+      "sha256": "579cf9046b2c5598fcb1c33af126e2bf3ee6dce2727e01283c78d66bf4ae0fbe",
+      "bytes": 2551
+    },
+    "base_model/merges.txt": {
+      "sha256": "3bd640ba6d8da8f5844f3548b7e2184fc664dd670e1447e425a48dbaaad1ef43",
+      "bytes": 3353273
+    },
+    "base_model/model.safetensors-00001-of-00001.safetensors": {
+      "sha256": "aa33250c4fc64891ddfaba3a314fd9542ea371843c387178b425fbcc5ed680b1",
+      "bytes": 4548221488
+    },
+    "base_model/model.safetensors.index.json": {
+      "sha256": "aca8afed9da75b0f050b408d270766fd77627f1af401e240f61c3b47d0db02f9",
+      "bytes": 64460
+    },
+    "base_model/preprocessor_config.json": {
+      "sha256": "b99182e09450f26453502b3c3390cce36b33dc8c4a1f3ee21807762e168c74ab",
+      "bytes": 781
+    },
+    "base_model/processor_config.json": {
+      "sha256": "14932921ca485d458a04dafd8069fbb0a4505622a48208d19ed247115801385b",
+      "bytes": 1300
+    },
+    "base_model/special_tokens_map.json": {
+      "sha256": "ce5cbe737f4aacc7696180aac743091101b59e4dc5a338d9fc8a6f716aa513f7",
+      "bytes": 876
+    },
+    "base_model/tokenizer.json": {
+      "sha256": "87a7830d63fcf43bf241c3c5242e96e62dd3fdc29224ca26fed8ea333db72de4",
+      "bytes": 19989343
+    },
+    "base_model/tokenizer_config.json": {
+      "sha256": "50470511708577d43f7c18c2d8e2ab02fb8abf3add1c40f60b74579d6d16e27e",
+      "bytes": 15713
+    },
+    "base_model/video_preprocessor_config.json": {
+      "sha256": "59c5c9eb52182eb14c06ffb10ca9effd29adce5f238a95de23ca14a38dbd2cb1",
+      "bytes": 817
+    },
+    "base_model/vocab.json": {
+      "sha256": "4ab0d5c096294054b66444a116a20baf6e29998fc1fae410ffe4b6fadbc56b5c",
+      "bytes": 5234494
+    },
+    "adapter/README.md": {
+      "sha256": "4839c3850d0e52cafa33d37fa7a11983f5bbf5a4a689df90a3aa57a39f6cffe1",
+      "bytes": 5200
+    },
+    "adapter/adapter_config.json": {
+      "sha256": "b6f832b880cebd23b931d085653085d9416468253c94c6f14218f87d4088a9c4",
+      "bytes": 1728
+    },
+    "adapter/adapter_model.safetensors": {
+      "sha256": "1df4455fcbd17630a4256a0ea4feb7ee10545ab4a27ec29aec295f70655c7c37",
+      "bytes": 67332688
+    },
+    "adapter/chat_template.jinja": {
+      "sha256": "ea210e5b4997b7b1d3af5ee3ad34e7677ffe38df7469e8d88089789b5a27fae5",
+      "bytes": 7991
+    },
+    "adapter/processor_config.json": {
+      "sha256": "14932921ca485d458a04dafd8069fbb0a4505622a48208d19ed247115801385b",
+      "bytes": 1300
+    },
+    "adapter/tokenizer.json": {
+      "sha256": "87a7830d63fcf43bf241c3c5242e96e62dd3fdc29224ca26fed8ea333db72de4",
+      "bytes": 19989343
+    },
+    "adapter/tokenizer_config.json": {
+      "sha256": "1a71fa1e006db5fddc1903926f8d645a608a598504e630c1d82fb7057ee30978",
+      "bytes": 7160
+    },
+    "evaluation/experiment_D/C_vs_D_matched_comparison.png": {
+      "sha256": "f5a0bf0e217865714e655c119edbd43c5c5bca1ea0c06f4a991c0f1593a4977c",
+      "bytes": 65412
+    },
+    "evaluation/experiment_D/C_vs_D_matched_metric_comparison.csv": {
+      "sha256": "6682d8135619c2eef75c4702cb95787ec961da9e81ea6ef64f10268af587444c",
+      "bytes": 893
+    },
+    "evaluation/experiment_D/C_vs_D_selection_report.json": {
+      "sha256": "55b381e9563f9d1c85486b1ff13b2390671ad7c504732eb97b5d13bb2db3e604",
+      "bytes": 693
+    },
+    "evaluation/experiment_D/evaluation_config_matched_to_C.json": {
+      "sha256": "813049dc0c2b1d1d72b25f972ca7acf7f72e6ccc37b32f7be24e98373aa4f9b9",
+      "bytes": 1316
+    },
+    "evaluation/experiment_D/payslips_metrics.json": {
+      "sha256": "f35a45c883de9238472f658cbe9718ac3d2d00b7cd399c614eda1bc5e9d995dd",
+      "bytes": 2548
+    },
+    "evaluation/experiment_D/payslips_per_example.csv": {
+      "sha256": "546f35a502e2deb7022b3f62367ce928007a191201f0fe70275ebb95f28081f9",
+      "bytes": 1789
+    },
+    "evaluation/experiment_D/tatqa_metrics.json": {
+      "sha256": "6651f522c345d5cda132becb56552230feb36649b6a9f2c0ec13271ecd6bf878",
+      "bytes": 864
+    },
+    "evaluation/experiment_D/tatqa_per_example.csv": {
+      "sha256": "c1ca8c425c646cbb0b5fbcfc2547af679167748d4e383661acd76c5a198c8f45",
+      "bytes": 5412
+    },
+    "evaluation/experiment_D/tatqa_schema_contract_audit_v2.json": {
+      "sha256": "c6b94bf7af29f81d966047972e7e3f8297a642103643cf74a4f85e9d89a542eb",
+      "bytes": 900
+    },
+    "evaluation/experiment_C/payslips_metrics.json": {
+      "sha256": "9605073916f052f88fda475144c6071830ea18f4d5418b8de5ab5990694b39ad",
+      "bytes": 2926
+    },
+    "evaluation/experiment_C/tatqa_metrics.json": {
+      "sha256": "5da84f0e037c8613b762eafe61d3e5cf333661cdb0cb7068b8eb71da9834e85e",
+      "bytes": 849
+    },
+    "evaluation/experiment_C/evaluation_config.json": {
+      "sha256": "7a540f211b3a28dfc4287dc815b850cccb343ba7b166cd1ceecfb1688760b454",
+      "bytes": 668
+    },
+    "README_LOCAL.md": {
+      "sha256": "d25c05ef6b062c7d8f6200d0ff3b1469e30680b17de66255127fd2b9dd31c8ac",
+      "bytes": 1577
+    },
+    "environment_versions.json": {
+      "sha256": "567a8bb654c36e1ae78cdc7020f916e873fe9e2711e34f619e1c1ec13950af11",
+      "bytes": 161
+    }
+  }
+}
