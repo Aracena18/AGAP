@@ -1,0 +1,27 @@
+/* AGAP member brand proposal — not wired to production tokens.
+   Design context archive, November 2026. */
+:root {
+  --agap-primary: #176347;
+  --agap-forest: #123D2D;
+  --agap-leaf: #4D9B6F;
+  --agap-yellow: #E4BD52;
+  --agap-canvas: #F7F9F6;
+  --agap-surface: #FFFFFF;
+  --agap-border: #DAE5DB;
+  --agap-text: #153529;
+  --agap-text-secondary: #485D53;
+  --agap-radius-card: 16px;
+  --agap-radius-control: 8px;
+  --agap-radius-pill: 999px;
+  --agap-space-1: 4px;
+  --agap-space-2: 8px;
+  --agap-space-3: 12px;
+  --agap-space-4: 16px;
+  --agap-space-5: 24px;
+  --agap-space-6: 32px;
+  --agap-space-7: 48px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .agap-mascot,
+  .agap-animated-feedback { animation: none !important; transition: none !important; }
+}
