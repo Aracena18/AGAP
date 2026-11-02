@@ -20,6 +20,12 @@ The [FND-03/SHOW-01 technical review](AGAP_Foundation_Contract_Review.md) covers
 
 Verification uses an isolated fictional `agap_test` instance. The normal migration path must install the ledger, preserve history on replay and reject a changed applied ledger checksum. Keep the module's full transaction/permission checks and the contributor-required browser checks. A development corpus preview is not an accepted training release or model result; [the review record](AGAP_Foundation_Contract_Review.md#verification) records observed results and pending owners.
 
+## Production baseline registration — 2 November 2026
+
+The next FND-03/SHOW-01 technical step registers the already supplied decision and servicing migrations in the default checksum-checked migration path: platform → accounting 001–003 → decisions 001–005 → servicing 001–007. All module-owned SQL remains unchanged. The existing module tests' temporary registration describes their original isolated handoff; a normal fresh installation and an installation with the earlier platform/accounting history must now discover the same delivered schemas without a test shim.
+
+The migration regression verifies scoped/immutable decision/payment storage, safe read projections, deferred money-command completeness, unchanged applied history on replay and refusal of changed accounting/decision/servicing checksums. This is database preparation. Business routes, member-domain providers, public schemas/client and financial capability defaults remain unchanged; test-only upstream producers and fictional policy are not registered. Full domain integration, accepted interfaces and operational policy remain pending. [Current verification](AGAP_Foundation_Contract_Review.md#production-baseline-and-database-registration--2-november-2026) and the [production sequence](../Assignment.md#production-completion-sequence--2-november-2026) record scope and next work.
+
 ## Run the local staff workspace
 
 Use Node 24, npm and Docker Compose on Linux. All supplied credentials, organizations and identities are public fictional development fixtures. The database and Keycloak listen on loopback. Initial image downloads require network access.

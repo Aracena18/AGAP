@@ -7,6 +7,8 @@ import type { Pool } from 'pg';
 export const migrationDirectories = [
   'apps/api/src/platform/migrations',
   'apps/api/src/modules/accounting/migrations',
+  'apps/api/src/modules/decisions/migrations',
+  'apps/api/src/modules/servicing/migrations',
 ];
 export async function migrate(pool: Pool, root = process.cwd()) {
   const client = await pool.connect();

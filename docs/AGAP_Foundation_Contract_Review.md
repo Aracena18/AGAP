@@ -87,3 +87,38 @@ Verification uses Linux, Node 24.14.0/npm 11.9.0, an offline clean lockfile inst
 | Whitespace and conflicts | PR delta passes `git diff --check`; no unresolved merge entries or conflict markers remain |
 
 Local checks remain distinct from remote CI, which must be inspected on the published PR revision. Existing deliberate-manual-hash-navigation browser warnings remain within the documented router limitation. No UI is changed by this PR's conflict resolution, so additional UI screenshots are not applicable. Existing module/browser screenshots stay intact.
+
+## Production baseline and database registration — 2 November 2026
+
+The user requests the full production product in successive steps. This technical step starts from main `df5dd8c7178a51286fbc08c7851d4d63bc0ade7c` on isolated branch `codex/production-readiness-baseline`. The [central sequence](../Assignment.md#production-completion-sequence--2-november-2026) orders the existing packages through institutional release; Assignment.md remains the sole task/status tracker. The user has not supplied or confirmed a first production product or approved policy version. No fictional policy, source-document wording or request for clarification is treated as institutional approval. Unaffected technical work continues.
+
+### Finding and bounded implementation
+
+The default migrator registered platform/accounting only. The merged decision/servicing tests temporarily appended their own directories, so a passing module suite did not prove that a normal installation had decision history, accepted terms or posted payment storage. The added regression first reproduced absent tables and missing applied-migration entries on a fresh isolated database.
+
+Robert's shared registry now includes all five existing decision and seven existing servicing migrations after platform/accounting. Final decision migration 005 supplies the current staff read; final servicing migration 007 requires a complete initial money revision before commit. The regression verifies protected raw history and safe projection/deferred-constraint installation through the normal migrator, replay preserving the full applied history, and changed-checksum refusal for accounting, decisions and servicing. Module-owned SQL and source, canonical contracts/client/fixtures, financial calculations, dependencies and application routes/providers/capability flags are unchanged.
+
+After installation, existing platform/accounting migration history was compared with its saved pre-update record: all **14 existing name/checksum/applied-at records** were identical, and **12 decision/servicing migrations** were added. This records the tested schema-upgrade history; it is not evidence of a live-data cutover or an upgrade from a separately activated partial decision schema. Existing consumer limitations, including decision acceptance replay ordering and reporting snapshot isolation, remain pending integration work.
+
+QWN-01, DEC-01 and PAY-01 move to In progress based on the supplied PR #23 module/model evidence, not on newly invented owner acceptance. All other statuses, IDs, owners, prerequisites, stages and budgets remain unchanged. No feature is marked Integrated by registering its storage.
+
+### Verification and next boundary
+
+Verification runs on Linux/Node 24.14.0 with the unchanged lockfile and Compose project `agap-production-baseline`, guarded fictional PostgreSQL 18 database `agap_test` on loopback port 55438. The task-owned database is separate from the user's development/identity databases. The original main checkout, worktrees and untracked files are preserved. Results are recorded after completion; no production database, actual funds or model is accessed by this step.
+
+Verification completed on 3 November 2026, Asia/Manila, after the work began on 2 November:
+
+| Check | Observed result |
+| --- | --- |
+| Clean dependency install | `npm ci --offline --no-audit --no-fund` passed with unchanged dependencies/lockfile |
+| Regression before fix | Three expected failures: absent decision/payment storage and missing final decision/servicing migration records; the existing ledger checks passed |
+| Focused registration checks after fix | All **five** real-database tests passed, including full-history replay and checksum rejection/restoration for all three modules |
+| Upgrade history | **14** earlier migration records retained identical names/checksums/applied-at values; **12** decision/servicing migrations added |
+| `npm run check` | Passed lint, generated-contract/client consistency, web/API builds, **193 frontend**, **496 backend/contract**, **76 evaluation** tests and evaluation typecheck |
+| Fresh-install browser check | Recreated only the task-owned ephemeral DB; normal browser-server setup installed **26 total migrations**, including all **12** new module files, without a module-test registration shim; `npm run test:e2e` passed **34 Chromium tests** in 45.3 seconds on web/API 5198/4128 |
+| Documentation and ownership | **Three** Markdown files, **95** local links/fragments and **35** task records checked; only the three evidence-backed status changes; all IDs/owners/scope/stages/prerequisites preserved. Module source/SQL, canonical schemas/client/fixtures, financial code, lockfile and UI/design unchanged |
+| Graph and whitespace | `graphify update .` completed: **2,598 nodes / 7,309 edges**; missing optional SQL parser for 27 SQL files and contracts-barrel partial-extraction warning retained. `git diff --check` passed |
+
+The full local checks and fresh-install checks are distinct from remote CI, institutional acceptance and production deployment. Existing deliberate manual-hash navigation warnings remain within the recorded browser limitation. No operating data, real payment, model inference or live policy activation is claimed.
+
+The next implementation boundary is EVD-01/CRD-01 server evidence and assessment under Aaron, with Robert coordinating shared contracts and member connections. The [existing review inputs](#reviewed-boundaries-and-remaining-receiving-owner-inputs) and current owner handoffs must be accepted by the actual owners before dependent activation. No new UI is changed here; screenshots are not applicable. Main merge and deployment are separate later actions.

@@ -27,8 +27,40 @@ it('installs the ledger through the default migrator and preserves applied histo
   expect((await owner.query('SELECT name,checksum,applied_at FROM public.agap_migrations ORDER BY name')).rows).toEqual(history.rows);
 });
 
-it('checks applied ledger checksums even when a module test already installed the schema', async () => {
-  const name = 'apps/api/src/modules/accounting/migrations/003-configuration-locks.sql';
+it('installs decision and payment storage with scoped reads and immutable history through the default migrator', async () => {
+  const tables = ['decisions.records', 'decisions.documents', 'decisions.acceptances',
+    'servicing.originations', 'servicing.money_commands', 'servicing.money_revisions', 'servicing.postings'];
+  const installed = await owner.query<{ name: string; relation: string | null }>(
+    'SELECT name,to_regclass(name)::text AS relation FROM unnest($1::text[]) AS name', [tables]);
+  expect(installed.rows).toEqual(tables.map(name => ({ name, relation: name })));
+
+  const protection = await owner.query(`SELECT n.nspname||'.'||c.relname AS name,
+    c.relrowsecurity AS scoped,c.relforcerowsecurity AS forced,
+    has_table_privilege('agap_runtime',c.oid,'SELECT') AS raw_read,
+    has_table_privilege('agap_runtime',c.oid,'UPDATE') AS history_update,
+    has_table_privilege('agap_runtime',c.oid,'DELETE') AS history_delete
+    FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname||'.'||c.relname=ANY($1::text[]) ORDER BY name`, [tables]);
+  expect(protection.rows).toEqual([...tables].sort().map(name => ({
+    name, scoped: true, forced: true, raw_read: false, history_update: false, history_delete: false,
+  })));
+  const projections = await owner.query(`SELECT
+    to_regprocedure('decisions.staff_current(uuid)')::text AS staff_decision,
+    to_regprocedure('decisions.member_current(uuid)')::text AS member_decision,
+    to_regprocedure('servicing.member_loans(date)')::text AS member_loans,
+    EXISTS(SELECT 1 FROM pg_trigger WHERE tgrelid='servicing.money_commands'::regclass
+      AND tgname='money_command_complete' AND tgdeferrable AND tginitdeferred) AS complete_command`);
+  expect(projections.rows[0]).toEqual({
+    staff_decision: 'decisions.staff_current(uuid)', member_decision: 'decisions.member_current(uuid)',
+    member_loans: 'servicing.member_loans(date)', complete_command: true,
+  });
+});
+
+it.each([
+  'apps/api/src/modules/accounting/migrations/003-configuration-locks.sql',
+  'apps/api/src/modules/decisions/migrations/005-staff-current-read.sql',
+  'apps/api/src/modules/servicing/migrations/007-money-command-completeness.sql',
+])('refuses a changed applied migration checksum: %s', async name => {
   const previous = await owner.query<{ checksum: string }>('SELECT checksum FROM public.agap_migrations WHERE name=$1', [name]);
   expect(previous.rowCount).toBe(1);
   try {
