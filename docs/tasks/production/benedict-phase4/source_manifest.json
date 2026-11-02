@@ -1,0 +1,204 @@
+{
+  "prepared_on": "2026-11-02",
+  "task_id": "PAY-01",
+  "phase": 4,
+  "scope": "evaluation_and_planning_only",
+  "working_branch": "docs/benedict-pay-01-phase4-plan",
+  "inspected_dependency_commit": "9af25b5842f668c85be36964b62772b46b34544d",
+  "inspected_main_commit": "1776d9fdd5022e141a48ba1fda318636637e3d85",
+  "inspected_contract_version": "0.2.0",
+  "owner_agreed_base": null,
+  "owner_agreed_contract_version": null,
+  "servicing_module_present": false,
+  "phase4_application_tests_run": false,
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "e3b07ce61ecb1a5bdacc28d5818242a12d6df04db62e9c6ed9cdd2b3e57d2a65",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "Assignment.md",
+      "sha256": "fea54a68df7ca1750fb5098b51efebd7dc8d2da0bb27721618af0215213a6664",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/AGAP_Product_Solution.md",
+      "sha256": "9cc0f72ec4c62290a57fed843ce9f47658034e36a5ffb7c8c0d8baf6ffa90d3f",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/AGAP_Production_Architecture.md",
+      "sha256": "6fbd71703d5632c66ea8c2f55308ba987c21a24fa351f97fe20aa65fd7525f3f",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/AGAP_Delivery_Plan.md",
+      "sha256": "7ee52395dd58fa5a1c44466e8ac7b57f4e97f441af07f307119e93fa82a5d521",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/AGAP_Frontend_Spec.md",
+      "sha256": "86bc9c717a435020c274865df2414ccb099582b1e47aa1e640dbf5026fdc0340",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/AGAP_Product_Freeze.md",
+      "sha256": "ef7f29ce5f2c0b7bedbaad4dc8dfdb7b5fdc4b14ab7885276630f7c4d59488d4",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "design.md",
+      "sha256": "5ecbda5d364982945cac4ac1e5db4c3133c51fe7d64e81e934f13df153d97c38",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/tasks/production/03-decisions-servicing.md",
+      "sha256": "feb640f8077824ec01ad3c799c9a6b373c066eae5862ce99cd2fccf49bbba251",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/tasks/production/04-accounting-monitoring.md",
+      "sha256": "c46f7424ee0ec023cee8dd76a9b44cba82f016d64e2166a0209fbb12cdb5cf30",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/AGAP_Platform_Foundation.md",
+      "sha256": "f8da5b087854757d06d05d8f2af6f5fa91f90e89b7a37fb27d914a295cd91ee5",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/tasks/production/benedict-phase2/IMPLEMENTATION.md",
+      "sha256": "0f2025fa05de8130566161568ba3a6ff9647c998c315ff0d08c63878eb9f8b75",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/tasks/production/benedict-phase3/IMPLEMENTATION.md",
+      "sha256": "f8becd442ff44983dfbf58d32e9b07d3aa0f7ff44c21e0e7d325a7cdeebf0f54",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/decisions/BACKEND.md",
+      "sha256": "93c4c988e976b090f8aa9652198520332f221f306b08ce8a8173470ee94f3a14",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/decisions/STAFF.md",
+      "sha256": "acd2f71978707a55f9409774da028b4417a141368d3bade876f780eb2572e37e",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/decisions/decisions.service.ts",
+      "sha256": "d4a6586a3e983173ec602d6e2423b9e39e506c513f076d29aa5613073f9eb948",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/decisions/backend-contracts.ts",
+      "sha256": "910e2847b0b6992e5f3bca553e996a60e3fd66ea90caae8f4ed25cc68c0c94aa",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/decisions/rules.ts",
+      "sha256": "5ae64726cf37450200c657c63780a4a24cb606d9c3efad26c41dc39e1e7a5cac",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/accounting/README.md",
+      "sha256": "13b96cada19e894d983f5bef2c53c016518052b8db531fe9fd93cff922583957",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/accounting/accounting.service.ts",
+      "sha256": "72afa8b282efdfb6cbd6f2a3a540333f9eda9a2682d5b40a5527b4225baa732d",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/accounting/reconciliation.ts",
+      "sha256": "02e16d90c0f2daab3ce506b0d0fccd8b3d53dc49cb691870d55d79a3a0190b43",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/accounting/migrations/001-ledger.sql",
+      "sha256": "da5f2f755a474234861e5e84cdaf578a56e6f717f9955328c645c86ac3489ea8",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/accounting/migrations/002-posting.sql",
+      "sha256": "075137140c807ed0e039df0f486e77d11ed9a1314defe70c2832d10388e98e31",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/accounting/migrations/003-configuration-locks.sql",
+      "sha256": "9eedf889f67e7c7bc9f7cca7a8c5b5467eb6860beb043dd8524457925164c119",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "packages/contracts/src/ports.ts",
+      "sha256": "f456f51d2ffba783dd52c0f6a8bd42729b178fffc23e3e6151cab90c06890af6",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "packages/contracts/src/schemas.ts",
+      "sha256": "0a903a9a01feec42ca5df2881cbdf934b516c53fa5c04f1f970adf05b8bbcb5e",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "packages/contracts/src/operations.ts",
+      "sha256": "3c549c21d83ee20e3c1b1b9c11764226f8b5f5f8903a6d57263fb9790435df64",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "packages/api-client/src/index.ts",
+      "sha256": "be172e43acdff6c9a1e7d3f92f56695cbf27ee57df3e470f5c765659307b25d7",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/platform/database.ts",
+      "sha256": "5b65dd64f920343faf66bd2d6cd040091973f8d5a2a998c4ecf9684c7bc84f96",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/platform/commands.ts",
+      "sha256": "ba4e35d899e38ba6d1d8febbe525c07935cc80a66911d60b877146db152bbae8",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/platform/migrate.ts",
+      "sha256": "4588833c8516e9dfb5606a78ff1010eb6612b5cee799f06ab126dcc1c911455f",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/app.ts",
+      "sha256": "c41c4805f9d049407863d203b04cfe5b55015da7539a6bf2babcd6e8b9380d5c",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/domain/format.ts",
+      "sha256": "22845e42adb870b7e3c870515c89cb6d8dc7e713db4adf72e087ff3123ac3483",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/domain/types.ts",
+      "sha256": "d25596f595e984f1e80fdeaeef3957b5c0dba58960e586dc5ebc391b426fd820",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/demo/cases.ts",
+      "sha256": "bdd692d8d8917822ec5d0e7bdcf0e9b8caa63d86e3fd9c5e5b2705daa4347420",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "package.json",
+      "sha256": "5683887cfa7e97e4c4d33f727bd2c80b5fdacfa7f289d1a679c80927310f6017",
+      "content_matches_inspected_commit": true
+    }
+  ],
+  "external_sources": [
+    {
+      "path": "/home/johnbenedict/CODECOWD/WEB/AGAP/.worktrees/benedict-implementation-plan/docs/tasks/production/03-benedict-implementation-plan.md",
+      "sha256": "694860a23b6286ca577b87be0e67b923993d11fb3861deae858221b29ce6346b",
+      "kind": "prior_uncommitted_benedict_phase_definition",
+      "modified_or_copied_by_this_package": false
+    }
+  ]
+}
