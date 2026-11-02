@@ -84,7 +84,11 @@ Domain evidence, catalogue/planner, goal records and member screens retain their
 
 ## Progress and handoff notes
 
-No production implementation progress is recorded yet. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry.
+1 November 2026 — Phase 0 alignment review: the [prepared interface package](benedict-phase0/README.md) inventories executable 0.2.0 boundaries, Phase 1 local proposals, permission/transition matrices, producer handoffs and acceptance scenarios. The user's UI-centralization agreement is retained through existing design/shared controls. Technical producer/consumer acceptance, approved operational settings and an agreed integration base remain unrecorded; no shared contract, capability, task status or application behavior changes are made by this documentation package.
+
+1 November 2026 — DEC-01 Phase 1 candidate: branch `feat/benedict-dec-01-phase1`, based on `1776d9fdd5022e141a48ba1fda318636637e3d85`, adds standalone recommendation/reviewer guards, immutable review snapshots, material-change effects and exact-document member-acceptance rules in owned `apps/api/src/modules/decisions/`. The [rule specification](../../../apps/api/src/modules/decisions/README.md) and [verification/handoff](03-benedict-phase1-verification.md) record scope, tests and unresolved cooperative/interface settings. Module-local proposals reuse shared 0.2.0 inputs without changing canonical schemas; no endpoint, DB decision service, runtime inference or money operation is integrated. Robert retains task-status updates.
+
+For each further handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry. Standalone rule preparation does not complete the retained production implementation.
 
 25 October 2026: PLN-01 revised this brief, ownership and first-demonstration slices. This note records documentation only; no new feature implementation or review acceptance is claimed. Use Assignment.md for the current task status and next action.
 

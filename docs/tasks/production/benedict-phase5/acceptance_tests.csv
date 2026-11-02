@@ -1,0 +1,46 @@
+id,package,layer,scenario,expected_result,primary_owner,execution_status
+P5-T01,P5-A,documentation,Reproduce Phase 4 dependency,Exact committed checkpoint plus preserved candidate hashes; no untracked code silently omitted,Benedict,planned
+P5-T02,P5-A,contract,Inspect terms and component mappings,Principal delivered cash interest fees allocation and effective rule versions explicit; no invented policy,Benedict,planned
+P5-T03,P5-B,unit,Extend historical command formats,Old Phase 4 values remain readable; new version cannot create posted success without linked effects,Benedict,planned
+P5-T04,P5-B,database,Write or delete posted history directly,Runtime mutation denied; original decision origination and schedule preserved,Benedict,planned
+P5-T05,P5-B,database,Create duplicate release through another request or loan ID,Database uniqueness prevents a second origination release or consumption,Benedict,planned
+P5-T06,P5-B,database,Insert a posted command without paired evidence,Missing event allocation journal or required receipt prevents commit,Benedict,planned
+P5-T07,P5-C,integration,Post exact known disbursement,Actual AccountingService and servicing commit one linked event journal lifecycle and command,Benedict,planned
+P5-T08,P5-C,integration,Return a provisional journal receipt then abort,No active loan final success or partial financial effect remains,Benedict,planned
+P5-T09,P5-C,integration,Fail after servicing allocation before GL call,Servicing effects event claim audit outbox and command finalization roll back,Benedict,planned
+P5-T10,P5-C,integration,Fail after real GL call before final receipt or command,GL and all new servicing effects roll back; prior settlement observation survives,Benedict,planned
+P5-T11,P5-C,integration,Close or deactivate the accounting period or rule,Finalization fails safely without losing settlement evidence or transferring again,Benedict,planned
+P5-T12,P5-C,concurrency,Race period close against financial finalization,Agreed period-first lock order serializes both paths without partial posting,Benedict,planned
+P5-T13,P5-C,authorization,Preparer tries financial self-authorization,Same person rejected even with multiple roles; configured authority remains required,Benedict,planned
+P5-T14,P5-C,integration,Change approval inputs or participant authority before new release,New consequential action blocked; immutable approved history preserved,Benedict,planned
+P5-T15,P5-C,recovery,Approval expires after settlement is known,Known fact remains unposted review work; no new terms replacement transfer or guessed corrective accounting,Benedict,planned
+P5-T16,P5-C,concurrency,Race two finalizers with different HTTP keys,One permanent business event and one loan effect; consistent replay or conflict for loser,Benedict,planned
+P5-T17,P5-C,recovery,Lose successful HTTP response then retry,Original result returns without a second allocation journal or release,Benedict,planned
+P5-T18,P5-C,recovery,Replay completed event after period closes,Current access checked; committed exact result replayed without re-posting,Benedict,planned
+P5-T19,P5-C,integration,Accounting returns an existing journal for the source event,Servicing effects cannot be applied twice; mismatched posting identity is a conflict,Benedict,planned
+P5-T20,P5-D,unit,Prepare a repayment command,Repayment uses posted loan schedule and supported amount; no disbursement net-proceeds constraint reused,Benedict,planned
+P5-T21,P5-D,integration,Post one supported scheduled repayment,One decrease allocation journal and immutable receipt; loan position matches explicit components,Benedict,planned
+P5-T22,P5-D,concurrency,Duplicate repayment business event or notification,Transport IDs do not produce another debt reduction or receipt,Benedict,planned
+P5-T23,P5-D,recovery,Observe unsupported partial early excess or fee-bearing payment,Entire known movement preserved; unsupported allocation remains unposted without truncation or negative principal,Benedict,planned
+P5-T24,P5-D,unit,Pass unknown amounts components or unsafe integers,Unknown is not zero; overflow invalid dates currencies and unsupported components rejected,Benedict,planned
+P5-T25,P5-D,integration,Process mismatched or cross-command settlement,No finalization from conflicting amount currency movement identity or late-settlement evidence,Benedict,planned
+P5-T26,P5-D,recovery,Restart after observation but before posting,Fresh connection retains exact known movement; only same-event posting recovery is available,Benedict,planned
+P5-T27,P5-E,read,Read before first posted release,No fabricated active loan zero balance or postedThrough timestamp,Benedict,planned
+P5-T28,P5-E,read,Read dated positions with pending movements,Only posted allocations affect debt; pending count as-of date and actual freshness remain explicit,Benedict,planned
+P5-T29,P5-E,read,Read unsupported interest fee or arrears rules,Unavailable remains unavailable; explicit zero permitted only for reviewed supported fixture,Benedict,planned
+P5-T30,P5-E,read,Inspect original schedule and historical receipt,Original versions and saved amounts retained without recalculation or rewriting,Benedict,planned
+P5-T31,P5-E,authorization,Access another organization branch or linked member,Real runtime scope denies records; member never cast into staff or given command snapshot payload,Benedict,planned
+P5-T32,P5-E,database,Run with non-superuser non-BYPASSRLS function owners,FORCE RLS and narrow grants still enforce intended access and immutable history,Benedict,planned
+P5-T33,P5-F,browser,Recover uncertain prepare authorize or finalize response,Original sender body key and version retained; overlapping or changed submissions blocked,Benedict,planned
+P5-T34,P5-F,browser,Open an unavailable or unregistered operation,Honest unavailable state; no simulated success or fabricated financial projection,Benedict,planned
+P5-T35,P5-F,browser,Use keyboard narrow layout and error recovery,Shared controls and design rules pass relevant accessibility and 320px checks,Benedict,planned
+P5-T36,P5-F,browser,Print a selected posted receipt,Immutable saved content only; pending receipt cannot appear as posted; readable dates amounts and identity,Benedict,planned
+P5-T37,P5-G,integration,Reconcile actual principal-only money path,Real servicing inventories plus actual ledger inventories and independent mappings match per event,Benedict,planned
+P5-T38,P5-G,integration,Inject offsetting per-event allocation or account errors,Actual Earl checker exposes both discrepancies despite matching total,Benedict,planned
+P5-T39,P5-G,integration,Include orphan journal allocation receipt or event,Union inventory exposes unmatched records on both sides; no selective journal fetch hides them,Benedict,planned
+P5-T40,P5-G,concurrency,Write or page inventory during reconciliation,Reviewed snapshot and cutoff protocol proves stable completeness; matching labels alone insufficient,Benedict,planned
+P5-T41,P5-G,read,Supply incomplete inventories or unsupported components,Result unavailable or pending as appropriate; no false matched payment or automatic repair,Benedict,planned
+P5-T42,P5-H,integration,Use actual registered routes and producer adapters,Prove real release/version/revocation and member replay boundaries separately from fixture tests,Benedict,planned
+P5-T43,P5-H,regression,Run required full checks sequentially,Focused financial tests then npm run check then npm run test:e2e pass on isolated fictional DB,Benedict,planned
+P5-T44,P5-H,documentation,Prepare integration handoff,Exact base contracts posting rules paths checks screenshots receiving owners and gaps recorded,Benedict,planned
+P5-T45,P5-H,workflow,Disable inference throughout accepted decision and money path,Deterministic explanation and authorized manual workflow remain usable without Qwen,Benedict,planned

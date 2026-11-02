@@ -1,0 +1,178 @@
+{
+  "prepared_on": "2026-11-02",
+  "task_id": "DEC-01",
+  "phase": 2,
+  "scope": "planning_only",
+  "inspected_base": "1776d9fdd5022e141a48ba1fda318636637e3d85",
+  "working_branch": "feat/benedict-dec-01-phase1",
+  "inspected_contract_version": "0.2.0",
+  "owner_agreed_base": null,
+  "owner_agreed_contract_version": null,
+  "phase0_review_entries": 47,
+  "phase0_pending_entries": 47,
+  "phase1_and_phase0_local_uncommitted": true,
+  "sources": [
+    {
+      "path": "Assignment.md",
+      "sha256": "fea54a68df7ca1750fb5098b51efebd7dc8d2da0bb27721618af0215213a6664",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "e3b07ce61ecb1a5bdacc28d5818242a12d6df04db62e9c6ed9cdd2b3e57d2a65",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "design.md",
+      "sha256": "5ecbda5d364982945cac4ac1e5db4c3133c51fe7d64e81e934f13df153d97c38",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "docs/AGAP_Product_Solution.md",
+      "sha256": "9cc0f72ec4c62290a57fed843ce9f47658034e36a5ffb7c8c0d8baf6ffa90d3f",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "docs/AGAP_Production_Architecture.md",
+      "sha256": "6fbd71703d5632c66ea8c2f55308ba987c21a24fa351f97fe20aa65fd7525f3f",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "docs/AGAP_Delivery_Plan.md",
+      "sha256": "7ee52395dd58fa5a1c44466e8ac7b57f4e97f441af07f307119e93fa82a5d521",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "docs/AGAP_Frontend_Spec.md",
+      "sha256": "86bc9c717a435020c274865df2414ccb099582b1e47aa1e640dbf5026fdc0340",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "docs/AGAP_Platform_Foundation.md",
+      "sha256": "f8da5b087854757d06d05d8f2af6f5fa91f90e89b7a37fb27d914a295cd91ee5",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "docs/tasks/production/03-decisions-servicing.md",
+      "sha256": "feb640f8077824ec01ad3c799c9a6b373c066eae5862ce99cd2fccf49bbba251",
+      "tracked_at_base": true,
+      "content_matches_base": false
+    },
+    {
+      "path": "docs/tasks/production/03-benedict-phase1-verification.md",
+      "sha256": "1abe4b6e8e385423d4cd824aad5e1e6bbf4d3dc327408d1be8f596b08f2f6a49",
+      "tracked_at_base": false,
+      "content_matches_base": false
+    },
+    {
+      "path": "docs/tasks/production/benedict-phase0/INTERFACE_PROPOSAL.md",
+      "sha256": "c1ff47b2cb989e30de22d7632cdd93e019f011472828eec210a524b9c2253e3e",
+      "tracked_at_base": false,
+      "content_matches_base": false
+    },
+    {
+      "path": "docs/tasks/production/benedict-phase0/review_log.csv",
+      "sha256": "54fd4896ba9ec580a17b022ccb5fd0201d596bcf74f0cb8c2fc9b7a019901974",
+      "tracked_at_base": false,
+      "content_matches_base": false
+    },
+    {
+      "path": "packages/contracts/src/schemas.ts",
+      "sha256": "0a903a9a01feec42ca5df2881cbdf934b516c53fa5c04f1f970adf05b8bbcb5e",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "packages/contracts/src/ports.ts",
+      "sha256": "f456f51d2ffba783dd52c0f6a8bd42729b178fffc23e3e6151cab90c06890af6",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "packages/contracts/src/operations.ts",
+      "sha256": "3c549c21d83ee20e3c1b1b9c11764226f8b5f5f8903a6d57263fb9790435df64",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "apps/api/src/platform/database.ts",
+      "sha256": "5b65dd64f920343faf66bd2d6cd040091973f8d5a2a998c4ecf9684c7bc84f96",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "apps/api/src/platform/member-database.ts",
+      "sha256": "e003370458f213773bfb870ad42e76f3105537f956aaa3f1eb0927c1588d18a8",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "apps/api/src/platform/commands.ts",
+      "sha256": "ba4e35d899e38ba6d1d8febbe525c07935cc80a66911d60b877146db152bbae8",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "apps/api/src/platform/member-commands.ts",
+      "sha256": "3a9e3afc90b6c0300909b57d12ad166f5066f33921b2d6c33700084fbea4113e",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "apps/api/src/platform/migrations/009_member_private_boundaries.sql",
+      "sha256": "61042c0f8c7070be8f413d1d012c3a10787085ebd60c75f622d468cd2486a2eb",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "apps/api/src/platform/migrate.ts",
+      "sha256": "4588833c8516e9dfb5606a78ff1010eb6612b5cee799f06ab126dcc1c911455f",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "apps/api/src/modules/applications/applications.service.ts",
+      "sha256": "e0eb0c29e6953405953859bfdca47c5fc0c9db6f88fe43c2e01782e37eff5853",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "apps/api/src/modules/member-portal/member-portal.service.ts",
+      "sha256": "fc1bc94331d15a43ea4d41616b11b733fa40163d83b7a650a26579bb25210831",
+      "tracked_at_base": true,
+      "content_matches_base": true
+    },
+    {
+      "path": "apps/api/src/modules/decisions/context.ts",
+      "sha256": "5be2c0eef93ba52ded4fedda72c3b69087db6bb531bb76b2be0c0819e6af3b8f",
+      "tracked_at_base": false,
+      "content_matches_base": false
+    },
+    {
+      "path": "apps/api/src/modules/decisions/rules.ts",
+      "sha256": "5ae64726cf37450200c657c63780a4a24cb606d9c3efad26c41dc39e1e7a5cac",
+      "tracked_at_base": false,
+      "content_matches_base": false
+    },
+    {
+      "path": "apps/api/src/modules/decisions/README.md",
+      "sha256": "257c5f2e44cf1c3464e13d03f4e3dec8eab0f995ebcf89358bec1aa1d94221cf",
+      "tracked_at_base": false,
+      "content_matches_base": false
+    },
+    {
+      "path": "docs/tasks/production/benedict-phase2/PLAN.md",
+      "sha256": "1933216ac920dcd91996cd793ef2504cac4ecdad7a511cddde00895a9e763388",
+      "tracked_at_base": false,
+      "content_matches_base": false
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import '@fontsource-variable/google-sans';
+import '../../styles/tokens.css';
+import '../../styles/global.css';
+import { UnsavedChangesProvider } from '../access/useUnsavedChanges';
+import { StaffLoanWorkspace } from './StaffLoanPage';
+import { loanUiFixture } from './loan.test-fixture';
+const fixture = loanUiFixture(new URLSearchParams(location.search).get('state') !== 'pending');
+const page = <UnsavedChangesProvider><main style={{ maxWidth: 1100, margin: 'auto', padding: 16 }}><p className="no-print">Fictional UI simulation only · No real payment, authentication or connected accounting</p><StaffLoanWorkspace loanId={fixture.loanId} day="2026-11-02" session={fixture.session} gateway={fixture.gateway}/></main></UnsavedChangesProvider>;
+createRoot(document.getElementById('root')!).render(<React.StrictMode><RouterProvider router={createMemoryRouter([{ path: '*', element: page }])}/></React.StrictMode>);
