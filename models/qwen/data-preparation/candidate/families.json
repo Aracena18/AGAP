@@ -1,0 +1,208 @@
+[
+  {
+    "family_id": "P01",
+    "title": "Net pay and payroll debt",
+    "gap": "Avoid counting payroll debt twice",
+    "public_structure_references": [
+      "CFPB-INCOME",
+      "CFPB-DEBT"
+    ],
+    "split": "development_review",
+    "review_status": "pending",
+    "task_ids": [
+      "P01-extract_initial",
+      "P01-ask_initial",
+      "P01-interpret_reply",
+      "P01-ask_followup",
+      "P01-draft_five_cs"
+    ]
+  },
+  {
+    "family_id": "P02",
+    "title": "Store sales are not take-home income",
+    "gap": "Separate business sales and costs",
+    "public_structure_references": [
+      "CFPB-INCOME",
+      "CFPB-SPENDING"
+    ],
+    "split": "development_review",
+    "review_status": "pending",
+    "task_ids": [
+      "P02-extract_initial",
+      "P02-ask_initial",
+      "P02-interpret_reply",
+      "P02-ask_followup",
+      "P02-draft_five_cs"
+    ]
+  },
+  {
+    "family_id": "P03",
+    "title": "Seasonal farm income and school cost",
+    "gap": "Capture irregular amounts and dates",
+    "public_structure_references": [
+      "CFPB-INCOME",
+      "CFPB-EVENTS"
+    ],
+    "split": "development_review",
+    "review_status": "pending",
+    "task_ids": [
+      "P03-extract_initial",
+      "P03-ask_initial",
+      "P03-interpret_reply",
+      "P03-ask_followup",
+      "P03-draft_five_cs"
+    ]
+  },
+  {
+    "family_id": "P04",
+    "title": "Payday and rent timing",
+    "gap": "Dates as well as monthly amounts",
+    "public_structure_references": [
+      "CFPB-CALENDAR",
+      "CFPB-CASHFLOW"
+    ],
+    "split": "development_review",
+    "review_status": "pending",
+    "task_ids": [
+      "P04-extract_initial",
+      "P04-ask_initial",
+      "P04-interpret_reply",
+      "P04-ask_followup",
+      "P04-draft_five_cs"
+    ]
+  },
+  {
+    "family_id": "P05",
+    "title": "Share capital is not available cash",
+    "gap": "Separate restricted capital from spendable funds",
+    "public_structure_references": [
+      "CFPB-CASHFLOW"
+    ],
+    "split": "development_review",
+    "review_status": "pending",
+    "task_ids": [
+      "P05-extract_initial",
+      "P05-ask_initial",
+      "P05-interpret_reply",
+      "P05-ask_followup",
+      "P05-draft_five_cs"
+    ]
+  },
+  {
+    "family_id": "P06",
+    "title": "An empty field is not zero",
+    "gap": "Explicit missingness and confirmed zero",
+    "public_structure_references": [
+      "CFPB-SPENDING"
+    ],
+    "split": "development_review",
+    "review_status": "pending",
+    "task_ids": [
+      "P06-extract_initial",
+      "P06-ask_initial",
+      "P06-interpret_reply",
+      "P06-ask_followup",
+      "P06-draft_five_cs"
+    ]
+  },
+  {
+    "family_id": "P07",
+    "title": "Conflicting income records",
+    "gap": "Keep conflicting assertions and corrections",
+    "public_structure_references": [
+      "CFPB-INCOME"
+    ],
+    "split": "development_review",
+    "review_status": "pending",
+    "task_ids": [
+      "P07-extract_initial",
+      "P07-ask_initial",
+      "P07-interpret_reply",
+      "P07-ask_followup",
+      "P07-draft_five_cs"
+    ]
+  },
+  {
+    "family_id": "P08",
+    "title": "A past repair is not a monthly bill",
+    "gap": "Do not invent recurrence",
+    "public_structure_references": [
+      "CFPB-EVENTS",
+      "CFPB-SPENDING"
+    ],
+    "split": "development_review",
+    "review_status": "pending",
+    "task_ids": [
+      "P08-extract_initial",
+      "P08-ask_initial",
+      "P08-interpret_reply",
+      "P08-ask_followup",
+      "P08-draft_five_cs"
+    ]
+  },
+  {
+    "family_id": "P09",
+    "title": "Co-maker evidence and character limits",
+    "gap": "Document presence does not establish suitability",
+    "public_structure_references": [],
+    "split": "development_review",
+    "review_status": "pending",
+    "task_ids": [
+      "P09-extract_initial",
+      "P09-ask_initial",
+      "P09-interpret_reply",
+      "P09-ask_followup",
+      "P09-draft_five_cs"
+    ]
+  },
+  {
+    "family_id": "P10",
+    "title": "Old income and a recent change",
+    "gap": "Source age and changed circumstances",
+    "public_structure_references": [
+      "CFPB-INCOME",
+      "CFPB-EVENTS"
+    ],
+    "split": "development_review",
+    "review_status": "pending",
+    "task_ids": [
+      "P10-extract_initial",
+      "P10-ask_initial",
+      "P10-interpret_reply",
+      "P10-ask_followup",
+      "P10-draft_five_cs"
+    ]
+  },
+  {
+    "family_id": "P11",
+    "title": "Instructions embedded in a source",
+    "gap": "Source text cannot override model boundaries",
+    "public_structure_references": [],
+    "split": "development_review",
+    "review_status": "pending",
+    "task_ids": [
+      "P11-extract_initial",
+      "P11-ask_initial",
+      "P11-interpret_reply",
+      "P11-ask_followup",
+      "P11-draft_five_cs"
+    ]
+  },
+  {
+    "family_id": "P12",
+    "title": "Credentials and an approval request",
+    "gap": "Ask relevant financial questions without secrets",
+    "public_structure_references": [
+      "CFPB-INCOME"
+    ],
+    "split": "development_review",
+    "review_status": "pending",
+    "task_ids": [
+      "P12-extract_initial",
+      "P12-ask_initial",
+      "P12-interpret_reply",
+      "P12-ask_followup",
+      "P12-draft_five_cs"
+    ]
+  }
+]

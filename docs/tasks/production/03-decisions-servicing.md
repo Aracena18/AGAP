@@ -1,6 +1,6 @@
 # Benedict (C): Qwen training, accountable decisions and servicing
 
-Tracker: [Assignment.md — Benedict](../../../Assignment.md#benedict). **Current direction: 29 October 2026; the goal-guidance and 5C additions below supplement the retained 25 October assignments.** This supersedes earlier task directions where they differ, retaining conflict restrictions and adding your Qwen training assignment. The first contractual hardship amendment moves from the earlier demo allocation to stage 2.
+Tracker: [Assignment.md — Benedict](../../../Assignment.md#benedict). **Current direction: 2 November 2026; the policy-source refinement below supplements ongoing work and the retained goal/5C assignments.** This supersedes earlier task directions where they differ, retaining conflict restrictions and adding your Qwen training assignment. The first contractual hardship amendment moves from the earlier demo allocation to stage 2.
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and AGENTS.md. Assignment.md alone records task status.
 
@@ -82,9 +82,25 @@ These steps expand your existing Qwen/decision tasks, preserving first-demo prio
 
 Domain evidence, catalogue/planner, goal records and member screens retain their existing owners. Each handoff records task ID, branch/base, contract/model/rubric/data versions, owned paths, relevant checks, unresolved inputs and receiving owner; model training and runtime integration are distinct evidence.
 
+## Policy-source refinement — 2 November 2026
+
+Preserve current DEC-01/PAY-01/QWN-01 work and the reviewed training objectives. At the [owner checkpoint](../../AGAP_Policy_Clarification_Register.md#ongoing-work-checkpoint), supply actual branch/base, delivered slice, consumed interfaces, checks, dependencies and remaining effort. Review policy/source/result-version references, conditional prerequisites and stale-review behavior through existing ports; new shared fields require Robert's coordinated proposal and actual owner agreement.
+
+Use P07–P11 to clarify reloan, operation-specific authority and servicing components with the institution and Earl/Aaron. Do not treat the restructuring Board threshold as a universal origination rule, count semi-monthly receipts as monthly progress or collect a charge both upfront and in a new balance. Full reloan automation and SRV-01 amendments retain later scope and need confirmed rules/estimates. Preserve the one transaction, actual PAY-01/GL handoff, separate human authorization/acceptance and historical terms.
+
+New policy context does not itself order a retraining run or expand QWN-01 into scoring/advice. Any agreed fictional data refinement follows Earl's versioned reviewed release and holdout rules; return regression evidence before artifact promotion. Supplied named workbook records are not training examples. Do not invent policy weights, financial figures or accepted authority.
+
 ## Progress and handoff notes
 
-No production implementation progress is recorded yet. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry.
+2 November 2026 — User-authorized local consolidation: [verification and manual-push handoff](benedict-main-consolidation/VERIFICATION.md) records preservation/merge of all 11 Benedict topic branches and recorded published main changes, actual combined checks, publication exclusions and remaining runtime/model acceptance boundaries. This supersedes earlier uncommitted/separate-worktree descriptions without changing historical snapshots or Robert's tracker/status ownership. Remote push is reserved for the user.
+
+1 November 2026 — [Phased implementation plan](03-benedict-implementation-plan.md) sequences DEC-01/PAY-01 work alongside the user-reported Colab training run, with separate later SRV-01/QWN-02/QWN-03 gates. Documentation only; no task status, estimate, shared contract, feature implementation or model-release result changes.
+
+1 November 2026 — Phase 0 alignment review: the [prepared interface package](benedict-phase0/README.md) inventories executable 0.2.0 boundaries, Phase 1 local proposals, permission/transition matrices, producer handoffs and acceptance scenarios. The user's UI-centralization agreement is retained through existing design/shared controls. Technical producer/consumer acceptance, approved operational settings and an agreed integration base remain unrecorded; no shared contract, capability, task status or application behavior changes are made by this documentation package.
+
+1 November 2026 — DEC-01 Phase 1 candidate: branch `feat/benedict-dec-01-phase1`, based on `1776d9fdd5022e141a48ba1fda318636637e3d85`, adds standalone recommendation/reviewer guards, immutable review snapshots, material-change effects and exact-document member-acceptance rules in owned `apps/api/src/modules/decisions/`. The [rule specification](../../../apps/api/src/modules/decisions/README.md) and [verification/handoff](03-benedict-phase1-verification.md) record scope, tests and unresolved cooperative/interface settings. Module-local proposals reuse shared 0.2.0 inputs without changing canonical schemas; no endpoint, DB decision service, runtime inference or money operation is integrated. Robert retains task-status updates.
+
+Historical baseline note: no production implementation progress was recorded in the earlier brief. Read dated handoffs, where present, and Assignment.md for subsequent evidence; confirm unreported current progress at the owner checkpoint. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry.
 
 25 October 2026: PLN-01 revised this brief, ownership and first-demonstration slices. This note records documentation only; no new feature implementation or review acceptance is claimed. Use Assignment.md for the current task status and next action.
 
@@ -93,3 +109,5 @@ No production implementation progress is recorded yet. For each handoff, record 
 29 October 2026 — PLN-03: goal-guidance responsibilities and future acceptance added by user request. Existing feature/model progress, exclusive ownership and first-demo budgets remain unchanged; new goal packages have separate pending estimates.
 
 29 October 2026 — PLN-04: added planned 5C review/trace/handoff responsibilities without changing existing feature/model progress, original first-demo budgets or the separate goal packages. Numeric rubric configuration remains pending.
+
+29 October 2026 — QWN-01 preparation / EVAL-01 proposal: the user additionally requested dataset acquisition/preparation before cooperative validation. Branch `feat/benedict-qwn-dataset-prep`, based on `c51af851509f22b2cae93b020228d30e5f780060`, adds the owned [review package](../../../models/qwen/data-preparation/README.md): eight-file cooperative source inventory, public-source suitability register, proposed offline field/5C protocol, policy/gap review sheets and 60 unreviewed fictional task candidates in 12 families. [Verification and remaining dependencies](../../../models/qwen/data-preparation/VERIFICATION.md) record offline integrity checks and source-download limits. Proposed annotation version `agap-offline-pilot-0.1` changes no shared runtime contract; platform 0.1.0 remains a separate review candidate. No production feature, accepted corpus, training run, model performance or tracker status change is claimed. Earl retains canonical corpus/split acceptance and independent evaluation; the cooperative must correct/validate the proposed material before training release.

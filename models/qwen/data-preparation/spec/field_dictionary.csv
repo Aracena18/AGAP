@@ -1,0 +1,68 @@
+field,type,dimension,source_basis,availability,handling
+loan.purpose,string,conditions,COOP-02; COOP-01 Section XIX,present,Reported purpose; no automatic product suitability judgment
+loan.product,string,conditions,COOP-02; COOP-01 Section II,present,Current approved product version required
+loan.borrower_category,string,conditions,COOP-01 Section III,present,Ask applicable category; do not infer from language or address
+loan.requested_amount,integer_centavos,conditions,COOP-02,present,Requested amount is not an offer or approval
+loan.term_months,integer,conditions,COOP-02,present,Terms require configured approved product rules
+loan.payment_frequency,string,conditions,COOP-02,present,Retain source wording until validated
+membership.joined_on,calendar_date,character,COOP-02; COOP-01 Section XXIX,present,Calendar date not elapsed time calculated by AI
+character.good_standing_claim,boolean,character,COOP-01 Section XXIX,partial,Source claim remains separate from a current register check
+character.record_reference,string,character,COOP-01 Section XXIX,partial,Use relevant authorized repayment facts; no honesty or personality score
+income.net_amount,integer_centavos,capacity,COOP-02; CFPB-INCOME,partial,Period and payroll deductions must accompany net amount
+income.gross_sales,integer_centavos,capacity,CFPB-INCOME,proposed,Sales are not net income or take-home pay
+income.household_transfer,integer_centavos,capacity,CFPB-INCOME,proposed,Business withdrawal is not automatically profit
+income.expected_amount,integer_centavos,capacity,CFPB-INCOME,proposed,Expected is not received or guaranteed
+income.reported_amount,integer_centavos,capacity,COOP-02,partial,Unclear basis requires clarification
+income.basis,string,capacity,CFPB-INCOME,proposed,Preserve gross/net/sales/withdrawal distinction
+income.period,string,capacity,CFPB-INCOME,partial,Record explicit period rather than assuming monthly
+income.pattern,string,capacity,CFPB-INCOME,proposed,Regular/irregular/seasonal/one-off is source asserted
+income.pay_day,integer_day_of_month,capacity,CFPB-CALENDAR,proposed,Recurring day needs a defined review horizon for actual dates
+income.expected_date,calendar_date,capacity,CFPB-INCOME; CFPB-CALENDAR,proposed,Expected receipt date is uncertain
+income.payment_dates,array_calendar_date,capacity,CFPB-CALENDAR,proposed,Retain actual or expected status for each date
+income.variability,string,capacity,CFPB-INCOME,proposed,Ask about range and period; no invented smoothing
+income.other_sources,array_source_assertions,capacity,CFPB-INCOME,proposed,Absent list is not confirmation of no other income
+income.change_explanation,string,capacity,CFPB-INCOME,proposed,Explanation does not independently resolve a conflict
+income.confirmed_current,integer_centavos,capacity,AGAP Model Training Plan,proposed,Null until supplied and current status resolved; source assertion remains unverified
+income.current_record_date,calendar_date,capacity,AGAP Product Solution,proposed,Historical evidence does not establish current income
+income.source_record,string,capacity,COOP-01 Section XXIX,partial,Reference authorized minimum evidence; never credentials
+business.cost_amount,integer_centavos,capacity,CFPB-SPENDING; AGAP Model Training Plan,proposed,Retain period and business/household distinction
+business.other_costs,array_source_assertions,capacity,CFPB-SPENDING,proposed,Do not subtract or infer omitted business costs in the model
+debts.payroll_deduction_amount,integer_centavos,capacity,COOP-01 Section XXIX; CFPB-DEBT,partial,Check whether already included in take-home pay
+debts.included_in_net,boolean,capacity,CFPB-DEBT; AGAP Product Freeze,proposed,Unknown is not false; prevents double counting in checked assessment
+debts.other_monthly_amount,integer_centavos,capacity,COOP-01 Section XXIX; CFPB-DEBT,partial,Zero requires explicit source statement
+debts.due_date,calendar_date,capacity,CFPB-DEBT; CFPB-CALENDAR,proposed,Needed for dated obligations
+expenses.amount,integer_centavos,capacity,CFPB-SPENDING,proposed,Amount with category/period/date; unavailable remains null
+expenses.due_date,calendar_date,capacity,CFPB-CALENDAR,proposed,Calendar date for one-off item
+expenses.due_day,integer_day_of_month,capacity,CFPB-CALENDAR,proposed,Recurring date convention requires engine validation
+expenses.transport_amount,integer_centavos,capacity,CFPB-SPENDING,proposed,Only explicit confirmed zero can be zero
+expenses.other_items,array_source_assertions,capacity,CFPB-SPENDING,proposed,Ask relevant essential costs without requiring every receipt
+expenses.other_irregular_items,array_source_assertions,capacity,CFPB-EVENTS,proposed,Ask expected non-monthly costs with dates and uncertainty
+expenses.past_repair_amount,integer_centavos,capacity,CFPB-EVENTS; AGAP Model Training Plan,proposed,A past event is not automatically part of future expenses
+expenses.past_repair_date,calendar_date,capacity,CFPB-EVENTS,proposed,Keep historical dates and do not invent recurrence
+expenses.recurrence,string,capacity,CFPB-EVENTS; AGAP Model Training Plan,proposed,Ask recurrence instead of assuming it
+cash.opening_available,integer_centavos,capital,CFPB-CASHFLOW; AGAP Product Freeze,proposed,Unrestricted available cash for an explicit as-of date
+capital.share_balance,integer_centavos,capital,COOP-02; COOP-01 Section XXIX,present,Not interchangeable with available cash
+capital.refund_expected,integer_centavos,capital,COOP-02,present,Expected refund has separate confirmation and date
+capital.refund_date,calendar_date,capital,CFPB-CALENDAR,proposed,Undated future refund is not current cash
+capital.shares_available,boolean,capital,COOP-06; COOP-02,partial,Restriction must be checked; no AI legal conclusion
+capital.savings_balance,integer_centavos,capital,COOP-02,present,Separate unrestricted/restricted and as-of date
+collateral.comaker_offered,boolean,collateral,COOP-02; COOP-01 Section XXVII,present,Offered does not mean qualified or required
+collateral.evidence_status,string,collateral,COOP-01 Sections XXVII and XXIX,present,Document presence is not authenticity or sufficiency
+collateral.security_type,string,collateral,COOP-01; COOP-04; COOP-05; COOP-06; COOP-07,present,Record reported security without enforcement advice
+collateral.valuation,integer_centavos,collateral,COOP-01,partial,Only supplied authorized valuation; no invented market estimate
+conditions.employment_change,string,conditions,CFPB-INCOME; CFPB-EVENTS,proposed,Relevant changed circumstances; no personality inference
+conditions.review_horizon_start,calendar_date,conditions,AGAP Product Freeze,proposed,Required before timed assessment
+conditions.review_horizon_end,calendar_date,conditions,AGAP Product Freeze,proposed,No unstated extrapolation beyond horizon
+offer.schedule_reference,string,conditions,COOP-01 Section XXVIII; AGAP Architecture,partial,Only deterministic checked schedule; model never generates binding terms
+policy.comaker_requirement,string,collateral,COOP-01 Sections III and IV,unresolved,Cooperative must resolve context and authoritative version
+policy.share_ratio,string,capital,COOP-01 Section II,unresolved,Do not pick ratio from inconsistent text and examples
+assessment.checked_reference,string,capacity,AGAP Architecture,proposed,Immutable current input/policy/result version supplied by engine
+evidence.source_id,string,all,AGAP Model Training Plan,required,Every supported assertion links to visible fictional source
+evidence.start,integer_character_offset,all,AGAP Model Training Plan,required,Unicode code-point offset inclusive; not PDF geometry
+evidence.end,integer_character_offset,all,AGAP Model Training Plan,required,Unicode code-point offset exclusive
+evidence.quote,string,all,AGAP Model Training Plan,required,Exact substring of visible source; not proof of truth
+evidence.page,integer,all,AGAP Model Training Plan,future_image_phase,Not populated for text pilot; render/image provenance required later
+assertion.status,string,all,AGAP Model Training Plan,required,Source asserted or unavailable; conflicts retained as separate assertions
+assertion.independent_verification,string,all,AGAP Architecture,required,Always not_performed in pilot; AI cannot upgrade verification
+assertion.missing_reason,string,all,AGAP Model Training Plan,required_if_null,not_supplied or not_known; never impute zero
+assertion.conflict_group,string,all,AGAP Model Training Plan,conditional,Link conflicting claims without replacing their history

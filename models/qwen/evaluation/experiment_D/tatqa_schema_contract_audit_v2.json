@@ -1,0 +1,35 @@
+{
+  "audit": "TAT-QA annotation-preserving schema",
+  "schema_version": "annotation_contract_v2",
+  "gold_contract_verified": true,
+  "gold_cases": 102,
+  "gold_answer_python_types": {
+    "list": 102
+  },
+  "gold_answer_list_lengths": {
+    "1": 102
+  },
+  "experiment_C": {
+    "total": 102,
+    "passed": 101,
+    "pass_rate": 0.9901960784313726,
+    "reasons": {
+      "PASS": 101,
+      "invalid_json": 1
+    }
+  },
+  "experiment_D": {
+    "total": 102,
+    "passed": 100,
+    "pass_rate": 0.9803921568627451,
+    "reasons": {
+      "PASS": 100,
+      "invalid_json": 2
+    }
+  },
+  "D_minus_C_percentage_points": -0.9803921568627527,
+  "C_predictions_sha256": "d87573c508c7a464339f9e11342375dbff63e2ed8a36f7261455c177b0a8f601",
+  "D_predictions_sha256": "d99b52fbe9a83aece29867010e1718366bd317f4a0e3995d05e70ed1525b7642",
+  "original_metrics_overwritten": false,
+  "training_performed": false
+}

@@ -1,0 +1,262 @@
+{
+  "prepared_on": "2026-11-02",
+  "task_id": "DEC-01",
+  "phase": 3,
+  "scope": "evaluation_and_planning_only",
+  "working_branch": "docs/benedict-dec-01-phase3-plan",
+  "inspected_dependency_commit": "036bf5893af943654b6d0e37f83d44037c62f8b4",
+  "inspected_main_commit": "1776d9fdd5022e141a48ba1fda318636637e3d85",
+  "inspected_contract_version": "0.2.0",
+  "owner_agreed_base": null,
+  "owner_agreed_contract_version": null,
+  "phase0_review_entries": 47,
+  "phase0_pending_entries": 47,
+  "phase3_application_tests_run": false,
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "e3b07ce61ecb1a5bdacc28d5818242a12d6df04db62e9c6ed9cdd2b3e57d2a65",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "Assignment.md",
+      "sha256": "fea54a68df7ca1750fb5098b51efebd7dc8d2da0bb27721618af0215213a6664",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/AGAP_Product_Solution.md",
+      "sha256": "9cc0f72ec4c62290a57fed843ce9f47658034e36a5ffb7c8c0d8baf6ffa90d3f",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/AGAP_Production_Architecture.md",
+      "sha256": "6fbd71703d5632c66ea8c2f55308ba987c21a24fa351f97fe20aa65fd7525f3f",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/AGAP_Delivery_Plan.md",
+      "sha256": "7ee52395dd58fa5a1c44466e8ac7b57f4e97f441af07f307119e93fa82a5d521",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/AGAP_Frontend_Spec.md",
+      "sha256": "86bc9c717a435020c274865df2414ccb099582b1e47aa1e640dbf5026fdc0340",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/AGAP_Product_Freeze.md",
+      "sha256": "ef7f29ce5f2c0b7bedbaad4dc8dfdb7b5fdc4b14ab7885276630f7c4d59488d4",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "design.md",
+      "sha256": "5ecbda5d364982945cac4ac1e5db4c3133c51fe7d64e81e934f13df153d97c38",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/tasks/production/03-decisions-servicing.md",
+      "sha256": "feb640f8077824ec01ad3c799c9a6b373c066eae5862ce99cd2fccf49bbba251",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/tasks/production/benedict-phase0/README.md",
+      "sha256": "8e7641a67a2b478021eaf223b4f736b0fd5e2190f55ed80a0e7f5de5259f417f",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/tasks/production/benedict-phase0/review_log.csv",
+      "sha256": "54fd4896ba9ec580a17b022ccb5fd0201d596bcf74f0cb8c2fc9b7a019901974",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/tasks/production/benedict-phase2/PLAN.md",
+      "sha256": "1933216ac920dcd91996cd793ef2504cac4ecdad7a511cddde00895a9e763388",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "docs/tasks/production/benedict-phase2/IMPLEMENTATION.md",
+      "sha256": "0f2025fa05de8130566161568ba3a6ff9647c998c315ff0d08c63878eb9f8b75",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/decisions/BACKEND.md",
+      "sha256": "93c4c988e976b090f8aa9652198520332f221f306b08ce8a8173470ee94f3a14",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/decisions/backend-contracts.ts",
+      "sha256": "910e2847b0b6992e5f3bca553e996a60e3fd66ea90caae8f4ed25cc68c0c94aa",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/decisions/decisions.service.ts",
+      "sha256": "d4a6586a3e983173ec602d6e2423b9e39e506c513f076d29aa5613073f9eb948",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/decisions/decisions.repository.ts",
+      "sha256": "a8344e3e82d6375ff54b96ea1f88acd45b1591c010b8185c032c187ebeb9e214",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/decisions/context.ts",
+      "sha256": "5be2c0eef93ba52ded4fedda72c3b69087db6bb531bb76b2be0c0819e6af3b8f",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/decisions/rules.ts",
+      "sha256": "5ae64726cf37450200c657c63780a4a24cb606d9c3efad26c41dc39e1e7a5cac",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/app.ts",
+      "sha256": "c41c4805f9d049407863d203b04cfe5b55015da7539a6bf2babcd6e8b9380d5c",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/platform/migrate.ts",
+      "sha256": "4588833c8516e9dfb5606a78ff1010eb6612b5cee799f06ab126dcc1c911455f",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/identity/identity.service.ts",
+      "sha256": "e6b330c2155216065ce0357f27894928d364bcee0b55ca0cf667af51d02efbf4",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "apps/api/src/modules/applications/applications.service.ts",
+      "sha256": "e0eb0c29e6953405953859bfdca47c5fc0c9db6f88fe43c2e01782e37eff5853",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "packages/contracts/src/schemas.ts",
+      "sha256": "0a903a9a01feec42ca5df2881cbdf934b516c53fa5c04f1f970adf05b8bbcb5e",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "packages/contracts/src/operations.ts",
+      "sha256": "3c549c21d83ee20e3c1b1b9c11764226f8b5f5f8903a6d57263fb9790435df64",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "packages/contracts/src/ports.ts",
+      "sha256": "f456f51d2ffba783dd52c0f6a8bd42729b178fffc23e3e6151cab90c06890af6",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "packages/api-client/src/index.ts",
+      "sha256": "be172e43acdff6c9a1e7d3f92f56695cbf27ee57df3e470f5c765659307b25d7",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "packages/api-client/src/transport.ts",
+      "sha256": "9a1d3bd1ad15de59ef3ad413dda6ee282c123d3c6747bc2f2cea143d1abe5ac9",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/features/decision/DecisionPage.tsx",
+      "sha256": "9d8cdd4887e734058829c6d43b4e0bd82fcd4e569cdf6ddea11c25f1f1aaba90",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/features/decision/DecisionPage.module.css",
+      "sha256": "ab9eb0c5b0aa7c2153b35657ad4d37455a5f6ae58da1936c22d0d83189769a46",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/features/decision/DecisionPage.test.tsx",
+      "sha256": "01ad5c89e494398f31b88dcb29a375b11727c9267c8da5c79037a3994bec57d6",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/features/access/useCommand.ts",
+      "sha256": "f468b47f3e0f152fb91e46c8b69498bf6ea2392070929df80d85d9d634766700",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/features/access/StaffContext.tsx",
+      "sha256": "8f74095370d098b0497548d43ffb3803696ae4d383ca93000acf8558878df443",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/features/access/useUnsavedChanges.ts",
+      "sha256": "b1bf832c35d718a0a5e655aeef1c1cc342cc9b908c2dc7157f02733d4d06ac51",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/features/member-portal/useResource.ts",
+      "sha256": "c2c6f5df5594b6a2b0de1c8ce4a8ff3574dd748c41247610f931471a48c6685d",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/app/Root.tsx",
+      "sha256": "75eabca9e5057c95a3d542246e50c52b3b7184e6562f9283a0247290d64e73ff",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/app/StaffApp.tsx",
+      "sha256": "dc0b128faf82e2fdbf66595de3c97e84c0e3bd7c6af7b0f3fc2b9301914db44f",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/domain/review.ts",
+      "sha256": "f1812b4d5cd4506648db3408f7d85280da521976225b46a8fa393fb4d12fe878",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/domain/explanation.ts",
+      "sha256": "f8e669a12cf351b683e79f0234e30d74c2d486542d369165425bc530382a355e",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/domain/format.ts",
+      "sha256": "22845e42adb870b7e3c870515c89cb6d8dc7e713db4adf72e087ff3123ac3483",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/domain/types.ts",
+      "sha256": "d25596f595e984f1e80fdeaeef3957b5c0dba58960e586dc5ebc391b426fd820",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/demo/cases.ts",
+      "sha256": "bdd692d8d8917822ec5d0e7bdcf0e9b8caa63d86e3fd9c5e5b2705daa4347420",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/shared/ui/index.tsx",
+      "sha256": "b5d0c1c2321d9ddc6bf8dcdda0d9573f023c159edc690571ccf7ff0379336fab",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/styles/tokens.css",
+      "sha256": "26c9afb14f9b2c67cb67a55939cc93101d452711e0d6b6924b4cdce50fea4fa1",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "src/styles/global.css",
+      "sha256": "f36a320dec0d8a59c2c3fef9786b0f6ea15a42301890a859bff9e8c7c96e2124",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "tests/workflow.spec.ts",
+      "sha256": "248876d06d9648eb27372635267b05c406d5baf4145bc18c4db12b545cad2e42",
+      "content_matches_inspected_commit": true
+    },
+    {
+      "path": "package.json",
+      "sha256": "5683887cfa7e97e4c4d33f727bd2c80b5fdacfa7f289d1a679c80927310f6017",
+      "content_matches_inspected_commit": true
+    }
+  ],
+  "external_sources": [
+    {
+      "path": "/home/johnbenedict/CODECOWD/WEB/AGAP/.worktrees/benedict-implementation-plan/docs/tasks/production/03-benedict-implementation-plan.md",
+      "sha256": "694860a23b6286ca577b87be0e67b923993d11fb3861deae858221b29ce6346b",
+      "kind": "prior_uncommitted_benedict_phase_definition",
+      "worktree_branch": "docs/benedict-phased-implementation-plan",
+      "tracked_at_inspected_dependency_commit": false,
+      "modified_or_copied_by_this_package": false
+    }
+  ]
+}

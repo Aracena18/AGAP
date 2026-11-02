@@ -1,0 +1,212 @@
+{
+  "prepared_on": "2026-11-02",
+  "task_id": "PAY-01",
+  "phase": 5,
+  "scope": "planning_only",
+  "working_branch": "feat/benedict-pay-01-phase4-rules",
+  "inspected_checkpoint": "c9488cbcbcd3eeb6e3a210db4fce85056d0f8ff3",
+  "inspected_main": "1776d9fdd5022e141a48ba1fda318636637e3d85",
+  "inspected_contract_version": "0.2.0",
+  "owner_agreed_base": null,
+  "owner_agreed_contract_version": null,
+  "phase4_uncommitted_candidate_required": true,
+  "phase5_application_tests_run": false,
+  "prior_phase4_results_are_recorded_not_rerun": {
+    "frontend": 182,
+    "platform_backend_contract": 457,
+    "browser": 34,
+    "new_database_service": 24
+  },
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "e3b07ce61ecb1a5bdacc28d5818242a12d6df04db62e9c6ed9cdd2b3e57d2a65",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "Assignment.md",
+      "sha256": "fea54a68df7ca1750fb5098b51efebd7dc8d2da0bb27721618af0215213a6664",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "docs/AGAP_Product_Solution.md",
+      "sha256": "9cc0f72ec4c62290a57fed843ce9f47658034e36a5ffb7c8c0d8baf6ffa90d3f",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "docs/AGAP_Production_Architecture.md",
+      "sha256": "6fbd71703d5632c66ea8c2f55308ba987c21a24fa351f97fe20aa65fd7525f3f",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "docs/AGAP_Delivery_Plan.md",
+      "sha256": "7ee52395dd58fa5a1c44466e8ac7b57f4e97f441af07f307119e93fa82a5d521",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "design.md",
+      "sha256": "5ecbda5d364982945cac4ac1e5db4c3133c51fe7d64e81e934f13df153d97c38",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "docs/AGAP_Frontend_Spec.md",
+      "sha256": "86bc9c717a435020c274865df2414ccb099582b1e47aa1e640dbf5026fdc0340",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "docs/AGAP_Product_Freeze.md",
+      "sha256": "ef7f29ce5f2c0b7bedbaad4dc8dfdb7b5fdc4b14ab7885276630f7c4d59488d4",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "docs/tasks/production/03-decisions-servicing.md",
+      "sha256": "feb640f8077824ec01ad3c799c9a6b373c066eae5862ce99cd2fccf49bbba251",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "docs/tasks/production/benedict-phase4/PLAN.md",
+      "sha256": "d8f6834187c1d13e75ec46ba18d89caa54b3dfce4cea3e8a7ad1405328f21a42",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "docs/tasks/production/benedict-phase4/IMPLEMENTATION.md",
+      "sha256": "9f7501ca4fb11977c3e5bd425818fc5ac0cd2e9b954fb6c6a753ed7deaf8d5e7",
+      "tracked_at_inspection": false
+    },
+    {
+      "path": "packages/contracts/src/schemas.ts",
+      "sha256": "0a903a9a01feec42ca5df2881cbdf934b516c53fa5c04f1f970adf05b8bbcb5e",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "packages/contracts/src/ports.ts",
+      "sha256": "f456f51d2ffba783dd52c0f6a8bd42729b178fffc23e3e6151cab90c06890af6",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "packages/contracts/src/operations.ts",
+      "sha256": "3c549c21d83ee20e3c1b1b9c11764226f8b5f5f8903a6d57263fb9790435df64",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "packages/api-client/src/transport.ts",
+      "sha256": "9a1d3bd1ad15de59ef3ad413dda6ee282c123d3c6747bc2f2cea143d1abe5ac9",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "apps/api/src/platform/database.ts",
+      "sha256": "5b65dd64f920343faf66bd2d6cd040091973f8d5a2a998c4ecf9684c7bc84f96",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "apps/api/src/platform/commands.ts",
+      "sha256": "ba4e35d899e38ba6d1d8febbe525c07935cc80a66911d60b877146db152bbae8",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "apps/api/src/platform/migrate.ts",
+      "sha256": "4588833c8516e9dfb5606a78ff1010eb6612b5cee799f06ab126dcc1c911455f",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "apps/api/src/app.ts",
+      "sha256": "c41c4805f9d049407863d203b04cfe5b55015da7539a6bf2babcd6e8b9380d5c",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "apps/api/src/modules/accounting/accounting.service.ts",
+      "sha256": "72afa8b282efdfb6cbd6f2a3a540333f9eda9a2682d5b40a5527b4225baa732d",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "apps/api/src/modules/accounting/README.md",
+      "sha256": "13b96cada19e894d983f5bef2c53c016518052b8db531fe9fd93cff922583957",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "apps/api/src/modules/accounting/reconciliation.ts",
+      "sha256": "02e16d90c0f2daab3ce506b0d0fccd8b3d53dc49cb691870d55d79a3a0190b43",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "apps/api/src/modules/accounting/migrations/001-ledger.sql",
+      "sha256": "da5f2f755a474234861e5e84cdaf578a56e6f717f9955328c645c86ac3489ea8",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "apps/api/src/modules/accounting/migrations/002-posting.sql",
+      "sha256": "075137140c807ed0e039df0f486e77d11ed9a1314defe70c2832d10388e98e31",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "apps/api/src/modules/accounting/migrations/003-configuration-locks.sql",
+      "sha256": "9eedf889f67e7c7bc9f7cca7a8c5b5467eb6860beb043dd8524457925164c119",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "apps/api/src/modules/decisions/decisions.service.ts",
+      "sha256": "d4a6586a3e983173ec602d6e2423b9e39e506c513f076d29aa5613073f9eb948",
+      "tracked_at_inspection": true
+    },
+    {
+      "path": "apps/api/src/modules/servicing/BACKEND.md",
+      "sha256": "6cb994753184ecee415367a5b66c766dec58c38cc33bcdb32543545bb6b3c77c",
+      "tracked_at_inspection": false
+    },
+    {
+      "path": "apps/api/src/modules/servicing/README.md",
+      "sha256": "aeafbe1e288feb3b35ee6c3c5c97d423970f73845c6c986f93100dfa64ff5276",
+      "tracked_at_inspection": false
+    },
+    {
+      "path": "apps/api/src/modules/servicing/context.ts",
+      "sha256": "0fa9890d30ccdb0e69dbd756ea8fee4ffa9919b284380d2dc87daf6db677e91c",
+      "tracked_at_inspection": false
+    },
+    {
+      "path": "apps/api/src/modules/servicing/command-rules.ts",
+      "sha256": "43c3e6ad66a6473776fd8d67c1c10e782b2502c97c1b665e8560d324a658b2ad",
+      "tracked_at_inspection": false
+    },
+    {
+      "path": "apps/api/src/modules/servicing/backend-contracts.ts",
+      "sha256": "73a23f0017888ed7a27575d4c720e158a03f5aa81c2484dbb59c2150a7d5e49a",
+      "tracked_at_inspection": false
+    },
+    {
+      "path": "apps/api/src/modules/servicing/servicing.service.ts",
+      "sha256": "e8c3385c1b5542ec48d9da21780ec407b538e1803906092cf23cbc863c4e9a2d",
+      "tracked_at_inspection": false
+    },
+    {
+      "path": "apps/api/src/modules/servicing/servicing.repository.ts",
+      "sha256": "84cf5154897a7ec058bce81e9f5875db113903c102b30a245b7e705cd3eb43a2",
+      "tracked_at_inspection": false
+    },
+    {
+      "path": "apps/api/src/modules/servicing/backend.test.ts",
+      "sha256": "e53e16c329ff1564b77bbbb8aa59d4c69e3f07c1d70b285bd9c98266dda55825",
+      "tracked_at_inspection": false
+    },
+    {
+      "path": "apps/api/src/modules/servicing/migrations/001-servicing-foundation.sql",
+      "sha256": "e18ab293a800dfd31a900f740731c6ce25dbdd8d43c429685b9cbe54784e7253",
+      "tracked_at_inspection": false
+    },
+    {
+      "path": "apps/api/src/modules/servicing/migrations/002-binding-guards.sql",
+      "sha256": "2badf371282e56a6fae7044939eb0cf4fb53e3412a4519d88b5d5be854556f49",
+      "tracked_at_inspection": false
+    },
+    {
+      "path": "apps/api/src/modules/servicing/migrations/003-movement-evidence.sql",
+      "sha256": "de78318b831f6e29fca571b6e412e3fabbceaf1589cae4f25b8a5bc7a1ae93d9",
+      "tracked_at_inspection": false
+    },
+    {
+      "path": "package.json",
+      "sha256": "5683887cfa7e97e4c4d33f727bd2c80b5fdacfa7f289d1a679c80927310f6017",
+      "tracked_at_inspection": true
+    }
+  ]
+}

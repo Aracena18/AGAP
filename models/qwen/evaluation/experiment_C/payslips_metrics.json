@@ -1,0 +1,136 @@
+{
+  "examples": 58,
+  "json_valid_count": 58,
+  "json_valid_rate": 1.0,
+  "top_level_match_count": 58,
+  "top_level_match_rate": 1.0,
+  "full_schema_count": 58,
+  "full_schema_rate": 1.0,
+  "exact_json_count": 7,
+  "exact_json_rate": 0.1206896551724138,
+  "entity_tp": 185,
+  "entity_fp": 124,
+  "entity_fn": 103,
+  "entity_precision": 0.598705501618123,
+  "entity_recall": 0.6423611111111112,
+  "entity_f1": 0.6197654941373535,
+  "predicted_entities": 309,
+  "source_grounded_entities": 296,
+  "source_grounding_rate": 0.9579288025889967,
+  "malformed_entities": 0,
+  "token_limit_hits": 0,
+  "per_field": {
+    "gross_pay_per_period": {
+      "tp": 22,
+      "fp": 28,
+      "fn": 41,
+      "precision": 0.44,
+      "recall": 0.3492063492063492,
+      "f1": 0.3893805309734513
+    },
+    "gross_taxable_per_period": {
+      "tp": 2,
+      "fp": 14,
+      "fn": 3,
+      "precision": 0.125,
+      "recall": 0.4,
+      "f1": 0.19047619047619047
+    },
+    "net_pay_per_period": {
+      "tp": 40,
+      "fp": 11,
+      "fn": 11,
+      "precision": 0.7843137254901961,
+      "recall": 0.7843137254901961,
+      "f1": 0.7843137254901961
+    },
+    "net_salary_per_period": {
+      "tp": 0,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.0,
+      "recall": 0,
+      "f1": 0
+    },
+    "pay_date": {
+      "tp": 52,
+      "fp": 6,
+      "fn": 6,
+      "precision": 0.896551724137931,
+      "recall": 0.896551724137931,
+      "f1": 0.896551724137931
+    },
+    "pay_period_end": {
+      "tp": 36,
+      "fp": 8,
+      "fn": 8,
+      "precision": 0.8181818181818182,
+      "recall": 0.8181818181818182,
+      "f1": 0.8181818181818182
+    },
+    "pay_period_start": {
+      "tp": 3,
+      "fp": 9,
+      "fn": 3,
+      "precision": 0.25,
+      "recall": 0.5,
+      "f1": 0.3333333333333333
+    },
+    "payg_per_period_deductions_per_period": {
+      "tp": 0,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.0,
+      "recall": 0,
+      "f1": 0
+    },
+    "payg_tax_per_period": {
+      "tp": 27,
+      "fp": 33,
+      "fn": 19,
+      "precision": 0.45,
+      "recall": 0.5869565217391305,
+      "f1": 0.5094339622641509
+    },
+    "post_tax_deductibles_per_period": {
+      "tp": 0,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.0,
+      "recall": 0,
+      "f1": 0
+    },
+    "post_tax_deductions_per_period": {
+      "tp": 2,
+      "fp": 7,
+      "fn": 3,
+      "precision": 0.2222222222222222,
+      "recall": 0.4,
+      "f1": 0.2857142857142857
+    },
+    "pre_tax_deductibles_per_period": {
+      "tp": 0,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.0,
+      "recall": 0,
+      "f1": 0
+    },
+    "pre_tax_deductions_per_period": {
+      "tp": 1,
+      "fp": 3,
+      "fn": 9,
+      "precision": 0.25,
+      "recall": 0.1,
+      "f1": 0.14285714285714288
+    },
+    "total_deductions_per_period": {
+      "tp": 0,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.0,
+      "recall": 0,
+      "f1": 0
+    }
+  }
+}

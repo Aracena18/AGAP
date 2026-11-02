@@ -1,5 +1,7 @@
 # Foundation contract review and integration handoff
 
+The 30 October review below is dated evidence. The [2 November integration record](#2-november-2026--pr-18-integration) supersedes its current-state and next-step statements where later merged work is available.
+
 30 October 2026, Asia/Manila. Robert's technical review for FND-03 and SHOW-01, based on main `266379ac293572de91a603a72c1a01750a1c3101`. Review branch: `codex/foundation-contract-handoff`. The [task register](../Assignment.md) remains the sole status tracker. This review does not record Aaron/Benedict/Earl acceptance, freeze contract 0.2.0, approve institutional rules or authorize a merge.
 
 ## Scope and proposed integration changes
@@ -64,3 +66,24 @@ These are local technical checks, separate from remote CI and actual owner/insti
 3. After the core contract review, propose FND-04 goal/consent/planner/guidance and FND-05 rubric/finding/score/trace/handoff interfaces under their existing stage 2 estimates. Actual rubric weights and approved product/advice inputs remain institutional dependencies; this review does not activate them.
 
 See the [platform guide](AGAP_Platform_Foundation.md), [current owner brief](tasks/production/01-platform.md), [delivery boundaries](AGAP_Delivery_Plan.md) and [model evaluation plan](AGAP_Model_Training_Plan.md).
+
+## 2 November 2026 — PR 18 integration
+
+The user explicitly requests pulling current repository changes, resolving PR conflicts and merging the new changes. Integration branch `codex/pr18-integration` combines PR #18 head `f60a5fb57a0e300a34b693e271e7c01e4ef0e434` with main `68152890f84a31ae47d907f460b88732ebdc064d`, including merged PRs #19–#23. The integration merge preserves both histories without rewriting or force-pushing.
+
+Conflicts in Assignment.md and Robert's production brief retain the newer policy-source checkpoint, FND-04/FND-05 proposal review states, ACC-01 principal comparison and EVAL-01 paired-comparison handoffs alongside the dated foundation review. Other owners' supplied files, canonical API 0.2.0, fixtures, financial calculations and lockfile are unchanged against current main. Task IDs, owners, stages, dependencies, statuses and provisional budgets remain unchanged by this conflict resolution.
+
+PR #23 also supplies decision/servicing services, staff views and Qwen preparation/handoff/verification tools. Those deliveries supersede the 30 October statements that no PAY-01 orchestrator or model tooling exists. Their recorded producer-acceptance, registration, configured-policy, runtime and model-evaluation limitations remain applicable; this PR registers only the three existing accounting migrations and evaluation checks. It does not register decision/servicing gateways or migrations, enable financial capabilities, freeze goal/5C proposals, fabricate receiving-owner agreement or promote a model. The already-published owner verification remains dated evidence; task-wide integration is separate from code publication.
+
+Verification uses Linux, Node 24.14.0/npm 11.9.0, an offline clean lockfile installation and a fresh PostgreSQL 18 instance in Compose project `agap-pr18-integration`, guarded fictional database `agap_test`, loopback port 55437. Browser servers use dedicated web/API ports 5197/4127. The user's original main worktree and untracked documents/artifacts are preserved while preparing the PR.
+
+| Check | Observed result on the combined revision |
+| --- | --- |
+| `npm ci --offline --no-audit --no-fund` | Clean install passed using the unchanged lockfile |
+| `npm run check` | Passed lint, generated contract/client drift, frontend/API builds, **193 frontend**, **493 backend/contract** and **76 evaluation** tests, plus evaluation typecheck; both ledger migration regressions passed |
+| `npm run test:e2e` | **34 Chromium tests passed**, 44.0 seconds; no skipped test or weakened timeout/control |
+| Documentation and preservation | Six changed Markdown documents, **146 local links/fragments**, **35 task records** checked; IDs, owners, stages, dependencies and statuses unchanged from main; canonical and module-owned source preservation checked |
+| `graphify update .` | Completed: **2,592 nodes / 7,302 edges**; optional SQL parser absent for 27 SQL files and contracts-barrel partial-extraction warning retained |
+| Whitespace and conflicts | PR delta passes `git diff --check`; no unresolved merge entries or conflict markers remain |
+
+Local checks remain distinct from remote CI, which must be inspected on the published PR revision. Existing deliberate-manual-hash-navigation browser warnings remain within the documented router limitation. No UI is changed by this PR's conflict resolution, so additional UI screenshots are not applicable. Existing module/browser screenshots stay intact.

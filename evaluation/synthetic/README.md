@@ -14,7 +14,7 @@ The existing [demo cases](../../src/demo/cases.ts) and [historical calculation o
 
 ## Candidate file interfaces
 
-All `eval-01-* /v1` envelopes in [model.ts](src/model.ts) and [bundle.ts](src/bundle.ts) are evaluation-local proposals for Robert/Aaron/Benedict to review. They do not change the canonical API contract. Money, dates, source references and model provenance reuse the [existing schemas](../../packages/contracts/src/schemas.ts).
+All `eval-01-* /v1` envelopes in [model.ts](src/model.ts), [bundle.ts](src/bundle.ts) and [compare.ts](src/compare.ts) are evaluation-local proposals for Robert/Aaron/Benedict to review. They do not change the canonical API contract. Money, dates, source references and model provenance reuse the [existing schemas](../../packages/contracts/src/schemas.ts).
 
 | File | Contents |
 | --- | --- |
@@ -46,6 +46,9 @@ npx tsx evaluation/synthetic/src/cli.ts render --corpus node_modules/.cache/agap
 
 # Score supplied outputs; this does not execute a model.
 npx tsx evaluation/synthetic/src/cli.ts score --corpus CORPUS_FILE --predictions PREDICTIONS_FILE --out NEW_REPORT_FILE
+
+# Compare supplied runs on the same corpus; creates a new report directory.
+npx tsx evaluation/synthetic/src/cli.ts compare --corpus CORPUS_FILE --runs RUNS_MANIFEST_FILE --out NEW_REPORT_DIRECTORY
 ```
 
 The default preview is explicitly `development_preview`, with zero training/validation release counts and no review/holdout commitment. It is suitable for label/format review and harness development. Generating it is not completion of the reviewed training handoff.
@@ -79,6 +82,47 @@ Reports identify development diagnostics versus reserved-holdout evaluation. Sim
 For reserved-holdout scoring, the CLI also requires `--release REVIEWED_BUNDLE_DIRECTORY`. It verifies that bundle and its frozen holdout hash and requires the private corpus outside the shared checkout. Relabeling a corpus or passing a development preview cannot satisfy this commitment check.
 
 Earl later executes fixed pretrained/tuned artifacts with identical held-out inputs and agreed prompts/preprocessing/limits, retaining run provenance and raw outputs. Compare the annual-expense checklist and plain form under documented conditions. Participant effort/comprehension stays unmeasured until actually observed. Model/schema accuracy, clear images and source matching establish no document authenticity or borrower outcome. Runtime promotion remains a separate reviewed Robert/Aaron handoff.
+
+## Paired comparison reports
+
+`compare` reuses the existing scorer for two to sixteen prediction files, with an explicitly selected baseline. The runs manifest is a local file interface:
+
+```json
+{
+  "schemaVersion": "eval-01-comparison-files/v1",
+  "baselineRunId": "pretrained-v1",
+  "runs": [
+    {
+      "label": "Pretrained Qwen",
+      "protocolSha256": "REPLACE_WITH_AGREED_PROTOCOL_SHA256",
+      "predictionsFile": "outputs/pretrained.json"
+    },
+    {
+      "label": "Tuned Qwen",
+      "protocolSha256": "REPLACE_WITH_AGREED_PROTOCOL_SHA256",
+      "predictionsFile": "outputs/tuned.json"
+    }
+  ]
+}
+```
+
+Replace the placeholder with the actual 64-character lowercase hexadecimal SHA-256 of the frozen comparison protocol. Prediction paths resolve relative to the runs manifest, not the shell's current directory. Each prediction's `run.id` must be unique; `baselineRunId` selects one of those actual IDs. Labels are unique ignoring case. The CLI validates all inputs before creating output files.
+
+Every run must declare the same protocol commitment and match the exact corpus/case inventory; model runs also declare the same prompt/output-schema versions. The protocol must record task, source/input format, preprocessing, prompts, inference limits/settings, measurement procedure, baselines, primary measures and regression criteria before final evaluation. Hash equality is a declaration, not proof of identical execution or accepted review. Review original outputs/provenance and run conditions independently. Model artifact hashes identify the returned models; prediction hashes commit canonical validated outputs separately.
+
+The output directory is exclusive and contains:
+
+- `comparison.json`: scored runs, artifact/environment provenance, canonical prediction hashes, count/accuracy deltas, paired field outcomes and jointly observed resource summaries.
+- `comparison.md`: readable score/error tables and field-level improvements, regressions and remaining errors.
+- `manifest.json`: exact JSON/Markdown artifact hashes, written last as the completion marker. A directory without this file is incomplete; preserve failures rather than treating partial output as a completed report. Existing output directories are never overwritten.
+
+Each expected field is classified as improved, regressed, both correct or both incorrect relative to the baseline. Both sets of problem codes remain inspectable. Missing answers stay in the denominator; unsolicited fields and unsupported recorded values have separate counts. Equal aggregate accuracy can hide an improvement and a regression, so the report shows both. Count deltas are candidate minus baseline: a positive error delta means more errors. These descriptive results establish neither statistical significance nor an automatic winner/promotion.
+
+Simulated runs are compared separately from declared model/template executions; mixed evidence is rejected. An all-simulated report is `harness_only`, with no performance measurements, even if fixture outputs supply numbers. A declared template run is an actually executed template/checklist procedure, not fabricated participant responses. Every report retains `promotion: not_assessed`.
+
+Timing/memory comparisons use only cases observed in both runs with the same declared environment; denominators are explicit and missing values remain null. Memory summaries are mean per-case peak bytes, not whole-process peak memory. Environment equality does not attest equivalent hardware/configuration; differing environments leave paired resource comparisons unavailable while retaining structured accuracy results. Related case/household groups are not independent observations; the tool does not invent confidence intervals, participant measurements or a release threshold.
+
+Holdout comparison uses the same `--release` commitment and external-private-corpus checks as `score`. Keep final error reports, sources and labels evaluator-controlled during model selection. Reviewed corpora/protocols, actual baseline/tuned/checklist/plain-form runs and independent final scoring are still required for EVAL-01 acceptance. The survey EBM/logistic evaluator remains a separate future implementation in `evaluation/explainable/`.
 
 ## Verification and receiving owners
 

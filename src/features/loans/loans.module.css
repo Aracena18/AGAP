@@ -1,0 +1,9 @@
+.page { display: grid; gap: var(--space-5); }
+.form { display: grid; gap: var(--space-5); }
+.form section { display: grid; gap: var(--space-3); border-top: 1px solid var(--line); padding-top: var(--space-4); }
+.figures { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
+.figures dd { margin: var(--space-2) 0; font-size: 24px; }
+.receipt article { display: grid; gap: var(--space-4); overflow-wrap: anywhere; }
+.receipt dd { margin-left: 0; }
+@media (max-width: 767px) { .figures { grid-template-columns: 1fr; } }
+@media print { .page { display: block; } .receipt { border: 0; box-shadow: none; } .receipt article { padding: 0; color: black; } }

@@ -1,0 +1,112 @@
+{
+  "examples": 58,
+  "json_valid_count": 57,
+  "json_valid_rate": 0.9827586206896551,
+  "top_level_match_count": 57,
+  "top_level_match_rate": 0.9827586206896551,
+  "full_schema_count": 57,
+  "full_schema_rate": 0.9827586206896551,
+  "exact_json_count": 12,
+  "exact_json_rate": 0.20689655172413793,
+  "entity_tp": 195,
+  "entity_fp": 90,
+  "entity_fn": 93,
+  "entity_precision": 0.6842105263157895,
+  "entity_recall": 0.6770833333333334,
+  "entity_f1": 0.6806282722513088,
+  "predicted_entities": 285,
+  "source_grounded_entities": 282,
+  "source_grounding_rate": 0.9894736842105263,
+  "malformed_entities": 0,
+  "token_limit_hits": 0,
+  "per_field": {
+    "comp_per_period": {
+      "tp": 0,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.0,
+      "recall": 0,
+      "f1": 0
+    },
+    "gross_pay_per_period": {
+      "tp": 28,
+      "fp": 23,
+      "fn": 35,
+      "precision": 0.5490196078431373,
+      "recall": 0.4444444444444444,
+      "f1": 0.49122807017543857
+    },
+    "gross_taxable_per_period": {
+      "tp": 2,
+      "fp": 9,
+      "fn": 3,
+      "precision": 0.18181818181818182,
+      "recall": 0.4,
+      "f1": 0.25000000000000006
+    },
+    "net_pay_per_period": {
+      "tp": 45,
+      "fp": 6,
+      "fn": 6,
+      "precision": 0.8823529411764706,
+      "recall": 0.8823529411764706,
+      "f1": 0.8823529411764706
+    },
+    "pay_date": {
+      "tp": 46,
+      "fp": 8,
+      "fn": 12,
+      "precision": 0.8518518518518519,
+      "recall": 0.7931034482758621,
+      "f1": 0.8214285714285715
+    },
+    "pay_period_end": {
+      "tp": 33,
+      "fp": 6,
+      "fn": 11,
+      "precision": 0.8461538461538461,
+      "recall": 0.75,
+      "f1": 0.7951807228915662
+    },
+    "pay_period_start": {
+      "tp": 4,
+      "fp": 5,
+      "fn": 2,
+      "precision": 0.4444444444444444,
+      "recall": 0.6666666666666666,
+      "f1": 0.5333333333333333
+    },
+    "payg_tax_per_period": {
+      "tp": 32,
+      "fp": 22,
+      "fn": 14,
+      "precision": 0.5925925925925926,
+      "recall": 0.6956521739130435,
+      "f1": 0.6399999999999999
+    },
+    "payg_tax_period_end": {
+      "tp": 0,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.0,
+      "recall": 0,
+      "f1": 0
+    },
+    "post_tax_deductions_per_period": {
+      "tp": 2,
+      "fp": 8,
+      "fn": 3,
+      "precision": 0.2,
+      "recall": 0.4,
+      "f1": 0.26666666666666666
+    },
+    "pre_tax_deductions_per_period": {
+      "tp": 3,
+      "fp": 1,
+      "fn": 7,
+      "precision": 0.75,
+      "recall": 0.3,
+      "f1": 0.4285714285714285
+    }
+  }
+}

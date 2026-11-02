@@ -1,0 +1,312 @@
+{
+  "source": "gretelai/synthetic_pii_finance_multilingual",
+  "revision": "7b844d16738527a04264f50214cb426a4cea0897",
+  "source_split": "train",
+  "access_url": "https://datasets-server.huggingface.co/rows?dataset=gretelai/synthetic_pii_finance_multilingual&config=default&split=train&offset=0&length=20",
+  "observed_revision_header": "7b844d16738527a04264f50214cb426a4cea0897",
+  "acquired_on": "2026-10-29",
+  "response_sha256": "816b32d54363e9132c0bffd014f67996b6f7443b720b511217611e28077ea6cc",
+  "scope": "First 20 rows, convenience fit audit only; not representative sampling or a benchmark",
+  "retained": "Metadata and hashes only; no generated text, names, account values or secret values",
+  "disposition": "Excluded from core 5C pilot; possible future separate PII-span technical diagnostics after label review",
+  "limitations": "Foreign synthetic document formats and privacy labels; no cooperative interviews or expert 5C labels. Producer card prose and YAML list different split sizes; no total-size claim relies on it.",
+  "profiles": [
+    {
+      "row_idx": 0,
+      "document_type": "Supply Chain Management Agreement",
+      "expanded_type": "Vendor Management Contract",
+      "language": "English",
+      "text_sha256": "f9b9fcea0d04c13e5c95fd10f8322c4dae42dbdd3ebfa395c2b5a8b0d294ae50",
+      "text_characters": 1971,
+      "annotation_count": 14,
+      "annotation_labels": [
+        "company",
+        "date",
+        "name",
+        "street_address"
+      ],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 1,
+      "document_type": "Supply Chain Management Agreement",
+      "expanded_type": "Supply Chain Resilience Framework",
+      "language": "English",
+      "text_sha256": "92f2a74ecb225b9aff5480321aae9e8671976b2644180020559ddb366406dd4b",
+      "text_characters": 2169,
+      "annotation_count": 4,
+      "annotation_labels": [
+        "bban",
+        "date",
+        "name",
+        "street_address"
+      ],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 2,
+      "document_type": "Real Estate Loan Agreement",
+      "expanded_type": "International Real Estate Investment Loan Agreement",
+      "language": "Spanish",
+      "text_sha256": "80dc2b1abf39ac320d89cb2d11d631019c4b2398908cc40c8061e7a087a4231e",
+      "text_characters": 1456,
+      "annotation_count": 3,
+      "annotation_labels": [
+        "date",
+        "street_address"
+      ],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 3,
+      "document_type": "Real Estate Loan Agreement",
+      "expanded_type": "Commercial Property Loan Contract",
+      "language": "Italian",
+      "text_sha256": "d0e7ee293b39a8c8937c975652acf1bfeb78dfae85eced97aabcab0eb1d7f649",
+      "text_characters": 1492,
+      "annotation_count": 6,
+      "annotation_labels": [
+        "company",
+        "date_of_birth",
+        "name",
+        "street_address"
+      ],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 4,
+      "document_type": "Email",
+      "expanded_type": "Invitation",
+      "language": "France",
+      "text_sha256": "5e80e1e50a99dc68f6af81db1e88a84e27b62e76f30da117523e6b4dc7d22e5a",
+      "text_characters": 1322,
+      "annotation_count": 7,
+      "annotation_labels": [
+        "date",
+        "email",
+        "phone_number",
+        "street_address",
+        "time"
+      ],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 5,
+      "document_type": "SWIFT Message",
+      "expanded_type": "MT202",
+      "language": "English",
+      "text_sha256": "40cd5befd65897394684bc17331117751a22379652b47c48aa355c5361f63b39",
+      "text_characters": 655,
+      "annotation_count": 7,
+      "annotation_labels": [
+        "account_pin",
+        "company",
+        "credit_card_number",
+        "name"
+      ],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 6,
+      "document_type": "Health Insurance Claim Form",
+      "expanded_type": "Dental Care Claim",
+      "language": "English",
+      "text_sha256": "fe3965485ef27c875b31fc81e04ef331d56eb2a2c5ee090553d956b002415ead",
+      "text_characters": 1366,
+      "annotation_count": 4,
+      "annotation_labels": [
+        "bban",
+        "name",
+        "street_address"
+      ],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 7,
+      "document_type": "Financial Statement",
+      "expanded_type": "Strategic Planning",
+      "language": "German",
+      "text_sha256": "bf7366146090b54ff302e3db41c7a57bfc10b9e56ebd31f280c20f8c18671035",
+      "text_characters": 1044,
+      "annotation_count": 0,
+      "annotation_labels": [],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 8,
+      "document_type": "Customer support conversational log",
+      "expanded_type": "Warranty Claims",
+      "language": "English",
+      "text_sha256": "c5cd4d48aef78f3c547e5c704a09cdc6f53a5d2932fd497a39978c2d46fef1ec",
+      "text_characters": 1363,
+      "annotation_count": 23,
+      "annotation_labels": [
+        "customer_id",
+        "date",
+        "first_name",
+        "name",
+        "street_address",
+        "time"
+      ],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 9,
+      "document_type": "FpML",
+      "expanded_type": "Inflation Derivative",
+      "language": "English",
+      "text_sha256": "8a0cc96af8f3b03d41bc57fb7f124281ca1c2deac91e37b3bc078f535ca793ac",
+      "text_characters": 1350,
+      "annotation_count": 2,
+      "annotation_labels": [
+        "company"
+      ],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 10,
+      "document_type": "MT940",
+      "expanded_type": "MT940-04",
+      "language": "English",
+      "text_sha256": "8c310a364084827fdbc05fe9a3929e14862c622ea585dac7c4af268b8b71a055",
+      "text_characters": 576,
+      "annotation_count": 0,
+      "annotation_labels": [],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 11,
+      "document_type": "IT support ticket",
+      "expanded_type": "Network Outage",
+      "language": "English",
+      "text_sha256": "9dcec0f00ecf6d6c5136965de64bdc3f177d2a1a299826db952226492b2c1570",
+      "text_characters": 1363,
+      "annotation_count": 8,
+      "annotation_labels": [
+        "bban",
+        "date",
+        "name",
+        "street_address",
+        "time"
+      ],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 12,
+      "document_type": "Financial Disclosure Statement",
+      "expanded_type": "E-commerce Sales Analytics",
+      "language": "Dutch",
+      "text_sha256": "72c1e7242ac0367f4660bafa6e78c6e014002d755ac2f1bcaccf0c64350080ed",
+      "text_characters": 1169,
+      "annotation_count": 5,
+      "annotation_labels": [
+        "date",
+        "name",
+        "time"
+      ],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 13,
+      "document_type": "Safety Data Sheet",
+      "expanded_type": "Laboratory Waste Management",
+      "language": "German",
+      "text_sha256": "3d8f0521fc2cf8a2f0bd8cdcbd7e702345d02fcdfd913816b76a4db3bc5725f3",
+      "text_characters": 1311,
+      "annotation_count": 4,
+      "annotation_labels": [
+        "company",
+        "email",
+        "phone_number",
+        "street_address"
+      ],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 14,
+      "document_type": "Securities Prospectus",
+      "expanded_type": "Distressed Debt",
+      "language": "Dutch",
+      "text_sha256": "63f727233456bf0549aa7fba592c86268f5b2675b2edb1d37106ec11a0a78fe2",
+      "text_characters": 1389,
+      "annotation_count": 12,
+      "annotation_labels": [
+        "date",
+        "name",
+        "street_address"
+      ],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 15,
+      "document_type": "Policyholder's Report",
+      "expanded_type": "Educational Resources",
+      "language": "English",
+      "text_sha256": "8b9e48fe81dac5ec124ff23f85493a859ae63978bb328efd313308f87a6a2e4a",
+      "text_characters": 1375,
+      "annotation_count": 5,
+      "annotation_labels": [
+        "customer_id",
+        "date",
+        "name",
+        "phone_number"
+      ],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 16,
+      "document_type": "XBRL",
+      "expanded_type": "Financial Statement Footnotes",
+      "language": "English",
+      "text_sha256": "b73115f874df02c9505169ad0c55206759178fa705cc4ced143c7915e8d56a2a",
+      "text_characters": 1325,
+      "annotation_count": 0,
+      "annotation_labels": [],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 17,
+      "document_type": "Insurance Policy",
+      "expanded_type": "Earthquake Insurance",
+      "language": "France",
+      "text_sha256": "08aee23d53ff84cd198b32f194424c8e0d0270bd229a58427d498af1ab4f9db2",
+      "text_characters": 1402,
+      "annotation_count": 4,
+      "annotation_labels": [
+        "name",
+        "street_address"
+      ],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 18,
+      "document_type": "Insurance Policy",
+      "expanded_type": "Life Insurance",
+      "language": "France",
+      "text_sha256": "ccddb6d27f1732b7059411784f557ccf92b782cb04345020f9b78e9cb4f154c4",
+      "text_characters": 1204,
+      "annotation_count": 3,
+      "annotation_labels": [
+        "driver_license_number",
+        "name",
+        "street_address"
+      ],
+      "admitted_to_core": false
+    },
+    {
+      "row_idx": 19,
+      "document_type": "FpML",
+      "expanded_type": "Interest Rate Swap",
+      "language": "German",
+      "text_sha256": "f22c5ebcefe65b5c017a1c6d1f7ad093bf657ce9a29bc0211d3968519d74cd2c",
+      "text_characters": 1568,
+      "annotation_count": 3,
+      "annotation_labels": [
+        "company",
+        "name",
+        "street_address"
+      ],
+      "admitted_to_core": false
+    }
+  ]
+}

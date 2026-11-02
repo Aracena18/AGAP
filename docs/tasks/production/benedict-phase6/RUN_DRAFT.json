@@ -1,0 +1,46 @@
+{
+  "base": {
+    "id": "Qwen/Qwen3.5-2B",
+    "processorRevision": null,
+    "revision": null
+  },
+  "codeRevision": null,
+  "datasetManifestSha256": null,
+  "files": {
+    "adapter_config": null,
+    "adapter_weights": null,
+    "baseline": null,
+    "environment": null,
+    "output_schema": null,
+    "preprocessing": null,
+    "prompt": null,
+    "reload_smoke": null,
+    "trainer_state": null,
+    "training_code": null,
+    "training_config": null,
+    "tuned": null
+  },
+  "finishedAt": null,
+  "id": "existing-colab-unlocated",
+  "measurements": {
+    "gpu": null,
+    "peakMemoryBytes": null,
+    "trainingSeconds": null
+  },
+  "origin": "unknown",
+  "outputSchemaVersion": null,
+  "promptVersion": null,
+  "schemaVersion": "agap-qwn-run/v1",
+  "seed": null,
+  "settings": {
+    "batchSize": null,
+    "epochs": null,
+    "learningRate": null,
+    "maxInputTokens": null,
+    "maxNewTokens": null,
+    "precision": null
+  },
+  "startedAt": null,
+  "status": "not_captured",
+  "task": "QWN-01"
+}
