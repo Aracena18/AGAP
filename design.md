@@ -483,3 +483,43 @@ For an affected future implementation, make the applicable product/policy and so
 Keep amount period, gross/net basis and whether an obligation is already included discoverable beside the financial fact. Unknown remains unavailable rather than zero. Display capacity labels from the same approved configuration used by the calculation, keep eligibility separate from household cash flow, and show a missing-rule clarification rather than an invented percentage. Changing the selected supported payment mode must not leave an obsolete or misleading result visible. Source/offer/policy changes follow the existing renewed-review behavior and preserve historical snapshots.
 
 Robert owns member UI/shared changes; Aaron owns evidence/comparison/product staff views; Benedict owns the decision handoff. Agree affected contracts and capacity before implementation, then verify retained values/error recovery, keyboard/source access, 320px reflow, accurate states and screenshots. Existing numerical 5C and servicing amendments retain their staged scope.
+
+## 16. Planned Gabay rebranding — 3 November 2026
+
+**Status: user-requested direction and concrete adoption proposal; application implementation is pending.** The user supplied Gabay artwork, member concepts, motion examples and candidate components, and requested analysis before refactoring the current site's face. [Verified material analysis](design-library/ANALYSIS.md) and [asset manifest](design-library/manifest.json) supply evidence; this section remains the UI/UX authority. UI-05 covers the asset/analysis handoff; UI-06 is the subsequent implementation task in Assignment.md.
+
+### Brand and visual foundations
+
+Adopt the supplied green/white/yellow direction through the existing canonical token roles when UI-06 is implemented. The blue descriptions above remain the current runtime baseline until that migration is tested; they are not the desired final brand for UI-06. Retain Google Sans, the existing Rounded operational icons, semantic HTML and the established financial patterns.
+
+| Current role | Proposed supplied reference | Integration condition |
+| --- | --- | --- |
+| Primary action and hover | Candidate `--ag-primary` / `--ag-primary-hover` | Map once into `--primary` / `--primary-hover`; do not import a second active palette |
+| Main and supporting surfaces | Candidate canvas, white surface and pale mint roles | Preserve readable input/table/panel boundaries and existing visual hierarchy |
+| Text and brand ink | Candidate ink, forest and body-text roles | Supporting text must meet the existing contrast target; the candidate subtle role needs adjustment on its canvas |
+| Selection and focus | Candidate mint, forest foreground and focus green | Verify active, hover, keyboard and error states across member and staff screens |
+| Yellow and leaf green | Supplied sun/leaf accents | Use sparingly in brand art and non-consequential emphasis; preserve textual warning/status meaning |
+| Warning, danger and success | Candidate semantic pairs, mapped to existing roles | A successful save is distinct from approval or affordability; financial shortages retain clear warning/error treatment |
+
+Keep the existing spacing system, restrained 16px card treatment, readable controls and pill actions as the base. Bring new fields to the existing 16px input treatment and standalone targets to at least 44px. Preserve current Button/Badge/Notice/Money contracts while adopting the supplied treatments; optional extensions need consumer checks. Avoid the specimen's decorative labels, oversized showcase headings and repetitive nested cards in operational pages.
+
+### Responsive composition
+
+- **Member phone:** a clear current task, readable one-column fields, short supporting copy and a dominant action. A compact labeled navigation treatment may sit near the bottom, with safe-area/keyboard/focus clearance. Preserve Home, Applications, Loans and Help access; Apply stays easy to reach through its existing destinations. Do not drop Loans merely to copy the concept's navigation labels.
+- **Member desktop/tablet:** keep the same routes and content, using available width for balanced task/support columns and quieter guidance. Do not stretch forms across the screen or force a phone frame onto desktop.
+- **Staff and review:** use the same brand with greater information density and restrained art. Keep case identity, workflow navigation, evidence sources, checked figures, cost comparisons, exceptions and saved history discoverable. Tables may scroll locally when needed; smaller viewports must not lose essential columns or source access.
+- **All screens:** verify 320px, tablet, desktop and 200% zoom; inspect content inside cards as well as page overflow. Navigation, dialogs and fixed actions must preserve visible/unobscured focus and the UI-04 draft/sharing safeguards.
+
+### Gabay and motion
+
+Use the supplied 3D character family, with state-appropriate, optional art on member welcome, onboarding guidance, empty states and recoverable feedback. Keep actionable text and controls in HTML. Show no-applications art only for a successfully loaded empty list; distinguish loading, unavailable service and failed connection. Saved/review/assistance illustrations require the corresponding actual state. No expression, shield, checkmark or growth arrow can establish approval, verification, loan safety or changed payment terms.
+
+Select small responsive delivery versions while preserving the archived master bytes and provenance. Reserve image dimensions, load only relevant art, and avoid shipping the complete source pack in the initial app payload. The supplied preview logo geometry can inform a crisp reviewed brand mark; it does not require replacing operational icons or drawing a different mascot.
+
+Treat flutter, hover, glow, trail and expression examples as optional concepts. The supplied raster files are static; they do not provide independently animated wings. Use brief interaction feedback where it helps, stop ornamental movement during a task, keep financial values steady and provide an intentional reduced-motion alternative. No new animation dependency is required by the design proposal.
+
+### Preserved behavior and acceptance
+
+This is a presentation migration. Retain current authentication/session separation, routes, own-record access, role restrictions, source/confirmation distinctions, integer-centavo/date calculations, supplied offers, uncertain retries, renewed sharing acknowledgement, immutable decisions and printing. Do not copy the showcase's simplified repayment arithmetic or expose depicted budget/goal/AI functions as newly implemented features.
+
+Robert owns canonical tokens, shared controls/shell and member surfaces; domain owners retain their feature directories and logic. Begin with the shared foundation and member home/sign-in at phone and desktop sizes, then extend the reviewed treatment through member forms and staff surfaces. Each implementation slice updates its relevant tests and evidence and passes the required application/browser checks. Archived references and automated results do not establish representative-user acceptance or production readiness.

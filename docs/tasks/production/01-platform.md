@@ -115,3 +115,7 @@ Published [draft PR #10](https://github.com/Aracena18/AGAP/pull/10), implementat
 29 October 2026 — PLN-03: goal-guidance responsibilities and future acceptance added by user request. Existing feature/model progress, exclusive ownership and first-demo budgets remain unchanged; new goal packages have separate pending estimates.
 
 29 October 2026 — PLN-04: added planned 5C review/trace/handoff responsibilities without changing existing feature/model progress, original first-demo budgets or the separate goal packages. Numeric rubric configuration remains pending.
+
+## Gabay asset and rebranding handoff — 3 November 2026
+
+UI-05 preserves the supplied design assets and analyzes their adoption under [design.md section 16](../../../design.md#16-planned-gabay-rebranding--3-november-2026); [analysis and verification](../../../design-library/ANALYSIS.md). UI-06 is the next presentation-only implementation after the user-requested analysis checkpoint. Own canonical token migration, shared controls/navigation and all member UI; coordinate staff feature presentation within existing ownership. Keep current APIs, auth, financial rules, source confirmation, uncertain retries, UI-04 safeguards and saved snapshots. The showcase calculator and depicted features are references, not new production behavior. Use Assignment.md for status and design.md for all UI rules; estimates beyond the existing core plan remain Pending.
