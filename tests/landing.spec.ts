@@ -155,6 +155,7 @@ test('white landing under either system preference preserves accessible layouts 
       await expect(page.getByRole('heading', { name: 'Meet Gabay.' })).toBeVisible();
       await expect(page.locator('[data-agap-landing]')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
       if (process.env.AGAP_CAPTURE_WHITE) await page.screenshot({ path: `docs/screenshots/landing/white-${colorScheme}-${width}.png`, fullPage: true });
+      if (process.env.AGAP_CAPTURE_MOTION && colorScheme === 'light' && (width === 390 || width === 320)) await page.screenshot({ path: `docs/screenshots/landing/motion-static-${width}.png`, fullPage: true });
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze()).violations).toEqual([]);
     }
@@ -169,4 +170,76 @@ test('missing screenshot offers a real recovery destination', async ({ page }) =
   await page.goto('/#/?section=demo');
   await expect(page.getByRole('tabpanel')).toContainText('The screenshot could not load.');
   await expect(page.getByRole('tabpanel').getByRole('link', { name: 'Open review demo' })).toHaveAttribute('href', '#/applications');
+});
+
+for (const viewport of [{ width: 1366, height: 768 }, { width: 1440, height: 900 }]) {
+  test(`Gabay reveal has readable stages and reverses without trapping controls at ${viewport.width}px`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/#/');
+    const scene = page.getByRole('region', { name: 'Introducing AGAP and Gabay' });
+    const mascot = scene.getByRole('img').locator('..');
+    const scale = () => mascot.evaluate(element => new DOMMatrixReadOnly(getComputedStyle(element).transform).a);
+    await expect.poll(scale).toBeCloseTo(3.2, 2);
+    const install = page.getByRole('button', { name: 'Install AGAP', exact: true }).first();
+    await expect(install).toBeInViewport();
+    const frames = process.env.AGAP_CAPTURE_MOTION;
+    if (frames) await page.screenshot({ path: `docs/screenshots/landing/motion-start-${viewport.width}.png` });
+    const travel = await scene.evaluate(element => ({ top: element.getBoundingClientRect().top + scrollY, distance: element.getBoundingClientRect().height - innerHeight }));
+    async function seek(progress: number) {
+      await page.evaluate(({ top, distance, progress }) => window.scrollTo({ top: progress === 0 ? 0 : top + distance * progress, behavior: 'instant' }), { ...travel, progress });
+    }
+    await seek(.7);
+    await expect.poll(scale).toBeLessThan(1.1);
+    const evidence = scene.getByRole('heading', { name: 'Trace the evidence', exact: true }).locator('..');
+    const cashFlow = scene.getByRole('heading', { name: 'See cash-flow timing', exact: true }).locator('..');
+    const opacity = (element: typeof evidence) => element.evaluate(node => Number(getComputedStyle(node).opacity));
+    await expect.poll(() => opacity(evidence)).toBeGreaterThan(.7);
+    expect(await opacity(cashFlow)).toBeLessThan(.4);
+    if (frames) await page.screenshot({ path: `docs/screenshots/landing/motion-pairs-${viewport.width}.png` });
+    await seek(1);
+    await expect.poll(scale).toBeCloseTo(1, 2);
+    await expect.poll(() => opacity(cashFlow)).toBe(1);
+    await expect(install.locator('..').locator('..')).toHaveAttribute('inert', '');
+    const imageBounds = await scene.getByRole('img').boundingBox();
+    expect(imageBounds!.y).toBeGreaterThan(72);
+    expect(imageBounds!.y + imageBounds!.height).toBeLessThanOrEqual(viewport.height);
+    if (frames) await page.screenshot({ path: `docs/screenshots/landing/motion-end-${viewport.width}.png` });
+    await seek(0);
+    await expect.poll(scale).toBeCloseTo(3.2, 2);
+    await expect(install).toBeInViewport();
+    await install.focus();
+    await page.keyboard.press('Enter');
+    await expect(page.getByRole('dialog')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(install).toBeFocused();
+    if (frames) await page.screenshot({ path: `docs/screenshots/landing/motion-reverse-${viewport.width}.png` });
+  });
+}
+
+test('motion preference changes release the sticky scene and keep screenshot selection immediate', async ({ page }) => {
+  await page.goto('/#/');
+  await page.getByRole('link', { name: 'Meet Gabay', exact: true }).click();
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  const scene = page.getByRole('region', { name: 'Introducing AGAP and Gabay' });
+  await expect(scene.locator('> div')).toHaveCSS('position', 'relative');
+  await expect(scene.getByRole('img').locator('..')).toHaveCSS('transform', 'none');
+  await page.getByRole('link', { name: 'Demo', exact: true }).click();
+  await page.getByRole('tab', { name: 'Evidence', exact: true }).focus();
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('ArrowRight');
+  const decision = page.getByRole('tab', { name: 'Decision', exact: true });
+  await expect(decision).toBeFocused();
+  await expect(page.getByRole('tabpanel')).toHaveAttribute('aria-labelledby', 'tab-decision');
+  await expect(page.getByRole('tabpanel').getByRole('img').locator('..')).toHaveCSS('animation-name', 'none');
+  await expect(page.getByRole('heading', { name: 'Keep the reasoning with the decision.' })).toBeVisible();
+  // 200% equivalent reflow also exercises the short-viewport fallback without reduced motion.
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.setViewportSize({ width: 683, height: 384 });
+  await page.getByRole('link', { name: 'AGAP home', exact: true }).click();
+  await expect(scene.locator('> div')).toHaveCSS('position', 'relative');
+  await expect(scene.getByRole('img').locator('..')).toHaveCSS('transform', 'none');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  if (process.env.AGAP_CAPTURE_MOTION) await page.screenshot({ path: 'docs/screenshots/landing/motion-short-zoom.png', fullPage: true });
 });

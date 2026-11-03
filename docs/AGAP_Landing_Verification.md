@@ -79,3 +79,9 @@ Follow-up verification: `npm run check` passed (193 UI/domain, 520 backend and 7
 Publication follow-up: the requested white/oversized presentation was published normally to `main` in [2c75cad](https://github.com/Aracena18/AGAP/commit/2c75cad); the original in-app preview was refreshed and visibly verified. The following documentation-only correction gives browser-captured JPEGs their proper `.jpg` extension; it changes no rendered page.
 
 The installation dialog now restores focus to the button that opened it when the dialog closes. The button's identity survives the switch from the static hero to the lazy animation, even when that switch replaces the button while the dialog is open. The Escape and focus restoration scenario passed in macOS Chromium.
+
+## Motion refinement — UI-07, 3 November 2026
+
+The user requests use of the installed Remotion skill to enhance landing animation and transitions. Proposed implementation: apply its explicit interpolation ranges, clamping, perceptual scale and non-bouncing easing guidance to the existing interactive Motion reveal. Keep the browser runtime on the approved `motion` dependency: this task is a scroll interface, not an embedded video composition. No dependency, canonical token, asset, route, authentication or financial change is proposed.
+
+Motion thesis: briefly retain the close-up, ease the same Gabay into full view, then reveal the heading and two pairs of explanations before releasing the sticky scene into the ordinary workflow. Screenshot selection receives a short content transition; later sections stay immediately available. Transform/opacity updates remain outside React rendering, scroll stays directly reversible, mobile/short/reduced-motion layouts remain static, and reduced motion disables the new screenshot animation. Verification and publication results follow below after execution.
