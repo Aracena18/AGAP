@@ -553,5 +553,6 @@
         255
       ]
     }
-  ]
+  ],
+  "additionalManifest": "source-manifests/optimized-transfer-2026-11-03.json"
 }

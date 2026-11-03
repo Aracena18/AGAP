@@ -8,6 +8,6 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   { files: ['infra/scripts/*.mjs'], languageOptions: { globals: globals.node } },
-  { files: ['design-library/specimens/**/*.js'], languageOptions: { globals: globals.browser } },
+  { files: ['design-library/specimens/**/*.js', 'design-library/prototypes/**/*.js'], languageOptions: { globals: globals.browser } },
   { files: ['**/*.{ts,tsx}'], languageOptions: { globals: { ...globals.browser, ...globals.node } }, plugins: { 'react-hooks': hooks }, rules: { ...hooks.configs.recommended.rules } },
 );

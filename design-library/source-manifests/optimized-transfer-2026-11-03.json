@@ -1,0 +1,363 @@
+{
+  "version": "2026-11-03",
+  "source_archive": "AGAP_Accepted_Design_Archive_2026-11-03.zip (ChatGPT Library)",
+  "source_type": "optimized derivatives, originals retained",
+  "production_integrated": false,
+  "standalone_master_transfer_status": "original transferred",
+  "files": [
+    {
+      "path": "design-library/assets/gabay/master/gabay_3d_transparent.webp",
+      "bytes": 535718,
+      "git_blob_sha": "3a8c2ac6f000163cdb802e3306b37f7c41f7c4e3",
+      "sha256": "b644efe5a919c30bdcaf4fbe26a0186ef4a1e3c427d28e44b5d00ecefa7d8b4c",
+      "width": 1024,
+      "height": 1024,
+      "has_alpha": true,
+      "format": "webp",
+      "role": "source-quality original from accepted archive"
+    },
+    {
+      "path": "design-library/concepts/member-experience/01-onboarding.webp",
+      "bytes": 68216,
+      "git_blob_sha": "19e4857d0f6b77aaa45f3f588ffa04f41ae3cdb5",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/concepts/member-experience/02-monthly-budget.webp",
+      "bytes": 64950,
+      "git_blob_sha": "11f383607f78e83d3aad6bd6d97c08721052a989",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/concepts/member-experience/03-application-saved.webp",
+      "bytes": 68554,
+      "git_blob_sha": "8762c280dbfe45e8ee03fc4e23cbfba139f0c93b",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/concepts/member-experience/04-repayment-options.webp",
+      "bytes": 77356,
+      "git_blob_sha": "200328eef8a807adce5edfae433df293fc823f67",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/concepts/member-experience/four-screen-overview.webp",
+      "bytes": 359878,
+      "git_blob_sha": "b0ad345942dad6d304c2c55f562ccfcca8de92f7",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/concepts/motion/motion-overview.webp",
+      "bytes": 315358,
+      "git_blob_sha": "994c4dbc7b40690130021b63b4876a5237cb1028",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/empty-states/gabay-application-saved.webp",
+      "bytes": 326328,
+      "git_blob_sha": "fb6b0001afed6b9d8f3858276b9d50953691f543",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/empty-states/gabay-application-under-review.webp",
+      "bytes": 302116,
+      "git_blob_sha": "3d05a0ec31aad53cfad98a438d48f9e489e05992",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/empty-states/gabay-connection-interrupted.webp",
+      "bytes": 329162,
+      "git_blob_sha": "a98b4dee8c3f52a67a0a5eea912a655e53a3b4b7",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/empty-states/gabay-information-unavailable.webp",
+      "bytes": 335824,
+      "git_blob_sha": "6aaed41d2a7b069eac95c8e7a7bfd4b8375d1200",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/empty-states/gabay-missing-document.webp",
+      "bytes": 323232,
+      "git_blob_sha": "294c0783ce246725239ce104731c9868cd82926a",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/empty-states/gabay-no-applications.webp",
+      "bytes": 334962,
+      "git_blob_sha": "8cf8143db1f0219ca275deef5faa1c6ef7d86e5f",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/empty-states/gabay-payment-assistance-requested.webp",
+      "bytes": 433282,
+      "git_blob_sha": "abc458781a9fef95ac3970e37ba38ae1d047398c",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/empty-states/gabay-welcome-first-visit.webp",
+      "bytes": 313000,
+      "git_blob_sha": "e719cb73d6c2346641daa0b244e7152c2b69928b",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/expressions/gabay-concerned.webp",
+      "bytes": 202858,
+      "git_blob_sha": "1bac9bf3619ebf712fd8d8c5afc67bb333a27b5d",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/expressions/gabay-curious.webp",
+      "bytes": 199930,
+      "git_blob_sha": "a2aeb7397e50de5447dcfb5ca1f6377244092ee5",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/expressions/gabay-encouraging.webp",
+      "bytes": 239448,
+      "git_blob_sha": "bede0e722049598bb9a0713b2edc64f40d69dd1b",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/expressions/gabay-excited.webp",
+      "bytes": 203704,
+      "git_blob_sha": "60b24c5a77bb8e8075874a7dbcfa13360e30a204",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/expressions/gabay-happy.webp",
+      "bytes": 199054,
+      "git_blob_sha": "7962076e621a087e4e01825990f49153460e358c",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/expressions/gabay-reassuring.webp",
+      "bytes": 236000,
+      "git_blob_sha": "0867375737c8abecddd118e51d6782816c36361a",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/expressions/gabay-thinking.webp",
+      "bytes": 179200,
+      "git_blob_sha": "2855b604658e710c6adce22bbf59604fcd84822f",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/signature-poses/gabay-explaining-finances.webp",
+      "bytes": 298298,
+      "git_blob_sha": "49c1e64058f60704d6f0b528fb04eb0819991fe1",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/signature-poses/gabay-guiding-steps.webp",
+      "bytes": 263770,
+      "git_blob_sha": "4cc69d53301e458476dc0ff8948e31d828250613",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/signature-poses/gabay-progress-milestones.webp",
+      "bytes": 316872,
+      "git_blob_sha": "d9a5abf6f99ef405626e322dee41ddcbb9d03fa0",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/signature-poses/gabay-safety-reminders.webp",
+      "bytes": 268252,
+      "git_blob_sha": "4f3a0191fb767dda883dfc021f76177ae85b1525",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/signature-poses/gabay-welcome-onboarding.webp",
+      "bytes": 256708,
+      "git_blob_sha": "35d1de372673f58da52fe1a06a16a2f5094eca1c",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/turnaround/gabay-back.webp",
+      "bytes": 201602,
+      "git_blob_sha": "79164ca959b14f07d83496d673f90534115a226e",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/turnaround/gabay-front.webp",
+      "bytes": 236554,
+      "git_blob_sha": "2bd17886adc0d899b4add2ac1b0ffa28419c71e1",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/turnaround/gabay-profile-left.webp",
+      "bytes": 158288,
+      "git_blob_sha": "80782e2d0ecb1b5a5c03d93c2d87abd580e43dac",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/turnaround/gabay-profile-right.webp",
+      "bytes": 156758,
+      "git_blob_sha": "4e8433ad0fbd2f0ed90e24d5a3b3d562a75b7f73",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/turnaround/gabay-three-quarter-left.webp",
+      "bytes": 202748,
+      "git_blob_sha": "615bbded4ef5d24023116b74ed5d5fbf322c592e",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/assets/gabay/turnaround/gabay-three-quarter-right.webp",
+      "bytes": 201284,
+      "git_blob_sha": "1be07ac37e6569b8b6339097c22ad209b5232188",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/prototypes/agap-ui-design-system-self-contained.html",
+      "bytes": 507956,
+      "git_blob_sha": "b36fa1c9620548b157d38e93838c393bc19f0a1f",
+      "format": "html",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/prototypes/component-library/assets/gabay-document.webp",
+      "bytes": 123086,
+      "git_blob_sha": "0c22deba9032eb4b0d5d212cbbd8147a4db54a53",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/prototypes/component-library/assets/gabay-empty.webp",
+      "bytes": 134444,
+      "git_blob_sha": "d7d8e10fb844692f5b6d3adb4536f03bd5aa998c",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/prototypes/component-library/assets/gabay-idle.webp",
+      "bytes": 114974,
+      "git_blob_sha": "f30d263d40de0dee5f794b956decf79c0997bb7d",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/prototypes/component-library/assets/gabay-save.webp",
+      "bytes": 123726,
+      "git_blob_sha": "558f855bfe1d9ca7f992573036d08a5ac4796ef1",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/prototypes/component-library/assets/gabay-welcome.webp",
+      "bytes": 118738,
+      "git_blob_sha": "82a7fe8c35bec7beb0573e7e74af4e6c3e599848",
+      "format": "webp",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/prototypes/component-library/index.html",
+      "bytes": 22634,
+      "git_blob_sha": "71c098fb866330ddad717b65f02d8603cfabb767",
+      "format": "html",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/prototypes/component-library/interactions.js",
+      "bytes": 4166,
+      "git_blob_sha": "90dcbd0a9a75826bff7b3a74768bc90265ceecec",
+      "format": "js",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/prototypes/component-library/styles.css",
+      "bytes": 16855,
+      "git_blob_sha": "8eb4547e78421b9ea23579f32df460f6d8288c72",
+      "format": "css",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/prototypes/component-library/tokens.css",
+      "bytes": 1328,
+      "git_blob_sha": "495f1927fcb16b12aa55f3bb6c5ad7b9b8c80ca2",
+      "format": "css",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/prototypes/gabay-motion.html",
+      "bytes": 185994,
+      "git_blob_sha": "0456fd8ab2737b01dd1edd9e2862b332fdfb82da",
+      "format": "html",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/react-candidate/AGAPComponents.css",
+      "bytes": 5280,
+      "git_blob_sha": "7e91ffbbf90e8a9fa47f0367949190d2daf4190b",
+      "format": "css",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/react-candidate/AGAPComponents.tsx",
+      "bytes": 5231,
+      "git_blob_sha": "3a1c2fa203eb44fc8de5fec70608910774426811",
+      "format": "tsx",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/react-candidate/DECISIONS.md",
+      "bytes": 4689,
+      "git_blob_sha": "6f4c77fd4e193a015da5aa11ce33bcb55e402a17",
+      "format": "md",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/react-candidate/ExampleUsage.tsx",
+      "bytes": 1828,
+      "git_blob_sha": "ca72a6b0bd57e2e9f9918c8abc719f15f2b8b37e",
+      "format": "tsx",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/react-candidate/README.md",
+      "bytes": 3962,
+      "git_blob_sha": "a4b93907bf89a95d8016247479a36e09fe0e530f",
+      "format": "md",
+      "role": "design candidate / optimized transfer"
+    },
+    {
+      "path": "design-library/react-candidate/agap-tokens.css",
+      "bytes": 1328,
+      "git_blob_sha": "495f1927fcb16b12aa55f3bb6c5ad7b9b8c80ca2",
+      "format": "css",
+      "role": "design candidate / optimized transfer"
+    }
+  ]
+}

@@ -53,6 +53,20 @@ The corrected transparent empty-state package should supersede the first low-res
 5. Do not claim applications, loans, approvals, reminders, or support requests are live when underlying services are unavailable.
 6. Test 320px layouts and financial comprehension with representative members before publication.
 
+## Additional synchronized design references
+
+GitHub main `8effecc` also carries optimized WebP derivatives, a second portable component gallery, React candidates and two design comparisons. They are preserved alongside the exact original files. The [original manifest](manifest.json) maps all 50 source files; the separate [optimized-transfer manifest](source-manifests/optimized-transfer-2026-11-03.json) preserves the incoming file/blob inventory. Neither candidate token set is active in the application.
+
+Review the [member/staff brand comparison](prototypes/brand-adoption-preview.html), [portable component gallery](prototypes/component-library/index.html), [React candidate](react-candidate/README.md) and [motion prototype](prototypes/gabay-motion.html). The original 1024px master is also present at the incoming master path; optimized delivery files do not replace source-quality originals. No animated sprite/layer pack is supplied.
+
+## Member-journey candidate — 3 November 2026
+
+[Open the interactive member journey](prototypes/member-journey-preview.html) to inspect a **new design candidate** for six connected destinations: welcome with the four required actions, application draft and review, source-linked simulated suggestion with confirmation/correction/not-applicable, a fictional stage tracker, an explicitly unavailable posted-loan/full-cost view, and payment-help sharing preview and simulated completion. The design uses existing individual Gabay files and proposed green/white/yellow colors, **not** a new image crop or production palette change.
+
+Controls remain local to the open HTML document: they do not authenticate, persist an application, upload a document, run AI, calculate an offer, transmit a support request or change repayment terms. The sample suggestion is visibly **Simulated**, while any independent source verification remains unavailable. The help preview requires a fresh sharing acknowledgment, returns focus appropriately after editing, and states that payments remain due. Layout modes expose desktop, 360px and 320px widths.
+
+**Verification:** GitHub file write and read-back succeeded; the artifact was checked for all six screen IDs, referenced approved Gabay filenames, truthful unavailable/simulated states, focus styling, reduced-motion and 320px support, and absence of remote scripts. These are structural checks **only**: interactive browser testing, contrast/zoom review, keyboard/screen-reader testing, screenshots, representative-member comprehension, and visual sign-off are still pending. This is supporting context for existing **MOB-01**, not a new production feature or accepted design.
+
 ## Next work
 
 Review the [analysis](ANALYSIS.md) and `design.md` section 16, then implement UI-06 as a visual-only migration using the existing system. Preserve the source files and adopt components through the current shared UI rather than importing a parallel kit. Publication follows the user's authorized direct-main workflow after relevant checks; no PR is required for this handoff. Application acceptance still requires its full checks and representative review.
