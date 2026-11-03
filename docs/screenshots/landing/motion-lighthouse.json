@@ -1,0 +1,27 @@
+{
+  "tool": "Lighthouse 13.6.0",
+  "url": "http://127.0.0.1:5191/",
+  "basis": "Landing candidate before accounting synchronization; same landing code and assets",
+  "categories": {
+    "performance": 0.93,
+    "accessibility": 1,
+    "best-practices": 1,
+    "seo": 1,
+    "agentic-browsing": 0.5
+  },
+  "metrics": {
+    "largest-contentful-paint": {
+      "displayValue": "2.8\u00a0s",
+      "numericValue": 2756.696425
+    },
+    "total-blocking-time": {
+      "displayValue": "190\u00a0ms",
+      "numericValue": 193.99999999999977
+    },
+    "cumulative-layout-shift": {
+      "displayValue": "0",
+      "numericValue": 0
+    }
+  },
+  "limits": "One mobile lab run; not field performance, scroll frame-rate evidence, or production certification."
+}
