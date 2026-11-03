@@ -122,3 +122,45 @@ On the combined application tree, `npm run check` passed lint, contract/client d
 Inspected the incoming brand comparison in two modes and all six member-journey destinations at three widths (24 samples): no broken images or page overflow; outstanding landmark/contrast findings and the cramped 320px welcome hero are recorded in the [analysis](../design-library/ANALYSIS.md) and [raw preview results](../design-library/review/synchronized-preview-checks.json). Four viewport captures were visually reviewed. This scoped inspection does not establish full interaction, assistive-technology, zoom or representative-user acceptance. Earlier structural-only preview evidence remains historical; UI-06 is still Not started.
 
 Final handoff checks: **202 local Markdown links/anchors** and **16 local HTML resource references** pass, as does `git diff --check`. Final graph refresh completed (3,037 nodes / 8,386 edges) with the known optional SQL-parser and partial contracts-barrel warnings. Publication includes only the design library, scoped specimen lint configuration and canonical planning/verification updates; unrelated root files remain local. No remote CI pass, institutional acceptance or production release is claimed.
+
+
+## UI-06 — Gabay workspace redesign — 3 November 2026
+
+The user authorizes implementing the selected Gabay app UI/UX direction and explicitly excludes the landing page. Work is isolated on `codex/workspace-redesign`, base `f10dae460dc20a1d39222891d9b725b2a0283b4a`. [design.md section 16](../design.md#16-planned-gabay-rebranding--3-november-2026) governs the merged implementation; Assignment.md alone records task status. Coordinated staff/demo edits are presentation-only; domain ownership and accepting authority are preserved.
+
+### Delivered presentation
+
+- `WorkspaceRoutes` applies `[data-agap-workspace]` and loads workspace-only presentation CSS. Existing root and landing token blocks stay byte-identical; canonical tokens append the green/white/yellow operational mapping. Compatible shared Button/Badge/Notice/Money behavior is retained.
+- Shared workspace/account header, supplied three-petal mark treatment, member navigation and desktop staff sidebar. Small phones retain all four member destinations; staff navigation wraps above its content. Existing route/session/role guards remain intact.
+- Gabay welcome/sign-in/home, cleaner task actions, readable application/help forms and truthful unavailable loan/support views. The empty-list image is conditional on a successfully loaded empty list. Decorative art does not claim verification, approval or safety.
+- Review-demo application rows become labeled phone records, keeping purpose, amount, status, date and Review action together. Wider staff tables remain local scroll regions with keyboard-reachable actions. Evidence, source, comparison, saved-assessment and history surfaces share the new controls and palette.
+- Two workspace-specific WebPs are exact copies of the incoming optimized archive assets: 256,708-byte welcome and 334,962-byte no-applications image. Original masters and landing files are unchanged; the full archive is not shipped in the app bundle. No dependency or decorative operational animation was added.
+
+### Verification and preservation
+
+`npm run check` passed lint, generated contracts/client consistency, frontend/API builds, **193 app tests, 522 platform/database tests and 76 evaluation-tool tests**. Final `npm run test:e2e` passed **all 56 Chromium tests**. Four added cases cover member phone navigation/focus, every demo phone-record field/action, styling isolation after returning to the landing, and staff navigation/table-action reachability at 320/683/1366px. The 683px width checks reflow equivalent to 200% of a 1366px viewport; it is not a physical-device or browser-zoom usability study.
+
+The first browser run passed 55 cases; the new navigation test reused the original member session that its own serial logout journey had invalidated. It now uses the existing independent UI session. All four new cases then passed in isolation and the full final suite passed. No application change was needed for that fixture issue. Tests used only `agap-ui06-tests` fictional PostgreSQL at 55444, web/API 5305/4235; preview capture used 5304/4234 and a separate baseline frontend at 5314.
+
+[Forty-two route/size samples](screenshots/workspace-redesign/after/checks.json) cover 14 member/staff/demo destinations at 320/768/1366px: no page overflow, broken images or axe violations in those states. First-pass intrinsic table sizing and compact-header overflow were corrected before final captures. [Before captures](screenshots/workspace-redesign/before/) and [after captures](screenshots/workspace-redesign/after/) remain separately recorded. Source/assessment financial outputs, corrections, uncertain retries, retained history, sharing confirmation and original Ana/Ben/Cora oracles pass their existing checks.
+
+[Preservation checks](screenshots/workspace-redesign/preservation-checks.json) verify **19 protected files**, including landing source/assets, global CSS and root routing, unchanged from the base. Existing root and landing token blocks are unchanged. Landing viewport captures are **pixel-identical at 320px and 1366px** under the same reduced-motion static conditions; the full existing landing browser tests also pass. Financial/domain/contracts, canonical fixtures, API implementation and dependency manifests/lockfile remain unchanged. Newly generated server-workflow screenshots were copied to this task's evidence path; original captures were restored.
+
+### Visual review and tools
+
+A fresh Impeccable finish reviewer returned **ship**, with no proven material fixes across the named member, staff and demo captures; supplemental review returned **ship** for the real-API saved-assessment screenshots. [Review scope and disposition](screenshots/workspace-redesign/visual-review.md) distinguish screenshot review from live interactions and independent financial verification. Existing canonical docs and source-pointer tool context were updated through the documenter handoff; no competing guide/token registry was introduced.
+
+Impeccable's detector returned no findings. The local 21st review reports the existing delegated Dropdown menu-click scanner finding and informational canonical color literals; sampled native menuitems/keyboard handlers, unit/browser checks and fresh review establish no new defect from those generic findings. Catalogue search was attempted but needs 21st sign-in; no catalogue source was retrieved, installed or published. The supplied component kit and existing primitives grounded implementation. [Tool review disposition](screenshots/workspace-redesign/tool-review.json) records these limits. React Bits motion was not selected for task-oriented operational screens; reduced motion remains supported. Graph refresh completed with the existing optional missing SQL parser and partial contracts-barrel limitations.
+
+| Surface | Phone | Desktop |
+| --- | --- | --- |
+| Member welcome | [320px](screenshots/workspace-redesign/after/member-entry-320.png) | [1366px](screenshots/workspace-redesign/after/member-entry-1366.png) |
+| Member home | [320px](screenshots/workspace-redesign/after/member-home-320.png) | [1366px](screenshots/workspace-redesign/after/member-home-1366.png) |
+| Application form | [320px](screenshots/workspace-redesign/after/member-apply-320.png) | [1366px](screenshots/workspace-redesign/after/member-apply-1366.png) |
+| Staff applications | [320px](screenshots/workspace-redesign/after/staff-applications-320.png) | [1366px](screenshots/workspace-redesign/after/staff-applications-1366.png) |
+| Fictional review list | [320px](screenshots/workspace-redesign/after/demo-list-320.png) | [1366px](screenshots/workspace-redesign/after/demo-list-1366.png) |
+| Saved server assessment | [320px](screenshots/workspace-redesign/after/evidence-workflow-staff-320.png) | [1366px](screenshots/workspace-redesign/after/evidence-workflow-staff-1366.png) |
+
+The task follows authorized normal direct-main publication, with no force push or new PR. Local verification and visual ship disposition do not establish remote CI success, consuming-owner agreement, representative staff/member acceptance, institutional approval or production readiness. Those remain separately recorded requirements; unrelated local source archives and documents are preserved.
+
+Final UI-06 handoff consistency: **243 local Markdown links/anchors**, context JSON parsing and `git diff --check` pass. Final graph refresh records 3,118 nodes / 8,531 edges with the same parser limitations. Protected implementation/fixture/dependency paths remain byte-identical to the base.

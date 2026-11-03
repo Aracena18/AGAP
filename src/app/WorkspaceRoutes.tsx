@@ -2,6 +2,7 @@ import { lazy } from 'react';
 import { useLocation } from 'react-router-dom';
 import { StaffProvider, useStaff } from '../features/access/StaffContext';
 import { StaffSignIn } from '../features/access/StaffSignIn';
+import './workspace.css';
 
 const DemoRoot = lazy(() => import('./DemoRoot'));
 const StaffApp = lazy(() => import('./StaffApp'));
@@ -14,5 +15,6 @@ function StaffDemoRoutes() {
 }
 export default function WorkspaceRoutes() {
   const { pathname } = useLocation();
-  return pathname === '/member' || pathname.startsWith('/member/') ? <MemberApp/> : <StaffProvider><StaffDemoRoutes/></StaffProvider>;
+  const member = pathname === '/member' || pathname.startsWith('/member/');
+  return <div data-agap-workspace data-workspace-kind={member ? 'member' : pathname.startsWith('/staff') ? 'staff' : 'demo'}>{member ? <MemberApp/> : <StaffProvider><StaffDemoRoutes/></StaffProvider>}</div>;
 }

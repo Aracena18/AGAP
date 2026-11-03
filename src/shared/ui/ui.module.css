@@ -16,3 +16,10 @@
 .notice { display: flex; align-items: flex-start; gap: 12px; padding: 16px; border-radius: 12px; font-size: 14px; line-height: 22px; }
 .notice > svg { flex: 0 0 auto; margin-top: 1px; }
 .money { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+:global([data-agap-workspace]) .button { min-height: 48px; padding: 11px 22px; font-weight: 500; }
+:global([data-agap-workspace]) .button:hover:not(:disabled) { box-shadow: none; }
+:global([data-agap-workspace]) .secondary { border-color: var(--input-line); background: var(--surface); }
+:global([data-agap-workspace]) .secondary:hover:not(:disabled) { background: var(--hover); }
+:global([data-agap-workspace]) .badge { white-space: normal; font-weight: 500; }
+:global([data-agap-workspace]) .notice { border-radius: 12px; }

@@ -13,7 +13,7 @@
   "scope": {
     "task": "UI-07",
     "surface": "Public Gabay landing",
-    "designSection": "17. Public Gabay landing — UI-07, 3 November 2026",
+    "designSection": "17. Public Gabay landing \u2014 UI-07, 3 November 2026",
     "selector": "[data-agap-landing]",
     "surfaceBrief": "surfaces/landing.md",
     "boundary": "Landing palette and reveal behavior are local to this surface; existing workspace rules and tokens retain their authority.",
@@ -22,16 +22,38 @@
   "extensions": {
     "palette": {
       "source": "../src/styles/tokens.css",
-      "workspaceSelector": ":root",
+      "workspaceSelector": "[data-agap-workspace]",
       "landingSelector": "[data-agap-landing]",
       "darkVariant": "No automatic dark variant: the user explicitly requested a white landing under either system preference",
       "roles": {
-        "action": ["--primary", "--primary-hover", "--landing-button-ink"],
-        "selection": ["--primary-container", "--on-primary-container"],
-        "brandDetail": ["--landing-yellow", "--landing-on-yellow"],
-        "surfaces": ["--canvas", "--surface", "--surface-variant", "--landing-hero"],
-        "text": ["--ink", "--muted"],
-        "boundariesAndFocus": ["--line", "--input-line", "--focus"]
+        "action": [
+          "--primary",
+          "--primary-hover",
+          "--landing-button-ink"
+        ],
+        "selection": [
+          "--primary-container",
+          "--on-primary-container"
+        ],
+        "brandDetail": [
+          "--landing-yellow",
+          "--landing-on-yellow"
+        ],
+        "surfaces": [
+          "--canvas",
+          "--surface",
+          "--surface-variant",
+          "--landing-hero"
+        ],
+        "text": [
+          "--ink",
+          "--muted"
+        ],
+        "boundariesAndFocus": [
+          "--line",
+          "--input-line",
+          "--focus"
+        ]
       }
     },
     "typography": {
@@ -46,7 +68,10 @@
     },
     "elevation": {
       "tokenSource": "../src/styles/tokens.css",
-      "tokens": ["--landing-shadow", "--landing-backdrop"],
+      "tokens": [
+        "--landing-shadow",
+        "--landing-backdrop"
+      ],
       "usageSource": "../src/features/landing/LandingPage.module.css"
     },
     "responsiveAndMotion": {
@@ -54,6 +79,15 @@
       "layoutAndReducedMotionSource": "../src/features/landing/LandingPage.module.css",
       "scrollTransformsAndFocusPhaseSource": "../src/features/landing/RevealMotion.tsx",
       "guidance": "../design.md"
+    },
+    "workspace": {
+      "task": "UI-06",
+      "authority": "../design.md#16-planned-gabay-rebranding--3-november-2026",
+      "selector": "[data-agap-workspace]",
+      "surfaceBrief": "surfaces/workspaces.md",
+      "styles": "../src/app/workspace.css",
+      "evidence": "../docs/AGAP_UI_Review_Verification.md",
+      "boundary": "Public landing implementation is unchanged; preserve existing operational behavior and source authority."
     }
   },
   "components": [

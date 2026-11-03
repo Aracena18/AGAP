@@ -4,3 +4,10 @@
 .editor { padding: var(--space-4); border: 1px solid var(--line); border-radius: var(--radius); }
 .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: var(--space-4); }
 .summary dd { margin: 0; font-weight: 600; }
+
+.source { background: var(--surface); }
+.editor { background: var(--surface-variant); padding: 24px; }
+.summary { padding-block: 12px; column-gap: 24px; }
+.summary dt { color: var(--muted); font-size: 13px; margin-bottom: 4px; }
+.summary dd { font-size: 18px; font-variant-numeric: tabular-nums; }
+@media (max-width: 767px) { .editor { padding: 16px; } }

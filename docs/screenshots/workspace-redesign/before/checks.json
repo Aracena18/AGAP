@@ -1,0 +1,146 @@
+[
+  {
+    "name": "member-entry",
+    "route": "/member",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 666,
+      "top": 73,
+      "right": 320,
+      "bottom": 739,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "member-home",
+    "route": "/member",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 966,
+      "top": 73,
+      "right": 320,
+      "bottom": 1039,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "staff-applications",
+    "route": "/staff/applications",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 648,
+      "top": 73,
+      "right": 320,
+      "bottom": 721,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "demo-list",
+    "route": "/applications",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 771.5,
+      "top": 73,
+      "right": 320,
+      "bottom": 844.5,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "member-entry",
+    "route": "/member",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [],
+    "main": {
+      "x": 183,
+      "y": 73,
+      "width": 1000,
+      "height": 666,
+      "top": 73,
+      "right": 1183,
+      "bottom": 739,
+      "left": 183
+    },
+    "violations": []
+  },
+  {
+    "name": "member-home",
+    "route": "/member",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [],
+    "main": {
+      "x": 183,
+      "y": 73,
+      "width": 1000,
+      "height": 666,
+      "top": 73,
+      "right": 1183,
+      "bottom": 739,
+      "left": 183
+    },
+    "violations": []
+  },
+  {
+    "name": "staff-applications",
+    "route": "/staff/applications",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [],
+    "main": {
+      "x": 43,
+      "y": 73,
+      "width": 1280,
+      "height": 648,
+      "top": 73,
+      "right": 1323,
+      "bottom": 721,
+      "left": 43
+    },
+    "violations": []
+  },
+  {
+    "name": "demo-list",
+    "route": "/applications",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [],
+    "main": {
+      "x": 43,
+      "y": 73,
+      "width": 1280,
+      "height": 734,
+      "top": 73,
+      "right": 1323,
+      "bottom": 807,
+      "left": 43
+    },
+    "violations": []
+  }
+]

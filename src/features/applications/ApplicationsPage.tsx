@@ -35,10 +35,10 @@ export default function ApplicationsPage() {
             const state = caseStatus(record);
             return <tr key={record.id}>
               <td><div className={styles.member}><span className={styles.avatar} aria-hidden="true">{record.member.initials}</span><div><strong>{record.member.name}</strong><p className="small subtle">{record.id}</p></div></div></td>
-              <td>{record.purpose}</td>
-              <td className="numeric"><Money value={record.offers[0].principal} /></td>
-              <td><Badge tone={state.tone}>{state.label}</Badge></td>
-              <td className="subtle">{dateLabel(record.createdAt)}</td>
+              <td data-label="Purpose">{record.purpose}</td>
+              <td className="numeric" data-label="Requested amount"><Money value={record.offers[0].principal} /></td>
+              <td data-label="Review status"><Badge tone={state.tone}>{state.label}</Badge></td>
+              <td className="subtle" data-label="Received">{dateLabel(record.createdAt)}</td>
               <td><Link className={styles.review} to={`/applications/${record.id}/evidence`} aria-label={`Review ${record.member.name}`}>Review <ArrowForward size={16} aria-hidden="true" /></Link></td>
             </tr>;
           })}</tbody>

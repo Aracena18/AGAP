@@ -11,6 +11,7 @@ import { useUnsavedChanges } from '../access/useUnsavedChanges';
 import { parsePesoInput } from '../../domain/evidence';
 import { dateLabel } from '../../domain/format';
 import { Badge,Button,Money,Notice } from '../../shared/ui';
+import { Gabay } from '../../shared/ui/Gabay';
 import { ArrowForward } from '../../shared/icons';
 import { CommandError,ReadState } from './MemberFeedback';
 import { MemberWorkflow } from '../workflow/WorkflowPanel';
@@ -21,7 +22,7 @@ export const statusLabel:Record<Output<'MemberApplication'>['status'],string>={d
 export function HomePage(){
   const {session}=useMember();
   const actions=[['/member/apply','Apply for a loan','Start with your requested amount and purpose'],['/member/applications','Track my application','See progress and requests for information'],['/member/loans','View my loan','Check your schedule and payment records'],['/member/help','Get payment help','Tell the cooperative when circumstances change']];
-  return <div className="stack"><div className={styles.intro}><p className="eyebrow">Welcome, {session!.principal.displayName}</p><h1>Your member account</h1><p>What would you like to do today?</p></div><div className={styles.actions}>{actions.map(([to,title,detail])=><Link className={styles.action} to={to} key={to}><span><strong>{title}</strong><small>{detail}</small></span><ArrowForward size={22} aria-hidden="true"/></Link>)}</div><LoanNotice/></div>;
+  return <div className="stack"><section className={styles.homeWelcome}><div className={styles.intro}><h1>Your member account</h1><p>Welcome, {session!.principal.displayName}.</p><p>What would you like to do today?</p></div><Gabay className={styles.homeArt}/></section><div className={styles.actions}>{actions.map(([to,title,detail])=><Link className={styles.action} to={to} key={to}><span><strong>{title}</strong><small>{detail}</small></span><ArrowForward size={22} aria-hidden="true"/></Link>)}</div><LoanNotice/></div>;
 }
 function LoanNotice(){
   const {client}=useMember();
@@ -31,7 +32,7 @@ function LoanNotice(){
 }
 export function ApplicationsPage(){
   const {client}=useMember(),load=useCallback((options:RequestOptions)=>client.listMemberApplications(options),[client]),page=usePage(load);
-  return <div className="stack"><div className="page-heading"><div><h1>My applications</h1><p>Drafts and submitted requests, saved to your account.</p></div><Link className={styles.primaryLink} to="/member/apply">Apply for a loan</Link></div><ReadState {...page}/>{page.items.length>0?<section className="panel" aria-label="Your applications">{page.items.map(item=><article className={styles.record} key={item.id}><div><h2>{item.purpose}</h2><p><Money value={item.requestedPrincipalCentavos}/> requested · {item.requestedTermMonths} months</p><p className="small subtle">Updated {dateLabel(item.updatedAt)}</p></div><Badge tone={item.status==='clarification'?'warning':'neutral'}>{statusLabel[item.status]}</Badge><Link className={styles.link} to={`/member/applications/${item.id}`}>View application <ArrowForward size={18} aria-hidden="true"/></Link></article>)}</section>:!page.loading&&!page.error?<section className="panel panel-body"><h2>No applications yet</h2><p>You can save a draft before submitting it for review.</p></section>:null}{page.hasMore&&<Button variant="secondary" disabled={page.loading} onClick={()=>void page.more()}>Load more applications</Button>}</div>;
+  return <div className="stack"><div className="page-heading"><div><h1>My applications</h1><p>Drafts and submitted requests, saved to your account.</p></div><Link className={styles.primaryLink} to="/member/apply">Apply for a loan</Link></div><ReadState {...page}/>{page.items.length>0?<section className="panel" aria-label="Your applications">{page.items.map(item=><article className={styles.record} key={item.id}><div><h2>{item.purpose}</h2><p><Money value={item.requestedPrincipalCentavos}/> requested · {item.requestedTermMonths} months</p><p className="small subtle">Updated {dateLabel(item.updatedAt)}</p></div><Badge tone={item.status==='clarification'?'warning':'neutral'}>{statusLabel[item.status]}</Badge><Link className={styles.link} to={`/member/applications/${item.id}`}>View application <ArrowForward size={18} aria-hidden="true"/></Link></article>)}</section>:!page.loading&&!page.error?<section className={`panel panel-body ${styles.emptyState}`}><Gabay empty/><div><h2>No applications yet</h2><p>You can save a draft before submitting it for review.</p></div></section>:null}{page.hasMore&&<Button variant="secondary" disabled={page.loading} onClick={()=>void page.more()}>Load more applications</Button>}</div>;
 }
 const inputAmount=(value:number)=>`${Math.trunc(value/100)}.${String(value%100).padStart(2,'0')}`;
 export function ApplicationFormPage(){

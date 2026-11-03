@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link,useLocation } from 'react-router-dom';
-import { NorthEast } from '../icons';
 import { Notice } from '../ui';
 import { Dropdown } from './Dropdown';
 import styles from './navigation.module.css';
@@ -19,7 +18,7 @@ export function WorkspaceHeader({workspace,account}:{workspace:'member'|'staff'|
     }catch{setError('Could not confirm sign-out. Try again.');}finally{setSaving(false);}
   }
   return <><header className={`${styles.header} no-print`}><div className={styles.inner}>
-    <Link className={styles.brand} to={home[workspace]} aria-label="AGAP home"><NorthEast size={24}/>AGAP</Link>
+    <Link className={styles.brand} to={home[workspace]} aria-label="AGAP home"><span className={styles.mark} aria-hidden="true"><span/><span/><span/></span>AGAP</Link>
     <nav aria-label="Workspaces"><Dropdown key={`workspace-${pathname}`} label={`Switch workspace, current: ${labels[workspace]}`} trigger={labels[workspace]}>
       <Link role="menuitem" to="/member" aria-current={workspace==='member'?'page':undefined}>Member portal</Link>
       <Link role="menuitem" to="/staff" aria-current={workspace==='staff'?'page':undefined}>Staff workspace</Link>

@@ -1,0 +1,41 @@
+{
+  "base": "f10dae460dc20a1d39222891d9b725b2a0283b4a",
+  "protectedFilesByteIdentical": [
+    "public/icons/agap-192.png",
+    "public/icons/agap-512.png",
+    "public/icons/agap.svg",
+    "public/landing/cash-flow.webp",
+    "public/landing/cash-flow.webp.json",
+    "public/landing/decision.webp",
+    "public/landing/decision.webp.json",
+    "public/landing/evidence.webp",
+    "public/landing/evidence.webp.json",
+    "public/landing/options.webp",
+    "public/landing/options.webp.json",
+    "public/manifest.webmanifest",
+    "src/app/Root.tsx",
+    "src/features/landing/GabayReveal.tsx",
+    "src/features/landing/LandingPage.module.css",
+    "src/features/landing/LandingPage.tsx",
+    "src/features/landing/RevealMotion.tsx",
+    "src/features/landing/useInstall.ts",
+    "src/styles/global.css"
+  ],
+  "originalRootAndLandingTokenBlocksUnchanged": true,
+  "landingPixelDifferences": {
+    "320": 0,
+    "1366": 0
+  },
+  "captureMode": "Chromium, reduced-motion static layout, identical viewport/font/art readiness",
+  "routeSizeSamples": 42,
+  "pageOverflows": 0,
+  "axeViolations": 0,
+  "brokenImages": 0,
+  "responsiveWidths": [
+    320,
+    768,
+    1366
+  ],
+  "browserRegressionAdditionalWidth": 683,
+  "zoomLimit": "683px CSS width represents reflow at 200% of a1366px viewport; not a physical browser/device zoom study."
+}
