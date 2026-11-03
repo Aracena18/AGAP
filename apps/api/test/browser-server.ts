@@ -12,6 +12,7 @@ import { owner,runtimePool } from './database.js';
 import { randomBytes,randomUUID } from 'node:crypto';
 import { prepareReconciliationFixtures,reconciliationFixture } from '../src/modules/accounting/testing/reconciliation-fixture.js';
 import { uow } from './database.js';
+import { presentationFixtures } from './presentation-fixtures.js';
 await prepareDatabase();
 const fixture=await resetFixtures();
 const member=await memberFixture(fixture.officer.actor),otherMember=await memberFixture(fixture.officer.actor);
@@ -36,6 +37,7 @@ const reconciliation=await reconciliationFixture();
 await reconciliation.release();
 await uow.run(reconciliation.authorizer,tx=>reconciliation.ledger.post(tx,{sourceEventId:randomUUID(),postingKind:'repayment',postingRuleVersionId:reconciliation.policy.repaymentRuleId,
   effectiveDate:'2026-11-02',currency:'PHP',reversalOfJournalId:null,lines:[{accountId:reconciliation.policy.cashAccountId,side:'debit',amountCentavos:1},{accountId:reconciliation.policy.principalAccountId,side:'credit',amountCentavos:1}]}));
+if(process.env.AGAP_E2E_PRESENTATION==='1'){await presentationFixtures();config.NODE_ENV='development';config.LOCAL_PRESENTATION_MODE=true;}
 const app=await createApp(config);
 await app.listen(Number(process.env.AGAP_E2E_API_PORT??4101),'127.0.0.1');
 await mkdir('.platform-test',{recursive:true});

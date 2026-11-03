@@ -13,12 +13,13 @@ import { CONTRACT_VERSION } from '../../../packages/contracts/src/schemas.js';
 import { createPool, PostgresUnitOfWork } from './platform/database.js';
 import { ApiError } from './platform/errors.js';
 import { expectedVersion } from './platform/commands.js';
-import type { Config } from './platform/config.js';
+import { assertLocalPresentation, type Config } from './platform/config.js';
 import { IdentityService, cookieValue } from './modules/identity/identity.service.js';
 import { MembersService } from './modules/members/members.service.js';
 import { ApplicationsService } from './modules/applications/applications.service.js';
 import { StaffService } from './modules/identity/staff.service.js';
 import { limitLogin } from './modules/identity/login-limit.js';
+import { createPresentationSession } from './modules/identity/local-presentation.js';
 import { PostgresMemberUnitOfWork } from './platform/member-database.js';
 import { MemberApplicationsService } from './modules/applications/member-applications.service.js';
 import { MemberPortalService } from './modules/member-portal/member-portal.service.js';
@@ -73,14 +74,14 @@ class PlatformController {
   }
   @Get('auth/callback') async callback(@Req() request: StaffRequest,@Res() response: Response) {
     const login = cookieValue(request.headers.cookie,'agap_login');
-    const previous = cookieValue(request.headers.cookie,'agap_session');
+    const previous = cookieValue(request.headers.cookie,'agap_session',this.services.config.LOCAL_PRESENTATION_MODE);
     response.clearCookie('agap_login',{path:'/api/v1/auth',httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax'});
     const result = await this.services.identity.finishLogin(login,new URL(request.originalUrl,this.services.config.PUBLIC_ORIGIN),previous);
     response.cookie('agap_session',result.token,{httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax',path:'/',maxAge:this.services.config.SESSION_TTL_SECONDS*1000});
     response.redirect(302,`${this.services.config.PUBLIC_ORIGIN}/#${result.returnTo}`);
   }
   @Post('auth/logout') async logout(@Req() request: StaffRequest,@Res() response: Response) {
-    await this.services.identity.logout(cookieValue(request.headers.cookie,'agap_session')!);
+    await this.services.identity.logout(cookieValue(request.headers.cookie,'agap_session',this.services.config.LOCAL_PRESENTATION_MODE)!);
     response.clearCookie('agap_session',{path:'/',httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax'});
     response.status(200).json({signedOut:true});
   }
@@ -102,6 +103,7 @@ class PlatformController {
 }
 
 export async function createApp(config: Config,memberDomains?:MemberDomainPorts) {
+  assertLocalPresentation(config);
   if(config.EVIDENCE_RECORD_MODE==='real'){if(config.NODE_ENV!=='production')throw new Error('Real records require production and institutional release.');await requireRelease(process.env);}
   const database = createPool(config.DATABASE_URL);
   const identityDatabase = createPool(config.IDENTITY_DATABASE_URL);
@@ -135,9 +137,21 @@ export async function createApp(config: Config,memberDomains?:MemberDomainPorts)
       try {
         if (!publicPaths.has(request.path)) {
           const isMember=request.path.startsWith('/api/v1/member/');
-          const token = cookieValue(request.headers.cookie,isMember?'agap_member_session':'agap_session');
-          if(isMember)request.member=await identity.authenticateMember(token,request.correlationId);
-          else request.staff = await identity.authenticate(token,request.correlationId);
+          const cookieName=isMember?'agap_member_session':'agap_session';
+          let token = cookieValue(request.headers.cookie,cookieName,config.LOCAL_PRESENTATION_MODE);
+          const sessionRead=request.method==='GET'&&request.path===(isMember?'/api/v1/member/session':'/api/v1/session');
+          if(config.LOCAL_PRESENTATION_MODE&&sessionRead){
+            response.setHeader('X-AGAP-Presentation','true');
+            if(request.headers.host!==new URL(config.PUBLIC_ORIGIN).host||request.headers.origin&&request.headers.origin!==config.PUBLIC_ORIGIN||!['127.0.0.1','::1','::ffff:127.0.0.1'].includes(request.socket.remoteAddress??''))throw new ApiError(403,'presentation_origin_required','Open the local presentation address.');
+          }
+          const authenticate=async()=>{if(isMember)request.member=await identity.authenticateMember(token,request.correlationId);else request.staff=await identity.authenticate(token,request.correlationId);};
+          try{await authenticate();}catch(error){
+            if(!(config.LOCAL_PRESENTATION_MODE&&sessionRead&&error instanceof ApiError&&error.status===401))throw error;
+            await limitLogin(identityDatabase,config.SESSION_SECRET,request.socket.remoteAddress??'unknown');
+            token=await createPresentationSession(identityDatabase,config,isMember?'member':'staff');
+            await authenticate();
+            response.cookie(cookieName,token,{httpOnly:true,secure:false,sameSite:'lax',path:isMember?'/api/v1/member':'/',maxAge:config.SESSION_TTL_SECONDS*1000});
+          }
           if (!['GET','HEAD','OPTIONS'].includes(request.method)) identity.verifyCsrf(token!,request.headers['x-csrf-token'],request.headers.origin);
         }
         const pending = operations.find(op => !op.implemented && op.method === request.method && new RegExp(`^/api/v1${op.path.replace(/\{\w+\}/g,'[^/]+')}$`).test(request.path));

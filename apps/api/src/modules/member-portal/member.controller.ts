@@ -24,12 +24,12 @@ export class MemberController {
   @Get('auth/callback') async callback(@Req() request:MemberRequest,@Res() response:Response){
     response.clearCookie('agap_member_login',{path:'/api/v1/member/auth',httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax'});
     let token:string;
-    try{token=(await this.services.identity.finishLogin(cookieValue(request.headers.cookie,'agap_member_login'),new URL(request.originalUrl,this.services.config.PUBLIC_ORIGIN),cookieValue(request.headers.cookie,'agap_member_session'),'member')).token;}
+    try{token=(await this.services.identity.finishLogin(cookieValue(request.headers.cookie,'agap_member_login'),new URL(request.originalUrl,this.services.config.PUBLIC_ORIGIN),cookieValue(request.headers.cookie,'agap_member_session',this.services.config.LOCAL_PRESENTATION_MODE),'member')).token;}
     catch(error){if(!(error instanceof ApiError))throw error;const reason=error.code==='member_access_required'?'access':'retry';response.redirect(302,`${this.services.config.PUBLIC_ORIGIN}/#/member?signin=${reason}`);return;}
     response.cookie('agap_member_session',token,{httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax',path:'/api/v1/member',maxAge:this.services.config.SESSION_TTL_SECONDS*1000});response.redirect(302,`${this.services.config.PUBLIC_ORIGIN}/#/member`);
   }
   @Post('auth/logout') async logout(@Req() request:MemberRequest,@Res() response:Response){
-    await this.services.identity.logoutMember(cookieValue(request.headers.cookie,'agap_member_session')!);
+    await this.services.identity.logoutMember(cookieValue(request.headers.cookie,'agap_member_session',this.services.config.LOCAL_PRESENTATION_MODE)!);
     response.clearCookie('agap_member_session',{path:'/api/v1/member',httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax'});response.status(200).json({signedOut:true});
   }
   @Get('session') async session(@Req() request:MemberRequest){const profile=await this.services.portal.applications.profile(actor(request));return {principal:{kind:'member',memberId:profile.id,displayName:profile.fullName},csrfToken:request.member!.csrfToken,expiresAt:request.member!.expiresAt,privacyNoticeVersion:this.services.config.PRIVACY_NOTICE_VERSION,contractVersion:CONTRACT_VERSION,recordMode:this.services.config.EVIDENCE_RECORD_MODE};}

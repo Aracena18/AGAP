@@ -4,8 +4,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterEach,describe,expect,it,vi } from 'vitest';
 import { WorkspaceHeader } from './WorkspaceHeader';
 afterEach(()=>vi.unstubAllGlobals());
-function open(kind:'member'|'staff'='staff'){
-  const signedOut=vi.fn();render(<MemoryRouter><WorkspaceHeader workspace={kind==='member'?'member':'demo'} account={{kind,name:'Fictional Administrator',csrfToken:'fictional-csrf',signedOut}}/></MemoryRouter>);return signedOut;
+function open(kind:'member'|'staff'='staff',presentation=false){
+  const signedOut=vi.fn();render(<MemoryRouter><WorkspaceHeader workspace={kind==='member'?'member':'demo'} account={{kind,presentation,name:'Fictional Administrator',csrfToken:'fictional-csrf',signedOut}}/></MemoryRouter>);return signedOut;
 }
 async function chooseSignOut(){const user=userEvent.setup();await user.click(screen.getByRole('button',{name:/Account menu for/}));await user.click(screen.getByRole('menuitem',{name:'Sign out'}));}
 describe('real workspace sign-out',()=>{
@@ -23,3 +23,7 @@ describe('real workspace sign-out',()=>{
     try{await chooseSignOut();expect(request).not.toHaveBeenCalled();expect(signedOut).not.toHaveBeenCalled();}finally{window.removeEventListener('agap:signout',cancel);}
   });
 });
+
+ it.each(['staff','member'] as const)('hides authentication controls for the %s presentation account',kind=>{
+  open(kind,true);expect(screen.getByText('Presentation mode')).toBeVisible();expect(screen.queryByRole('button',{name:/Account menu/})).not.toBeInTheDocument();expect(screen.getByRole('button',{name:/Switch workspace/})).toBeVisible();
+ });

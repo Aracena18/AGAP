@@ -4,7 +4,7 @@ import { Notice } from '../ui';
 import { Dropdown } from './Dropdown';
 import styles from './navigation.module.css';
 
-interface Account {name:string;kind:'member'|'staff';csrfToken:string;signedOut:()=>void}
+interface Account {presentation?:boolean;name:string;kind:'member'|'staff';csrfToken:string;signedOut:()=>void}
 export function WorkspaceHeader({workspace,account}:{workspace:'member'|'staff'|'demo';account?:Account}){
   const {pathname}=useLocation(),[error,setError]=useState(''),[saving,setSaving]=useState(false);
   const initials=account?.name.split(' ').map(part=>part[0]).slice(0,2).join('')??'';
@@ -24,7 +24,8 @@ export function WorkspaceHeader({workspace,account}:{workspace:'member'|'staff'|
       <Link role="menuitem" to="/staff" aria-current={workspace==='staff'?'page':undefined}>Staff workspace</Link>
       <Link role="menuitem" to="/applications" aria-current={workspace==='demo'?'page':undefined}>Review demo</Link>
     </Dropdown></nav>
-    {account&&<Dropdown key={`account-${pathname}`} label={`${initials} — Account menu for ${account.name}`} trigger={<span className={styles.avatar} aria-hidden="true">{initials}</span>}>
+    {account?.presentation&&<span className={styles.presentation}>Presentation mode</span>}
+    {account&&!account.presentation&&<Dropdown key={`account-${pathname}`} label={`${initials} — Account menu for ${account.name}`} trigger={<span className={styles.avatar} aria-hidden="true">{initials}</span>}>
       <div className={styles.identity} role="presentation"><strong>{account.name}</strong><span>{account.kind==='member'?'Member account':'Staff account'}</span></div>
       <button role="menuitem" disabled={saving} onClick={()=>void signOut()}>{saving?'Signing out…':'Sign out'}</button>
     </Dropdown>}

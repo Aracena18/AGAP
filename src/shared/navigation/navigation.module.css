@@ -29,3 +29,6 @@
   .trigger { gap: 4px; padding-inline: 7px; }
   .avatar { width: 28px; height: 28px; }
 }
+
+.presentation { color: var(--muted); font-size: 13px; line-height: 20px; white-space: nowrap; }
+@media (max-width: 360px) { .presentation { max-width: 64px; white-space: normal; font-size: 12px; line-height: 18px; } }

@@ -48,10 +48,10 @@ function RouteFocus() {
 export default function App() {
   const { ready, role, setRole, resetDemo, storageWarning } = useWorkspace();
   const dialog = useRef<HTMLDialogElement>(null);
-  const {session,signedOut}=useStaff();
+  const {session,signedOut,presentation}=useStaff();
   return <>
     <a className={`${styles.skip} no-print`} href="#main-content" onClick={event => { event.preventDefault(); document.getElementById('main-content')?.focus(); }}>Skip to main content</a>
-    <WorkspaceHeader workspace="demo" account={session?{name:session.user.displayName,kind:'staff',csrfToken:session.csrfToken,signedOut}:undefined}/>
+    <WorkspaceHeader workspace="demo" account={session?{name:session.user.displayName,kind:'staff',csrfToken:session.csrfToken,signedOut,presentation}:undefined}/>
     <main id="main-content" className={styles.main} tabIndex={-1}>
       <RouteFocus />
       <details className={`${styles.demoTools} no-print`}><summary>Demo tools</summary><div><label htmlFor="demo-role">Demo role</label><select id="demo-role" value={role} onChange={event=>setRole(event.target.value as 'officer'|'reviewer')}><option value="officer">Loan officer</option><option value="reviewer">Reviewer</option></select><Button variant="quiet" onClick={()=>dialog.current?.showModal()}><RestartAlt size={16}/>Reset demo</Button><span className="small subtle">Simulated roles · Demo data</span></div></details>

@@ -9,11 +9,11 @@ import { ApiError } from '../../platform/errors.js';
 
 export const tokenHash = (token: string) => createHash('sha256').update(token).digest('hex');
 const opaque = () => randomBytes(32).toString('base64url');
-export function cookieValue(header: string | undefined, name: string): string | undefined {
+export function cookieValue(header: string | undefined, name: string, presentation=false): string | undefined {
   const matches = (header ?? '').split(';').map(item => item.trim()).filter(item => item.startsWith(`${name}=`));
   if (matches.length !== 1) return undefined;
   const value = matches[0].slice(name.length + 1);
-  return /^[A-Za-z0-9_-]{43}$/.test(value) ? value : undefined;
+  return /^[A-Za-z0-9_-]{43}$/.test(value)||presentation&&/^presentation\.[A-Za-z0-9_-]{43}$/.test(value) ? value : undefined;
 }
 export function requireRoles(actor: ActorContext, allowed: readonly string[]) {
   if (!actor.roles.some(role => allowed.includes(role))) throw new ApiError(403,'forbidden','Your current role does not permit this action.');
@@ -95,7 +95,7 @@ export class IdentityService {
     return {token:session,returnTo:saved.rows[0].return_path};
   }
   async authenticate(token: string | undefined, correlationId: string) {
-    if (!token) throw new ApiError(401,'authentication_required','Sign in to the staff workspace.');
+    if (!token||token.startsWith('presentation.')&&!this.config.LOCAL_PRESENTATION_MODE) throw new ApiError(401,'authentication_required','Sign in to the staff workspace.');
     const result = await this.pool.query<{
       id: string; user_id: string; organization_id: string; branch_ids: string[]; roles: string[]; display_name: string; authenticated_at: Date; methods: string[]; expires_at: Date;
     }>('SELECT s.id,s.user_id,u.organization_id,u.branch_ids,u.roles,u.display_name,s.authenticated_at,s.methods,s.expires_at FROM identity.sessions s JOIN identity.staff_users u ON u.id=s.user_id WHERE s.token_hash=$1 AND s.expires_at>now() AND u.active=true', [tokenHash(token)]);
@@ -107,7 +107,7 @@ export class IdentityService {
   }
   csrfToken(token: string) { return createHmac('sha256',this.config.SESSION_SECRET).update(`csrf:${token}`).digest('base64url'); }
   async authenticateMember(token:string|undefined,correlationId:string){
-    if(!token)throw new ApiError(401,'member_authentication_required','Sign in to your member account.');
+    if(!token||token.startsWith('presentation.')&&!this.config.LOCAL_PRESENTATION_MODE)throw new ApiError(401,'member_authentication_required','Sign in to your member account.');
     const result=await this.pool.query<{id:string;link_id:string;organization_id:string;member_id:string;expires_at:Date}>('SELECT s.id,s.link_id,l.organization_id,l.member_id,s.expires_at FROM identity.member_sessions s JOIN identity.member_links l ON l.id=s.link_id WHERE s.token_hash=$1 AND s.expires_at>now() AND l.active',[tokenHash(token)]);
     const row=result.rows[0];
     if(!row)throw new ApiError(401,'member_authentication_required','Your session expired or member access changed. Sign in again.');
