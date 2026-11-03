@@ -13,7 +13,7 @@ const features = [
   { title: 'Compare full costs', text: 'Review available repayment dates alongside the complete loan cost.', Icon: CompareArrows },
   { title: 'Keep decisions human', text: 'Carry the evidence and reasoning into a recorded human review.', Icon: Description },
 ];
-export interface RevealContent { intro: ReactNode; notes: ReactNode; mascot: ReactNode; heading: ReactNode; features: ReactNode[] }
+export interface RevealContent { intro: ReactNode; notes: ReactNode; mascot: ReactNode; heading: ReactNode; features: ReactNode[]; featureTitles: string[] }
 const AnimatedReveal = lazy(() => import('./RevealMotion'));
 const motionQuery = '(min-width: 900px) and (min-height: 700px) and (prefers-reduced-motion: no-preference)';
 
@@ -43,8 +43,9 @@ export default function GabayReveal({ onInstall }: { onInstall: MouseEventHandle
       <div className={styles.heroActions}><Button id="install-hero" className={styles.installButton} onClick={onInstall}>Install AGAP<ArrowForward size={18}/></Button><Link to="/?section=demo" className={styles.textLink}>See AGAP in action</Link></div></>,
     notes: <><p>Everyday needs<br/>in view</p><p>Human decisions,<br/>supported by evidence</p></>,
     mascot: <img src={gabay} srcSet={`${gabaySmall} 400w, ${gabayMedium} 800w, ${gabay} 1600w`} sizes="(prefers-reduced-motion: reduce) min(80vw, 420px), (min-width: 900px) and (min-height: 700px) min(108.8vw, 1472px), (max-width: 767px) min(80vw, 330px), min(80vw, 420px)" width="1600" height="1600" alt="Gabay, AGAP’s friendly green and yellow firefly, with glowing antennae and translucent wings" fetchPriority="high"/>,
-    heading: <><h2 id="gabay" tabIndex={-1}>Meet Gabay.</h2><p>A friendly face. A clearer way through a loan review.</p></>,
+    heading: <><h2 id="gabay" tabIndex={-1}>Meet Gabay.</h2><p>AGAP’s friendly guide.<br/>Everyday needs in view.</p></>,
     features: features.map(({ title, text, Icon }) => <Fragment key={title}><Icon size={24}/><h3>{title}</h3><p>{text}</p></Fragment>),
+    featureTitles: features.map(feature => feature.title),
   };
   return <section ref={scene} className={`${styles.scene} ${animated ? styles.animated : styles.staticScene}`} aria-label="Introducing AGAP and Gabay">
     {animated ? <Suspense fallback={<RevealFrame content={content} animated/>}><AnimatedReveal scene={scene} content={content}/></Suspense> : <RevealFrame content={content} animated={false}/>}

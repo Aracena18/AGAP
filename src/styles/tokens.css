@@ -55,6 +55,8 @@
   --input-line: #62776a;
   --focus: #176347;
   --landing-yellow: #e4bd52;
+  --brand-leaf: #4d9b6f;
+  --brand-yellow: var(--landing-yellow);
   --landing-on-yellow: #153529;
   --landing-hero: #ffffff;
   --landing-button-ink: #ffffff;
