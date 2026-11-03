@@ -12,7 +12,7 @@ export default function RevealMotion({ scene, content }: { scene: RefObject<HTML
     if (next !== hidden.current) { hidden.current = next; setIntroHidden(next); }
   });
   const scale = useTransform(scrollYProgress, [0, 0.78], [3.2, 1]);
-  const y = useTransform(scrollYProgress, [0, 0.78], [-30, -180]);
+  const y = useTransform(scrollYProgress, [0, 0.78], [-130, -180]);
   const introOpacity = useTransform(scrollYProgress, [0, 0.32], [1, 0]);
   const introY = useTransform(scrollYProgress, [0, 0.32], [0, -32]);
   const detailsOpacity = useTransform(scrollYProgress, [0.42, 0.78], [0, 1]);

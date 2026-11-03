@@ -20,7 +20,7 @@ Use the existing React/TypeScript/Vite application, shared controls and determin
 
 ## Brand Commitments
 
-The user approved the existing Gabay firefly artwork and green/white/yellow identity for the landing page. Existing workspaces retain their current identity. [design.md](design.md) is the sole visual/interaction authority; this file introduces no parallel design rules.
+The user approved the existing Gabay firefly artwork and green/white/yellow identity for the landing page. The follow-up browser comments explicitly request a white landing and an oversized AGAP wordmark. Existing workspaces retain their current identity. [design.md](design.md) is the sole visual/interaction authority; this file introduces no parallel design rules.
 
 ## Evidence on Hand
 

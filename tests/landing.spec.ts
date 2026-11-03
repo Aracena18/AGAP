@@ -4,9 +4,15 @@ import AxeBuilder from '@axe-core/playwright';
 test('landing is public, does not request sessions, and leaves private destinations guarded', async ({ page }) => {
   const sessions: string[] = [];
   page.on('request', request => { if (/\/api\/v1\/(session|member\/me)/.test(request.url())) sessions.push(request.url()); });
+  await page.setViewportSize({ width: 1263, height: 900 });
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1, name: 'AGAP', exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Install AGAP', exact: true }).first()).toBeInViewport();
+  if (process.env.AGAP_CAPTURE_WHITE) {
+    await page.evaluate(() => document.fonts.ready);
+    await page.locator('img').first().evaluate((img: HTMLImageElement) => img.decode());
+    await page.screenshot({ path: 'docs/screenshots/landing/white-hero-1263.png' });
+  }
   expect(sessions).toEqual([]);
   await page.getByRole('link', { name: 'Open AGAP', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Sign in to review' })).toBeVisible();
@@ -140,13 +146,15 @@ test('manifest and install icons resolve without a service worker', async ({ pag
   expect(await page.evaluate(() => navigator.serviceWorker.getRegistrations().then(items => items.length))).toBe(0);
 });
 
-test('both themes, static layouts, install dialog, and tabs pass accessibility and reflow checks', async ({ page }) => {
+test('white landing under either system preference preserves accessible layouts and dialogs', async ({ page }) => {
   for (const colorScheme of ['light', 'dark'] as const) {
     await page.emulateMedia({ colorScheme, reducedMotion: 'reduce' });
-    for (const width of [1366, 390, 320]) {
-      await page.setViewportSize({ width, height: 844 });
+    for (const width of [1263, 1366, 390, 320]) {
+      await page.setViewportSize({ width, height: width === 1263 ? 900 : 844 });
       await page.goto('/#/');
       await expect(page.getByRole('heading', { name: 'Meet Gabay.' })).toBeVisible();
+      await expect(page.locator('[data-agap-landing]')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+      if (process.env.AGAP_CAPTURE_WHITE) await page.screenshot({ path: `docs/screenshots/landing/white-${colorScheme}-${width}.png`, fullPage: true });
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze()).violations).toEqual([]);
     }

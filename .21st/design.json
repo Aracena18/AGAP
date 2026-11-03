@@ -3,6 +3,17 @@
   "tokens": "../src/styles/tokens.css",
   "components": "../src/shared/ui/index.tsx",
   "decisions": [
-    { "id": "UI-07", "date": "2026-11-03", "direction": "User-approved Gabay close-up to full-character landing reveal; green/white/yellow scoped to public landing", "evidence": "../docs/AGAP_Landing_Verification.md" }
+    {
+      "id": "UI-07",
+      "date": "2026-11-03",
+      "direction": "User-approved Gabay close-up to full-character landing reveal; green/white/yellow scoped to public landing",
+      "evidence": "../docs/AGAP_Landing_Verification.md"
+    },
+    {
+      "id": "UI-07-white-hero",
+      "date": "2026-11-03",
+      "direction": "User browser comments: white landing under either system preference, viewport-width AGAP with mascot overlapping the lower lettering; retain existing controls and reveal",
+      "evidence": "../docs/AGAP_Landing_Verification.md"
+    }
   ]
 }

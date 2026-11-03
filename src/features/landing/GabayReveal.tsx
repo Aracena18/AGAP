@@ -22,7 +22,7 @@ function RevealFrame({ content, animated }: { content: RevealContent; animated: 
   return <div className={styles.stage}>
     <div className={styles.heroCopy}>{content.intro}</div>
     {animated && <div className={styles.sideNotes} aria-hidden="true">{content.notes}</div>}
-    <div className={styles.mascot} style={animated ? { transform: 'translate(-50%, -30px) scale(3.2)' } : undefined}>{content.mascot}</div>
+    <div className={styles.mascot} style={animated ? { transform: 'translate(-50%, -130px) scale(3.2)' } : undefined}>{content.mascot}</div>
     <div className={styles.gabayHeading} style={animated ? { opacity: 0 } : undefined}>{content.heading}</div>
     <div className={styles.featureGrid} style={animated ? { opacity: 0 } : undefined}>{content.features}</div>
   </div>;
@@ -38,8 +38,8 @@ export default function GabayReveal({ onInstall }: { onInstall: () => void }) {
   }, []);
   const content: RevealContent = {
     intro: <><h1>AGAP</h1>
-      <p className={styles.heroTitle}>Loan reviews with<br className={styles.desktopBreak}/> everyday needs in view.</p>
-      <p className={styles.heroDescription}>Connect evidence, household cash flow, repayment options, and a recorded human decision.</p>
+      <div className={styles.supportingCopy}><p className={styles.heroTitle}>Loan reviews with<br className={styles.desktopBreak}/> everyday needs in view.</p>
+      <p className={styles.heroDescription}>Connect evidence, household cash flow, repayment options, and a recorded human decision.</p></div>
       <div className={styles.heroActions}><Button className={styles.installButton} onClick={onInstall}>Install AGAP<ArrowForward size={18}/></Button><Link to="/?section=demo" className={styles.textLink}>See AGAP in action</Link></div></>,
     notes: <><p>Everyday needs<br/>in view</p><p>Human decisions,<br/>supported by evidence</p></>,
     mascot: <img src={gabay} srcSet={`${gabaySmall} 400w, ${gabayMedium} 800w, ${gabay} 1600w`} sizes="(prefers-reduced-motion: reduce) min(80vw, 420px), (min-width: 900px) and (min-height: 700px) min(108.8vw, 1472px), (max-width: 767px) min(80vw, 330px), min(80vw, 420px)" width="1600" height="1600" alt="Gabay, AGAP’s friendly green and yellow firefly, with glowing antennae and translucent wings" fetchPriority="high"/>,

@@ -24,7 +24,7 @@
       "source": "../src/styles/tokens.css",
       "workspaceSelector": ":root",
       "landingSelector": "[data-agap-landing]",
-      "darkVariant": "prefers-color-scheme: dark within the landing selector",
+      "darkVariant": "No automatic dark variant: the user explicitly requested a white landing under either system preference",
       "roles": {
         "action": ["--primary", "--primary-hover", "--landing-button-ink"],
         "selection": ["--primary-container", "--on-primary-container"],
