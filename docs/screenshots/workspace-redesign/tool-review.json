@@ -1,0 +1,14 @@
+{
+  "impeccableDetector": [],
+  "twentyFirstSummary": {
+    "errors": 1,
+    "warnings": 0,
+    "suggestions": 65
+  },
+  "twentyFirstFindingsDisposition": {
+    "a11y-interactive-div": "Existing role=menu container delegates native menuitem clicks and implements keyboard navigation; no defect established by sampled source, unit/browser tests and independent review.",
+    "design-hardcoded-color": "Canonical token definitions and existing shared shadows; workspace feature rules consume tokens."
+  },
+  "catalog": "21st search attempted via CLI; sign-in unavailable. No catalog code retrieved, installed or published. Existing supplied component specimens and project primitives used.",
+  "motion": "No React Bits component selected: operational UI uses only short existing hover/focus feedback and reduced-motion support; no dependency added."
+}

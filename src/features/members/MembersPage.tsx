@@ -29,7 +29,7 @@ export default function MembersPage(){
     if(saved){setStatus(`${saved.fullName} was ${editing==='create'?'added':'updated'}. The record is saved on the server.`);cancel();}
   }
   return <div className="stack">
-    <div className="page-heading"><div><p className="eyebrow">Member records</p><h1>Members</h1><p>Keep contact details and the member's application history together.</p></div>{session!.user.roles.includes('officer')&&!editing&&<Button onClick={()=>{setEditing('create');setStatus('');}}>Add member</Button>}</div>
+    <div className="page-heading"><div><h1>Members</h1><p>Keep contact details and the member's application history together.</p></div>{session!.user.roles.includes('officer')&&!editing&&<Button onClick={()=>{setEditing('create');setStatus('');}}>Add member</Button>}</div>
     {status&&<Notice role="status">{status}</Notice>}
     {editing&&<section className="panel panel-body"><form onSubmit={event=>void submit(event)} className="stack"><div><h2>{editing==='create'?'Add a member':`Update ${editing.fullName}`}</h2><p className="small subtle">Changes are saved when you submit this form. Earlier revisions remain on the server.</p></div>
       {command.error&&<div ref={errorRef} tabIndex={-1}><Notice tone="danger" role="alert">{command.error}{command.fields.length>0&&<ul>{command.fields.map(field=><li key={field.path}>{field.path}: {field.message}</li>)}</ul>}</Notice></div>}

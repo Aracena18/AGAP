@@ -30,10 +30,12 @@ test('the complete Ana review can be performed with the keyboard', async ({ page
   await resolve.waitFor();
   await tabTo(page, resolve); await page.keyboard.press('Enter');
   const source = page.getByLabel('Supporting source', { exact: true });
-  await tabTo(page, source); await page.keyboard.press('Home'); await page.keyboard.press('ArrowDown'); await page.keyboard.press('Enter');
+  // Native select typeahead works across Chromium platforms without opening the OS picker.
+  await tabTo(page, source); await page.keyboard.press('c'); await page.keyboard.press('u');
   await expect(source).toHaveValue('payslip');
   const evidenceStatus = page.getByLabel('Evidence status', { exact: true });
-  await tabTo(page, evidenceStatus); await page.keyboard.press('Home'); await page.keyboard.press('ArrowDown'); await page.keyboard.press('Enter');
+  await tabTo(page, evidenceStatus); await page.keyboard.press('d');
+  await expect(evidenceStatus).toHaveValue('document-supported');
   await tabTo(page, page.getByLabel('Reason for correction')); await page.keyboard.type('Current payslip confirmed with the member.');
   await tabTo(page, page.getByRole('button', { name: 'Save correction', exact: true })); await page.keyboard.press('Enter');
   await expect(page.getByRole('status')).toContainText('Correction saved');
@@ -47,7 +49,9 @@ test('the complete Ana review can be performed with the keyboard', async ({ page
   await tabTo(page, page.getByRole('link', { name: /Continue to decision/ })); await page.keyboard.press('Enter');
   await page.getByRole('heading', { name: 'Decision and explanation' }).waitFor();
   await tabTo(page,page.getByText('Demo tools',{exact:true}));await page.keyboard.press('Enter');
-  await tabTo(page, page.getByLabel('Demo role')); await page.keyboard.press('ArrowDown'); await page.keyboard.press('Enter');
+  const demoRole = page.getByLabel('Demo role');
+  await tabTo(page, demoRole); await page.keyboard.press('r');
+  await expect(demoRole).toHaveValue('reviewer');
   await tabTo(page, page.getByLabel('Decision rationale', { exact: true })); await page.keyboard.type('Checked evidence, full costs and household cash timing.');
   await tabTo(page, page.getByText('Read the explanation to be recorded', { exact: true })); await page.keyboard.press('Enter');
   await tabTo(page, page.getByLabel(/I reviewed the template explanation/)); await page.keyboard.press('Space');

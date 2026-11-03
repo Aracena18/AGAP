@@ -14,6 +14,12 @@
       "date": "2026-11-03",
       "direction": "User browser comments: white landing under either system preference, viewport-width AGAP with mascot overlapping the lower lettering; retain existing controls and reveal",
       "evidence": "../docs/AGAP_Landing_Verification.md"
+    },
+    {
+      "id": "UI-06",
+      "date": "2026-11-03",
+      "direction": "User-approved Gabay workspace migration scoped to data-agap-workspace; preserve public landing",
+      "evidence": "../docs/AGAP_UI_Review_Verification.md"
     }
   ]
 }

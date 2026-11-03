@@ -29,3 +29,17 @@
   .count { margin-left: 0; padding-bottom: 0; }
   .tableFooter { flex-direction: column; gap: 8px; }
 }
+
+@media (max-width: 767px) {
+  .table { min-width: 0; display: block; }
+  .table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .table tbody { display: block; }
+  .table tbody tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; padding: 20px; border-bottom: 1px solid var(--line); }
+  .table tbody tr:last-child { border-bottom: 0; }
+  .table td, .table td:first-child, .table td:last-child { padding: 0; height: auto; border: 0; text-align: left; min-width: 0; overflow-wrap: anywhere; }
+  .table td:first-child, .table td:nth-child(2) { grid-column: 1 / -1; }
+  .table td[data-label] { display: grid; align-content: start; gap: 4px; }
+  .table td[data-label]::before { content: attr(data-label); color: var(--muted); font-size: 12px; font-weight: 400; }
+  .table td:last-child { justify-self: end; align-self: end; }
+  .review { padding: 8px 0 8px 8px; }
+}

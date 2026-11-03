@@ -1,0 +1,803 @@
+[
+  {
+    "name": "member-entry",
+    "route": "/member",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [
+      {
+        "src": "/workspace/gabay-welcome.webp",
+        "loaded": true
+      }
+    ],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 744,
+      "top": 73,
+      "right": 320,
+      "bottom": 817,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "staff-entry",
+    "route": "/staff",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [
+      {
+        "src": "/workspace/gabay-welcome.webp",
+        "loaded": true
+      }
+    ],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 827,
+      "top": 73,
+      "right": 320,
+      "bottom": 900,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "member-home",
+    "route": "/member",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [
+      {
+        "src": "/workspace/gabay-welcome.webp",
+        "loaded": true
+      }
+    ],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 1359.59375,
+      "top": 73,
+      "right": 320,
+      "bottom": 1432.59375,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "member-apply",
+    "route": "/member/apply",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 852.5,
+      "top": 73,
+      "right": 320,
+      "bottom": 925.5,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "member-applications",
+    "route": "/member/applications",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 744,
+      "top": 73,
+      "right": 320,
+      "bottom": 817,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "member-loans",
+    "route": "/member/loans",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 744,
+      "top": 73,
+      "right": 320,
+      "bottom": 817,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "member-help",
+    "route": "/member/help",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 1037.09375,
+      "top": 73,
+      "right": 320,
+      "bottom": 1110.09375,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "staff-members",
+    "route": "/staff/members",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 740,
+      "top": 73,
+      "right": 320,
+      "bottom": 813,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "staff-applications",
+    "route": "/staff/applications",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 740,
+      "top": 73,
+      "right": 320,
+      "bottom": 813,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "staff-access",
+    "route": "/staff/access",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 740,
+      "top": 73,
+      "right": 320,
+      "bottom": 813,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "demo-list",
+    "route": "/applications",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 1279,
+      "top": 73,
+      "right": 320,
+      "bottom": 1352,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "demo-evidence",
+    "route": "/applications/AG-001/evidence",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 3748.625,
+      "top": 73,
+      "right": 320,
+      "bottom": 3821.625,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "demo-comparison",
+    "route": "/applications/AG-001/comparison",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 1137.6875,
+      "top": 73,
+      "right": 320,
+      "bottom": 1210.6875,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "demo-decision",
+    "route": "/applications/AG-001/decision",
+    "width": 320,
+    "pageWidth": 320,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 73,
+      "width": 320,
+      "height": 1661.375,
+      "top": 73,
+      "right": 320,
+      "bottom": 1734.375,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "member-entry",
+    "route": "/member",
+    "width": 768,
+    "pageWidth": 768,
+    "images": [
+      {
+        "src": "/workspace/gabay-welcome.webp",
+        "loaded": true
+      }
+    ],
+    "main": {
+      "x": 0,
+      "y": 81,
+      "width": 768,
+      "height": 744,
+      "top": 81,
+      "right": 768,
+      "bottom": 825,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "staff-entry",
+    "route": "/staff",
+    "width": 768,
+    "pageWidth": 768,
+    "images": [
+      {
+        "src": "/workspace/gabay-welcome.webp",
+        "loaded": true
+      }
+    ],
+    "main": {
+      "x": 0,
+      "y": 81,
+      "width": 768,
+      "height": 819,
+      "top": 81,
+      "right": 768,
+      "bottom": 900,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "member-home",
+    "route": "/member",
+    "width": 768,
+    "pageWidth": 768,
+    "images": [
+      {
+        "src": "/workspace/gabay-welcome.webp",
+        "loaded": true
+      }
+    ],
+    "main": {
+      "x": 0,
+      "y": 81,
+      "width": 768,
+      "height": 944.59375,
+      "top": 81,
+      "right": 768,
+      "bottom": 1025.59375,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "member-apply",
+    "route": "/member/apply",
+    "width": 768,
+    "pageWidth": 768,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 81,
+      "width": 768,
+      "height": 744,
+      "top": 81,
+      "right": 768,
+      "bottom": 825,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "member-applications",
+    "route": "/member/applications",
+    "width": 768,
+    "pageWidth": 768,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 81,
+      "width": 768,
+      "height": 744,
+      "top": 81,
+      "right": 768,
+      "bottom": 825,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "member-loans",
+    "route": "/member/loans",
+    "width": 768,
+    "pageWidth": 768,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 81,
+      "width": 768,
+      "height": 744,
+      "top": 81,
+      "right": 768,
+      "bottom": 825,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "member-help",
+    "route": "/member/help",
+    "width": 768,
+    "pageWidth": 768,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 81,
+      "width": 768,
+      "height": 880.09375,
+      "top": 81,
+      "right": 768,
+      "bottom": 961.09375,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "staff-members",
+    "route": "/staff/members",
+    "width": 768,
+    "pageWidth": 768,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 81,
+      "width": 768,
+      "height": 740,
+      "top": 81,
+      "right": 768,
+      "bottom": 821,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "staff-applications",
+    "route": "/staff/applications",
+    "width": 768,
+    "pageWidth": 768,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 81,
+      "width": 768,
+      "height": 740,
+      "top": 81,
+      "right": 768,
+      "bottom": 821,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "staff-access",
+    "route": "/staff/access",
+    "width": 768,
+    "pageWidth": 768,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 81,
+      "width": 768,
+      "height": 740,
+      "top": 81,
+      "right": 768,
+      "bottom": 821,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "demo-list",
+    "route": "/applications",
+    "width": 768,
+    "pageWidth": 768,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 81,
+      "width": 768,
+      "height": 734,
+      "top": 81,
+      "right": 768,
+      "bottom": 815,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "demo-evidence",
+    "route": "/applications/AG-001/evidence",
+    "width": 768,
+    "pageWidth": 768,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 81,
+      "width": 768,
+      "height": 2694.53125,
+      "top": 81,
+      "right": 768,
+      "bottom": 2775.53125,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "demo-comparison",
+    "route": "/applications/AG-001/comparison",
+    "width": 768,
+    "pageWidth": 768,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 81,
+      "width": 768,
+      "height": 810.09375,
+      "top": 81,
+      "right": 768,
+      "bottom": 891.09375,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "demo-decision",
+    "route": "/applications/AG-001/decision",
+    "width": 768,
+    "pageWidth": 768,
+    "images": [],
+    "main": {
+      "x": 0,
+      "y": 81,
+      "width": 768,
+      "height": 1132.6875,
+      "top": 81,
+      "right": 768,
+      "bottom": 1213.6875,
+      "left": 0
+    },
+    "violations": []
+  },
+  {
+    "name": "member-entry",
+    "route": "/member",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [
+      {
+        "src": "/workspace/gabay-welcome.webp",
+        "loaded": true
+      }
+    ],
+    "main": {
+      "x": 123,
+      "y": 81,
+      "width": 1120,
+      "height": 744,
+      "top": 81,
+      "right": 1243,
+      "bottom": 825,
+      "left": 123
+    },
+    "violations": []
+  },
+  {
+    "name": "staff-entry",
+    "route": "/staff",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [
+      {
+        "src": "/workspace/gabay-welcome.webp",
+        "loaded": true
+      }
+    ],
+    "main": {
+      "x": 3,
+      "y": 81,
+      "width": 1360,
+      "height": 819,
+      "top": 81,
+      "right": 1363,
+      "bottom": 900,
+      "left": 3
+    },
+    "violations": []
+  },
+  {
+    "name": "member-home",
+    "route": "/member",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [
+      {
+        "src": "/workspace/gabay-welcome.webp",
+        "loaded": true
+      }
+    ],
+    "main": {
+      "x": 123,
+      "y": 81,
+      "width": 1120,
+      "height": 922.59375,
+      "top": 81,
+      "right": 1243,
+      "bottom": 1003.59375,
+      "left": 123
+    },
+    "violations": []
+  },
+  {
+    "name": "member-apply",
+    "route": "/member/apply",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [],
+    "main": {
+      "x": 123,
+      "y": 81,
+      "width": 1120,
+      "height": 744,
+      "top": 81,
+      "right": 1243,
+      "bottom": 825,
+      "left": 123
+    },
+    "violations": []
+  },
+  {
+    "name": "member-applications",
+    "route": "/member/applications",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [],
+    "main": {
+      "x": 123,
+      "y": 81,
+      "width": 1120,
+      "height": 744,
+      "top": 81,
+      "right": 1243,
+      "bottom": 825,
+      "left": 123
+    },
+    "violations": []
+  },
+  {
+    "name": "member-loans",
+    "route": "/member/loans",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [],
+    "main": {
+      "x": 123,
+      "y": 81,
+      "width": 1120,
+      "height": 744,
+      "top": 81,
+      "right": 1243,
+      "bottom": 825,
+      "left": 123
+    },
+    "violations": []
+  },
+  {
+    "name": "member-help",
+    "route": "/member/help",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [],
+    "main": {
+      "x": 123,
+      "y": 81,
+      "width": 1120,
+      "height": 861.09375,
+      "top": 81,
+      "right": 1243,
+      "bottom": 942.09375,
+      "left": 123
+    },
+    "violations": []
+  },
+  {
+    "name": "staff-members",
+    "route": "/staff/members",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [],
+    "main": {
+      "x": 3,
+      "y": 81,
+      "width": 1360,
+      "height": 740,
+      "top": 81,
+      "right": 1363,
+      "bottom": 821,
+      "left": 3
+    },
+    "violations": []
+  },
+  {
+    "name": "staff-applications",
+    "route": "/staff/applications",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [],
+    "main": {
+      "x": 3,
+      "y": 81,
+      "width": 1360,
+      "height": 740,
+      "top": 81,
+      "right": 1363,
+      "bottom": 821,
+      "left": 3
+    },
+    "violations": []
+  },
+  {
+    "name": "staff-access",
+    "route": "/staff/access",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [],
+    "main": {
+      "x": 3,
+      "y": 81,
+      "width": 1360,
+      "height": 740,
+      "top": 81,
+      "right": 1363,
+      "bottom": 821,
+      "left": 3
+    },
+    "violations": []
+  },
+  {
+    "name": "demo-list",
+    "route": "/applications",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [],
+    "main": {
+      "x": 3,
+      "y": 81,
+      "width": 1360,
+      "height": 734,
+      "top": 81,
+      "right": 1363,
+      "bottom": 815,
+      "left": 3
+    },
+    "violations": []
+  },
+  {
+    "name": "demo-evidence",
+    "route": "/applications/AG-001/evidence",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [],
+    "main": {
+      "x": 3,
+      "y": 81,
+      "width": 1360,
+      "height": 2212.84375,
+      "top": 81,
+      "right": 1363,
+      "bottom": 2293.84375,
+      "left": 3
+    },
+    "violations": []
+  },
+  {
+    "name": "demo-comparison",
+    "route": "/applications/AG-001/comparison",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [],
+    "main": {
+      "x": 3,
+      "y": 81,
+      "width": 1360,
+      "height": 810.09375,
+      "top": 81,
+      "right": 1363,
+      "bottom": 891.09375,
+      "left": 3
+    },
+    "violations": []
+  },
+  {
+    "name": "demo-decision",
+    "route": "/applications/AG-001/decision",
+    "width": 1366,
+    "pageWidth": 1366,
+    "images": [],
+    "main": {
+      "x": 3,
+      "y": 81,
+      "width": 1360,
+      "height": 1022.6875,
+      "top": 81,
+      "right": 1363,
+      "bottom": 1103.6875,
+      "left": 3
+    },
+    "violations": []
+  }
+]

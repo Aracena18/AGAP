@@ -1,0 +1,42 @@
+[data-agap-workspace] {
+  min-height: 100svh;
+  background: var(--canvas);
+  color: var(--ink);
+  display: flow-root;
+}
+[data-agap-workspace] ::selection { background: var(--primary-container); color: var(--ink); }
+[data-agap-workspace] :is(input, textarea) { caret-color: var(--primary); }
+[data-agap-workspace] :is(input, textarea)::placeholder { color: var(--muted); opacity: 1; }
+[data-agap-workspace] :is(h1, h2, h3) { text-wrap: balance; }
+[data-agap-workspace] h1 { font-size: 30px; line-height: 1.25; font-weight: 500; letter-spacing: -.6px; }
+[data-agap-workspace] h2 { font-size: 19px; line-height: 1.4; }
+[data-agap-workspace] .panel { min-width: 0; overflow: hidden; }
+[data-agap-workspace] .stack { grid-template-columns: minmax(0, 1fr); }
+[data-agap-workspace] .panel-header { background: var(--surface); padding-block: 20px; }
+[data-agap-workspace] .panel-body { padding: 28px; }
+[data-agap-workspace] .page-heading { align-items: center; margin-bottom: 0; }
+[data-agap-workspace] .page-heading + .panel { margin-top: 24px; }
+[data-agap-workspace] .stack > .page-heading + .panel { margin-top: 0; }
+[data-agap-workspace] :is(.panel-body, .stack, .field, .actions, fieldset) { min-width: 0; }
+[data-agap-workspace] .field label { color: var(--ink); }
+[data-agap-workspace] :is(input:not([type=checkbox]):not([type=radio]), select, textarea) { min-height: 48px; font-size: 16px; }
+[data-agap-workspace] input[aria-invalid=true], [data-agap-workspace] textarea[aria-invalid=true] { border-color: var(--danger); }
+[data-agap-workspace] th { background: var(--surface-variant); color: var(--muted); font-weight: 500; }
+[data-agap-workspace] tbody tr:hover { background: var(--hover); }
+[data-agap-workspace] .table-scroll { scrollbar-color: var(--input-line) var(--surface-variant); }
+[data-agap-workspace] .table-scroll:focus-visible { outline-offset: -3px; }
+[data-agap-workspace] :is(p, dd, h1, h2, h3, label) { overflow-wrap: anywhere; }
+[data-agap-workspace] :is(summary, .actions a) { min-height: 44px; align-content: center; }
+[data-agap-workspace] details > summary { color: var(--primary); }
+[data-agap-workspace] .actions { row-gap: 12px; }
+@media (max-width: 767px) {
+  [data-agap-workspace] h1 { font-size: 26px; letter-spacing: -.4px; }
+  [data-agap-workspace] .panel-body { padding: 20px; }
+  [data-agap-workspace] .page-heading { align-items: stretch; gap: 16px; }
+  [data-agap-workspace] .page-heading > :is(button, a) { align-self: flex-start; }
+}
+@media print {
+  [data-agap-workspace] { background: white; color: black; min-height: 0; }
+  [data-agap-workspace] .panel { overflow: visible; }
+  [data-agap-workspace] .panel-body { padding: 0; }
+}

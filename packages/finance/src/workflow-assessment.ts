@@ -19,6 +19,7 @@ export function assessWorkflow(facts: Fact[], policy: Policy | null, offerIds: s
     const f = fact.input;
     if (f.value.availability !== 'recorded') issues.push(`${f.label}: ${f.value.reason}`);
     if (!f.cashDates.length || new Set(f.cashDates).size !== f.cashDates.length || f.cashDates.some((d, i) => i > 0 && d <= f.cashDates[i-1])) issues.push(`${f.label}: confirm distinct cash dates in calendar order.`);
+    if (f.period === 'one_time' && f.cashDates.length > 1) issues.push(`${f.label}: record only one cash date for a one-time amount.`);
     if(f.category!=='opening'&&(!f.coverageStart||!f.coverageEnd||f.coverageStart>start||f.coverageEnd<end))issues.push(`${f.label}: confirm coverage of the complete review horizon, including future dates or recurrence assumptions.`);
     if (f.period === 'unknown' || f.basis === 'unknown' || f.deduction === 'unknown') issues.push(`${f.label}: clarify amount period, basis and payroll inclusion.`);
     if(f.category!=='opening'&&!f.cashDates.some(d=>d>=start&&d<=end))issues.push(`${f.label}: record dates within the review horizon, including explicit zero if applicable.`);
