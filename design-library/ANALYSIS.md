@@ -1,12 +1,12 @@
 # Gabay material analysis and rebranding handoff
 
-3 November 2026, Asia/Manila. UI-05, Robert. Starting application/main revision: `d0e0e6e193b70bd3d50f8a89dce7343a46c306f3`. Asset commit: `9ff66a3b8e0614d09adc14bb52261084c6c95be7`. The user requests synchronization and analysis first, followed by a cleaner, responsive member/staff rebrand with the same underlying system.
+3 November 2026, Asia/Manila. UI-05, Robert. Starting application/main revision: `d0e0e6e193b70bd3d50f8a89dce7343a46c306f3`. Later synchronized application/main revision: `63371c5bd3b06f57cb1b565c4f8b1f4288f59d69`. Asset commit: `9ff66a3b8e0614d09adc14bb52261084c6c95be7`. The user requests synchronization and analysis first, followed by a cleaner, responsive member/staff rebrand with the same underlying system.
 
 This is an evidence and migration report. [design.md section 16](../design.md#16-planned-gabay-rebranding--3-november-2026) owns the proposed UI/UX requirements; [Assignment.md](../Assignment.md) remains the sole task/status tracker. The existing product, architecture, financial rules, access boundaries and owner responsibilities remain authoritative.
 
 ## 1. Synchronization and material inventory
 
-Fetched all remote refs and ran a normal fast-forward-only pull of main; it was already current at `d0e0e6e`. That revision already includes the accepted-direction archive from PR #25 and the UI-04 interaction fixes. This analysis introduces no new functional feature from another branch and merges no pending PR.
+Initially fetched remote refs and confirmed main was current at `d0e0e6e`, including the accepted-direction archive from PR #25 and UI-04 interaction fixes. During analysis, main advanced to `63371c5` with the evidence/affordability workflow. Integrated that already-published commit into the isolated analysis branch, preserving its canonical instructions, task statuses and implementation. No pending PR is merged by this task. The asset/analysis changes introduce no additional operational feature.
 
 The local accepted-design archive contains **50 files / 31,216,368 bytes**, including **38 raster images**. All 49 entries in its supplied manifest match both the extracted files and ZIP bytes; the 50th file is that manifest itself. Independently verified all 50 copied files from the committed Git tree against [repository hashes](manifest.json), with image dimensions and alpha checked again.
 
@@ -34,7 +34,21 @@ The supplied screens are useful composition references, not replacement function
 
 Gabay can support welcome, missing information, saved drafts, actual review status, unavailable information and payment-help acknowledgement. The illustrated checkmark, shield, growth arrow or happy expression must not imply loan approval, verified evidence, guaranteed safety or changed terms. An unavailable application list must not be rendered as an empty list merely to use the no-applications artwork.
 
-## 3. Candidate component mapping
+## 3. Newly synchronized features and instructions
+
+The [delivery record](../docs/AGAP_Evidence_Workflow_Delivery.md), [contract proposal](../docs/AGAP_Evidence_Assessment_Contract_Proposal.md) and design.md section 15 describe the new implemented candidate at `63371c5`:
+
+- **Member and staff workspaces:** authenticated staff review evidence from Applications; members review only their own application. The member projection retains its legacy fallback when the workflow is unavailable. Feature activation defaults off; the redesign must cover enabled and unavailable states.
+- **Documents and processing:** private upload intents accept PDF/JPEG/PNG up to 10 MiB. Quarantine, safety clearance, reading text, suggestions, failure and manual entry are distinct states. Cleared downloads, source text/page/version and provenance remain inspectable. File safety clearance is separate from verification of financial claims.
+- **Human review and history:** suggestions require human confirmation or correction. Facts preserve unavailable reasons, source/statement, cash/effective/coverage dates, gross/net basis, period and payroll deduction treatment. Explicit not-applicable facts retain their amount/history. Staff-only verification methods/limitations stay out of member views. Stable retries, concurrency versions and saved snapshots survive presentation changes.
+- **Server assessments:** canonical contracts advance to 0.3.0 while earlier financial snapshots retain their meaning. The server reuses deterministic integer-centavo/calendar-date arithmetic. Each reviewed calendar month, whole-horizon net remaining, dated shortage/balances, actual/configured minimum and full contractual offer costs have different meanings and must remain separately labeled. Reserved loan proceeds do not become spendable household income. Corrections make saved reviews stale without rewriting them.
+- **Environment and operations:** server-controlled record mode determines fictional/cooperative wording; historical omitted mode keeps the fictional fallback. Private local/Azure storage, bounded scan/OCR/model jobs, policy publication, retirement/holds and API/worker deployment preparation exist as implementation candidates. They do not establish live production activation.
+
+Actual GPU/model execution and independent model acceptance remain unavailable; manual entry is essential. Expired Azure access, budget approval, deployed scanner/container verification, remote CI startup failure and institutional policy/privacy/recovery/release evidence remain explicit blockers in the delivery record. No mascot, polished screen or successful local test resolves them. Approval/payments, later accounting reports, goals, numerical 5C scoring and model training remain subsequent milestones.
+
+The incoming section 15 and owner/task updates are preserved. The visual migration must retain both this current workspace and the historical fictional review routes; it must not use the static concept screens to replace the implemented source/fact/assessment distinctions.
+
+## 4. Candidate component mapping
 
 | Supplied component | Existing integration point | Required adaptation before adoption |
 | --- | --- | --- |
@@ -49,7 +63,7 @@ Gabay can support welcome, missing information, saved drafts, actual review stat
 
 Keep the current Money/date formatters and icons. Adapt these treatments into the current shared UI incrementally; retain all existing consumers and financial workflow tests. The archive is a reference implementation, not another production primitive package.
 
-## 4. Browser and palette findings
+## 5. Browser and palette findings
 
 Rendered the restored HTML gallery in Chromium at 320, 768 and 1366px. All image references loaded. Escape closed the example dialog and returned focus to its trigger. The specimen uses a system fallback when the bundled app font is unavailable; these screenshots do not establish Google Sans fidelity in a redesigned application.
 
@@ -75,21 +89,21 @@ Computed contrast from the exact supplied sRGB values:
 
 The [raw preview report](review/preview-checks.json) records findings, not a conformance pass. Screenshots: [phone](review/ui-kit-320.png), [tablet](review/ui-kit-768.png), [desktop](review/ui-kit-1366.png), [motion concept](review/motion-1366.png). The original specimens remain unchanged so these findings stay reproducible.
 
-## 5. Proposed implementation sequence
+## 6. Proposed implementation sequence
 
 1. **UI-06 foundation and first screens:** approve the section 16 proposal; migrate the canonical token roles once, then shared shell/navigation, staff/member sign-in and member home. Show phone and desktop states before extending the treatment. Keep current route destinations and account behavior.
 2. **Shared controls and member forms:** adopt compatible fields, buttons, notices and guidance; retain save/submit semantics, warnings, uncertain retries, source confirmation and existing unavailable states. Resolve the specimen findings during integration.
-3. **Staff and review surfaces:** apply shared typography, density, status and layout improvements. Preserve evidence detail, paired financial results, sources, history and print behavior. Robert owns shared changes; domain owners retain their feature paths and logic.
+3. **Staff and review surfaces:** apply shared typography, density, status and layout improvements. Preserve source processing, human review, fact semantics, separate monthly/horizon results, full offer costs, private verification boundaries, stale histories, record-mode wording and print behavior. Robert owns shared changes; domain owners retain their feature paths and logic.
 4. **Selected motion and delivery:** introduce only justified optional cues using the supplied art; keep figures steady, stop ornamental motion during tasks and provide an intentional reduced-motion state. Inspect appropriate current source if a React Bits component is selected; no new library is required by this plan.
 5. **Release evidence:** run `npm run check` and `npm run test:e2e` after actual UI changes; review 320px, tablet, desktop, 200% zoom, keyboard/focus, long text, reduced motion, contrast and saved-brief printing. Retain UI-04 sharing/focus fixes and all financial oracles. Representative member/staff review remains separate from automated checks.
 
 The target is a cleaner face for the same product. It does not activate a new chatbot, AI authority, budget calculator, goal/investment flow, 5C score, financial service, authentication mode or lending policy. Product work retains its existing task/status/dependency boundaries.
 
-## 6. Handoff verification
+## 7. Handoff verification
 
 - Exact source-to-ZIP and source-to-committed-blob checks passed for every supplied file. Dimensions and actual alpha channels were inspected; character sheets and key concepts were visually reviewed.
 - `npm run lint` and `npm run build` passed. A narrowly scoped browser-globals setting lets the preserved specimen JavaScript be linted in its actual environment; no lint rule is disabled.
-- Application, API, domain, canonical tokens, fixture registry, tests, dependency manifest and lockfile are unchanged. Asset/specimen publication is not UI feature integration, so unrelated database/application regression runs are not represented as new acceptance evidence.
+- The asset/analysis task leaves application, API, domain, canonical tokens, fixture registry, tests, dependency manifest and lockfile identical to the synchronized `63371c5` tree. The upstream functional additions are preserved; they are not attributed to UI-05. Combined revision validation is recorded in the existing UI verification record. Asset/specimen publication is not UI feature integration.
 - Local Markdown link/anchor and specimen-resource checks passed. `graphify update .` completed; the optional SQL parser remains unavailable and the existing contracts barrel is partially extracted. No remote CI result, final redesigned screen, production readiness or representative-user acceptance is inferred from asset publication.
 
 The next review concerns the concrete design requirements and sequence above. Asset archival and analysis do not authorize treating the standalone showcase's mock interactions as the operational AGAP system.
