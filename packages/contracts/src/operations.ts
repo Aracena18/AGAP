@@ -6,6 +6,10 @@ export interface Operation {
   versioned?: boolean; idempotent?: boolean; public?: boolean; principal?:'member'; binary?:boolean; binaryResponse?:boolean;
 }
 export const operations = [
+  {id:'listSupportRequests',method:'GET',path:'/support-requests',response:'SupportPage',owner:'Earl',implemented:true},
+  {id:'getSupportRequest',method:'GET',path:'/support-requests/{id}',response:'SupportDetail',owner:'Earl',implemented:true},
+  {id:'assignSupportRequest',method:'POST',path:'/support-requests/{id}/assignments',request:'SupportAssignment',response:'SupportSummary',owner:'Earl',implemented:true,idempotent:true,versioned:true},
+  {id:'respondSupportRequest',method:'POST',path:'/support-requests/{id}/responses',request:'SupportResponse',response:'SupportDetail',owner:'Earl',implemented:true,idempotent:true,versioned:true},
   {"id": "getStaffWorkflow", "method": "GET", "path": "/applications/{id}/evidence", "response": "WorkflowView", "owner": "Aaron", "implemented": true},
   {"id": "saveStaffFact", "method": "POST", "path": "/applications/{id}/facts", "response": "CommandReceipt", "owner": "Aaron", "implemented": true, "request": "WorkflowFactInput", "idempotent": true, "versioned": true},
   {"id": "reviewStaffDraft", "method": "POST", "path": "/applications/{id}/draft-reviews", "response": "CommandReceipt", "owner": "Aaron", "implemented": true, "request": "WorkflowDraftReview", "idempotent": true, "versioned": true},

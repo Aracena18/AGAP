@@ -1,0 +1,26 @@
+{
+  "base": "56d6be2",
+  "task": "HLT-01",
+  "source": "actual PostgreSQL and HTTP browser journey using fictional records",
+  "collectedAt": "2026-11-03T14:36:58.383Z",
+  "viewports": {
+    "staffDesktop": {
+      "width": 1366,
+      "height": 900
+    },
+    "staffMobile": {
+      "width": 320,
+      "height": 800
+    },
+    "memberMobile": {
+      "width": 320,
+      "height": 800
+    }
+  },
+  "visualReview": "Desktop and mobile screenshots inspected; no real records or funds.",
+  "sha256": {
+    "support-desktop.png": "b1ec66cb49a0a4f07bbabfef23ee6d856c5b51f9a76a2021ee36457ed5dbd957",
+    "support-320.png": "d33685ec416882e0abd817b73ef4c57b750bd3706d8e83894324e26ad7b44f0b",
+    "member-support-320.png": "5b6ce19153ad89784f4bdda956e56f928c9f5b915e3da2ae96d6cb858bd661d6"
+  }
+}

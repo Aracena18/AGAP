@@ -1,0 +1,9 @@
+.heading{flex-wrap:wrap}
+.table{min-width:44rem}
+.id,.message{overflow-wrap:anywhere;white-space:pre-wrap}
+.id{display:block;font-weight:400}
+.metadata{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:var(--space-2) var(--space-4);margin:0}
+.metadata dt{color:var(--muted)}
+.metadata dd{margin:0;overflow-wrap:anywhere}
+.action{display:grid;gap:var(--space-2);padding-block:var(--space-4);border-top:1px solid var(--line)}
+@media(max-width:40rem){.metadata{grid-template-columns:minmax(0,1fr)}.metadata dd{margin-bottom:var(--space-2)}}

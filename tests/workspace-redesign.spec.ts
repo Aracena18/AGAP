@@ -22,7 +22,7 @@ test('workspace navigation stays usable on a phone and preserves private destina
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/#\/member\/loans$/);
   await expect(page.getByRole('main')).toBeFocused();
-  await expect(page.getByRole('main')).toContainText('temporarily unavailable');
+  await expect(page.getByRole('main')).toContainText('No loans recorded');
   await nav.getByRole('link', { name: 'Home', exact: true }).click();
   await expect(page.getByRole('link', { name: /Apply for a loan/ })).toBeVisible();
 });

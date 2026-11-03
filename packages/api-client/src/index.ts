@@ -3,6 +3,10 @@ import type { z } from 'zod';
 import { schemas } from '../../contracts/src/schemas.js';
 import { ClientTransport, type RequestOptions } from './transport.js';
 export class AgapClient extends ClientTransport {
+  listSupportRequests(options: RequestOptions = {}) { return this.request('GET', `/support-requests`, undefined, schemas.SupportPage, options); }
+  getSupportRequest(id: string, options: RequestOptions = {}) { return this.request('GET', `/support-requests/${encodeURIComponent(id)}`, undefined, schemas.SupportDetail, options); }
+  assignSupportRequest(id: string, body: z.input<typeof schemas.SupportAssignment>, options: RequestOptions = {}) { return this.request('POST', `/support-requests/${encodeURIComponent(id)}/assignments`, body, schemas.SupportSummary, options); }
+  respondSupportRequest(id: string, body: z.input<typeof schemas.SupportResponse>, options: RequestOptions = {}) { return this.request('POST', `/support-requests/${encodeURIComponent(id)}/responses`, body, schemas.SupportDetail, options); }
   getStaffWorkflow(id: string, options: RequestOptions = {}) { return this.request('GET', `/applications/${encodeURIComponent(id)}/evidence`, undefined, schemas.WorkflowView, options); }
   saveStaffFact(id: string, body: z.input<typeof schemas.WorkflowFactInput>, options: RequestOptions = {}) { return this.request('POST', `/applications/${encodeURIComponent(id)}/facts`, body, schemas.CommandReceipt, options); }
   reviewStaffDraft(id: string, body: z.input<typeof schemas.WorkflowDraftReview>, options: RequestOptions = {}) { return this.request('POST', `/applications/${encodeURIComponent(id)}/draft-reviews`, body, schemas.CommandReceipt, options); }
