@@ -1,5 +1,17 @@
 # AGAP frontend specification
 
+## Public landing and installation — UI-07, 3 November 2026
+
+The user-approved public `/` (including `/#/`) route lazy-loads the landing feature before staff/member session providers. It does not fetch a private session. Existing `/applications/*`, `/staff/*` and `/member/*` authentication, return routes, calculations and persistence remain unchanged. The historical root redirect to Applications is replaced by the landing; workspace links still target their original routes.
+
+Landing links use `/?section=gabay|workflow|demo` inside the hash router; heading focus and sticky-header clearance accompany navigation and Back/Forward. The reveal is local presentation state, with Motion scroll values for transforms/opacity and only a discrete phase update to remove faded controls from keyboard access. Static layouts serve reduced-motion, narrow and short viewports. No continuous scroll value is stored in React state.
+
+Four accessible tabs show actual captured fictional-demo screenshots and captions, with full-size image links and explicit screenshot-failure recovery. These are public, intentional fictional examples, not private application projections or a second fixture/calculation registry.
+
+The same-origin manifest and icons support browser installation. The landing captures `beforeinstallprompt`, opens it only on user action, consumes each prompt once, and distinguishes pending, dismissed, accepted-request, error and browser-confirmed installation/standalone states. Without a prompt, the installation dialog gives browser instructions and continued browser access. No native APK, service worker, offline cache, push delivery or authentication change is supplied. Internet access remains required. Runtime dependency `motion` is isolated to the lazy landing feature; canonical tokens add a landing-scoped light/dark theme only.
+
+See [design rules](../design.md#17-public-gabay-landing--ui-07-3-november-2026) and [verification/provenance](AGAP_Landing_Verification.md). Technical checks do not establish visual acceptance or live readiness.
+
 Status, 26 October: this checkout supplies the fictional browser review baseline and the server-backed staff/member intake candidate. Visual acceptance and representative staff/member evaluation remain pending. [Current evidence](AGAP_Robert_Member_Verification.md) separates real session/intake behavior, simulated domain rendering and unavailable production domain services.
 
 The [product solution](AGAP_Product_Solution.md) and [design](../design.md#10-planned-member-and-support-workflows-25-october-2026) govern the member portal and retained support workflows. Executable contract 0.2.0 is a review candidate containing the [member proposal](AGAP_Member_Contract_Proposal.md); it is not an agreed integration base. AI/evidence/financial domain services remain unimplemented.

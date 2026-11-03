@@ -1,0 +1,70 @@
+{
+  "task": "UI-07",
+  "date": "2026-11-03",
+  "timezone": "Asia/Manila",
+  "integrationBase": "56cffd6",
+  "checks": {
+    "npm run check": {
+      "passed": true,
+      "uiDomainTests": 193,
+      "platformBackendTests": 520,
+      "evaluationTests": 76
+    },
+    "npm run test:e2e": {
+      "passed": true,
+      "browserTests": 52
+    },
+    "finalLandingSubset": {
+      "passed": true,
+      "browserTests": 13
+    }
+  },
+  "lighthouse": {
+    "version": "13.6.0",
+    "fetchTime": "2026-11-03T06:28:48.547Z",
+    "formFactor": "mobile",
+    "scores": {
+      "performance": 96,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "metrics": {
+      "largest-contentful-paint": {
+        "value": 2726.1205,
+        "display": "2.7\u00a0s"
+      },
+      "total-blocking-time": {
+        "value": 24,
+        "display": "20\u00a0ms"
+      },
+      "cumulative-layout-shift": {
+        "value": 0,
+        "display": "0"
+      }
+    },
+    "lcpTargetMs": 2500,
+    "lcpTargetMet": false
+  },
+  "review": {
+    "independentVisualDisposition": "ship",
+    "finalAssetLoadingVerdict": "ship",
+    "representativeAcceptance": false
+  },
+  "limits": [
+    "Actual OS installation is browser/device controlled; automated install events were simulated.",
+    "Zoom capture is equivalent CSS reflow at 683x384/deviceScaleFactor2, not native browser zoom.",
+    "Lab performance is not field Core Web Vitals or production readiness."
+  ],
+  "graphify": {
+    "completed": true,
+    "nodes": 3097,
+    "edges": 8492,
+    "communities": 171,
+    "limits": [
+      "tree_sitter_sql missing for34 SQL files",
+      "packages/contracts/src/index.ts partially extracted",
+      "community labels are heuristic"
+    ]
+  }
+}

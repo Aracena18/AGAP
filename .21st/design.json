@@ -1,0 +1,8 @@
+{
+  "authority": "../design.md",
+  "tokens": "../src/styles/tokens.css",
+  "components": "../src/shared/ui/index.tsx",
+  "decisions": [
+    { "id": "UI-07", "date": "2026-11-03", "direction": "User-approved Gabay close-up to full-character landing reveal; green/white/yellow scoped to public landing", "evidence": "../docs/AGAP_Landing_Verification.md" }
+  ]
+}

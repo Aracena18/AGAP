@@ -36,3 +36,50 @@
   --control-radius: 8px;
   --button-radius: 999px;
 }
+
+/* UI-07: approved public landing theme. Workspace/root values above stay canonical. */
+[data-agap-landing] {
+  color-scheme: light;
+  --canvas: #f7f9f6;
+  --surface: #ffffff;
+  --ink: #153529;
+  --muted: #485d53;
+  --primary: #176347;
+  --primary-hover: #123d2d;
+  --primary-soft: #e8f1e8;
+  --primary-container: #e3eddc;
+  --on-primary-container: #153529;
+  --surface-variant: #eef3eb;
+  --hover: #e8f1e8;
+  --line: #dae5db;
+  --input-line: #62776a;
+  --focus: #176347;
+  --landing-yellow: #e4bd52;
+  --landing-on-yellow: #153529;
+  --landing-hero: #eef3e9;
+  --landing-button-ink: #ffffff;
+  --landing-shadow: 0 24px 64px #123d2d12;
+  --landing-backdrop: #06140c99;
+}
+@media (prefers-color-scheme: dark) {
+  [data-agap-landing] {
+    color-scheme: dark;
+    --canvas: #111e18;
+    --surface: #192a21;
+    --ink: #edf4ec;
+    --muted: #bdcdbf;
+    --primary: #a3d7b3;
+    --primary-hover: #c0e5ca;
+    --primary-soft: #263e30;
+    --primary-container: #2d4432;
+    --on-primary-container: #edf4ec;
+    --surface-variant: #203429;
+    --hover: #263e30;
+    --line: #3d5143;
+    --input-line: #a0b4a5;
+    --focus: #a3d7b3;
+    --landing-hero: #1b2d20;
+    --landing-button-ink: #123d2d;
+    --landing-shadow: 0 24px 64px #06140c40;
+  }
+}

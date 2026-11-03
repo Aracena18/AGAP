@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 2,
+  "title": "AGAP design source references",
+  "sourceMode": "references-only",
+  "description": "Tool context for the existing design authority. Resolve executable values from their canonical sources; this sidecar defines no token primitives or replacement design system.",
+  "authorities": {
+    "design": "../design.md",
+    "product": "../PRODUCT.md",
+    "browserContracts": "../docs/AGAP_Frontend_Spec.md",
+    "taskStatus": "../Assignment.md",
+    "verification": "../docs/AGAP_Landing_Verification.md"
+  },
+  "scope": {
+    "task": "UI-07",
+    "surface": "Public Gabay landing",
+    "designSection": "17. Public Gabay landing — UI-07, 3 November 2026",
+    "selector": "[data-agap-landing]",
+    "surfaceBrief": "surfaces/landing.md",
+    "boundary": "Landing palette and reveal behavior are local to this surface; existing workspace rules and tokens retain their authority.",
+    "acceptance": "Recorded implementation and technical evidence do not establish representative-user acceptance or production readiness."
+  },
+  "extensions": {
+    "palette": {
+      "source": "../src/styles/tokens.css",
+      "workspaceSelector": ":root",
+      "landingSelector": "[data-agap-landing]",
+      "darkVariant": "prefers-color-scheme: dark within the landing selector",
+      "roles": {
+        "action": ["--primary", "--primary-hover", "--landing-button-ink"],
+        "selection": ["--primary-container", "--on-primary-container"],
+        "brandDetail": ["--landing-yellow", "--landing-on-yellow"],
+        "surfaces": ["--canvas", "--surface", "--surface-variant", "--landing-hero"],
+        "text": ["--ink", "--muted"],
+        "boundariesAndFocus": ["--line", "--input-line", "--focus"]
+      }
+    },
+    "typography": {
+      "familySource": "../src/styles/tokens.css",
+      "sharedHierarchySource": "../src/styles/global.css",
+      "landingHierarchySource": "../src/features/landing/LandingPage.module.css",
+      "guidance": "../design.md"
+    },
+    "spacingAndShape": {
+      "tokenSource": "../src/styles/tokens.css",
+      "landingCompositionSource": "../src/features/landing/LandingPage.module.css"
+    },
+    "elevation": {
+      "tokenSource": "../src/styles/tokens.css",
+      "tokens": ["--landing-shadow", "--landing-backdrop"],
+      "usageSource": "../src/features/landing/LandingPage.module.css"
+    },
+    "responsiveAndMotion": {
+      "mediaAndStaticFallbackSource": "../src/features/landing/GabayReveal.tsx",
+      "layoutAndReducedMotionSource": "../src/features/landing/LandingPage.module.css",
+      "scrollTransformsAndFocusPhaseSource": "../src/features/landing/RevealMotion.tsx",
+      "guidance": "../design.md"
+    }
+  },
+  "components": [
+    {
+      "name": "Shared controls",
+      "source": "../src/shared/ui/index.tsx",
+      "styles": "../src/shared/ui/ui.module.css"
+    },
+    {
+      "name": "Landing navigation, fictional screenshot tabs, installation dialog and FAQ",
+      "source": "../src/features/landing/LandingPage.tsx",
+      "styles": "../src/features/landing/LandingPage.module.css",
+      "installationStates": "../src/features/landing/useInstall.ts"
+    },
+    {
+      "name": "Gabay reveal and static alternative",
+      "source": "../src/features/landing/GabayReveal.tsx",
+      "motion": "../src/features/landing/RevealMotion.tsx",
+      "styles": "../src/features/landing/LandingPage.module.css"
+    }
+  ]
+}

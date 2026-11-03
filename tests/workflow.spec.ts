@@ -156,7 +156,7 @@ test('source tracing, keyboard entry and reset work with hash routing', async ({
 
 test('incompatible storage is preserved until explicit reset', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('agap.demo.v1', '{incompatible'));
-  await page.goto('/');
+  await page.goto('/#/applications');
   await expect(page.getByRole('status')).toContainText('preserved');
   expect(await page.evaluate(() => localStorage.getItem('agap.demo.v1'))).toBe('{incompatible');
   await openDemoTools(page);await page.getByRole('button', { name: 'Reset demo', exact: true }).first().click();
