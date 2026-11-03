@@ -1,0 +1,33 @@
+{
+  "taskIds": [
+    "SHOW-01",
+    "FND-03",
+    "MOB-01",
+    "HLT-01"
+  ],
+  "candidate": "e0f31fc",
+  "sourceBranch": "feat/earl-hlt-01-support-queue",
+  "sourceCommit": "6a8b475",
+  "baseMain": "4323627",
+  "source": "actual PostgreSQL/HTTP Chromium journey, fictional records only",
+  "viewports": {
+    "support-desktop.png": [
+      1366,
+      900
+    ],
+    "support-320.png": [
+      320,
+      800
+    ],
+    "member-support-320.png": [
+      320,
+      800
+    ]
+  },
+  "visualReview": "Inspected all three images: single staff navigation, readable responsive forms/history and explicit unavailable position; no material presentation defect found. Representative acceptance remains pending.",
+  "sha256": {
+    "support-desktop.png": "88fef7cac5c765f6b619ecb5afc0d969eddd362080949eb368245cf34d410f68",
+    "support-320.png": "c6dbd4280dde5597caedc750edc038c7c6e294a86d289e51e7e1878426ebbd26",
+    "member-support-320.png": "5d4480d359bf463d84716ccc15b53f7b500bde4683c50f9426445779c592454c"
+  }
+}
