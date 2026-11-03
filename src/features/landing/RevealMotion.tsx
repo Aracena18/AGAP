@@ -20,11 +20,11 @@ function Feature({ index, current, progress, children }: { index: number; curren
 
 export default function RevealMotion({ scene, content }: { scene: RefObject<HTMLElement | null>; content: RevealContent }) {
   const { scrollYProgress } = useScroll({ target: scene, offset: ['start start', 'end end'] });
-  const [phase, setPhase] = useState({ introHidden: false, feature: 0 });
+  const [phase, setPhase] = useState({ introHidden: false, controlsReady: false, feature: 0 });
   const phaseRef = useRef(phase);
   useMotionValueEvent(scrollYProgress, 'change', progress => {
-    const next = { introHidden: progress >= .16, feature: progress < .43 ? 0 : progress < .63 ? 1 : progress < .82 ? 2 : 3 };
-    if (next.introHidden !== phaseRef.current.introHidden || next.feature !== phaseRef.current.feature) {
+    const next = { introHidden: progress >= .16, controlsReady: progress >= .23, feature: progress < .43 ? 0 : progress < .63 ? 1 : progress < .82 ? 2 : 3 };
+    if (next.introHidden !== phaseRef.current.introHidden || next.controlsReady !== phaseRef.current.controlsReady || next.feature !== phaseRef.current.feature) {
       phaseRef.current = next; setPhase(next);
     }
   });
@@ -52,7 +52,7 @@ export default function RevealMotion({ scene, content }: { scene: RefObject<HTML
     <motion.div className={styles.mascot} style={{ scale, y, x }}><Turnaround angle={angle} fallback={content.mascot}/></motion.div>
     <motion.div className={styles.gabayHeading} style={{ opacity: headingOpacity, y: headingY }}>{content.heading}</motion.div>
     <div className={styles.featureGrid}>{content.features.map((feature, index) => <Feature key={index} index={index} current={phase.feature} progress={scrollYProgress}>{feature}</Feature>)}</div>
-    <motion.ol className={styles.storyNavigation} aria-label="Explore AGAP features" inert={!phase.introHidden} style={{ opacity: headingOpacity }}>
+    <motion.ol className={styles.storyNavigation} aria-label="Explore AGAP features" aria-hidden={!phase.controlsReady} inert={!phase.controlsReady} style={{ opacity: headingOpacity }}>
       {content.featureTitles.map((title, index) => <li key={title}><button type="button" aria-label={`Show feature ${index + 1}: ${title}`} aria-current={phase.feature === index ? 'step' : undefined} onClick={() => visit(index)}>{index + 1}</button></li>)}
     </motion.ol>
   </div>;

@@ -98,7 +98,7 @@ Final synchronized verification passed: `npm run check` (lint, contract generati
 
 `graphify update .` completed after the final source correction (3,204 nodes / 8,849 edges / 171 communities); the same 34 missing-SQL-parser files and partial contract extraction remain reported limitations. Required checks support normal direct-main publication from `codex/agap-landing` over the synchronized accounting base. Representative-user acceptance, real-device installation, native browser zoom, field performance and institutional release remain separate.
 
-## Turnaround story and graphic workflow — UI-07 follow-up
+## Turnaround story and graphic workflow — UI-07 follow-up, 4 November 2026
 
 The user requests stronger graphics, hierarchy and consistent branding in Meet Gabay and How it works, then explicitly selects a scroll-controlled turnaround using the supplied front, side, quarter and back views with one feature per reading moment. Plan: retain the original white opening; extend the bounded desktop scene into four reversible chapters; align the existing six transparent views, preload them after the opening paint, and use narrow eased angle blends with a small perspective cue. This is a 2D image sequence with a 3D-style impression, not a mesh/model. Keep a front-image fallback if turn assets fail, static mobile/short/reduced-motion content and native-scroll/keyboard chapter navigation. Replace the plain workflow row with actual fictional screen previews and short descriptions. No API, financial, fixture, authentication, service-worker or runtime-dependency change is proposed.
 

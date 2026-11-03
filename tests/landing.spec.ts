@@ -186,6 +186,9 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 1440, height: 900
     const install = page.getByRole('button', { name: 'Install AGAP', exact: true }).first();
     await expect(install).toBeInViewport();
     if (process.env.AGAP_CAPTURE_STORY) await page.screenshot({ path: `docs/screenshots/landing/story-start-${viewport.width}.png` });
+    await scene.evaluate(element => window.scrollTo({ top: element.getBoundingClientRect().top + scrollY + (element.getBoundingClientRect().height - innerHeight) * .2, behavior: 'instant' }));
+    await expect(scene.locator('ol')).toHaveAttribute('inert', '');
+    await expect(scene.getByRole('list', { name: 'Explore AGAP features' })).toHaveCount(0);
     await page.getByRole('link', { name: 'Meet Gabay', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Meet Gabay.' })).toBeFocused();
     await expect.poll(scale).toBeCloseTo(1.08, 2);

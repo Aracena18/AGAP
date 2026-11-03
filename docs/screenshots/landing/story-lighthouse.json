@@ -1,0 +1,27 @@
+{
+  "tool": "Lighthouse 13.6.0",
+  "fetchTime": "2026-11-03T15:19:19.649Z",
+  "url": "http://127.0.0.1:5191/",
+  "categories": {
+    "performance": 0.94,
+    "accessibility": 1,
+    "best-practices": 1,
+    "seo": 1,
+    "agentic-browsing": 0.5
+  },
+  "metrics": {
+    "largest-contentful-paint": {
+      "displayValue": "3.2\u00a0s",
+      "numericValue": 3157.3789
+    },
+    "total-blocking-time": {
+      "displayValue": "10\u00a0ms",
+      "numericValue": 14
+    },
+    "cumulative-layout-shift": {
+      "displayValue": "0",
+      "numericValue": 0
+    }
+  },
+  "limits": "One production-preview mobile lab sample. Not field performance or scroll frame-rate evidence. LCP remains above the aspirational 2.5s target."
+}
