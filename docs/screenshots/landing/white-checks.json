@@ -46,7 +46,7 @@
       "height": 900
     },
     {
-      "path": "white-hero-browser.png",
+      "path": "white-hero-browser.jpg",
       "width": 1265,
       "height": 712
     },
@@ -71,10 +71,15 @@
       "height": 3773
     },
     {
-      "path": "white-reveal-browser.png",
+      "path": "white-reveal-browser.jpg",
       "width": 1265,
       "height": 712
     }
   ],
-  "lighthouse": "The earlier score describes the initial publication; no new performance claim is made for this typography refinement."
+  "lighthouse": "The earlier score describes the initial publication; no new performance claim is made for this typography refinement.",
+  "publication": {
+    "implementationCommit": "2c75cad",
+    "branch": "main",
+    "normalPush": true
+  }
 }
