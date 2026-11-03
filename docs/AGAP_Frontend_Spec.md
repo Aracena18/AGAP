@@ -1,5 +1,13 @@
 # AGAP frontend specification
 
+## HLT-01 support candidate — 3 November 2026
+
+The member payment-help page now uses the monitoring service for confirmed submissions/history. It retains the existing preview, edit focus, renewed sharing acknowledgement and stable uncertain retry. Optional answers distinguish yes/no or reported/not-reported from declined and unavailable. Every shared answer and optional owned loan reference is included in the preview and retained in member history. General requests need no linked loan or check-in answer. The public servicing member projection supplies selectable posted loans and a server-captured submission-time position; complete empty loan evidence is distinct from unavailable evidence. Financial-command routes remain unregistered.
+
+`/#/staff/support-requests` provides a paginated support queue, a filter explicitly applying to loaded records, assignment and assigned-officer detail/response history. Branch administrators see assignment metadata and choose active same-branch officers with a reason and fresh MFA. Only assigned officers see shared concerns, check-ins and internal notes; ordinary financial auditing grants no support access. Public responses are separate from internal notes; follow-up dates record a staff action without scheduling external delivery or changing terms. Later denial hides cached disclosures. Versions, exact retries, draft guards and explicit discard/reload protect unsaved work and concurrent changes. The merged shell's duplicate route/navigation blocks are reconciled to one workspace.
+
+Saved loan positions are visibly dated submission evidence, with fresh staff positions explicitly unavailable until a support-purpose reader is supplied. Reported strain can coexist with no overdue balance; no health score or lending consequence is inferred. The existing standalone health-review operation remains contract-only. Existing design rules govern responsive controls, named keyboard-scroll regions, wrapping, focus and unavailable states. [Technical boundaries and receiving owners](../apps/api/src/modules/monitoring/README.md) record the implementation and limits.
+
 ## ACC-01 staff reporting candidate — 3 November 2026
 
 `/#/staff/reconciliations` supplies a server-backed principal reconciliation page using the existing staff session, generated client, shared controls and canonical workspace styles. Access requires the current auditor role and every organization branch; server/database checks apply on create, replay, list and detail. Administrator membership alone is insufficient. Date requests are inclusive and bounded to 31 days. Organization, recording cutoff, snapshot identity, evidence hash and comparison findings are server-owned.

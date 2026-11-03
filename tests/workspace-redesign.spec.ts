@@ -22,7 +22,7 @@ test('workspace navigation stays usable on a phone and preserves private destina
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/#\/member\/loans$/);
   await expect(page.getByRole('main')).toBeFocused();
-  await expect(page.getByRole('main')).toContainText('temporarily unavailable');
+  await expect(page.getByRole('main')).toContainText('No loans recorded');
   await nav.getByRole('link', { name: 'Home', exact: true }).click();
   await expect(page.getByRole('link', { name: /Apply for a loan/ })).toBeVisible();
 });
@@ -72,7 +72,8 @@ test('staff navigation and table actions remain reachable at phone and zoom-equi
     await page.setViewportSize({ width, height: 800 });
     await page.goto('/#/staff/applications');
     const nav = page.getByRole('navigation', { name: 'Staff workspace' });
-    for (const label of ['Members', 'Applications', 'Staff access']) await expect(nav.getByRole('link', { name: label, exact: true })).toBeVisible();
+    await expect(nav).toHaveCount(1);
+    for (const label of ['Members', 'Applications', 'Staff access', 'Support requests']) await expect(nav.getByRole('link', { name: label, exact: true })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Applications', exact: true })).toBeVisible();
     const review = page.getByRole('region', { name: 'Server application records' }).getByRole('link', { name: 'Review evidence', exact: true }).first();
     await review.focus();

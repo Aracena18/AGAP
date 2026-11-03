@@ -1,0 +1,17 @@
+import {Body,Controller,Get,Inject,Param,Post,Query,Req} from '@nestjs/common';
+import type {Request} from 'express';
+import type {ActorContext} from '../../../../../packages/contracts/src/ports.js';
+import {expectedVersion} from '../../platform/commands.js';
+import {ApiError} from '../../platform/errors.js';
+import {MonitoringService} from './monitoring.service.js';
+export const MONITORING=Symbol('MONITORING');
+interface StaffRequest extends Request{staff?:{actor:ActorContext}}
+function actor(r:StaffRequest){if(!r.staff)throw new ApiError(401,'authentication_required','Sign in to staff support.');return r.staff.actor;}
+@Controller('support-requests')
+export class MonitoringController{
+ constructor(@Inject(MONITORING)private readonly service:MonitoringService){}
+ @Get()list(@Req()r:StaffRequest,@Query()q:unknown){return this.service.list(actor(r),q);}
+ @Get(':id')get(@Req()r:StaffRequest,@Param('id')id:string){return this.service.get(actor(r),id);}
+ @Post(':id/assignments')assign(@Req()r:StaffRequest,@Param('id')id:string,@Body()body:unknown){return this.service.assign(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
+ @Post(':id/responses')respond(@Req()r:StaffRequest,@Param('id')id:string,@Body()body:unknown){return this.service.respond(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
+}
