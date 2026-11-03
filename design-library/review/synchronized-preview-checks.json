@@ -1,0 +1,641 @@
+[
+  {
+    "name": "brand-adoption-preview",
+    "width": 320,
+    "state": "member",
+    "scroll": 320,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": [
+          [
+            ".stage-labels > span:nth-child(1)"
+          ],
+          [
+            ".stage-labels > span:nth-child(2)"
+          ],
+          [
+            ".stage-labels > span:nth-child(3)"
+          ],
+          [
+            ".stage-labels > span:nth-child(4)"
+          ]
+        ]
+      },
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ],
+          [
+            ".controls"
+          ],
+          [
+            "#preview-info"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "brand-adoption-preview",
+    "width": 320,
+    "state": "staff",
+    "scroll": 320,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": [
+          [
+            ".thead > span:nth-child(1)"
+          ],
+          [
+            ".thead > span:nth-child(2)"
+          ],
+          [
+            ".thead > span:nth-child(3)"
+          ],
+          [
+            ".trow:nth-child(2) > div:nth-child(1) > small"
+          ],
+          [
+            ".trow:nth-child(3) > div:nth-child(1) > small"
+          ],
+          [
+            ".trow:nth-child(4) > div:nth-child(1) > small"
+          ],
+          [
+            ".smallhead"
+          ]
+        ]
+      },
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ],
+          [
+            ".controls"
+          ],
+          [
+            "#preview-info"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 320,
+    "state": "home",
+    "scroll": 320,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 320,
+    "state": "apply",
+    "scroll": 320,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 320,
+    "state": "information",
+    "scroll": 320,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": [
+          [
+            "small:nth-child(1)"
+          ],
+          [
+            "small:nth-child(3)"
+          ]
+        ]
+      },
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 320,
+    "state": "track",
+    "scroll": 320,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 320,
+    "state": "loan",
+    "scroll": 320,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 320,
+    "state": "help",
+    "scroll": 320,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "brand-adoption-preview",
+    "width": 768,
+    "state": "member",
+    "scroll": 768,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": [
+          [
+            ".stage-labels > span:nth-child(1)"
+          ],
+          [
+            ".stage-labels > span:nth-child(2)"
+          ],
+          [
+            ".stage-labels > span:nth-child(3)"
+          ],
+          [
+            ".stage-labels > span:nth-child(4)"
+          ]
+        ]
+      },
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ],
+          [
+            ".controls"
+          ],
+          [
+            "#preview-info"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "brand-adoption-preview",
+    "width": 768,
+    "state": "staff",
+    "scroll": 768,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": [
+          [
+            ".thead > span:nth-child(1)"
+          ],
+          [
+            ".thead > span:nth-child(2)"
+          ],
+          [
+            ".thead > span:nth-child(3)"
+          ],
+          [
+            ".trow:nth-child(2) > div:nth-child(1) > small"
+          ],
+          [
+            ".trow:nth-child(3) > div:nth-child(1) > small"
+          ],
+          [
+            ".trow:nth-child(4) > div:nth-child(1) > small"
+          ],
+          [
+            ".smallhead"
+          ]
+        ]
+      },
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ],
+          [
+            ".controls"
+          ],
+          [
+            "#preview-info"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 768,
+    "state": "home",
+    "scroll": 768,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 768,
+    "state": "apply",
+    "scroll": 768,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 768,
+    "state": "information",
+    "scroll": 768,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": [
+          [
+            "small:nth-child(1)"
+          ],
+          [
+            "small:nth-child(3)"
+          ]
+        ]
+      },
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 768,
+    "state": "track",
+    "scroll": 768,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 768,
+    "state": "loan",
+    "scroll": 768,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 768,
+    "state": "help",
+    "scroll": 768,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "brand-adoption-preview",
+    "width": 1366,
+    "state": "member",
+    "scroll": 1366,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": [
+          [
+            ".stage-labels > span:nth-child(1)"
+          ],
+          [
+            ".stage-labels > span:nth-child(2)"
+          ],
+          [
+            ".stage-labels > span:nth-child(3)"
+          ],
+          [
+            ".stage-labels > span:nth-child(4)"
+          ]
+        ]
+      },
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ],
+          [
+            ".controls"
+          ],
+          [
+            "#preview-info"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "brand-adoption-preview",
+    "width": 1366,
+    "state": "staff",
+    "scroll": 1366,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": [
+          [
+            ".thead > span:nth-child(1)"
+          ],
+          [
+            ".thead > span:nth-child(2)"
+          ],
+          [
+            ".thead > span:nth-child(3)"
+          ],
+          [
+            ".trow:nth-child(2) > div:nth-child(1) > small"
+          ],
+          [
+            ".trow:nth-child(3) > div:nth-child(1) > small"
+          ],
+          [
+            ".trow:nth-child(4) > div:nth-child(1) > small"
+          ],
+          [
+            ".smallhead"
+          ]
+        ]
+      },
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ],
+          [
+            ".controls"
+          ],
+          [
+            "#preview-info"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 1366,
+    "state": "home",
+    "scroll": 1366,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 1366,
+    "state": "apply",
+    "scroll": 1366,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 1366,
+    "state": "information",
+    "scroll": 1366,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": [
+          [
+            "small:nth-child(1)"
+          ],
+          [
+            "small:nth-child(3)"
+          ]
+        ]
+      },
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 1366,
+    "state": "track",
+    "scroll": 1366,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 1366,
+    "state": "loan",
+    "scroll": 1366,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "member-journey-preview",
+    "width": 1366,
+    "state": "help",
+    "scroll": 1366,
+    "brokenImages": [],
+    "violations": [
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          [
+            ".intro"
+          ]
+        ]
+      }
+    ]
+  }
+]

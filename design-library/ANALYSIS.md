@@ -1,12 +1,12 @@
 # Gabay material analysis and rebranding handoff
 
-3 November 2026, Asia/Manila. UI-05, Robert. Starting application/main revision: `d0e0e6e193b70bd3d50f8a89dce7343a46c306f3`. Later synchronized application/main revision: `63371c5bd3b06f57cb1b565c4f8b1f4288f59d69`. Asset commit: `9ff66a3b8e0614d09adc14bb52261084c6c95be7`. The user requests synchronization and analysis first, followed by a cleaner, responsive member/staff rebrand with the same underlying system.
+3 November 2026, Asia/Manila. UI-05, Robert. Starting application/main revision: `d0e0e6e193b70bd3d50f8a89dce7343a46c306f3`. Synchronized application/main revision: `63371c5bd3b06f57cb1b565c4f8b1f4288f59d69`. Asset commit: `9ff66a3b8e0614d09adc14bb52261084c6c95be7`. The user requests synchronization and analysis first, followed by a cleaner, responsive member/staff rebrand with the same underlying system.
 
 This is an evidence and migration report. [design.md section 16](../design.md#16-planned-gabay-rebranding--3-november-2026) owns the proposed UI/UX requirements; [Assignment.md](../Assignment.md) remains the sole task/status tracker. The existing product, architecture, financial rules, access boundaries and owner responsibilities remain authoritative.
 
 ## 1. Synchronization and material inventory
 
-Initially fetched remote refs and confirmed main was current at `d0e0e6e`, including the accepted-direction archive from PR #25 and UI-04 interaction fixes. During analysis, main advanced to `63371c5` with the evidence/affordability workflow. Integrated that already-published commit into the isolated analysis branch, preserving its canonical instructions, task statuses and implementation. No pending PR is merged by this task. The asset/analysis changes introduce no additional operational feature.
+Initially fetched remote refs and confirmed main was current at `d0e0e6e`, including the accepted-direction archive from PR #25 and UI-04 interaction fixes. During analysis, main advanced to `63371c5` with the evidence/affordability workflow. Integrated that already-published commit into the isolated analysis branch, preserving its canonical instructions, task statuses and implementation. Later integrated design-only commits through `8effecc`, including optimized transfers, a member/staff comparison and a member-journey prototype. No pending PR is merged by this task. The asset/analysis changes introduce no additional operational feature.
 
 The local accepted-design archive contains **50 files / 31,216,368 bytes**, including **38 raster images**. All 49 entries in its supplied manifest match both the extracted files and ZIP bytes; the 50th file is that manifest itself. Independently verified all 50 copied files from the committed Git tree against [repository hashes](manifest.json), with image dimensions and alpha checked again.
 
@@ -22,7 +22,7 @@ The local accepted-design archive contains **50 files / 31,216,368 bytes**, incl
 | Component package | 15 | HTML/CSS/JS, README/decisions, nine React primitives and five 880px transparent WebP previews |
 | Source manifest | 1 | Preserved original metadata |
 
-Files are organized under `design-library/assets`, `concepts` and `specimens`. Original bytes are unchanged. Restoring the component kit's documented folders fixes its missing preview-image references without changing the supplied code. The raw archive's two identical token files are preserved as candidate sources; neither is imported by AGAP. The original ZIP/extraction and unrelated local documents remain local.
+Files are organized under `design-library/assets`, `concepts` and `specimens`. Original bytes are unchanged. Restoring the component kit's documented folders fixes its missing preview-image references without changing the supplied code. The raw archive's two identical token files are preserved as candidate sources; neither is imported by AGAP. The original ZIP/extraction and unrelated local documents remain local. A second incoming inventory contains 50 entries / 9,585,483 bytes, including 38 WebPs, indexed by the preserved [optimized-transfer manifest](source-manifests/optimized-transfer-2026-11-03.json). These derivatives and candidate sources coexist with the originals; all 50 incoming blob IDs/sizes were independently checked. The incoming standalone master is the source-quality original.
 
 ## 2. What the materials establish
 
@@ -45,6 +45,8 @@ The [delivery record](../docs/AGAP_Evidence_Workflow_Delivery.md), [contract pro
 - **Environment and operations:** server-controlled record mode determines fictional/cooperative wording; historical omitted mode keeps the fictional fallback. Private local/Azure storage, bounded scan/OCR/model jobs, policy publication, retirement/holds and API/worker deployment preparation exist as implementation candidates. They do not establish live production activation.
 
 Actual GPU/model execution and independent model acceptance remain unavailable; manual entry is essential. Expired Azure access, budget approval, deployed scanner/container verification, remote CI startup failure and institutional policy/privacy/recovery/release evidence remain explicit blockers in the delivery record. No mascot, polished screen or successful local test resolves them. Approval/payments, later accounting reports, goals, numerical 5C scoring and model training remain subsequent milestones.
+
+The [brand comparison](prototypes/brand-adoption-preview.html) reinforces the member warmth/staff clarity distinction, while the [member journey](prototypes/member-journey-preview.html) connects welcome, draft, information review, tracking, unavailable loan details and simulated payment help. Their controls are temporary browser state, not persistence or service integration. They support the existing MOB-01 discussion without advancing its status. Preserve the source-linked correction/not-applicable and renewed sharing-review patterns, but keep operational navigation and backend contracts authoritative.
 
 The incoming section 15 and owner/task updates are preserved. The visual migration must retain both this current workspace and the historical fictional review routes; it must not use the static concept screens to replace the implemented source/fact/assessment distinctions.
 
@@ -89,6 +91,9 @@ Computed contrast from the exact supplied sRGB values:
 
 The [raw preview report](review/preview-checks.json) records findings, not a conformance pass. Screenshots: [phone](review/ui-kit-320.png), [tablet](review/ui-kit-768.png), [desktop](review/ui-kit-1366.png), [motion concept](review/motion-1366.png). The original specimens remain unchanged so these findings stay reproducible.
 
+Also inspected the synchronized brand comparison in member/staff modes and all six member-journey destinations at 320/768/1366px: **24 page/state samples**, no broken images or page-level overflow. The [raw checks](review/synchronized-preview-checks.json) still report landmark-region findings in both wrappers, contrast findings in comparison progress/table text and two source-excerpt labels on the journey's information screen. Screenshots: [member phone](review/member-journey-preview-320.png), [member desktop](review/member-journey-preview-1366.png), [staff phone](review/brand-adoption-preview-320.png), [staff desktop](review/brand-adoption-preview-1366.png). Visual review additionally catches the journey's narrow two-column welcome: at 320px the heading breaks into near word-per-line fragments. Stack/rebalance that hero in the real member shell. Passing a page-width check alone does not establish useful mobile composition. These are limited specimen checks; keyboard/screen-reader, zoom, full interaction and representative-user acceptance remain pending.
+
+
 ## 6. Proposed implementation sequence
 
 1. **UI-06 foundation and first screens:** approve the section 16 proposal; migrate the canonical token roles once, then shared shell/navigation, staff/member sign-in and member home. Show phone and desktop states before extending the treatment. Keep current route destinations and account behavior.
@@ -102,7 +107,7 @@ The target is a cleaner face for the same product. It does not activate a new ch
 ## 7. Handoff verification
 
 - Exact source-to-ZIP and source-to-committed-blob checks passed for every supplied file. Dimensions and actual alpha channels were inspected; character sheets and key concepts were visually reviewed.
-- `npm run lint` and `npm run build` passed. A narrowly scoped browser-globals setting lets the preserved specimen JavaScript be linted in its actual environment; no lint rule is disabled.
+- Combined `npm run check` passed: lint, generated contracts, frontend/API builds, 193 application tests, 520 platform/database tests and 76 evaluation-tool tests. All 39 Chromium tests passed on the isolated fictional database; incoming design-only files then passed lint with scoped browser globals. A narrowly scoped browser-globals setting lets the preserved specimen JavaScript be linted in its actual environment; no lint rule is disabled.
 - The asset/analysis task leaves application, API, domain, canonical tokens, fixture registry, tests, dependency manifest and lockfile identical to the synchronized `63371c5` tree. The upstream functional additions are preserved; they are not attributed to UI-05. Combined revision validation is recorded in the existing UI verification record. Asset/specimen publication is not UI feature integration.
 - Local Markdown link/anchor and specimen-resource checks passed. `graphify update .` completed; the optional SQL parser remains unavailable and the existing contracts barrel is partially extracted. No remote CI result, final redesigned screen, production readiness or representative-user acceptance is inferred from asset publication.
 
