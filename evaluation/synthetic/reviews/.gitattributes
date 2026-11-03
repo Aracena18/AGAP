@@ -1,0 +1,2 @@
+# Preserve generated artifact bytes and their SHA-256 commitments on every checkout.
+** text eol=lf

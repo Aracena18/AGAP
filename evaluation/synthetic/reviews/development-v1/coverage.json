@@ -1,0 +1,370 @@
+{
+  "counts": {
+    "cases": 12,
+    "expectedFields": 18,
+    "sourcePages": 14
+  },
+  "coverageTags": [
+    {
+      "caseIds": [
+        "ev-06"
+      ],
+      "value": "beyond_cycle"
+    },
+    {
+      "caseIds": [
+        "ev-05"
+      ],
+      "value": "cash_timing"
+    },
+    {
+      "caseIds": [
+        "ev-03"
+      ],
+      "value": "confirmed_recurrence"
+    },
+    {
+      "caseIds": [
+        "ev-12"
+      ],
+      "value": "current_repayment_no_reported_strain"
+    },
+    {
+      "caseIds": [
+        "ev-11"
+      ],
+      "value": "current_repayment_strain"
+    },
+    {
+      "caseIds": [
+        "ev-10"
+      ],
+      "value": "document_instruction"
+    },
+    {
+      "caseIds": [
+        "ev-07"
+      ],
+      "value": "duplicate_obligation"
+    },
+    {
+      "caseIds": [
+        "ev-06"
+      ],
+      "value": "explicit_horizon"
+    },
+    {
+      "caseIds": [
+        "ev-03"
+      ],
+      "value": "explicit_zero"
+    },
+    {
+      "caseIds": [
+        "ev-05"
+      ],
+      "value": "farm_gross_net"
+    },
+    {
+      "caseIds": [
+        "ev-01"
+      ],
+      "value": "gross_net"
+    },
+    {
+      "caseIds": [
+        "ev-04"
+      ],
+      "value": "historical_expense"
+    },
+    {
+      "caseIds": [
+        "ev-09"
+      ],
+      "value": "illegible_source"
+    },
+    {
+      "caseIds": [
+        "ev-03"
+      ],
+      "value": "missing_amount"
+    },
+    {
+      "caseIds": [
+        "ev-03",
+        "ev-09"
+      ],
+      "value": "missing_date"
+    },
+    {
+      "caseIds": [
+        "ev-12"
+      ],
+      "value": "no_inferred_zero"
+    },
+    {
+      "caseIds": [
+        "ev-01"
+      ],
+      "value": "payroll_deduction"
+    },
+    {
+      "caseIds": [
+        "ev-08"
+      ],
+      "value": "reserve_payment_duplicate"
+    },
+    {
+      "caseIds": [
+        "ev-02"
+      ],
+      "value": "source_conflict"
+    },
+    {
+      "caseIds": [
+        "ev-11"
+      ],
+      "value": "support_clarification"
+    },
+    {
+      "caseIds": [
+        "ev-04"
+      ],
+      "value": "unknown_recurrence"
+    }
+  ],
+  "householdGroups": [
+    {
+      "caseIds": [
+        "ev-01"
+      ],
+      "value": "household-ev-01"
+    },
+    {
+      "caseIds": [
+        "ev-02"
+      ],
+      "value": "household-ev-02"
+    },
+    {
+      "caseIds": [
+        "ev-03"
+      ],
+      "value": "household-ev-03"
+    },
+    {
+      "caseIds": [
+        "ev-04"
+      ],
+      "value": "household-ev-04"
+    },
+    {
+      "caseIds": [
+        "ev-05"
+      ],
+      "value": "household-ev-05"
+    },
+    {
+      "caseIds": [
+        "ev-06"
+      ],
+      "value": "household-ev-06"
+    },
+    {
+      "caseIds": [
+        "ev-07"
+      ],
+      "value": "household-ev-07"
+    },
+    {
+      "caseIds": [
+        "ev-08"
+      ],
+      "value": "household-ev-08"
+    },
+    {
+      "caseIds": [
+        "ev-09"
+      ],
+      "value": "household-ev-09"
+    },
+    {
+      "caseIds": [
+        "ev-10"
+      ],
+      "value": "household-ev-10"
+    },
+    {
+      "caseIds": [
+        "ev-11"
+      ],
+      "value": "household-ev-11"
+    },
+    {
+      "caseIds": [
+        "ev-12"
+      ],
+      "value": "household-ev-12"
+    }
+  ],
+  "inputCorpusSha256": "d92d463705f04942e67b6260377c1640954d137f415d598617b5010b410b0ba1",
+  "limitations": [
+    "Coverage tags are author annotations, not proof of sufficient coverage.",
+    "Unique household/scenario/template counts are not independent statistical sample sizes. Connected groups must remain together under the existing splitter.",
+    "Expected answers are authored development candidates awaiting independent review; supported does not mean independently verified.",
+    "No model has been executed or evaluated by this pack."
+  ],
+  "openReviewQuestions": [
+    {
+      "id": "label_truth",
+      "owner": "Independent label/domain reviewer",
+      "question": "Check each amount, date, excerpt, unknown, recurrence and next action against the supplied source. Record disagreements and corrections; generated validation is not independent semantic review."
+    },
+    {
+      "id": "image_coverage",
+      "owner": "Earl and source reviewers",
+      "question": "Agree adequate source/template/image coverage. Public text recipes and an ILLEGIBLE/CROPPED transcription placeholder do not establish realistic scan/OCR performance."
+    },
+    {
+      "id": "training_lineage",
+      "owner": "Benedict and Earl",
+      "question": "Identify cases, templates and sources already used in training or prompt selection before selecting fresh holdout families. New IDs/seeds do not make familiar content unseen."
+    },
+    {
+      "id": "interface",
+      "owner": "Benedict; Robert for shared compatibility",
+      "question": "Confirm the supplied input/target/schema interface, integer centavos, calendar dates, missing-value handling, source references and model task with the actual loader. Do not change the shared contract through this worksheet."
+    },
+    {
+      "id": "protocol",
+      "owner": "Earl and receiving reviewers",
+      "question": "Agree the primary measure, acceptable regressions, baseline/checklist/plain-form conditions, resource limits and correction review before final evaluation. No thresholds or successful model results are supplied here."
+    },
+    {
+      "id": "holdout",
+      "owner": "Earl and Robert",
+      "question": "Agree independently authored families, protected evaluator-controlled storage/access and review evidence. No holdout sources, labels, recipes or seeds belong in this public pack."
+    }
+  ],
+  "scenarioGroups": [
+    {
+      "caseIds": [
+        "ev-01"
+      ],
+      "value": "scenario-ev-01"
+    },
+    {
+      "caseIds": [
+        "ev-02"
+      ],
+      "value": "scenario-ev-02"
+    },
+    {
+      "caseIds": [
+        "ev-03"
+      ],
+      "value": "scenario-ev-03"
+    },
+    {
+      "caseIds": [
+        "ev-04"
+      ],
+      "value": "scenario-ev-04"
+    },
+    {
+      "caseIds": [
+        "ev-05"
+      ],
+      "value": "scenario-ev-05"
+    },
+    {
+      "caseIds": [
+        "ev-06"
+      ],
+      "value": "scenario-ev-06"
+    },
+    {
+      "caseIds": [
+        "ev-07"
+      ],
+      "value": "scenario-ev-07"
+    },
+    {
+      "caseIds": [
+        "ev-08"
+      ],
+      "value": "scenario-ev-08"
+    },
+    {
+      "caseIds": [
+        "ev-09"
+      ],
+      "value": "scenario-ev-09"
+    },
+    {
+      "caseIds": [
+        "ev-10"
+      ],
+      "value": "scenario-ev-10"
+    },
+    {
+      "caseIds": [
+        "ev-11",
+        "ev-12"
+      ],
+      "value": "scenario-repayment-pair"
+    }
+  ],
+  "schemaVersion": "eval-01-review-coverage/v1",
+  "templateFamilies": [
+    {
+      "caseIds": [
+        "ev-11",
+        "ev-12"
+      ],
+      "value": "check-in-a"
+    },
+    {
+      "caseIds": [
+        "ev-03",
+        "ev-04",
+        "ev-06",
+        "ev-07",
+        "ev-08"
+      ],
+      "value": "expense-a"
+    },
+    {
+      "caseIds": [
+        "ev-05"
+      ],
+      "value": "farm-a"
+    },
+    {
+      "caseIds": [
+        "ev-07"
+      ],
+      "value": "invoice-a"
+    },
+    {
+      "caseIds": [
+        "ev-01",
+        "ev-02",
+        "ev-10"
+      ],
+      "value": "payslip-a"
+    },
+    {
+      "caseIds": [
+        "ev-09"
+      ],
+      "value": "scan-text-a"
+    },
+    {
+      "caseIds": [
+        "ev-02"
+      ],
+      "value": "worksheet-a"
+    }
+  ]
+}

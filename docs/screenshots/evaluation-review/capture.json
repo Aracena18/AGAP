@@ -1,0 +1,26 @@
+{
+  "task": "EVAL-01",
+  "base": "d78f41f",
+  "source": "actual generated offline development review HTML in Chromium; fictional public pilot only",
+  "collectedAt": "2026-11-03T15:43:42.417Z",
+  "corpusSha256": "d92d463705f04942e67b6260377c1640954d137f415d598617b5010b410b0ba1",
+  "reviewStatus": "pending",
+  "viewports": [
+    {
+      "width": 1366,
+      "height": 900
+    },
+    {
+      "width": 320,
+      "height": 900
+    }
+  ],
+  "sha256": {
+    "overview-1366.png": "e6efb289be0ccc5e6b07c0aa302edeb166daa66beb126b453cd61ae67d7ac0ce",
+    "overview-320.png": "fa57570f5dfd743451ada0611ccccf503cf205ef46b11314e7c5c382176ff3b2",
+    "missing-zero-1366.png": "2b525bdb18bd28bd9df5006736c1fd49c658ae55699a47358995354a8c9dfe92",
+    "missing-zero-320.png": "fbe47246432df578ee192b7c623bee883d2c5b9b17716c7a5fa67c6bbbc39515"
+  },
+  "reviewHtmlSha256": "fcbf81094261d8a309f04882e8ba2d35f14de60bda471d97e709898fb4d20279",
+  "reviewManifestSha256": "298813bac096a25dd82d2a8b9ebab78874433a9a8944291ed1bef951253f6bc0"
+}
