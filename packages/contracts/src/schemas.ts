@@ -192,8 +192,14 @@ export const MemberLoanSchema = z.strictObject({
   nextPayment:z.strictObject({date:CalendarDay,amountCentavos:MoneyAmount}).nullable(),
   schedule:z.array(z.strictObject({date:CalendarDay,amountCentavos:MoneyAmount})),receipts:z.array(MemberReceiptSchema),
 });
-export const MemberSupportCreateSchema = z.strictObject({loanId:Id.nullable(),message:Text,contactPreference:z.enum(['portal','phone']),sharingConfirmed:z.literal(true),noticeVersion:Text});
-export const MemberSupportSchema = z.strictObject({id:Id,submittedAt:Instant,status:z.enum(['submitted','assigned','reviewed']),message:Text,response:Text.nullable()});
+export const SupportCheckInSchema = z.strictObject({canMeetEssentials:z.enum(['yes','no','declined','unavailable']),borrowedToRepay:z.enum(['yes','no','declined','unavailable']),financialStrain:z.enum(['reported','not_reported','declined','unavailable'])});
+export const MemberSupportCreateSchema = z.strictObject({loanId:Id.nullable(),message:Text,contactPreference:z.enum(['portal','phone']),sharingConfirmed:z.literal(true),noticeVersion:Text,checkIn:SupportCheckInSchema.optional()});
+export const MemberSupportSchema = z.strictObject({id:Id,submittedAt:Instant,status:z.enum(['submitted','assigned','reviewed']),message:Text,response:Text.nullable(),checkIn:SupportCheckInSchema.optional(),loanId:Id.nullable().optional()});
+export const SupportAssignmentSchema=z.strictObject({officerId:Id,reason:Text});
+export const SupportResponseSchema=z.strictObject({response:Text,internalNote:Text,followUpDate:CalendarDay.nullable()});
+export const SupportSummarySchema=z.strictObject({id:Id,memberId:Id,branchId:Id,submittedAt:Instant,status:MemberSupportSchema.shape.status,version:Version,assignedOfficerId:Id.nullable()});
+export const SupportPageSchema=z.strictObject({items:z.array(SupportSummarySchema).max(100),nextCursor:Id.nullable()});
+export const SupportDetailSchema=SupportSummarySchema.extend({message:Text,contactPreference:z.enum(['portal','phone']),noticeVersion:Text,checkIn:SupportCheckInSchema,position:LoanPositionSchema.nullable(),positionMessage:Text,actions:z.array(z.strictObject({id:Id,recordedAt:Instant,recordedBy:Id,response:Text,internalNote:Text,followUpDate:CalendarDay.nullable(),version:Version})).max(100)});
 export const MemberAcceptanceSchema = z.strictObject({decisionId:Id,documentVersionId:Id,acknowledgment:z.literal(true)});
 export const MemberUploadSchema = z.strictObject({fileName:z.string().trim().min(1).max(160),mediaType:z.enum(['application/pdf','image/jpeg','image/png']),size:z.number().int().min(1).max(10*1024*1024)});
 const serviceView = <T extends z.ZodType>(data:T) => z.discriminatedUnion('state',[
@@ -206,6 +212,7 @@ export const MemberLoansViewSchema = serviceView(z.array(MemberLoanSchema));
 export const MemberSupportViewSchema = serviceView(z.array(MemberSupportSchema));
 
 export const schemas = {
+  SupportAssignment:SupportAssignmentSchema,SupportResponse:SupportResponseSchema,SupportPage:SupportPageSchema,SupportDetail:SupportDetailSchema,SupportSummary:SupportSummarySchema,
   ReconciliationCreate:ReconciliationCreateSchema,ReconciliationRun:ReconciliationRunSchema,ReconciliationPage:ReconciliationPageSchema,
   ...workflowSchemas,
   MemberSession:MemberSessionSchema,MemberProfile:MemberProfileSchema,MemberApplicationCreate:MemberApplicationCreateSchema,MemberApplication:MemberApplicationSchema,MemberApplicationPage:MemberApplicationPageSchema,MemberSubmit:MemberSubmitSchema,

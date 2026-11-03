@@ -10,6 +10,7 @@ export const migrationDirectories = [
   'apps/api/src/modules/decisions/migrations',
   'apps/api/src/modules/servicing/migrations',
   'apps/api/src/modules/evidence/migrations',
+  'apps/api/src/modules/monitoring/migrations',
 ];
 export async function migrate(pool: Pool, root = process.cwd()) {
   const client = await pool.connect();

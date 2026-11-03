@@ -88,11 +88,12 @@ describe('member principal and own-record runtime controls',()=>{
     expect((await request('/member/reminder-preferences',{token:second.token})).body).toEqual({noticesEnabled:true,version:1});
     expect((await owner.query('SELECT event_type FROM portal.events')).rows).toEqual([{event_type:'member.preferences.updated'}]);
   });
-  it('reports unavailable domains without fabricating loans, decisions or successful support requests',async()=>{
+  it('distinguishes integrated empty loans/support from unavailable evidence and decisions',async()=>{
     const saved=await draft();
-    for(const path of ['/member/loans','/member/support-requests',`/member/applications/${saved.id}/evidence`,`/member/applications/${saved.id}/options`,`/member/applications/${saved.id}/decision`])expect((await request(path)).body).toMatchObject({state:'unavailable'});
-    expect((await request('/member/support-requests',{method:'POST',body:{loanId:null,message:'Fictional need for help',contactPreference:'portal',sharingConfirmed:true,noticeVersion:config.PRIVACY_NOTICE_VERSION},key:randomUUID()})).status).toBe(501);
-    expect((await owner.query('SELECT count(*) FROM portal.events')).rows[0].count).toBe('1');
+    for(const path of [`/member/applications/${saved.id}/evidence`,`/member/applications/${saved.id}/options`,`/member/applications/${saved.id}/decision`])expect((await request(path)).body).toMatchObject({state:'unavailable'});
+    for(const path of ['/member/loans','/member/support-requests'])expect((await request(path)).body).toMatchObject({state:'available',data:[]});
+    expect((await request('/member/support-requests',{method:'POST',body:{loanId:null,message:'Fictional need for help',contactPreference:'portal',sharingConfirmed:true,noticeVersion:config.PRIVACY_NOTICE_VERSION},key:randomUUID()})).status).toBe(201);
+    expect((await owner.query('SELECT count(*) FROM portal.events')).rows[0].count).toBe('2');
   });
   it('rechecks expiry and revocation before cached results, reads and downloads',async()=>{
     const saved=await draft(),key=randomUUID(),body=input();await request('/member/applications',{method:'POST',body,key});
