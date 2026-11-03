@@ -8,7 +8,7 @@
 .identity{display:grid;gap:var(--space-1);padding:var(--space-3);border-bottom:1px solid var(--line);margin-bottom:var(--space-2);overflow-wrap:anywhere}.identity span{color:var(--muted);font-size:13px}.error{max-width:1280px;margin:var(--space-4) auto;padding:0 var(--space-5)}
 @media(max-width:600px){.inner{gap:var(--space-1);padding:var(--space-3) var(--space-4)}.trigger{padding:var(--space-2)}.brand{font-size:22px;gap:var(--space-1)}.error{padding:0 var(--space-4)}}
 
-/* The navigation module is used only by operational workspaces. */
+/* Operational navigation; the accepted mark is also reused by the public landing. */
 .inner { max-width: var(--workspace-width); min-height: 80px; padding: 16px 32px; }
 .brand { font-weight: 600; gap: 12px; letter-spacing: -.5px; }
 .mark { width: 30px; height: 30px; display: inline-block; position: relative; flex: 0 0 auto; }

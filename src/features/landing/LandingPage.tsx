@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ArrowForward, ExpandMore, NorthEast } from '../../shared/icons';
+import { ArrowForward, CalendarToday, Description, ExpandMore, FindInPage, NorthEast } from '../../shared/icons';
 import { Button } from '../../shared/ui';
 import GabayReveal from './GabayReveal';
+import { BrandMark } from './BrandMark';
+import { story } from './story';
 import { useInstall } from './useInstall';
 import styles from './LandingPage.module.css';
 
@@ -46,12 +48,12 @@ export default function LandingPage() {
     if (!section) { window.scrollTo({ top: 0 }); return; }
     if (!['gabay', 'workflow', 'demo'].includes(section)) return;
     const heading = document.getElementById(section);
-    // Meet Gabay belongs at the end of the single continuous reveal.
+    // Meet Gabay opens the first reading moment after the close-up has settled.
     const target = section === 'gabay' ? document.getElementById('workflow') : heading;
     target?.scrollIntoView({ block: 'start' });
     if (section === 'gabay') {
       const scene = document.querySelector(`.${styles.scene}`);
-      if (scene && scene.classList.contains(styles.animated)) window.scrollTo({ top: scene.getBoundingClientRect().bottom + window.scrollY - window.innerHeight });
+      if (scene && scene.classList.contains(styles.animated)) window.scrollTo({ top: scene.getBoundingClientRect().top + window.scrollY + (scene.getBoundingClientRect().height - window.innerHeight) * story[0].anchor });
       else heading?.scrollIntoView({ block: 'start' });
     }
     heading?.focus({ preventScroll: true });
@@ -69,7 +71,7 @@ export default function LandingPage() {
   return <div data-agap-landing className={styles.page}>
     <a className={styles.skip} href="#landing-main" onClick={event => { event.preventDefault(); document.getElementById('landing-main')?.focus(); }}>Skip to main content</a>
     <header className={styles.header}><div className={styles.navInner}>
-      <Link className={styles.brand} to="/" aria-label="AGAP home"><span className={styles.brandMark}><NorthEast size={22}/></span>AGAP</Link>
+      <Link className={styles.brand} to="/" aria-label="AGAP home"><BrandMark/>AGAP</Link>
       <nav aria-label="Landing page"><Link to="/?section=gabay">Meet Gabay</Link><Link to="/?section=workflow">How it works</Link><Link to="/?section=demo">Demo</Link></nav>
       <Link to="/applications" className={styles.navAction}>Open AGAP<NorthEast size={17}/></Link>
     </div></header>
@@ -78,7 +80,14 @@ export default function LandingPage() {
       <section className={styles.workflow} aria-labelledby="workflow">
         <h2 id="workflow" tabIndex={-1}>The member’s everyday life.<br/>Part of every review.</h2>
         <p>AGAP brings the information behind a loan review into one connected journey.</p>
-        <div className={styles.journey}><div><span>Evidence</span><p>Inspect and clarify the facts.</p></div><ArrowForward/><div><span>Cash flow</span><p>Check needs, dates, and costs.</p></div><ArrowForward/><div><span>Human review</span><p>Record the decision and why.</p></div></div>
+        <p className={styles.workflowDisclosure}>Fictional demonstration · Actual AGAP screens</p>
+        <ol className={styles.journey} aria-label="The AGAP review journey">
+          {[{ id: 'evidence', title: 'Evidence', text: 'Inspect and clarify the facts.', Icon: FindInPage }, { id: 'cash-flow', title: 'Cash flow', text: 'Check needs, dates, and costs.', Icon: CalendarToday }, { id: 'decision', title: 'Human review', text: 'Record the decision and why.', Icon: Description }].map((step, index) => <li key={step.id}>
+            <div className={styles.workflowPreview}><step.Icon className={styles.previewFallback} size={48}/><img src={`${base}landing/${step.id}.webp`} alt="" width="1366" height="850" loading="lazy" onError={event => { event.currentTarget.hidden = true; }}/></div>
+            <div className={styles.journeyCaption}><span aria-hidden="true">{index + 1}</span><div><h3>{step.title}</h3><p>{step.text}</p></div></div>
+            {index < 2 && <ArrowForward className={styles.journeyConnector} size={24}/>}
+          </li>)}
+        </ol>
       </section>
       <section className={styles.demo} aria-labelledby="demo">
         <div className={styles.sectionHeading}><h2 id="demo" tabIndex={-1}>See AGAP in action.</h2><p>One fictional application. The details that change a review.</p></div>
@@ -94,7 +103,7 @@ export default function LandingPage() {
         <details><summary>Who makes lending decisions?<ExpandMore/></summary><p>Authorized people make lending decisions. AI may assist with reviewable drafts; it does not calculate authoritative financial figures or approve a loan.</p></details>
       </div></section>
     </main>
-    <footer className={styles.footer}><Link className={styles.brand} to="/"><span className={styles.brandMark}><NorthEast size={20}/></span>AGAP</Link><p>Everyday needs in view.</p><div><Link to="/member">Member access</Link><Link to="/staff">Staff access</Link></div></footer>
+    <footer className={styles.footer}><Link className={styles.brand} to="/"><BrandMark/>AGAP</Link><p>Everyday needs in view.</p><div><Link to="/member">Member access</Link><Link to="/staff">Staff access</Link></div></footer>
     <Installation dialog={dialog} close={() => document.getElementById(triggerId.current)?.focus()} installation={installation}/>
   </div>;
 }

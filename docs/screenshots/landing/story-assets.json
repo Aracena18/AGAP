@@ -1,0 +1,118 @@
+{
+  "authority": "design-library/ANALYSIS.md and manifest.json",
+  "unchangedSources": [
+    {
+      "path": "design-library/assets/gabay/gabay-front-display.webp",
+      "sha256": "a4f300321c7a4db3f71f05ed5155a09da9d703df4d55f0f29ca1ae778b525faf",
+      "width": 1600,
+      "height": 1600,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "opaqueBounds": [
+        128,
+        129,
+        1469,
+        1486
+      ]
+    },
+    {
+      "path": "design-library/assets/gabay/turnaround/gabay-back.webp",
+      "sha256": "5811e58c7ecda9a16fc027dc006b6e4aa57af6057521329b021a46061ee9b115",
+      "width": 1600,
+      "height": 1600,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "opaqueBounds": [
+        244,
+        126,
+        1354,
+        1482
+      ]
+    },
+    {
+      "path": "design-library/assets/gabay/turnaround/gabay-front.webp",
+      "sha256": "d177accebc47d5c4aa66ae5a113094a382ec18301734c3e4b62dace2f6e9ba68",
+      "width": 1600,
+      "height": 1600,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "opaqueBounds": [
+        128,
+        129,
+        1469,
+        1486
+      ]
+    },
+    {
+      "path": "design-library/assets/gabay/turnaround/gabay-profile-left.webp",
+      "sha256": "a640c56c876787b3566cbeaaf268f667147e8062fddf99f9acb0d357e85e8eb2",
+      "width": 1600,
+      "height": 1600,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "opaqueBounds": [
+        390,
+        127,
+        1211,
+        1482
+      ]
+    },
+    {
+      "path": "design-library/assets/gabay/turnaround/gabay-profile-right.webp",
+      "sha256": "99c574929b1a696729b0b02964e0c47c67ea1a992a488aff459b32a5f547cbee",
+      "width": 1600,
+      "height": 1600,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "opaqueBounds": [
+        389,
+        127,
+        1210,
+        1482
+      ]
+    },
+    {
+      "path": "design-library/assets/gabay/turnaround/gabay-three-quarter-left.webp",
+      "sha256": "00d621490ba861c70d6a7c4298bf13dfdce0d727e2bae5b968bb92c1b37f2d59",
+      "width": 1600,
+      "height": 1600,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "opaqueBounds": [
+        279,
+        124,
+        1329,
+        1484
+      ]
+    },
+    {
+      "path": "design-library/assets/gabay/turnaround/gabay-three-quarter-right.webp",
+      "sha256": "cb18f1c27f444de5d0132cf5c919bb67fe1aeb606a18c9db607e1c1e0ccb2db7",
+      "width": 1600,
+      "height": 1600,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "opaqueBounds": [
+        271,
+        124,
+        1321,
+        1484
+      ]
+    }
+  ],
+  "notes": "Six existing views; front-display and turnaround-front contain the same accepted front composition. No source asset was edited. All visible bounds align to the same 1600px square."
+}

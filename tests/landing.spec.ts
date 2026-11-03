@@ -155,7 +155,7 @@ test('white landing under either system preference preserves accessible layouts 
       await expect(page.getByRole('heading', { name: 'Meet Gabay.' })).toBeVisible();
       await expect(page.locator('[data-agap-landing]')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
       if (process.env.AGAP_CAPTURE_WHITE) await page.screenshot({ path: `docs/screenshots/landing/white-${colorScheme}-${width}.png`, fullPage: true });
-      if (process.env.AGAP_CAPTURE_MOTION && colorScheme === 'light' && (width === 390 || width === 320)) await page.screenshot({ path: `docs/screenshots/landing/motion-static-${width}.png`, fullPage: true });
+      if (process.env.AGAP_CAPTURE_STORY && colorScheme === 'light' && (width === 390 || width === 320)) await page.screenshot({ path: `docs/screenshots/landing/story-static-${width}.png`, fullPage: true });
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze()).violations).toEqual([]);
     }
@@ -173,73 +173,111 @@ test('missing screenshot offers a real recovery destination', async ({ page }) =
 });
 
 for (const viewport of [{ width: 1366, height: 768 }, { width: 1440, height: 900 }]) {
-  test(`Gabay reveal has readable stages and reverses without trapping controls at ${viewport.width}px`, async ({ page }) => {
+  test(`Gabay turns through one feature at a time and reverses at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await page.emulateMedia({ reducedMotion: 'no-preference' });
+    const errors: string[] = [];
+    page.on('pageerror', error => errors.push(error.message));
     await page.goto('/#/');
     const scene = page.getByRole('region', { name: 'Introducing AGAP and Gabay' });
-    const mascot = scene.getByRole('img').locator('..');
-    const scale = () => mascot.evaluate(element => new DOMMatrixReadOnly(getComputedStyle(element).transform).a);
+    const mascot = () => scene.getByRole('img').locator('..');
+    const scale = () => mascot().evaluate(element => new DOMMatrixReadOnly(getComputedStyle(element).transform).a);
     await expect.poll(scale).toBeCloseTo(3.2, 2);
     const install = page.getByRole('button', { name: 'Install AGAP', exact: true }).first();
     await expect(install).toBeInViewport();
-    const frames = process.env.AGAP_CAPTURE_MOTION;
-    if (frames) await page.screenshot({ path: `docs/screenshots/landing/motion-start-${viewport.width}.png` });
-    const travel = await scene.evaluate(element => ({ top: element.getBoundingClientRect().top + scrollY, distance: element.getBoundingClientRect().height - innerHeight }));
-    async function seek(progress: number) {
-      await page.evaluate(({ top, distance, progress }) => window.scrollTo({ top: progress === 0 ? 0 : top + distance * progress, behavior: 'instant' }), { ...travel, progress });
+    if (process.env.AGAP_CAPTURE_STORY) await page.screenshot({ path: `docs/screenshots/landing/story-start-${viewport.width}.png` });
+    await scene.evaluate(element => window.scrollTo({ top: element.getBoundingClientRect().top + scrollY + (element.getBoundingClientRect().height - innerHeight) * .2, behavior: 'instant' }));
+    await expect(scene.locator('ol')).toHaveAttribute('inert', '');
+    await expect(scene.getByRole('list', { name: 'Explore AGAP features' })).toHaveCount(0);
+    await page.getByRole('link', { name: 'Meet Gabay', exact: true }).click();
+    await expect(page.getByRole('heading', { name: 'Meet Gabay.' })).toBeFocused();
+    await expect.poll(scale).toBeCloseTo(1.08, 2);
+    await expect(scene.locator('img[data-angle]')).toHaveCount(7);
+    const names = ['Trace the evidence', 'See cash-flow timing', 'Compare full costs', 'Keep decisions human'];
+    const angles = [0, 90, 180, 360];
+    for (let index = 0; index < names.length; index++) {
+      const button = scene.getByRole('button', { name: `Show feature ${index + 1}: ${names[index]}` });
+      await button.focus();
+      await page.keyboard.press('Enter');
+      await expect(button).toHaveAttribute('aria-current', 'step');
+      await expect(scene.locator(`img[data-angle="${angles[index]}"]`)).toHaveCSS('opacity', '1');
+      await expect(scene.getByRole('heading', { level: 3 })).toHaveCount(1);
+      const heading = scene.getByRole('heading', { name: names[index], exact: true });
+      await expect(heading.locator('..')).toHaveCSS('opacity', '1');
+      await expect(heading).toBeInViewport();
+      const bounds = await scene.getByRole('img').boundingBox();
+      expect(bounds!.y).toBeGreaterThan(72);
+      expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(viewport.height);
+      if (process.env.AGAP_CAPTURE_STORY) await page.screenshot({ path: `docs/screenshots/landing/story-feature-${index + 1}-${viewport.width}.png` });
     }
-    await seek(.7);
-    await expect.poll(scale).toBeLessThan(1.1);
-    const evidence = scene.getByRole('heading', { name: 'Trace the evidence', exact: true }).locator('..');
-    const cashFlow = scene.getByRole('heading', { name: 'See cash-flow timing', exact: true }).locator('..');
-    const opacity = (element: typeof evidence) => element.evaluate(node => Number(getComputedStyle(node).opacity));
-    await expect.poll(() => opacity(evidence)).toBeGreaterThan(.7);
-    expect(await opacity(cashFlow)).toBeLessThan(.4);
-    if (frames) await page.screenshot({ path: `docs/screenshots/landing/motion-pairs-${viewport.width}.png` });
-    await seek(1);
-    await expect.poll(scale).toBeCloseTo(1, 2);
-    await expect.poll(() => opacity(cashFlow)).toBe(1);
-    await expect(install.locator('..').locator('..')).toHaveAttribute('inert', '');
-    const imageBounds = await scene.getByRole('img').boundingBox();
-    expect(imageBounds!.y).toBeGreaterThan(72);
-    expect(imageBounds!.y + imageBounds!.height).toBeLessThanOrEqual(viewport.height);
-    if (frames) await page.screenshot({ path: `docs/screenshots/landing/motion-end-${viewport.width}.png` });
-    await seek(0);
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+    const travel = await scene.evaluate(element => ({ top: element.getBoundingClientRect().top + scrollY, distance: element.getBoundingClientRect().height - innerHeight }));
+    for (const [progress, angle] of [[.42,45],[.90,315]]) {
+      await page.evaluate(({ top, distance, progress }) => window.scrollTo({ top: top + distance * progress, behavior: 'instant' }), { ...travel, progress });
+      await expect(scene.locator(`img[data-angle="${angle}"]`)).toHaveCSS('opacity','1');
+      if (process.env.AGAP_CAPTURE_STORY && viewport.width === 1366) await page.screenshot({ path: `docs/screenshots/landing/story-angle-${angle}.png` });
+    }
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
     await expect.poll(scale).toBeCloseTo(3.2, 2);
     await expect(install).toBeInViewport();
-    await install.focus();
-    await page.keyboard.press('Enter');
+    await install.focus(); await page.keyboard.press('Enter');
     await expect(page.getByRole('dialog')).toBeVisible();
-    await page.keyboard.press('Escape');
-    await expect(install).toBeFocused();
-    if (frames) await page.screenshot({ path: `docs/screenshots/landing/motion-reverse-${viewport.width}.png` });
+    await page.keyboard.press('Escape'); await expect(install).toBeFocused();
+    if (process.env.AGAP_CAPTURE_STORY) await page.screenshot({ path: `docs/screenshots/landing/story-reverse-${viewport.width}.png` });
+    expect(errors).toEqual([]);
   });
 }
 
-test('motion preference changes release the sticky scene and keep screenshot selection immediate', async ({ page }) => {
+test('motion preference changes release the story and keep screenshot selection immediate', async ({ page }) => {
   await page.goto('/#/');
   await page.getByRole('link', { name: 'Meet Gabay', exact: true }).click();
   await page.emulateMedia({ reducedMotion: 'reduce' });
   const scene = page.getByRole('region', { name: 'Introducing AGAP and Gabay' });
   await expect(scene.locator('> div')).toHaveCSS('position', 'relative');
   await expect(scene.getByRole('img').locator('..')).toHaveCSS('transform', 'none');
+  await expect(scene.getByRole('heading', { level: 3 })).toHaveCount(4);
+  await expect(scene.getByRole('list', { name: 'Explore AGAP features' })).toHaveCount(0);
   await page.getByRole('link', { name: 'Demo', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'See AGAP in action.' })).toBeFocused();
   await page.getByRole('tab', { name: 'Evidence', exact: true }).focus();
-  await page.keyboard.press('ArrowRight');
-  await page.keyboard.press('ArrowRight');
-  await page.keyboard.press('ArrowRight');
-  const decision = page.getByRole('tab', { name: 'Decision', exact: true });
-  await expect(decision).toBeFocused();
+  await page.keyboard.press('ArrowRight'); await page.keyboard.press('ArrowRight'); await page.keyboard.press('ArrowRight');
+  await expect(page.getByRole('tab', { name: 'Decision', exact: true })).toBeFocused();
   await expect(page.getByRole('tabpanel')).toHaveAttribute('aria-labelledby', 'tab-decision');
   await expect(page.getByRole('tabpanel').getByRole('img').locator('..')).toHaveCSS('animation-name', 'none');
-  await expect(page.getByRole('heading', { name: 'Keep the reasoning with the decision.' })).toBeVisible();
-  // 200% equivalent reflow also exercises the short-viewport fallback without reduced motion.
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.setViewportSize({ width: 683, height: 384 });
   await page.getByRole('link', { name: 'AGAP home', exact: true }).click();
   await expect(scene.locator('> div')).toHaveCSS('position', 'relative');
   await expect(scene.getByRole('img').locator('..')).toHaveCSS('transform', 'none');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  if (process.env.AGAP_CAPTURE_MOTION) await page.screenshot({ path: 'docs/screenshots/landing/motion-short-zoom.png', fullPage: true });
+  if (process.env.AGAP_CAPTURE_STORY) await page.screenshot({ path: 'docs/screenshots/landing/story-short-zoom.png', fullPage: true });
+});
+
+test('a failed turnaround asset keeps Gabay visible and every feature reachable', async ({ page }) => {
+  await page.route('**/gabay-back.webp', route => route.abort());
+  const failed = page.waitForEvent('requestfailed', { predicate: request => request.url().endsWith('/gabay-back.webp') });
+  await page.goto('/#/?section=gabay');
+  await failed;
+  const scene = page.getByRole('region', { name: 'Introducing AGAP and Gabay' });
+  await scene.getByRole('button', { name: 'Show feature 3: Compare full costs' }).click();
+  await expect(scene.getByRole('heading', { name: 'Compare full costs', exact: true }).locator('..')).toHaveCSS('opacity', '1');
+  const front = scene.getByRole('img');
+  await expect(front).toBeVisible();
+  expect(await front.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+  await expect(scene.locator('img[data-angle]')).toHaveCount(0);
+});
+
+test('mobile keeps the full guide without requesting turnaround views; the workflow uses real images', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const turns: string[] = [];
+  page.on('request', request => { if (request.url().includes('/turnaround/')) turns.push(request.url()); });
+  await page.goto('/#/');
+  await page.getByRole('link', { name: 'How it works', exact: true }).click();
+  const journey = page.getByRole('list', { name: 'The AGAP review journey' });
+  await expect(journey.getByRole('listitem')).toHaveCount(3);
+  for (const img of await journey.locator('img').all()) {
+    await img.scrollIntoViewIfNeeded();
+    await expect.poll(() => img.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth === 1366)).toBe(true);
+  }
+  expect(turns).toEqual([]);
 });

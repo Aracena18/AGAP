@@ -20,6 +20,12 @@
       "date": "2026-11-03",
       "direction": "User-approved Gabay workspace migration scoped to data-agap-workspace; preserve public landing",
       "evidence": "../docs/AGAP_UI_Review_Verification.md"
+    },
+    {
+      "id": "UI-07-turnaround",
+      "date": "2026-11-04",
+      "direction": "User-selected reversible Gabay turnaround with one feature per chapter and a graphic fictional workflow; rules remain in design.md section 17",
+      "evidence": "../docs/AGAP_Landing_Verification.md"
     }
   ]
 }
