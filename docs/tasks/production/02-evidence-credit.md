@@ -104,6 +104,8 @@ The fictional staff browser case starts with ₱1,000 cash, records ₱2,000 net
 
 Local Node 24 verification passed `npm run check` (193 web, 522 platform, and 76 evaluation tests). The updated staff workflow passed in Chromium. The full browser suite had 50 passes and two keyboard failures, landing dialog focus restoration and Ana’s source selection. Both failures reproduced on the unchanged `a69df08` baseline in macOS Chromium.
 
+The keyboard follow-up restored landing dialog focus and updated Ana’s end-to-end test to select native options by typing their labels. The test still tabs through the workflow and checks that the selected source, evidence status, and reviewer role match expectations. `npm run check` and all 52 macOS Chromium scenarios passed after the follow-up.
+
 ## Progress and handoff notes
 
 Historical baseline note: no production implementation progress was recorded in the earlier brief. Read dated handoffs, where present, and Assignment.md for subsequent evidence; confirm unreported current progress at the owner checkpoint. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry.
