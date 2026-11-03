@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ArrowForward, ExpandMore, NorthEast } from '../../shared/icons';
 import { Button } from '../../shared/ui';
@@ -30,7 +30,7 @@ export default function LandingPage() {
   const [active, setActive] = useState(0);
   const [imageError, setImageError] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
-  const trigger = useRef<HTMLElement | null>(null);
+  const triggerId = useRef('');
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const installation = useInstall();
   const example = examples[active];
@@ -56,7 +56,11 @@ export default function LandingPage() {
     }
     heading?.focus({ preventScroll: true });
   }, [location.search, location.key]);
-  function openInstall() { trigger.current = document.activeElement as HTMLElement; dialog.current?.showModal(); }
+  function openInstall(event: MouseEvent<HTMLButtonElement>) {
+    // The lazy hero animation can replace its opening button while the dialog is open.
+    triggerId.current = event.currentTarget.id;
+    dialog.current?.showModal();
+  }
   function tabKey(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     const next = event.key === 'ArrowRight' ? (index + 1) % examples.length : event.key === 'ArrowLeft' ? (index + examples.length - 1) % examples.length : event.key === 'Home' ? 0 : event.key === 'End' ? examples.length - 1 : null;
     if (next === null) return;
@@ -84,13 +88,13 @@ export default function LandingPage() {
         </div>)}
         <div className={styles.demoFooter}><p>Fictional people, offers, and policies. Review-demo access requires staff sign-in.</p><Link className={styles.actionLink} to="/applications">Open review demo<ArrowForward size={18}/></Link></div>
       </section>
-      <section className={styles.close} aria-labelledby="close-heading"><div className={styles.closeCopy}><h2 id="close-heading">Clearer information.<br/>Accountable decisions.</h2><p>Sources stay connected. Calculations stay checked. People remain responsible for the decision.</p><Button className={styles.installButton} onClick={openInstall}>Install AGAP<ArrowForward size={18}/></Button></div><div className={styles.faq}>
+      <section className={styles.close} aria-labelledby="close-heading"><div className={styles.closeCopy}><h2 id="close-heading">Clearer information.<br/>Accountable decisions.</h2><p>Sources stay connected. Calculations stay checked. People remain responsible for the decision.</p><Button id="install-footer" className={styles.installButton} onClick={openInstall}>Install AGAP<ArrowForward size={18}/></Button></div><div className={styles.faq}>
         <details><summary>What does installing AGAP do?<ExpandMore/></summary><p>It adds a shortcut and, where supported, a standalone app window. You still need an internet connection and the appropriate account to access a workspace.</p></details>
         <details><summary>Are these real member records?<ExpandMore/></summary><p>No. This landing page shows fictional demonstration cases. It does not establish that AGAP is approved for live lending or that every planned service is available.</p></details>
         <details><summary>Who makes lending decisions?<ExpandMore/></summary><p>Authorized people make lending decisions. AI may assist with reviewable drafts; it does not calculate authoritative financial figures or approve a loan.</p></details>
       </div></section>
     </main>
     <footer className={styles.footer}><Link className={styles.brand} to="/"><span className={styles.brandMark}><NorthEast size={20}/></span>AGAP</Link><p>Everyday needs in view.</p><div><Link to="/member">Member access</Link><Link to="/staff">Staff access</Link></div></footer>
-    <Installation dialog={dialog} close={() => trigger.current?.focus()} installation={installation}/>
+    <Installation dialog={dialog} close={() => document.getElementById(triggerId.current)?.focus()} installation={installation}/>
   </div>;
 }

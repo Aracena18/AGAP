@@ -134,7 +134,7 @@ export class WorkflowService {
         const uncleared=current.facts.filter(f=>f.input.relevance==='included'&&!current.sources.some(s=>s.id===f.sourceId&&s.version===f.sourceVersion&&s.state==='cleared'));
         if(uncleared.length){calculated.issues.push('One or more confirmed facts no longer have an available cleared source.');calculated.scenarios=[];}
         const result = WorkflowAssessment.parse({ id: randomUUID(), applicationId: id, inputVersion: current.inputVersion, policyVersionId: policy?.id ?? null,
-          engineVersion: 'dated-cash-flow-v3', createdAt: new Date().toISOString(), periodStart: data.periodStart, periodEnd: data.periodEnd,
+          engineVersion: 'dated-cash-flow-v4', createdAt: new Date().toISOString(), periodStart: data.periodStart, periodEnd: data.periodEnd,
           status: calculated.issues.length ? 'incomplete' : 'complete', ...calculated, stale: false });
         await this.advance(tx,id,version,result.status==='complete'?'assessment_complete':'assessment');
         await tx.query('INSERT INTO credit.assessments(id,organization_id,application_id,body,input_snapshot) VALUES($1,$2,$3,$4,$5)', [result.id, actor.organizationId, id, JSON.stringify(result), JSON.stringify({ facts: current.facts, sources:current.sources, policy })]);
