@@ -53,4 +53,7 @@ export class AgapClient extends ClientTransport {
   recordPayment(body: z.input<typeof schemas.FinancialCommandCreate>, options: RequestOptions = {}) { return this.request('POST', `/payments`, body, schemas.FinancialCommand, options); }
   getLoanPosition(id: string, options: RequestOptions = {}) { return this.request('GET', `/loans/${encodeURIComponent(id)}/position`, undefined, schemas.LoanPosition, options); }
   recordHealthReview(body: z.input<typeof schemas.HealthReviewCreate>, options: RequestOptions = {}) { return this.request('POST', `/health-reviews`, body, schemas.HealthReview, options); }
+  createReconciliation(body: z.input<typeof schemas.ReconciliationCreate>, options: RequestOptions = {}) { return this.request('POST', `/reconciliations`, body, schemas.ReconciliationRun, options); }
+  listReconciliations(options: RequestOptions = {}) { return this.request('GET', `/reconciliations`, undefined, schemas.ReconciliationPage, options); }
+  getReconciliation(id: string, options: RequestOptions = {}) { return this.request('GET', `/reconciliations/${encodeURIComponent(id)}`, undefined, schemas.ReconciliationRun, options); }
 }

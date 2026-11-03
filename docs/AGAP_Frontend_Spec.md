@@ -1,5 +1,13 @@
 # AGAP frontend specification
 
+## ACC-01 staff reporting candidate — 3 November 2026
+
+`/#/staff/reconciliations` supplies a server-backed principal reconciliation page using the existing staff session, generated client, shared controls and canonical workspace styles. Access requires the current auditor role and every organization branch; server/database checks apply on create, replay, list and detail. Administrator membership alone is insufficient. Date requests are inclusive and bounded to 31 days. Organization, recording cutoff, snapshot identity, evidence hash and comparison findings are server-owned.
+
+The page records a run, lists immutable results with cursor pagination, reopens a saved snapshot, filters event statuses and shows references/expected-versus-recorded amounts. Source unavailability, pending movements and complete empty inventories retain distinct labels; unavailable money is never rendered as zero. A report never repairs a financial record. The created result becomes confirmed only after its report/audit/idempotency transaction commits. A lost response retains its original request/key for explicit retry; overlapping submission/date edits are blocked while uncertain. Canceled history reads are silent, and later access denial clears cached findings. Unsaved or uncertain navigation uses the existing workspace guard.
+
+Reconciliation compares actual journal headers/lines and Benedict's public servicing inventory in one coordinator-established REPEATABLE READ snapshot. Reviewed principal mappings remain independent operator configuration. Unknown legacy recording times, unconfigured producers and unsupported accounting treatments remain visible; this candidate supplies no payment command UI, bank reconciliation, opening-balance proof, capital accounting or period close. The technical proposal, tests and receiving-owner review limits are recorded in the [accounting handoff](../apps/api/src/modules/accounting/README.md#acc-01-runtime-integration-proposal--3-november-2026). Existing `design.md` patterns govern the page; no separate design system is introduced.
+
 ## Public landing and installation — UI-07, 3 November 2026
 
 The user-approved public `/` (including `/#/`) route lazy-loads the landing feature before staff/member session providers. It does not fetch a private session. Existing `/applications/*`, `/staff/*` and `/member/*` authentication, return routes, calculations and persistence remain unchanged. The historical root redirect to Applications is replaced by the landing; workspace links still target their original routes.

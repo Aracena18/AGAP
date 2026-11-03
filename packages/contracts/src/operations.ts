@@ -57,4 +57,7 @@ export const operations = [
   { id: 'recordPayment', method: 'POST', path: '/payments', request: 'FinancialCommandCreate', response: 'FinancialCommand', owner: 'Benedict', implemented: false, idempotent: true },
   { id: 'getLoanPosition', method: 'GET', path: '/loans/{id}/position', response: 'LoanPosition', owner: 'Benedict', implemented: false },
   { id: 'recordHealthReview', method: 'POST', path: '/health-reviews', request: 'HealthReviewCreate', response: 'HealthReview', owner: 'Earl', implemented: false, idempotent: true },
+  { id: 'createReconciliation', method: 'POST', path: '/reconciliations', request: 'ReconciliationCreate', response: 'ReconciliationRun', owner: 'Earl', implemented: true, idempotent: true },
+  { id: 'listReconciliations', method: 'GET', path: '/reconciliations', response: 'ReconciliationPage', owner: 'Earl', implemented: true },
+  { id: 'getReconciliation', method: 'GET', path: '/reconciliations/{id}', response: 'ReconciliationRun', owner: 'Earl', implemented: true },
 ] satisfies Operation[];

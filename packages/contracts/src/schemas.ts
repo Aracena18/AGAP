@@ -73,6 +73,83 @@ export const PostingRequestSchema = z.strictObject({
   lines: z.array(JournalLineSchema).min(2).max(100), reversalOfJournalId: Id.nullable(),
 });
 export const JournalReceiptSchema = z.strictObject({ journalId: Id, sourceEventId: Id, postedAt: Instant });
+// Canonical reporting evidence shared by the owned readers and comparison engine.
+const ReconciliationKind = z.enum(['disbursement', 'repayment']);
+const ReconciliationScopeSchema = z.strictObject({
+  organizationId: Id, fromDate: CalendarDay, throughDate: CalendarDay,
+  cutoffAt: Instant, snapshotId: Text,
+}).refine(scope => scope.fromDate <= scope.throughDate, 'The date range is reversed.');
+const ReconciliationRecordScope = { organizationId: Id, currency: Currency };
+const ReconciliationEventSchema = z.strictObject({
+  ...ReconciliationRecordScope, id: Id, loanId: Id, kind: ReconciliationKind, effectiveDate: CalendarDay,
+  recordedAt: Instant, amountCentavos: PositiveMoneyAmount,
+  state: FinancialCommandSchema.shape.state, postingRuleVersionId: Id,
+  receiptId: Id.nullable(), journalId: Id.nullable(),
+});
+const ReconciliationAllocationSchema = z.strictObject({
+  ...ReconciliationRecordScope, id: Id, sourceEventId: Id, loanId: Id,
+  effectiveDate: CalendarDay, recordedAt: Instant, direction: z.enum(['increase', 'decrease']),
+  principalCentavos: MoneyAmount, interestCentavos: MoneyAmount,
+  feesCentavos: MoneyAmount, unappliedCentavos: MoneyAmount,
+});
+const ReconciliationReceiptSchema = z.strictObject({
+  ...ReconciliationRecordScope, id: Id, sourceEventId: Id, loanId: Id,
+  effectiveDate: CalendarDay, recordedAt: Instant, amountCentavos: PositiveMoneyAmount,
+});
+const ReconciliationJournalSchema = PostingRequestSchema.extend({ organizationId: Id, journalId: Id, postedAt: Instant });
+const ReconciliationMappingSchema = z.strictObject({
+  ...ReconciliationRecordScope, postingRuleVersionId: Id, kind: ReconciliationKind,
+  effectiveFrom: CalendarDay, effectiveThrough: CalendarDay,
+  cashAccountId: Id, principalAccountId: Id,
+}).refine(mapping => mapping.effectiveFrom <= mapping.effectiveThrough
+  && mapping.cashAccountId !== mapping.principalAccountId, 'Invalid principal posting mapping.');
+const ReconciliationUnavailable = z.strictObject({ state: z.literal('unavailable'), reason: Text });
+const ReconciliationSourceMetadata = { state: z.literal('available'), snapshotId: Text, complete: z.boolean() };
+
+/** Complete inventories, including records without a matching record in the other source. */
+export const PrincipalReconciliationInputSchema = z.strictObject({
+  scope: ReconciliationScopeSchema,
+  servicing: z.discriminatedUnion('state', [ReconciliationUnavailable, z.strictObject({
+    ...ReconciliationSourceMetadata, events: z.array(ReconciliationEventSchema), allocations: z.array(ReconciliationAllocationSchema), receipts: z.array(ReconciliationReceiptSchema),
+  })]),
+  ledger: z.discriminatedUnion('state', [ReconciliationUnavailable, z.strictObject({ ...ReconciliationSourceMetadata, journals: z.array(ReconciliationJournalSchema) })]),
+  mappings: z.array(ReconciliationMappingSchema),
+}).superRefine((input, context) => {
+  const reject = (path: (string | number)[], message: string) => context.addIssue({ code: 'custom', path, message });
+  const check = (record: { organizationId: string; effectiveDate: string }, time: string, path: (string | number)[]) => {
+    if (record.organizationId !== input.scope.organizationId) reject(path, 'Evidence belongs to another organization.');
+    if (record.effectiveDate < input.scope.fromDate || record.effectiveDate > input.scope.throughDate)
+      reject(path, 'Evidence is outside the requested effective-date range.');
+    if (Date.parse(time) > Date.parse(input.scope.cutoffAt)) reject(path, 'Evidence was recorded after the cutoff.');
+  };
+  if (input.servicing.state === 'available') {
+    for (const collection of ['events', 'allocations', 'receipts'] as const)
+      input.servicing[collection].forEach((record, index) => check(record, record.recordedAt, ['servicing', collection, index]));
+  }
+  if (input.ledger.state === 'available')
+    input.ledger.journals.forEach((record, index) => check(record, record.postedAt, ['ledger', 'journals', index]));
+  const mappingIds = new Set<string>();
+  input.mappings.forEach((mapping, index) => {
+    if (mapping.organizationId !== input.scope.organizationId) reject(['mappings', index], 'Mapping belongs to another organization.');
+    if (mappingIds.has(mapping.postingRuleVersionId)) reject(['mappings', index], 'Mapping version is ambiguous.');
+    mappingIds.add(mapping.postingRuleVersionId);
+  });
+});
+
+
+export const ReconciliationCreateSchema = z.strictObject({ fromDate: CalendarDay, throughDate: CalendarDay })
+  .refine(value => { const days = (Date.parse(value.throughDate) - Date.parse(value.fromDate)) / 86400000;
+    return days >= 0 && days < 31; }, 'Choose an inclusive date range of up to 31 days.');
+export const ReconciliationStatusSchema = z.enum(['matched','discrepancy','pending','unavailable','empty']);
+const ReconciliationFindingSchema = z.strictObject({ code: Text, level: z.enum(['discrepancy','pending','unavailable']), expectedCentavos: MoneyAmount.nullable(), actualCentavos: MoneyAmount.nullable() });
+export const PrincipalReconciliationReportSchema = z.strictObject({ scope: ReconciliationScopeSchema, status: ReconciliationStatusSchema, sourceIssues: z.array(Text),
+  events: z.array(z.strictObject({ sourceEventId: Id, loanId: Id.nullable(), amountCentavos: MoneyAmount.nullable(), status: z.enum(['matched','discrepancy','pending','unavailable']),
+    receiptIds: z.array(Id), allocationIds: z.array(Id), journalIds: z.array(Id), findings: z.array(ReconciliationFindingSchema) })).max(5000) });
+export const ReconciliationRunSchema = z.strictObject({ id: Id, organizationId: Id, createdBy: Id, createdAt: Instant,
+  checkerVersion: z.literal('principal-reconciliation-v1'), evidenceSha256: z.string().regex(/^[a-f0-9]{64}$/), mappingVersionIds: z.array(Id), report: PrincipalReconciliationReportSchema });
+export const ReconciliationSummarySchema = ReconciliationRunSchema.pick({id:true,createdBy:true,createdAt:true}).extend({fromDate:CalendarDay,throughDate:CalendarDay,status:ReconciliationStatusSchema});
+export const ReconciliationPageSchema = z.strictObject({items:z.array(ReconciliationSummarySchema).max(20),nextCursor:Id.nullable()});
+
 export const LoanPositionSchema = z.strictObject({
   loanId: Id, asOfDate: CalendarDay, principalCentavos: MoneyAmount, interestDueCentavos: MoneyAmount, feesDueCentavos: MoneyAmount,
   overdueCentavos: MoneyAmount, postedThrough: Instant, pendingMovementCount: z.number().int().nonnegative(),
@@ -129,6 +206,7 @@ export const MemberLoansViewSchema = serviceView(z.array(MemberLoanSchema));
 export const MemberSupportViewSchema = serviceView(z.array(MemberSupportSchema));
 
 export const schemas = {
+  ReconciliationCreate:ReconciliationCreateSchema,ReconciliationRun:ReconciliationRunSchema,ReconciliationPage:ReconciliationPageSchema,
   ...workflowSchemas,
   MemberSession:MemberSessionSchema,MemberProfile:MemberProfileSchema,MemberApplicationCreate:MemberApplicationCreateSchema,MemberApplication:MemberApplicationSchema,MemberApplicationPage:MemberApplicationPageSchema,MemberSubmit:MemberSubmitSchema,
   ReminderPreferenceUpdate:ReminderPreferenceUpdateSchema,ReminderPreferences:ReminderPreferencesSchema,ModelArtifact:ModelArtifactSchema,AiDraft:AiDraftSchema,DraftConfirmation:DraftConfirmationSchema.or(workflowSchemas.WorkflowDraftReview),IrregularExpense:IrregularExpenseSchema,
