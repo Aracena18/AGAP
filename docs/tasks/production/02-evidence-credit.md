@@ -87,6 +87,23 @@ Continue the merged EVD-01/CRD-01 browser/readiness slice and remaining producti
 
 Map approved product-specific requirements, conditional documents/alternatives and evidence freshness through current interfaces. Record estimates such as contingency/raw-material ratios as assumptions pending institutional confirmation; no 30/35/40 percentage or workbook conversion is adopted. Preserve the one engine, original fixture arithmetic, cash-flow-v2 history and unavailable critical values. Propose any shared contract change through Robert before integration. AI-01 uses applicable approved source/context and checked results only; XAI-01 remains offline and QWN-01 training ownership/objectives stay unchanged. Resolve affected institutional settings without stopping unrelated fictional development; full product/reloan and numerical 5C breadth keeps its staged estimate.
 
+## CRD-01 workbook review and fictional staff handoff
+
+Compared the [six workbook findings](../../AGAP_Policy_Clarification_Register.md#workbook-findings-to-check-against-existing-implementation) with the [server calculator](../../../packages/finance/src/workflow-assessment.ts) and staff workflow.
+
+| Finding | Disposition |
+| --- | --- |
+| W01 · Capacity percentage | The configured centavo minimum drives both the comparison and the displayed threshold. P06 remains open for any institutional percentage rule or expense assumption. |
+| W02 · Rate conversion | The calculator sums explicit installments in integer centavos. P05 remains open for approved rate units, interest method, and final-installment rounding before schedule generation. |
+| W03 · Payment modes | Each explicit installment affects its own date. The staff browser case checks two payments in January. The calculator regression checks that an unavailable offer yields no scenario. |
+| W04 · Period, dates, and zero | Confirmed zero, unavailable, and not applicable have distinct meanings. An included one-time fact with multiple cash dates now makes the assessment incomplete and identifies the fact. A supported zero with one date remains valid. |
+| W05 · Estimates and double counting | The calculator skips debts already deducted from net payroll and applies no default expense percentages. Staff reconcile overlapping facts before assessment. Automatic overlap detection requires a separate contract decision with Robert. |
+| W06 · Expense subtraction | The workbook subtracts expenses and contingency correctly. The server subtracts recorded expenses and obligations, with independent multi-month arithmetic in the finance tests. |
+
+The fictional staff browser case starts with ₱1,000 cash, records ₱2,000 net pay and a single ₱500 school expense from a member statement, and records a ₱250 obligation already deducted from net pay. Two ₱550 installments leave ₱400 across January. The lowest dated balance is ₱450 and the closing balance is ₱1,400. Correcting the school expense to ₱600 leaves the original ₱400 result visible in history and flags it for renewed review. New assessments record engine version `dated-cash-flow-v4`.
+
+Local Node 24 verification passed `npm run check` (193 web, 522 platform, and 76 evaluation tests). The updated staff workflow passed in Chromium. The full browser suite had 50 passes and two keyboard failures, landing dialog focus restoration and Ana’s source selection. Both failures reproduced on the unchanged `a69df08` baseline in macOS Chromium.
+
 ## Progress and handoff notes
 
 Historical baseline note: no production implementation progress was recorded in the earlier brief. Read dated handoffs, where present, and Assignment.md for subsequent evidence; confirm unreported current progress at the owner checkpoint. For each handoff, record the task ID, branch/base commit, contract version, changed owned paths, verification evidence and remaining dependencies; Robert updates the corresponding Assignment.md entry.
