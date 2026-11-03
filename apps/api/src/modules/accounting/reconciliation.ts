@@ -1,96 +1,11 @@
 import { z } from 'zod';
-import {
-  CalendarDay, Currency, FinancialCommandSchema, Id, Instant, MoneyAmount,
-  PositiveMoneyAmount, PostingRequestSchema, Text,
-} from '../../../../../packages/contracts/src/schemas.js';
-
-// Accounting-local proposal for review with Robert/Benedict, not a published API.
-const Kind = z.enum(['disbursement', 'repayment']);
-const ScopeSchema = z.strictObject({
-  organizationId: Id, fromDate: CalendarDay, throughDate: CalendarDay,
-  cutoffAt: Instant, snapshotId: Text,
-}).refine(scope => scope.fromDate <= scope.throughDate, 'The date range is reversed.');
-const RecordScope = { organizationId: Id, currency: Currency };
-const EventSchema = z.strictObject({
-  ...RecordScope, id: Id, loanId: Id, kind: Kind, effectiveDate: CalendarDay,
-  recordedAt: Instant, amountCentavos: PositiveMoneyAmount,
-  state: FinancialCommandSchema.shape.state, postingRuleVersionId: Id,
-  receiptId: Id.nullable(), journalId: Id.nullable(),
-});
-const AllocationSchema = z.strictObject({
-  ...RecordScope, id: Id, sourceEventId: Id, loanId: Id,
-  effectiveDate: CalendarDay, recordedAt: Instant, direction: z.enum(['increase', 'decrease']),
-  principalCentavos: MoneyAmount, interestCentavos: MoneyAmount,
-  feesCentavos: MoneyAmount, unappliedCentavos: MoneyAmount,
-});
-const ReceiptSchema = z.strictObject({
-  ...RecordScope, id: Id, sourceEventId: Id, loanId: Id,
-  effectiveDate: CalendarDay, recordedAt: Instant, amountCentavos: PositiveMoneyAmount,
-});
-const JournalSchema = PostingRequestSchema.extend({ organizationId: Id, journalId: Id, postedAt: Instant });
-const MappingSchema = z.strictObject({
-  ...RecordScope, postingRuleVersionId: Id, kind: Kind,
-  effectiveFrom: CalendarDay, effectiveThrough: CalendarDay,
-  cashAccountId: Id, principalAccountId: Id,
-}).refine(mapping => mapping.effectiveFrom <= mapping.effectiveThrough
-  && mapping.cashAccountId !== mapping.principalAccountId, 'Invalid principal posting mapping.');
-const Unavailable = z.strictObject({ state: z.literal('unavailable'), reason: Text });
-const SourceMetadata = { state: z.literal('available'), snapshotId: Text, complete: z.boolean() };
-
-/** Complete inventories, including records without a matching record in the other source. */
-export const PrincipalReconciliationInputSchema = z.strictObject({
-  scope: ScopeSchema,
-  servicing: z.discriminatedUnion('state', [Unavailable, z.strictObject({
-    ...SourceMetadata, events: z.array(EventSchema), allocations: z.array(AllocationSchema), receipts: z.array(ReceiptSchema),
-  })]),
-  ledger: z.discriminatedUnion('state', [Unavailable, z.strictObject({ ...SourceMetadata, journals: z.array(JournalSchema) })]),
-  mappings: z.array(MappingSchema),
-}).superRefine((input, context) => {
-  const reject = (path: (string | number)[], message: string) => context.addIssue({ code: 'custom', path, message });
-  const check = (record: { organizationId: string; effectiveDate: string }, time: string, path: (string | number)[]) => {
-    if (record.organizationId !== input.scope.organizationId) reject(path, 'Evidence belongs to another organization.');
-    if (record.effectiveDate < input.scope.fromDate || record.effectiveDate > input.scope.throughDate)
-      reject(path, 'Evidence is outside the requested effective-date range.');
-    if (Date.parse(time) > Date.parse(input.scope.cutoffAt)) reject(path, 'Evidence was recorded after the cutoff.');
-  };
-  if (input.servicing.state === 'available') {
-    for (const collection of ['events', 'allocations', 'receipts'] as const)
-      input.servicing[collection].forEach((record, index) => check(record, record.recordedAt, ['servicing', collection, index]));
-  }
-  if (input.ledger.state === 'available')
-    input.ledger.journals.forEach((record, index) => check(record, record.postedAt, ['ledger', 'journals', index]));
-  const mappingIds = new Set<string>();
-  input.mappings.forEach((mapping, index) => {
-    if (mapping.organizationId !== input.scope.organizationId) reject(['mappings', index], 'Mapping belongs to another organization.');
-    if (mappingIds.has(mapping.postingRuleVersionId)) reject(['mappings', index], 'Mapping version is ambiguous.');
-    mappingIds.add(mapping.postingRuleVersionId);
-  });
-});
-
+import { PrincipalReconciliationInputSchema, PrincipalReconciliationReportSchema } from '../../../../../packages/contracts/src/schemas.js';
+export { PrincipalReconciliationInputSchema } from '../../../../../packages/contracts/src/schemas.js';
 export type PrincipalReconciliationInput = z.input<typeof PrincipalReconciliationInputSchema>;
-type Level = 'discrepancy' | 'pending' | 'unavailable';
-export interface ReconciliationFinding {
-  code: string;
-  level: Level;
-  expectedCentavos: number | null;
-  actualCentavos: number | null;
-}
-export interface ReconciledEvent {
-  sourceEventId: string;
-  loanId: string | null;
-  amountCentavos: number | null;
-  status: 'matched' | Level;
-  receiptIds: string[];
-  allocationIds: string[];
-  journalIds: string[];
-  findings: ReconciliationFinding[];
-}
-export interface PrincipalReconciliationReport {
-  scope: z.output<typeof ScopeSchema>;
-  status: 'matched' | 'empty' | Level;
-  sourceIssues: string[];
-  events: ReconciledEvent[];
-}
+export type PrincipalReconciliationReport = z.output<typeof PrincipalReconciliationReportSchema>;
+export type ReconciledEvent = PrincipalReconciliationReport['events'][number];
+export type ReconciliationFinding = ReconciledEvent['findings'][number];
+type Level = ReconciliationFinding['level'];
 
 function group<T>(records: T[], key: (record: T) => string): Map<string, T[]> {
   const result = new Map<string, T[]>();
@@ -143,7 +58,13 @@ export function reconcilePrincipalMovements(value: PrincipalReconciliationInput)
       status: status(findings), receiptIds: eventReceipts.map(record => record.id).sort(), allocationIds: eventAllocations.map(record => record.id).sort(),
       journalIds: eventJournals.map(record => record.journalId).sort(),
       findings: findings.sort((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right))) });
-    if (!event) { add(matches.length ? 'duplicate_event' : 'missing_event'); return row(); }
+    if (!event) {
+      const unsupported = eventJournals.some(journal => !['disbursement','repayment'].includes(journal.postingKind) || journal.reversalOfJournalId !== null);
+      if (matches.length) add('duplicate_event');
+      else if (!unsupported) add('missing_event');
+      if (unsupported) add('unsupported_journal_kind','unavailable');
+      return row();
+    }
     // IDs must be unique across the inventory, including different source events.
     if (eventAllocations.some(record => allocationIds.get(record.id)!.length > 1)) add('allocation_id_reused');
     if (eventReceipts.some(record => receiptIds.get(record.id)!.length > 1)) add('receipt_id_reused');

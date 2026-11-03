@@ -164,6 +164,12 @@ describe('ACC-01 principal movement reconciliation', () => {
     expect(reconcilePrincipalMovements(data).status).toBe('unavailable');
     expect(codes(data)).toContain('unsupported_journal_kind');
   });
+  it('does not mislabel an unsupported standalone journal as a missing loan payment', () => {
+    const data = fixture(); data.servicing.events = []; data.servicing.allocations = []; data.servicing.receipts = [];
+    data.ledger.journals[0].postingKind = 'share_capital';
+    expect(reconcilePrincipalMovements(data).status).toBe('unavailable');
+    expect(codes(data)).toEqual(['unsupported_journal_kind']);
+  });
   it.each(['prepared', 'authorized', 'submitted', 'unknown', 'confirmed_unposted', 'failed'] as const)('handles %s without assuming a completed payment', state => {
     const data = fixture(); data.servicing.events[0].state = state;
     data.servicing.events[0].receiptId = null; data.servicing.events[0].journalId = null;

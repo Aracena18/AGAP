@@ -21,6 +21,7 @@ it('installs the ledger through the default migrator and preserves applied histo
     'apps/api/src/modules/accounting/migrations/001-ledger.sql',
     'apps/api/src/modules/accounting/migrations/002-posting.sql',
     'apps/api/src/modules/accounting/migrations/003-configuration-locks.sql',
+    'apps/api/src/modules/accounting/migrations/004-reconciliation.sql',
   ]);
 
   await migrate(owner);

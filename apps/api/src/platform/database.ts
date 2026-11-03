@@ -6,12 +6,22 @@ export function createPool(connectionString: string, options: PoolConfig = {}) {
   return new Pool({ connectionString, max: 10, connectionTimeoutMillis: 5000, idleTimeoutMillis: 30_000, ...options });
 }
 export class PostgresUnitOfWork implements UnitOfWork {
-  constructor(private readonly pool: Pool) {}
+  constructor(private readonly pool: Pool, private readonly options: { isolation?: 'repeatable read' } = {}) {}
   async run<T>(actor: ActorContext, work: (tx: TransactionContext) => Promise<T>): Promise<T> {
+    const attempts = this.options.isolation === 'repeatable read' ? 3 : 1;
+    for (let attempt = 0; ; attempt++) {
+      try { return await this.attempt(actor, work); }
+      catch (error) {
+        const code = error && typeof error === 'object' && 'code' in error ? String(error.code) : '';
+        if (attempt + 1 >= attempts || !['40001','40P01'].includes(code)) throw error;
+      }
+    }
+  }
+  private async attempt<T>(actor: ActorContext, work: (tx: TransactionContext) => Promise<T>): Promise<T> {
     const client = await this.pool.connect();
     let discard = false;
     try {
-      await client.query('BEGIN');
+      await client.query(this.options.isolation === 'repeatable read' ? 'BEGIN ISOLATION LEVEL REPEATABLE READ' : 'BEGIN');
       await client.query("SELECT set_config('agap.organization_id', $1, true), set_config('agap.user_id', $2, true), set_config('agap.branch_ids', $3, true),set_config('agap.member_id','',true),set_config('agap.member_link_id','',true)", [actor.organizationId, actor.userId, JSON.stringify(actor.branchIds)]);
       await client.query("SET LOCAL statement_timeout = '10s'");
       await client.query("SET LOCAL lock_timeout = '5s'");

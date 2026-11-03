@@ -10,6 +10,8 @@ import { MemberApplicationsService } from '../src/modules/applications/member-ap
 import { tokenHash } from '../src/modules/identity/identity.service.js';
 import { owner,runtimePool } from './database.js';
 import { randomBytes,randomUUID } from 'node:crypto';
+import { prepareReconciliationFixtures,reconciliationFixture } from '../src/modules/accounting/testing/reconciliation-fixture.js';
+import { uow } from './database.js';
 await prepareDatabase();
 const fixture=await resetFixtures();
 const member=await memberFixture(fixture.officer.actor),otherMember=await memberFixture(fixture.officer.actor);
@@ -27,10 +29,16 @@ const documentDirectory=await mkdtemp(join(tmpdir(),'agap-browser-evidence-'));
 process.env.DOCUMENT_DIRECTORY=documentDirectory;config.EVIDENCE_WORKFLOW_ENABLED=true;
 const policy=WorkflowPolicy.parse({id:randomUUID(),label:'Fictional browser policy',status:'fictional',approvalReference:null,effectiveFrom:'2026-01-01',effectiveThrough:'2026-12-31',loanProceedsTreatment:'reserved_for_purpose',remainingRuleBasis:'each_reviewed_calendar_month_segment',minimumRemainingCentavos:0,minimumBalanceCentavos:0,offers:[{id:randomUUID(),productVersionId:randomUUID(),label:'Fictional browser offer',principalCentavos:100000,netReceivedCentavos:100000,feesPaidSeparatelyCentavos:0,termMonths:1,available:true,payments:[{date:'2026-01-25',amountCentavos:110000}],separateFees:[]}]});
 await owner.query('INSERT INTO credit.policies(id,organization_id,body) VALUES($1,$2,$3)',[policy.id,fixture.org,JSON.stringify(policy)]);
+// Dedicated fictional reconciliation organization, real money/GL services, no live funds.
+await prepareReconciliationFixtures();
+const reconciliation=await reconciliationFixture();
+await reconciliation.release();
+await uow.run(reconciliation.authorizer,tx=>reconciliation.ledger.post(tx,{sourceEventId:randomUUID(),postingKind:'repayment',postingRuleVersionId:reconciliation.policy.repaymentRuleId,
+  effectiveDate:'2026-11-02',currency:'PHP',reversalOfJournalId:null,lines:[{accountId:reconciliation.policy.cashAccountId,side:'debit',amountCentavos:1},{accountId:reconciliation.policy.principalAccountId,side:'credit',amountCentavos:1}]}));
 const app=await createApp(config);
 await app.listen(Number(process.env.AGAP_E2E_API_PORT??4101),'127.0.0.1');
 await mkdir('.platform-test',{recursive:true});
-await writeFile('.platform-test/browser.json',JSON.stringify({uiAuditMember:uiAuditMember.token,uiLogout,officer:fixture.officer.token,auditor:fixture.auditor.token,administrator:fixture.administrator.token,target:fixture.revocationTarget.token,organizationId:fixture.org,branchId:fixture.branch,member:member.token,memberId:member.record.id,otherMember:otherMember.token,otherMemberId:otherMember.record.id,otherApplicationId:otherApplication.id,submittedApplicationId:submitted.id}),{mode:0o600});
+await writeFile('.platform-test/browser.json',JSON.stringify({reconciliationAuditor:reconciliation.token,uiAuditMember:uiAuditMember.token,uiLogout,officer:fixture.officer.token,auditor:fixture.auditor.token,administrator:fixture.administrator.token,target:fixture.revocationTarget.token,organizationId:fixture.org,branchId:fixture.branch,member:member.token,memberId:member.record.id,otherMember:otherMember.token,otherMemberId:otherMember.record.id,otherApplicationId:otherApplication.id,submittedApplicationId:submitted.id}),{mode:0o600});
 console.log('Fictional browser-test API ready.');
 const stop=async()=>{await app.close();await closePools();await rm(documentDirectory,{recursive:true,force:true});process.exit(0);};
 process.on('SIGTERM',()=>void stop());process.on('SIGINT',()=>void stop());
