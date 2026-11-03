@@ -1,0 +1,44 @@
+{
+  "task": "UI-07 motion refinement",
+  "branch": "codex/agap-landing",
+  "synchronizedMain": "56d6be2271de65858ff21fc3987fc390fce01158",
+  "check": {
+    "exitCode": 0,
+    "uiDomain": 193,
+    "backendPlatform": 551,
+    "evaluation": 76
+  },
+  "browser": {
+    "exitCode": 0,
+    "passed": 64
+  },
+  "viewports": [
+    [
+      1366,
+      768
+    ],
+    [
+      1440,
+      900
+    ],
+    [
+      1263,
+      900
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      320,
+      844
+    ],
+    [
+      683,
+      384
+    ]
+  ],
+  "scope": "Remotion skill guidance translated to the existing Motion/CSS runtime; no new dependency or canonical token change.",
+  "integrationCorrection": "Consolidate duplicate StaffApp navigation/routes while preserving the workspace wrapper and reconciliation route.",
+  "humanAcceptance": "Pending; publication and automated checks do not establish representative acceptance."
+}
