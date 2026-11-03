@@ -1,0 +1,46 @@
+{
+  "task": "UI-07 turnaround and graphic workflow",
+  "reviewDate": "2026-11-04",
+  "branch": "codex/agap-landing",
+  "checkedRevision": "d65f50de55c087fe09085d347b25c3c85c4a042e",
+  "synchronizedMain": "da04a81fb643e73104214338af5410a9fa148a0b",
+  "check": {
+    "exitCode": 0,
+    "uiDomain": 195,
+    "backendPlatform": 563,
+    "evaluation": 91
+  },
+  "browser": {
+    "exitCode": 0,
+    "passed": 75
+  },
+  "viewports": [
+    [
+      1366,
+      768
+    ],
+    [
+      1440,
+      900
+    ],
+    [
+      1263,
+      900
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      320,
+      844
+    ],
+    [
+      683,
+      384
+    ]
+  ],
+  "artwork": "Six unchanged transparent turnaround sources, with the front repeated to complete the turn. No 3D model or runtime dependency was added.",
+  "accessibility": "One current feature, explicit chapter buttons/current step, hidden entry controls, static reduced motion, keyboard tabs/dialog focus, axe and reflow checked.",
+  "humanAcceptance": "Representative acceptance, native browser zoom, real-device installation and institutional release remain separate."
+}
