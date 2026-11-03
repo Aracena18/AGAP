@@ -538,6 +538,10 @@ This is a presentation migration. Retain current authentication/session separati
 
 Robert owns canonical tokens, shared controls/shell and member surfaces; domain owners retain their feature directories and logic. Begin with the shared foundation and member home/sign-in at phone and desktop sizes, then extend the reviewed treatment through member forms and staff surfaces. Each implementation slice updates its relevant tests and evidence and passes the required application/browser checks. Archived references and automated results do not establish representative-user acceptance or production readiness.
 
+### Staff/review sign-in recovery — 3 November 2026
+
+A failed session check keeps the sign-in card visible with one concise warning title and a recovery explanation. Place **Try again** below the warning as a separate primary action; do not wrap it into the message text. Retry checks the session in place, preserves the requested route/source fragment and keeps keyboard focus on the retry control while pending or still unavailable. Announce checking, prevent repeated activation and bound a stalled check to ten seconds. An ordinary signed-out response restores **Sign in**; a valid existing session opens the requested workspace. Keep actual outages visible until recovery; no fabricated session or demo-role bypass. Preserve 320px reflow and the existing workspace tokens/artwork. Implementation and checks belong in the [UI verification record](docs/AGAP_UI_Review_Verification.md#ui-06-sign-in-recovery--3-november-2026).
+
 ### UI-06 implementation boundary — 3 November 2026
 
 The user authorizes this migration now and explicitly excludes the public landing. Append canonical `[data-agap-workspace]` token overrides, keeping `:root` and `[data-agap-landing]` unchanged. Load workspace-only presentation styles through WorkspaceRoutes. Shared Button/Badge/Notice/Money behavior and signatures remain intact; any visual overrides apply only inside the workspace boundary. No new dependency, API, calculator, record fixture or motion library is required.

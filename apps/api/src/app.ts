@@ -28,6 +28,9 @@ import { configureWorkflow,requireRelease } from './modules/evidence/configure.j
 import { LoanReads } from './modules/servicing/loan-reads.js';
 import { ReconciliationService } from './modules/accounting/reconciliation.service.js';
 import { ReconciliationController,RECONCILIATIONS } from './modules/accounting/reconciliation.controller.js';
+import { MonitoringService } from './modules/monitoring/monitoring.service.js';
+import { MonitoringController,MONITORING } from './modules/monitoring/monitoring.controller.js';
+import { unavailableMemberDomains } from './modules/member-portal/member-portal.service.js';
 import type { MemberDomainPorts } from '../../../packages/contracts/src/ports.js';
 
 interface StaffRequest extends Request,MemberRequest { staff?: Awaited<ReturnType<IdentityService['authenticate']>> }
@@ -106,7 +109,7 @@ export async function createApp(config: Config,memberDomains?:MemberDomainPorts)
     for (const pool of [database,identityDatabase]) {
       const result = await pool.query<{rolsuper:boolean;rolbypassrls:boolean}>("SELECT rolsuper,rolbypassrls FROM pg_roles WHERE rolname=current_user");
       if (result.rows[0].rolsuper || result.rows[0].rolbypassrls) throw new Error('API database credentials must not be superuser or BYPASSRLS roles.');
-      const owned=await pool.query("SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('platform','identity','members','applications','portal','evidence','credit','accounting') AND c.relkind IN ('r','p') AND pg_has_role(current_user,c.relowner,'MEMBER') LIMIT 1");
+      const owned=await pool.query("SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('platform','identity','members','applications','portal','evidence','credit','accounting','monitoring') AND c.relkind IN ('r','p') AND pg_has_role(current_user,c.relowner,'MEMBER') LIMIT 1");
       if(owned.rowCount)throw new Error('API database credentials must not own application tables or inherit their owner role.');
     }
     const uow = new PostgresUnitOfWork(database);
@@ -116,8 +119,10 @@ export async function createApp(config: Config,memberDomains?:MemberDomainPorts)
     const identity = new IdentityService(identityDatabase,config);
     const services: PlatformServices = {config,database,identityDatabase,identity,staff:new StaffService(new PostgresUnitOfWork(identityDatabase)),members,applications:new ApplicationsService(uow,members),async onModuleDestroy(){await Promise.all([database.end(),identityDatabase.end()]);}};
     const memberUow=new PostgresMemberUnitOfWork(database);
-    const portal=new MemberPortalService(memberUow,new MemberApplicationsService(memberUow,config.PRIVACY_NOTICE_VERSION),config.PRIVACY_NOTICE_VERSION,memberDomains);
-    @Module({controllers:[PlatformController,MemberController,WorkflowController,ReconciliationController],providers:[{provide:RECONCILIATIONS,useValue:reconciliations},{provide:WORKFLOW,useValue:workflow},{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal,workflow}}]})
+    const loanReads=new LoanReads(uow),monitoring=new MonitoringService(uow,loanReads);
+    const domains:MemberDomainPorts=memberDomains??{...unavailableMemberDomains,loans:tx=>loanReads.memberLoans(tx),support:tx=>monitoring.memberHistory(tx),requestSupport:(tx,data,key)=>monitoring.submit(tx,data,key)};
+    const portal=new MemberPortalService(memberUow,new MemberApplicationsService(memberUow,config.PRIVACY_NOTICE_VERSION),config.PRIVACY_NOTICE_VERSION,domains);
+    @Module({controllers:[PlatformController,MemberController,WorkflowController,ReconciliationController,MonitoringController],providers:[{provide:MONITORING,useValue:monitoring},{provide:RECONCILIATIONS,useValue:reconciliations},{provide:WORKFLOW,useValue:workflow},{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal,workflow}}]})
     class AppModule {}
     const app = await NestFactory.create<NestExpressApplication>(AppModule,{logger:false,bodyParser:false,abortOnError:false});
     app.set('trust proxy',false);
