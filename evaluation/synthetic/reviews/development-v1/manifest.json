@@ -1,0 +1,46 @@
+{
+  "artifacts": [
+    {
+      "name": "coverage.json",
+      "sha256": "d884859e2bdbe6ecf5371c214b87c2c6daacb99ffa086b1f20dbb2d31345b1e9"
+    },
+    {
+      "name": "development/corpus.json",
+      "sha256": "d92d463705f04942e67b6260377c1640954d137f415d598617b5010b410b0ba1"
+    },
+    {
+      "name": "development/development.inputs.jsonl",
+      "sha256": "eb7a25a29d51de90dc4a03ff65f4ff2dc27cfcdd03f8d5bfba4ab3b27b66b91c"
+    },
+    {
+      "name": "development/development.targets.jsonl",
+      "sha256": "0c9f5f847b559469dfb43fbb48e456d2397626c6f4fb2275c50e558a8366243d"
+    },
+    {
+      "name": "development/finding.schema.json",
+      "sha256": "ce953e224d7f8f83d9e8bc4de6e87f2aa69bef8c5f1120449dbbcaa246b752f2"
+    },
+    {
+      "name": "development/manifest.json",
+      "sha256": "c54e17ea349dd8bed9c2fa5e928fee3ee84652439268c92461ca592258f3a6ff"
+    },
+    {
+      "name": "review-worksheet.json",
+      "sha256": "1d22867cf099b5d2972673944f21315e44f035cd6876aaf5d4cb2098a349b055"
+    },
+    {
+      "name": "review.html",
+      "sha256": "fcbf81094261d8a309f04882e8ba2d35f14de60bda471d97e709898fb4d20279"
+    },
+    {
+      "name": "review.md",
+      "sha256": "622b44f47073f7ad8bc887134f9750da17d670a792c3c9a3668040dbe9ff2efb"
+    }
+  ],
+  "holdout": null,
+  "inputCorpusSha256": "d92d463705f04942e67b6260377c1640954d137f415d598617b5010b410b0ba1",
+  "kind": "development_review_pack",
+  "reviewStatus": "pending",
+  "schemaVersion": "eval-01-review-pack/v1",
+  "trainingRelease": false
+}

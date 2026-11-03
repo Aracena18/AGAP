@@ -53,6 +53,22 @@ npx tsx evaluation/synthetic/src/cli.ts compare --corpus CORPUS_FILE --runs RUNS
 
 The default preview is explicitly `development_preview`, with zero training/validation release counts and no review/holdout commitment. It is suitable for label/format review and harness development. Generating it is not completion of the reviewed training handoff.
 
+## Readable development review pack
+
+The supplied [review document](reviews/development-v1/review.md) and self-contained [HTML version](reviews/development-v1/review.html) project the existing pilot without changing its source records or expected answers. They show all 12 cases, 14 source pages and 18 candidate expected fields, complete source text/citations, rationale, annotated coverage and open review questions. Coverage annotations and unique group counts do not prove sample independence, sufficient template/image coverage or correct labels. The illegible-source case is a text placeholder, not an OCR benchmark.
+
+```sh
+# Use an existing validated development corpus; output must be a new directory.
+npx tsx evaluation/synthetic/src/cli.ts review --corpus DEVELOPMENT_CORPUS_FILE --out NEW_REVIEW_DIRECTORY
+npx tsx evaluation/synthetic/src/cli.ts verify-review --pack NEW_REVIEW_DIRECTORY
+```
+
+Open `review.html` locally or read `review.md` in the repository. Sources appear next to candidate answers in the HTML document, with keyboard citation links and responsive/print layouts. All source/label text is inert escaped content; the document requires no network or scripts. Exact PHP displays retain integer centavos, including explicit zero; missing values/dates stay unavailable.
+
+The pack includes the unchanged compatible `development/` bundle, `coverage.json`, a blank [review worksheet](reviews/development-v1/review-worksheet.json) and an outer hash manifest written last. Copy the worksheet separately for actual reviewer names, decisions, disagreements and corrections; keep the original pack intact. It is a review aid, not the `freeze` approval record. No reviewer approval, protected holdout, training split or model result is supplied. New versions must preserve prior evidence. The local reviews attributes retain LF artifact bytes across Git checkouts so hashes remain reproducible.
+
+The exporter refuses reserved holdouts before creating output. Verification checks the exact inventory, refuses symlinks, regenerates the pending pack from its corpus and detects edited documents/worksheets/manifests or added files. Checksums establish consistency, not authentic review or trusted authorship. Actual independent label/interface review, training lineage, protected holdout arrangements and agreed measures/regression limits still precede freezing. Public development examples are already visible to trainers and cannot be relabeled as untouched holdout evidence.
+
 ## Reviewed release and holdout protocol
 
 Before training, agree the task/input formats, labels, split counts and primary improvement/regression criteria with the receiving owners. Size splits by independent groups, not individual rendered pages. The tool joins shared household/scenario families and identical normalized source content, then deterministically partitions whole connected groups. It rejects cross-partition identities/content; private holdout templates must also be absent from development. Human review still checks near-duplicates, undisclosed relationships and meaningful template novelty.

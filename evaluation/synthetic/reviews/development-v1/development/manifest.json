@@ -1,0 +1,31 @@
+{
+  "artifacts": [
+    {
+      "name": "corpus.json",
+      "sha256": "d92d463705f04942e67b6260377c1640954d137f415d598617b5010b410b0ba1"
+    },
+    {
+      "name": "development.inputs.jsonl",
+      "sha256": "eb7a25a29d51de90dc4a03ff65f4ff2dc27cfcdd03f8d5bfba4ab3b27b66b91c"
+    },
+    {
+      "name": "development.targets.jsonl",
+      "sha256": "0c9f5f847b559469dfb43fbb48e456d2397626c6f4fb2275c50e558a8366243d"
+    },
+    {
+      "name": "finding.schema.json",
+      "sha256": "ce953e224d7f8f83d9e8bc4de6e87f2aa69bef8c5f1120449dbbcaa246b752f2"
+    }
+  ],
+  "holdout": null,
+  "inputCorpusSha256": "d92d463705f04942e67b6260377c1640954d137f415d598617b5010b410b0ba1",
+  "kind": "development_preview",
+  "review": null,
+  "schemaVersion": "eval-01-bundle/v1",
+  "splitSeed": null,
+  "splits": {
+    "developmentCases": 12,
+    "trainingCases": 0,
+    "validationCases": 0
+  }
+}

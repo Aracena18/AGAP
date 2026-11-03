@@ -1,0 +1,217 @@
+{
+  "cases": [
+    {
+      "caseId": "ev-01",
+      "comment": null,
+      "fields": [
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "gross_income"
+        },
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "payroll_deduction"
+        },
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "take_home_income"
+        }
+      ],
+      "rationaleDecision": "pending"
+    },
+    {
+      "caseId": "ev-02",
+      "comment": null,
+      "fields": [
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "take_home_income"
+        }
+      ],
+      "rationaleDecision": "pending"
+    },
+    {
+      "caseId": "ev-03",
+      "comment": null,
+      "fields": [
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "school_cost"
+        },
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "transport_cost"
+        },
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "book_subscription"
+        }
+      ],
+      "rationaleDecision": "pending"
+    },
+    {
+      "caseId": "ev-04",
+      "comment": null,
+      "fields": [
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "future_repair"
+        }
+      ],
+      "rationaleDecision": "pending"
+    },
+    {
+      "caseId": "ev-05",
+      "comment": null,
+      "fields": [
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "farm_gross_receipt"
+        },
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "farm_input_cost"
+        },
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "farm_statement_net"
+        }
+      ],
+      "rationaleDecision": "pending"
+    },
+    {
+      "caseId": "ev-06",
+      "comment": null,
+      "fields": [
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "school_payment"
+        }
+      ],
+      "rationaleDecision": "pending"
+    },
+    {
+      "caseId": "ev-07",
+      "comment": null,
+      "fields": [
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "repair_obligation"
+        }
+      ],
+      "rationaleDecision": "pending"
+    },
+    {
+      "caseId": "ev-08",
+      "comment": null,
+      "fields": [
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "school_obligation"
+        }
+      ],
+      "rationaleDecision": "pending"
+    },
+    {
+      "caseId": "ev-09",
+      "comment": null,
+      "fields": [
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "take_home_income"
+        }
+      ],
+      "rationaleDecision": "pending"
+    },
+    {
+      "caseId": "ev-10",
+      "comment": null,
+      "fields": [
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "take_home_income"
+        }
+      ],
+      "rationaleDecision": "pending"
+    },
+    {
+      "caseId": "ev-11",
+      "comment": null,
+      "fields": [
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "essential_expense_gap"
+        }
+      ],
+      "rationaleDecision": "pending"
+    },
+    {
+      "caseId": "ev-12",
+      "comment": null,
+      "fields": [
+        {
+          "comment": null,
+          "decision": "pending",
+          "field": "essential_expense_gap"
+        }
+      ],
+      "rationaleDecision": "pending"
+    }
+  ],
+  "inputCorpusSha256": "d92d463705f04942e67b6260377c1640954d137f415d598617b5010b410b0ba1",
+  "interfaceReviewer": null,
+  "labelReviewer": null,
+  "questions": [
+    {
+      "comment": null,
+      "decision": "pending",
+      "id": "label_truth"
+    },
+    {
+      "comment": null,
+      "decision": "pending",
+      "id": "image_coverage"
+    },
+    {
+      "comment": null,
+      "decision": "pending",
+      "id": "training_lineage"
+    },
+    {
+      "comment": null,
+      "decision": "pending",
+      "id": "interface"
+    },
+    {
+      "comment": null,
+      "decision": "pending",
+      "id": "protocol"
+    },
+    {
+      "comment": null,
+      "decision": "pending",
+      "id": "holdout"
+    }
+  ],
+  "releaseApproval": null,
+  "reviewedOn": null,
+  "schemaVersion": "eval-01-review-worksheet/v1",
+  "status": "pending"
+}
