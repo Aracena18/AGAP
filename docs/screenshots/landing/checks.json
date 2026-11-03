@@ -66,5 +66,12 @@
       "packages/contracts/src/index.ts partially extracted",
       "community labels are heuristic"
     ]
+  },
+  "publication": {
+    "implementationCommit": "bf032306cd59cfbc5596bbaa80c511897a7e239b",
+    "branch": "main",
+    "normalPush": true,
+    "remoteReadBack": "bf032306cd59cfbc5596bbaa80c511897a7e239b",
+    "representativeAcceptance": false
   }
 }
