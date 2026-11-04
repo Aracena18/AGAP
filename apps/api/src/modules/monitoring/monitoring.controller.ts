@@ -18,3 +18,13 @@ export class MonitoringController{
  @Post(':id/responses')respond(@Req()r:StaffRequest,@Param('id')id:string,@Body()body:unknown){return this.service.respond(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
  @Post(':id/actions')createAction(@Req()r:StaffRequest,@Param('id')id:string,@Body()body:unknown){return this.service.respondPaged(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
 }
+
+@Controller('support-follow-ups')
+export class SupportFollowUpController{
+ constructor(@Inject(MONITORING)private readonly service:MonitoringService){}
+ @Get('queues/:state')list(@Req()r:StaffRequest,@Param('state')state:string,@Query()q:unknown){return this.service.followUps.list(actor(r),state,q);}
+ @Get(':id')get(@Req()r:StaffRequest,@Param('id')id:string){return this.service.followUps.get(actor(r),id);}
+ @Get(':id/events')events(@Req()r:StaffRequest,@Param('id')id:string,@Query()q:unknown){return this.service.followUps.events(actor(r),id,q);}
+ @Post(':id/completions')complete(@Req()r:StaffRequest,@Param('id')id:string,@Body()body:unknown){return this.service.followUps.complete(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
+ @Post(':id/reschedules')reschedule(@Req()r:StaffRequest,@Param('id')id:string,@Body()body:unknown){return this.service.followUps.reschedule(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
+}

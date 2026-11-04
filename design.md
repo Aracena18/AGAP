@@ -398,6 +398,14 @@ Within an opened staff support request, show the newest responses first and appe
 
 Request/version changes reset the history view. Later access denial clears private history and draft controls together. Match visible **Open support request** text with its accessible name. Maintain readable wrapping, 320px reflow and shared controls/tokens; pagination adds no decorative motion or new visual system. This is the supplied staff-history candidate; member-history pagination and representative-user acceptance remain separate.
 
+### Staff follow-up workflow — 4 November 2026
+
+Within Payment-help requests, assigned officers switch between **Support requests** and **Follow-ups** through clearly selected buttons in a named navigation region. Unsaved or uncertain actions disable switching until saved, safely retried or explicitly discarded. Reuse shared buttons, notices, badges, fields and keyboard-scrollable tables. Follow-up filters cover all assigned tasks, with explicit scheduled/due-today/overdue/completed labels and the server's Manila as-of date; status text carries meaning without relying on color.
+
+The selected task shows its source response, original date and current follow-up date. Completion asks for **Action taken**; rescheduling asks for **New follow-up date** and **Reason for rescheduling**. Notes remain private to authorized staff. Explain that completion concerns the staff task and does not resolve a member's difficulty or change a loan. Historical dates indicate no recorded completion. Each new dated response creates a separate commitment, so the response form explains when to use the task's reschedule action instead.
+
+Focus the selected-task heading after opening and validation/save errors when they appear. History loading retains the form and cursor; completion of history paging focuses its heading when the button disappears. Source text and identifiers wrap at 320px, with contained table scrolling. Later denial clears private data/drafts together. This supplies a staff workflow candidate; representative acceptance and broader health monitoring remain separate.
+
 ### Model origin and research presentation
 
 Qwen fine-tuning does not add another member task: retain the existing source/confirmation controls and manual fallback. Runtime origin and exact model/artifact versions remain inspectable in staff evidence rather than added to the member's main flow. Label generated drafts, templates and prerecorded/simulated responses accurately; an uploaded scan is not an authenticated claim.

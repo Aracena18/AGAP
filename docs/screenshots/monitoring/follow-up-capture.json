@@ -1,0 +1,25 @@
+{
+  "task": "HLT-01",
+  "branch": "feat/earl-hlt-01-follow-up-workflow",
+  "base": "540fe1e53c6a5ed8cb70c8f050613483fcb94c3c",
+  "source": "Actual isolated PostgreSQL/API Chromium journey using fictional records; dated source, reschedule form and preserved history",
+  "collectedAt": "2026-11-04T07:50:48.8964025Z",
+  "environment": "Node 24.22.2, Debian 12, PostgreSQL 18, Playwright Chromium",
+  "viewports": {
+    "desktop": {
+      "height": 768,
+      "width": 1366
+    },
+    "mobile": {
+      "height": 800,
+      "width": 320
+    }
+  },
+  "visualReview": "Source/context and form captures inspected at desktop and 320px; fields and notes wrap, table scrolling is contained, and keyboard/accessibility/reflow checks passed.",
+  "sha256": {
+    "follow-up-desktop.png": "5bfeb5feee1d69127f4a3a915079af85e80efe41e42439dc6f172b1933e4edff",
+    "follow-up-320.png": "008be3a505ba15b957dfdf4bf3d553459c2d892eb80e06a78f129397f9292fe3",
+    "follow-up-form-desktop.png": "c4c3bcf20ac1dfb7f9aa981a6daaddcebfb67bbe1af95032310b55aa391aef26",
+    "follow-up-form-320.png": "88a2fac3378488b50c7ba66fe0ba74123a67c645939c5f83a453a25bfa2276b7"
+  }
+}

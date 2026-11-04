@@ -1,4 +1,4 @@
-import { z,ZodError } from 'zod';
+import { z } from 'zod';
 import type { ActorContext,MemberTransactionContext,TransactionContext,UnitOfWork } from '../../../../../packages/contracts/src/ports.js';
 import { Id,MemberSupportCreateSchema,MemberSupportSchema,MemberSupportViewSchema,SupportActionSchema,SupportActionPageSchema,SupportAssignmentSchema,SupportDetailSchema,SupportHistorySchema,SupportPageSchema,SupportResponseSchema,SupportSummarySchema,Version } from '../../../../../packages/contracts/src/schemas.js';
 import { command,recordEvent } from '../../platform/commands.js';
@@ -6,23 +6,15 @@ import { memberCommand } from '../../platform/member-commands.js';
 import { ApiError,notFound } from '../../platform/errors.js';
 import { requireFreshMfa,requireRoles } from '../identity/identity.service.js';
 import type { LoanReads } from '../servicing/loan-reads.js';
-
-async function operation<T>(work:()=>Promise<T>){try{return await work();}catch(error){
- if(error instanceof ApiError)throw error;
- if(error instanceof ZodError)throw new ApiError(422,'invalid_support','Check the support fields.',error.issues.map(i=>({path:i.path.join('.'),message:i.message})));
- const code=error&&typeof error==='object'&&'code' in error?String(error.code):'';
- if(code==='42501')throw new ApiError(403,'support_forbidden','This request is outside your support assignment.');
- if(code==='P0412')throw new ApiError(412,'stale_version','This request changed. Reload before saving.');
- if(code==='23514')throw new ApiError(422,'invalid_support','The officer or support details are unavailable.');
- if(code==='P0002')throw notFound();
- throw new ApiError(503,'support_unavailable','The result could not be confirmed. Retry the same submission.');
-}}
+import {supportOperation as operation} from './monitoring.errors.js';
+import {SupportFollowUps} from './support-follow-ups.service.js';
 function summary(row:Record<string,unknown>){return SupportSummarySchema.parse({id:row.id,memberId:row.member_id,branchId:row.branch_id,submittedAt:(row.submitted_at as Date).toISOString(),status:row.status,version:Number(row.version),assignedOfficerId:row.assigned_officer_id});}
 const historyQuery=z.strictObject({cursor:Id.optional(),limit:z.coerce.number().int().min(1).max(100).default(25)});
 const responseReceipt=z.union([z.strictObject({version:Version}),z.strictObject({version:Version,projection:z.literal('staff-history-v1'),pageSize:z.number().int().min(1).max(100)})]);
 function action(row:Record<string,unknown>){return SupportActionSchema.parse({id:row.id,recordedAt:(row.recorded_at as Date).toISOString(),recordedBy:row.recorded_by,response:row.response,internalNote:row.internal_note,followUpDate:row.follow_up,version:Number(row.version)});}
 export class MonitoringService {
- constructor(private readonly uow:UnitOfWork,private readonly loans:Pick<LoanReads,'memberLoans'>){}
+ readonly followUps:SupportFollowUps;
+ constructor(private readonly uow:UnitOfWork,private readonly loans:Pick<LoanReads,'memberLoans'>){this.followUps=new SupportFollowUps(uow);}
  private async accessible(tx:TransactionContext,id:string,lock=false){
   if(lock)await tx.query('SELECT monitoring.lock_disclosure($1,false)',[id]);
   const row=(await tx.query('SELECT * FROM monitoring.requests WHERE organization_id=$1 AND id=$2',[tx.actor.organizationId,id])).rows[0];

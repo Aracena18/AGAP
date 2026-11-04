@@ -30,7 +30,7 @@ import { LoanReads } from './modules/servicing/loan-reads.js';
 import { ReconciliationService } from './modules/accounting/reconciliation.service.js';
 import { ReconciliationController,RECONCILIATIONS } from './modules/accounting/reconciliation.controller.js';
 import { MonitoringService } from './modules/monitoring/monitoring.service.js';
-import { MonitoringController,MONITORING } from './modules/monitoring/monitoring.controller.js';
+import { MonitoringController,SupportFollowUpController,MONITORING } from './modules/monitoring/monitoring.controller.js';
 import { unavailableMemberDomains } from './modules/member-portal/member-portal.service.js';
 import type { MemberDomainPorts } from '../../../packages/contracts/src/ports.js';
 
@@ -124,7 +124,7 @@ export async function createApp(config: Config,memberDomains?:MemberDomainPorts)
     const loanReads=new LoanReads(uow),monitoring=new MonitoringService(uow,loanReads);
     const domains:MemberDomainPorts=memberDomains??{...unavailableMemberDomains,loans:tx=>loanReads.memberLoans(tx),support:tx=>monitoring.memberHistory(tx),requestSupport:(tx,data,key)=>monitoring.submit(tx,data,key)};
     const portal=new MemberPortalService(memberUow,new MemberApplicationsService(memberUow,config.PRIVACY_NOTICE_VERSION),config.PRIVACY_NOTICE_VERSION,domains);
-    @Module({controllers:[PlatformController,MemberController,WorkflowController,ReconciliationController,MonitoringController],providers:[{provide:MONITORING,useValue:monitoring},{provide:RECONCILIATIONS,useValue:reconciliations},{provide:WORKFLOW,useValue:workflow},{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal,workflow}}]})
+    @Module({controllers:[PlatformController,MemberController,WorkflowController,ReconciliationController,MonitoringController,SupportFollowUpController],providers:[{provide:MONITORING,useValue:monitoring},{provide:RECONCILIATIONS,useValue:reconciliations},{provide:WORKFLOW,useValue:workflow},{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal,workflow}}]})
     class AppModule {}
     const app = await NestFactory.create<NestExpressApplication>(AppModule,{logger:false,bodyParser:false,abortOnError:false});
     app.set('trust proxy',false);
