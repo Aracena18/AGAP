@@ -1,17 +1,20 @@
 import { randomUUID } from 'node:crypto';
 import type { INestApplication } from '@nestjs/common';
-import { afterAll,beforeAll,beforeEach,expect,it } from 'vitest';
+import { afterAll,beforeAll,beforeEach,describe,expect,it } from 'vitest';
 import { SessionSchema,MemberSessionSchema } from '../../../packages/contracts/src/schemas.js';
 import { createApp } from '../src/app.js';
 import { loadConfig } from '../src/platform/config.js';
 import { config,owner,prepareDatabase,resetFixtures,closePools } from './database.js';
 import { presentationFixtures } from './presentation-fixtures.js';
 
-const current={...config,NODE_ENV:'development' as const,LOCAL_PRESENTATION_MODE:true};
+afterAll(async()=>{await closePools();});
+describe.each([58080,18080])('fictional presentation issuer port %i',port=>{
+const originalIssuer=config.OIDC_ISSUER;
+const current={...config,OIDC_ISSUER:`http://127.0.0.1:${port}/realms/agap`,NODE_ENV:'development' as const,LOCAL_PRESENTATION_MODE:true};
 let app:INestApplication,base:string,fixture:Awaited<ReturnType<typeof presentationFixtures>>;
-beforeAll(async()=>{await prepareDatabase();app=await createApp(current);await app.listen(0,'127.0.0.1');base=await app.getUrl();current.PUBLIC_ORIGIN=base;});
+beforeAll(async()=>{config.OIDC_ISSUER=current.OIDC_ISSUER;await prepareDatabase();app=await createApp(current);await app.listen(0,'127.0.0.1');base=await app.getUrl();current.PUBLIC_ORIGIN=base;});
 beforeEach(async()=>{current.LOCAL_PRESENTATION_MODE=true;await resetFixtures();fixture=await presentationFixtures();});
-afterAll(async()=>{await app?.close();await closePools();});
+afterAll(async()=>{await app?.close();config.OIDC_ISSUER=originalIssuer;});
 async function open(member=false,cookie?:string){
   const response=await fetch(`${base}/api/v1/${member?'member/':''}session`,{headers:cookie?{Cookie:cookie}:{}});
   return {response,cookie:response.headers.getSetCookie()[0]?.split(';')[0],body:await response.json()};
@@ -21,6 +24,8 @@ it('is opt-in and rejects public, real-record, non-development and non-loopback 
   const env={NODE_ENV:'development',DATABASE_URL:config.DATABASE_URL,IDENTITY_DATABASE_URL:config.IDENTITY_DATABASE_URL,SESSION_SECRET:config.SESSION_SECRET,OIDC_CLIENT_SECRET:config.OIDC_CLIENT_SECRET};
   expect(loadConfig(env).LOCAL_PRESENTATION_MODE).toBe(false);
   expect(loadConfig({...env,LOCAL_PRESENTATION_MODE:'true'}).LOCAL_PRESENTATION_MODE).toBe(true);
+  for(const port of [58080,18080])expect(loadConfig({...env,LOCAL_PRESENTATION_MODE:'true',OIDC_ISSUER:`http://127.0.0.1:${port}/realms/agap`}).LOCAL_PRESENTATION_MODE).toBe(true);
+  for(const issuer of ['http://127.0.0.1:18081/realms/agap','http://localhost:18080/realms/agap','https://127.0.0.1:18080/realms/agap','http://127.0.0.1:18080/realms/other','http://127.0.0.1:18080/realms/agap/','http://127.0.0.1:18080/realms/agap?demo=true','http://user@127.0.0.1:18080/realms/agap','http://example.invalid:18080/realms/agap'])expect(()=>loadConfig({...env,LOCAL_PRESENTATION_MODE:'true',OIDC_ISSUER:issuer})).toThrow('fictional loopback');
   for(const override of [{NODE_ENV:'production'},{NODE_ENV:'test'},{PUBLIC_ORIGIN:'https://agap.software'},{API_HOST:'0.0.0.0'},{OIDC_ISSUER:'http://localhost:58080/realms/other'},{EVIDENCE_RECORD_MODE:'real'},{PRIVACY_NOTICE_VERSION:'real-notice'},{DATABASE_URL:'postgresql://runtime@example.invalid/agap'},{IDENTITY_DATABASE_URL:'postgresql://identity@127.0.0.1/real_records'}])expect(()=>loadConfig({...env,...override,LOCAL_PRESENTATION_MODE:'true'})).toThrow('fictional loopback');
 });
 it('automatically creates separate validated cookie sessions for existing fictional staff and member identities',async()=>{
@@ -76,4 +81,5 @@ it('keeps missing fictional fixtures unavailable instead of provisioning them',a
   await owner.query('DELETE FROM identity.member_link_events WHERE link_id=$1',[fixture.linkId]);
   await owner.query('DELETE FROM identity.member_links WHERE id=$1',[fixture.linkId]);
   for(const result of [await open(),await open(true)]){expect(result.response.status).toBe(503);expect(result.cookie).toBeUndefined();}
+});
 });
