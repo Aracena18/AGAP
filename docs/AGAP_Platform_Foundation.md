@@ -32,7 +32,7 @@ The migration regression verifies scoped/immutable decision/payment storage, saf
 
 ## Run the local staff workspace
 
-Use Node 24, npm and Docker Compose on Linux. All supplied credentials, organizations and identities are public fictional development fixtures. The database and Keycloak listen on loopback. Initial image downloads require network access.
+Use Node 24, npm and Docker Compose. The commands below use a POSIX shell; [Windows PowerShell startup](#windows-powershell-startup) is documented separately. All supplied credentials, organizations and identities are public fictional development fixtures. The database and Keycloak listen on loopback. Initial image downloads require network access.
 
 ```sh
 npm ci
@@ -61,6 +61,85 @@ The Keycloak admin console is `http://127.0.0.1:58080`, with `local-admin` / `de
 The API listens on `127.0.0.1:4100`; Vite proxies `/api` without changing the public Origin. The application never accepts caller-supplied actor/organization fields. API bundles are built with `npm run api:build` and started with `npm run api:start` from the repository root. OpenAPI remains available at `/api/v1/openapi.json`.
 
 `npm run worker:dev` starts a worker for the explicitly configured organization. The initial consumer registry is empty: it reports `awaiting_module_handlers` and leaves events pending. Owners register reviewed consumers through Robert; the bootstrap never silently acknowledges an event or invents a notification/payment adapter.
+
+### Windows PowerShell startup
+
+Open PowerShell at the repository root with Node 24 active (`node --version` must report `v24.x`). Open Docker Desktop and wait for its Linux engine to start. `docker info` must succeed before starting containers; a missing `dockerDesktopLinuxEngine` pipe means the engine is not available yet.
+
+Run each command separately, continuing only after success:
+
+```powershell
+if (!(Test-Path .env)) {
+  Copy-Item .env.example .env
+}
+docker info
+docker compose -f infra/compose.yml --profile identity up -d --wait
+npm.cmd run db:migrate
+npm.cmd run db:seed
+```
+
+If Windows refuses port `58080`, apply the [port workaround](#windows-reserved-keycloak-port) before migrations/seeding. Choose the issuer before the first seed: existing staff and member linkages reference that exact issuer, so changing an already-used issuer requires a reviewed linkage migration.
+
+Keep the API and Vite running in separate terminals, both at the repository root with Node 24 active:
+
+```powershell
+npm.cmd run api:dev
+```
+
+```powershell
+npm.cmd run dev -- --port 5174 --strictPort
+```
+
+Open `http://127.0.0.1:5174/`. The account names, password and authenticator enrollment described above also apply on Windows. These instructions cover the fictional local application; native document-processing prerequisites and the full Linux verification environment remain separate. [Observed startup/workflow results](AGAP_Verification.md#windows-local-startup--4-november-2026) record the tested scope.
+
+### Windows reserved Keycloak port
+
+Windows can reserve a range containing `58080` even when no application is listening there. Inspect the ranges with:
+
+```powershell
+netsh interface ipv4 show excludedportrange protocol=tcp
+```
+
+The verified machine reserved `58020–58119`. An available alternate port, `18080`, worked using this local override. Check your own reservations before selecting a port. This example was validated with Docker Compose 5.1.0 and its `!override` support; the tag replaces the original mapping rather than adding a second blocked mapping.
+
+After installing dependencies, create an override under the already ignored dependency cache:
+
+```powershell
+New-Item -ItemType Directory -Force node_modules/.cache/agap-local | Out-Null
+@'
+services:
+  keycloak:
+    ports: !override
+      - "127.0.0.1:18080:8080"
+'@ | Set-Content node_modules/.cache/agap-local/compose.override.yml -Encoding utf8
+```
+
+Set the matching values in your private `.env`:
+
+```dotenv
+OIDC_ISSUER=http://127.0.0.1:18080/realms/agap
+LOCAL_PRESENTATION_MODE=false
+```
+
+Start the services with both Compose files, and retain this command for later startups:
+
+```powershell
+docker compose -f infra/compose.yml -f node_modules/.cache/agap-local/compose.override.yml --profile identity up -d --wait
+```
+
+The local Keycloak console is then `http://127.0.0.1:18080`; the web and API ports remain `5174` and `4100`. Its discovery document is `http://127.0.0.1:18080/realms/agap/.well-known/openid-configuration`. Wait for that endpoint before signing in. The ignored override must be recreated if a dependency reinstall removes the cache.
+
+Use normal OIDC sign-in with this alternate-port setup. [Automatic presentation mode](#temporary-automatic-presentation-entry) has an existing fixed-issuer guard for port `58080`; the workaround preserves that guard and uses `LOCAL_PRESENTATION_MODE=false`.
+
+### Missing Vite dependency-cache files
+
+If the browser shows **Failed to fetch dynamically imported module** and requests under `/node_modules/.vite/deps/` return 404, stop the existing AGAP Vite process in its terminal and rebuild its optimization cache:
+
+```powershell
+npm.cmd run dev -- --port 5174 --strictPort --force
+```
+
+Reload the browser after Vite is ready. This resolved the observed missing `motion_react.js` and `zod.js` files. The [verification record](AGAP_Verification.md#windows-local-startup--4-november-2026) distinguishes this local cache repair from an application-code change.
 
 ## Contracts and ownership
 
