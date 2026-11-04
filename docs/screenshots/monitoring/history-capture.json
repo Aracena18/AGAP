@@ -1,0 +1,23 @@
+{
+  "task": "HLT-01",
+  "branch": "feat/earl-hlt-01-staff-history-pagination",
+  "base": "8bf446c785d17404bd4884e0287929e2df1bb54e",
+  "source": "Actual isolated PostgreSQL/API Chromium journey using fictional records; newest 25 responses with older history available",
+  "collectedAt": "2026-11-04T05:13:44.3751614Z",
+  "environment": "Node 24.22.2, Debian 12, PostgreSQL 18, Playwright Chromium",
+  "viewports": {
+    "desktop": {
+      "height": 768,
+      "width": 1366
+    },
+    "mobile": {
+      "height": 800,
+      "width": 320
+    }
+  },
+  "visualReview": "Both captures inspected; paging control and wrapped metadata remain readable, with no horizontal page overflow. Automated accessibility and keyboard checks passed.",
+  "sha256": {
+    "history-desktop.png": "168874cb245b9138147472afd64e8f0685abd4197ab70b55d8c2b87bd0662baf",
+    "history-320.png": "422cc890203dbad49318f2dc4ec0f61f9af3c16f516e9ce9a77edbe7a7cef191"
+  }
+}

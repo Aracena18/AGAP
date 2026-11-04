@@ -25,6 +25,15 @@ async function submit(key=randomUUID()){const r=await call('/member/support-requ
 async function assign(id:string,version=1,key=randomUUID()){return call(`/support-requests/${id}/assignments`,{...staff(f.administrator.token),method:'POST',body:{officerId:f.officer.actor.userId,reason:'Fictional branch support assignment'},version,key});}
 const response=()=>({response:'Please contact us to discuss the available options.',internalNote:'Private staff note: offer a conversation.',followUpDate:null});
 async function respond(id:string,key=randomUUID(),version=2){return call(`/support-requests/${id}/responses`,{...staff(),method:'POST',body:response(),version,key});}
+async function respondPaged(id:string,key=randomUUID(),version=2){return call(`/support-requests/${id}/actions`,{...staff(),method:'POST',body:response(),version,key});}
+// Build long fictional histories through the same constrained database writer, under the actual officer role.
+async function appendHistory(id:string,count:number){return uow.run(f.officer.actor,async tx=>{
+ let version=Number((await tx.query('SELECT version FROM monitoring.requests WHERE id=$1',[id])).rows[0].version);
+ for(let index=0;index<count;index++){
+  await tx.query('SELECT monitoring.respond_support($1,$2::jsonb,$3)',[id,JSON.stringify({...response(),response:`Fictional history response ${version}`,internalNote:`Private historical note ${version}`}),version]);version++;
+ }
+ return version;
+});}
 describe('HLT-01 actual member and staff API',()=>{
  it('captures a real public loan position and preserves it after later repayment and replay',async()=>{
   await prepareReconciliationFixtures();const money=await reconciliationFixture(),release=await money.release(),person=money.context.basis.current.application;
@@ -114,5 +123,73 @@ describe('HLT-01 actual member and staff API',()=>{
   await submit();await submit();const first=await call('/support-requests?limit=1',staff(f.administrator.token));expect(first.body.items).toHaveLength(1);expect(first.body.nextCursor).toBeTruthy();
   const next=await call(`/support-requests?limit=1&cursor=${first.body.nextCursor}`,staff(f.administrator.token));expect(next.body.items[0].id).not.toBe(first.body.items[0].id);
   expect((await call('/member/support-requests',{method:'POST',body:{...input(),loanId:randomUUID()},key:randomUUID()})).status).toBe(404);
+ });
+ it('handles empty, exact and overflowing first pages without claiming incomplete history is complete',async()=>{
+  const request=await submit();await assign(request.id);
+  const empty=await call(`/support-requests/${request.id}/history`,staff());expect(empty.status).toBe(200);expect(empty.body.actions).toEqual([]);expect(empty.body.actionsNextCursor).toBeNull();
+  await appendHistory(request.id,24);const partial=await call(`/support-requests/${request.id}/history`,staff());expect(partial.body.actions).toHaveLength(24);expect(partial.body.actionsNextCursor).toBeNull();
+  await appendHistory(request.id,1);const exact=await call(`/support-requests/${request.id}/history`,staff());expect(exact.body.actions).toHaveLength(25);expect(exact.body.actionsNextCursor).toBeNull();
+  await appendHistory(request.id,1);const more=await call(`/support-requests/${request.id}/history`,staff());expect(more.body.actions).toHaveLength(25);expect(more.body.actionsNextCursor).toBe(more.body.actions.at(-1).id);
+  const last=await call(`/support-requests/${request.id}/actions?cursor=${more.body.actionsNextCursor}&limit=25`,staff());expect(last.body.items).toHaveLength(1);expect(last.body.nextCursor).toBeNull();
+ });
+ it('reads all 125 actions across an intervening append without duplicates or changing the older-page boundary',async()=>{
+  const request=await submit();await assign(request.id);const version=await appendHistory(request.id,125);
+  const first=await call(`/support-requests/${request.id}/history`,staff());expect(first.status).toBe(200);expect(first.body.actions).toHaveLength(25);
+  const saved=await respondPaged(request.id,randomUUID(),version);expect(saved.status).toBe(201);expect(saved.body.version).toBe(version+1);expect(saved.body.actions).toHaveLength(25);
+  const items=[...first.body.actions];let cursor=first.body.actionsNextCursor;
+  while(cursor){const page=await call(`/support-requests/${request.id}/actions?cursor=${cursor}&limit=25`,staff());expect(page.status).toBe(200);items.push(...page.body.items);cursor=page.body.nextCursor;}
+  expect(items).toHaveLength(125);expect(new Set(items.map(item=>item.id)).size).toBe(125);expect(items.map(item=>item.version)).toEqual(Array.from({length:125},(_,i)=>version-i));
+  expect(items.some(item=>item.version===saved.body.version)).toBe(false);
+  expect((await call(`/support-requests/${request.id}`,staff())).status).toBe(422); // Legacy detail remains explicit about its limit.
+  expect((await call('/member/support-requests')).body.data[0].response).toBe(response().response);
+ });
+ it('records the 101st action exactly once and preserves both legacy and paged replay snapshots after later changes',async()=>{
+  const request=await submit();await assign(request.id);const legacyKey=randomUUID(),legacy=await respond(request.id,legacyKey);
+  const version=await appendHistory(request.id,99),key=randomUUID();
+  const results=await Promise.all([respondPaged(request.id,key,version),respondPaged(request.id,key,version)]);
+  expect(results[0].status).toBe(201);expect(results[1].body).toEqual(results[0].body);expect(results[0].body.actions).toHaveLength(25);
+  expect((await owner.query('SELECT count(*) FROM monitoring.actions WHERE request_id=$1',[request.id])).rows[0].count).toBe('101');
+  await appendHistory(request.id,3);
+  expect((await respondPaged(request.id,key,version)).body).toEqual(results[0].body);
+  expect((await respond(request.id,legacyKey)).body).toEqual(legacy.body);
+  expect((await call(`/support-requests/${request.id}/responses`,{...staff(),method:'POST',body:response(),version,key})).status).toBe(409);
+  expect((await call(`/support-requests/${request.id}/actions`,{...staff(),method:'POST',body:{...response(),internalNote:'Changed private draft'},version,key})).status).toBe(409);
+  const cache=await uow.run(f.auditor.actor,tx=>tx.query('SELECT response FROM platform.idempotency'));
+  const serialized=JSON.stringify(cache.rows);expect(serialized).not.toContain(response().internalNote);expect(serialized).not.toContain(response().response);expect(serialized).not.toContain(input().message);expect(serialized).toContain('staff-history-v1');
+ });
+ it('validates cursor ownership, unknown query keys and bounded page sizes',async()=>{
+  const first=await submit(),second=await submit();await assign(first.id);await assign(second.id);await appendHistory(first.id,2);await appendHistory(second.id,1);
+  const foreign=(await call(`/support-requests/${second.id}/history`,staff())).body.actions[0].id;
+  for(const query of [`cursor=${foreign}`,`cursor=${randomUUID()}`,'cursor=invalid','limit=0','limit=101','limit=1.5','throughVersion=3']){
+   const result=await call(`/support-requests/${first.id}/actions?${query}`,staff());expect(result.status).toBe(422);expect(JSON.stringify(result.body)).not.toContain('Private historical note');
+  }
+  expect((await call(`/support-requests/${first.id}/actions?limit=1`,staff())).body.items).toHaveLength(1);
+ });
+ it('denies history and action pages to members, metadata administrators, auditors and unrelated officers',async()=>{
+  const request=await submit();await assign(request.id);await appendHistory(request.id,2);
+  for(const path of [`/support-requests/${request.id}/history`,`/support-requests/${request.id}/actions`]){
+   expect((await call(path)).status).toBe(401);
+   for(const token of [f.administrator.token,f.auditor.token,f.revocationTarget.token])expect((await call(path,staff(token))).status).toBe(403);
+   expect((await call(path,staff(f.other.token))).status).toBe(404);
+  }
+ });
+ it('rechecks assignment and active identity for each older page and paged command replay',async()=>{
+  const request=await submit();await assign(request.id);const version=await appendHistory(request.id,26),key=randomUUID();await respondPaged(request.id,key,version);
+  const first=(await call(`/support-requests/${request.id}/history`,staff())).body;
+  await owner.query("UPDATE identity.staff_users SET roles=ARRAY['officer'] WHERE id=$1",[f.revocationTarget.actor.userId]);
+  expect((await call(`/support-requests/${request.id}/assignments`,{...staff(f.administrator.token),method:'POST',body:{officerId:f.revocationTarget.actor.userId,reason:'Fictional pagination reassignment'},version:version+1,key:randomUUID()})).status).toBe(201);
+  expect((await call(`/support-requests/${request.id}/actions?cursor=${first.actionsNextCursor}`,staff())).status).toBe(404);
+  expect((await respondPaged(request.id,key,version)).status).toBe(404);
+  expect((await call(`/support-requests/${request.id}/history`,staff(f.revocationTarget.token))).status).toBe(200);
+  await owner.query('UPDATE identity.staff_users SET active=false WHERE id=$1',[f.revocationTarget.actor.userId]);
+  expect((await call(`/support-requests/${request.id}/actions`,staff(f.revocationTarget.token))).status).toBe(401);
+ });
+ it('rolls back a paged response receipt, action and audit together on coordinator failure',async()=>{
+  const request=await submit();await assign(request.id);const key=randomUUID();
+  const service=new MonitoringService({run:(actor,work)=>uow.run(actor,async tx=>{await work(tx);throw new Error('Fictional pagination rollback');})},new LoanReads(uow));
+  await expect(service.respondPaged(f.officer.actor,request.id,response(),2,key)).rejects.toMatchObject({status:503});
+  expect((await owner.query('SELECT count(*) FROM monitoring.actions')).rows[0].count).toBe('0');
+  expect((await owner.query("SELECT count(*) FROM platform.audit_events WHERE event_type='support.responded'")).rows[0].count).toBe('0');
+  expect((await respondPaged(request.id,key)).status).toBe(201);
  });
 });

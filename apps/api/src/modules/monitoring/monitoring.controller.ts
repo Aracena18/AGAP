@@ -12,6 +12,9 @@ export class MonitoringController{
  constructor(@Inject(MONITORING)private readonly service:MonitoringService){}
  @Get()list(@Req()r:StaffRequest,@Query()q:unknown){return this.service.list(actor(r),q);}
  @Get(':id')get(@Req()r:StaffRequest,@Param('id')id:string){return this.service.get(actor(r),id);}
+ @Get(':id/history')history(@Req()r:StaffRequest,@Param('id')id:string){return this.service.history(actor(r),id);}
+ @Get(':id/actions')actions(@Req()r:StaffRequest,@Param('id')id:string,@Query()q:unknown){return this.service.actions(actor(r),id,q);}
  @Post(':id/assignments')assign(@Req()r:StaffRequest,@Param('id')id:string,@Body()body:unknown){return this.service.assign(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
  @Post(':id/responses')respond(@Req()r:StaffRequest,@Param('id')id:string,@Body()body:unknown){return this.service.respond(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
+ @Post(':id/actions')createAction(@Req()r:StaffRequest,@Param('id')id:string,@Body()body:unknown){return this.service.respondPaged(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
 }
