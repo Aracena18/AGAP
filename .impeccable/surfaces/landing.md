@@ -7,3 +7,5 @@ First viewport, revised by explicit browser comments: a white canvas and a nearl
 The approved plan supplies the composition and existing artwork. No image comp is an authority, and no new artwork is requested. Checks and artifact provenance: [verification](../../docs/AGAP_Landing_Verification.md). Default build-path preferences for future tasks remain unset.
 
 Follow-up: the user selects the supplied turnaround collection for a four-chapter scroll story, one feature at a time, plus a graphic workflow using actual fictional screens. The current composition and behavior are governed solely by design.md section 17 and recorded in UI-07 verification.
+
+Screenshot follow-up: center-stack fan-out and static alternatives follow [design.md section 17](../../design.md#17-public-gabay-landing--ui-07-3-november-2026) and [UI-07 verification](../../docs/AGAP_Landing_Verification.md#screenshot-fan-out--ui-07-follow-up-4-november-2026). This context adds no independent UI rules.

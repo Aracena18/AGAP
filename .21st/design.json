@@ -26,6 +26,12 @@
       "date": "2026-11-04",
       "direction": "User-selected reversible Gabay turnaround with one feature per chapter and a graphic fictional workflow; rules remain in design.md section 17",
       "evidence": "../docs/AGAP_Landing_Verification.md"
+    },
+    {
+      "id": "UI-07-workflow-fan",
+      "date": "2026-11-04",
+      "direction": "User-selected center stack opening into three complete fictional screenshot windows; design.md section 17 remains the authority",
+      "evidence": "../docs/AGAP_Landing_Verification.md#screenshot-fan-out--ui-07-follow-up-4-november-2026"
     }
   ]
 }

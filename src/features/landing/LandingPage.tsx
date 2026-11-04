@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ArrowForward, CalendarToday, Description, ExpandMore, FindInPage, NorthEast } from '../../shared/icons';
+import { ArrowForward, ExpandMore, NorthEast } from '../../shared/icons';
 import { Button } from '../../shared/ui';
 import GabayReveal from './GabayReveal';
 import { BrandMark } from './BrandMark';
 import { story } from './story';
+import WorkflowGallery from './WorkflowGallery';
 import { useInstall } from './useInstall';
 import styles from './LandingPage.module.css';
 
@@ -81,13 +82,7 @@ export default function LandingPage() {
         <h2 id="workflow" tabIndex={-1}>The member’s everyday life.<br/>Part of every review.</h2>
         <p>AGAP brings the information behind a loan review into one connected journey.</p>
         <p className={styles.workflowDisclosure}>Fictional demonstration · Actual AGAP screens</p>
-        <ol className={styles.journey} aria-label="The AGAP review journey">
-          {[{ id: 'evidence', title: 'Evidence', text: 'Inspect and clarify the facts.', Icon: FindInPage }, { id: 'cash-flow', title: 'Cash flow', text: 'Check needs, dates, and costs.', Icon: CalendarToday }, { id: 'decision', title: 'Human review', text: 'Record the decision and why.', Icon: Description }].map((step, index) => <li key={step.id}>
-            <div className={styles.workflowPreview}><step.Icon className={styles.previewFallback} size={48}/><img src={`${base}landing/${step.id}.webp`} alt="" width="1366" height="850" loading="lazy" onError={event => { event.currentTarget.hidden = true; }}/></div>
-            <div className={styles.journeyCaption}><span aria-hidden="true">{index + 1}</span><div><h3>{step.title}</h3><p>{step.text}</p></div></div>
-            {index < 2 && <ArrowForward className={styles.journeyConnector} size={24}/>}
-          </li>)}
-        </ol>
+        <WorkflowGallery/>
       </section>
       <section className={styles.demo} aria-labelledby="demo">
         <div className={styles.sectionHeading}><h2 id="demo" tabIndex={-1}>See AGAP in action.</h2><p>One fictional application. The details that change a review.</p></div>

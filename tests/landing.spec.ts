@@ -156,6 +156,7 @@ test('white landing under either system preference preserves accessible layouts 
       await expect(page.locator('[data-agap-landing]')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
       if (process.env.AGAP_CAPTURE_WHITE) await page.screenshot({ path: `docs/screenshots/landing/white-${colorScheme}-${width}.png`, fullPage: true });
       if (process.env.AGAP_CAPTURE_STORY && colorScheme === 'light' && (width === 390 || width === 320)) await page.screenshot({ path: `docs/screenshots/landing/story-static-${width}.png`, fullPage: true });
+      if (process.env.AGAP_CAPTURE_FAN && colorScheme === 'light' && (width === 390 || width === 320)) await page.screenshot({ path: `docs/screenshots/landing/fan-static-${width}.png`, fullPage: true });
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze()).violations).toEqual([]);
     }
@@ -280,4 +281,61 @@ test('mobile keeps the full guide without requesting turnaround views; the workf
     await expect.poll(() => img.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth === 1366)).toBe(true);
   }
   expect(turns).toEqual([]);
+});
+
+for (const width of [1366, 1440]) {
+  test(`workflow screenshots open from a center stack into clear windows at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/#/');
+    const pause = await page.addStyleTag({ content: '[data-workflow-fan] * { animation-play-state: paused !important; }' });
+    await page.getByRole('link', { name: 'How it works', exact: true }).click();
+    const gallery = page.getByRole('list', { name: 'The AGAP review journey' });
+    await expect(gallery).toHaveAttribute('data-phase', 'opening');
+    await gallery.evaluate(element => element.getAnimations({ subtree: true }).forEach(animation => { animation.pause(); animation.currentTime = 0; }));
+    const bounds = () => gallery.evaluate(element => Array.from(element.children, item => {
+      const rect = item.firstElementChild!.getBoundingClientRect();
+      return { x: rect.x, y: rect.y, width: rect.width, right: rect.right, center: rect.x + rect.width / 2 };
+    }));
+    const stack = await bounds();
+    expect(Math.abs(stack[0].center - stack[1].center)).toBeLessThan(2);
+    expect(Math.abs(stack[2].center - stack[1].center)).toBeLessThan(2);
+    if (process.env.AGAP_CAPTURE_FAN) await page.screenshot({ path: `docs/screenshots/landing/fan-stack-${width}.png` });
+    await gallery.evaluate(element => element.getAnimations({ subtree: true }).forEach(animation => { animation.currentTime = 420; }));
+    const middle = await bounds();
+    expect(middle[0].center).toBeLessThan(stack[0].center - 100);
+    expect(middle[2].center).toBeGreaterThan(stack[2].center + 100);
+    if (process.env.AGAP_CAPTURE_FAN) await page.screenshot({ path: `docs/screenshots/landing/fan-opening-${width}.png` });
+    await pause.evaluate(element => { element.parentNode?.removeChild(element); });
+    await gallery.evaluate(element => element.getAnimations({ subtree: true }).forEach(animation => animation.finish()));
+    await expect(gallery).toHaveAttribute('data-phase', 'settled');
+    const spread = await bounds();
+    expect(spread[0].right + 12).toBeLessThan(spread[1].x);
+    expect(spread[1].right + 12).toBeLessThan(spread[2].x);
+    expect(spread[1].y + 32).toBeLessThan(spread[0].y);
+    expect(spread[1].y + 32).toBeLessThan(spread[2].y);
+    for (const title of ['Evidence', 'Cash flow', 'Human review']) await expect(gallery.getByRole('heading', { name: title, exact: true })).toBeInViewport();
+    for (const image of await gallery.locator('img').all()) expect(await image.evaluate((img: HTMLImageElement) => img.naturalWidth / img.naturalHeight)).toBeCloseTo(1366 / 850, 3);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    if (process.env.AGAP_CAPTURE_FAN) await page.screenshot({ path: `docs/screenshots/landing/fan-open-${width}.png` });
+    await page.getByRole('link', { name: 'Demo', exact: true }).click();
+    await page.getByRole('link', { name: 'How it works', exact: true }).click();
+    await expect(gallery).toHaveAttribute('data-phase', 'settled');
+  });
+}
+
+test('reduced motion cancels the fan and image failure preserves the workflow captions', async ({ page }) => {
+  await page.route('**/landing/evidence.webp', route => route.abort());
+  await page.goto('/#/');
+  await page.addStyleTag({ content: '[data-workflow-fan] * { animation-play-state: paused !important; }' });
+  await page.getByRole('link', { name: 'How it works', exact: true }).click();
+  const gallery = page.getByRole('list', { name: 'The AGAP review journey' });
+  await expect(gallery).toHaveAttribute('data-phase', 'opening');
+  await expect(gallery.locator('img').first()).toHaveAttribute('hidden', '');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(gallery).toHaveAttribute('data-phase', 'static');
+  for (const window of await gallery.locator('li > div:first-child').all()) await expect(window).toHaveCSS('transform', 'none');
+  await expect(gallery.getByRole('heading')).toHaveCount(3);
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  if (process.env.AGAP_CAPTURE_FAN) await page.screenshot({ path: 'docs/screenshots/landing/fan-reduced.png', fullPage: true });
 });

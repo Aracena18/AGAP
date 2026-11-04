@@ -1,0 +1,31 @@
+{
+  "task": "UI-07 workflow screenshot fan",
+  "date": "2026-11-04",
+  "base": "8a3102b1295b7ca3c0c2cf8cca68be3f9d142de9",
+  "check": {
+    "passed": true,
+    "uiDomainTests": 197,
+    "platformBackendTests": 571,
+    "evaluationTests": 91
+  },
+  "browser": {
+    "passed": 78,
+    "skipped": 4,
+    "skipReason": "Existing temporary presentation-specific cases are disabled in the normal suite.",
+    "newFanRegressions": 3
+  },
+  "visual": [
+    "1366x900 stack/midpoint/open",
+    "1440x900 stack/midpoint/open",
+    "390px static",
+    "320px static",
+    "live reduced motion and failed image fallback"
+  ],
+  "limitations": [
+    "Native browser zoom not certified",
+    "Single Lighthouse lab sample",
+    "Representative acceptance pending"
+  ],
+  "dependencyChanges": false,
+  "canonicalTokenChanges": false
+}
