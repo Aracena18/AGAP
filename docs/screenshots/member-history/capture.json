@@ -1,0 +1,23 @@
+{
+  "task": "HLT-01 / MOB-01",
+  "branch": "feat/earl-hlt-01-member-history-pagination",
+  "base": "a0d9c7ea5ee7d6cee09ac1fa620e6998af6210c5",
+  "collectedAt": "2026-11-04T11:07:45.5391683Z",
+  "source": "Actual isolated PostgreSQL/API Chromium member journey using 125 fictional requests; 50 requests loaded with older paging available",
+  "environment": "Node 24.22.2, Debian 12, PostgreSQL 18, Chromium",
+  "viewports": {
+    "desktop": {
+      "width": 1366,
+      "height": 768
+    },
+    "mobile": {
+      "width": 320,
+      "height": 800
+    }
+  },
+  "visualReview": "Desktop and 320px captures inspected; existing cards/check-ins remain readable, loaded count and older-page action visible. Reflow, keyboard focus and automated accessibility passed.",
+  "sha256": {
+    "member-history-desktop.png": "dce17ec28144387637a818b8524442f0a57139e7ea447f04f9bbcd11a788ece8",
+    "member-history-320.png": "08ff0f8e60b22b17f9ee7795da4df2f9a9cb58ec84b6b85c5e6d2ecc998a22ee"
+  }
+}

@@ -406,6 +406,12 @@ The selected task shows its source response, original date and current follow-up
 
 Focus the selected-task heading after opening and validation/save errors when they appear. History loading retains the form and cursor; completion of history paging focuses its heading when the button disappears. Source text and identifiers wrap at 320px, with contained table scrolling. Later denial clears private data/drafts together. This supplies a staff workflow candidate; representative acceptance and broader health monitoring remain separate.
 
+### Member request-history paging — 4 November 2026
+
+Within Payment help, keep the form and **My requests** history as separate sections. Use shared controls for **Refresh requests**, **Load older requests**, retry, loading status and unavailable notices. Append older cards in newest-first submission order and show the loaded count; partial history must not appear complete. Refresh/loading never sends the form or clears its draft, preview or sharing acknowledgement. Disable history actions during a saving/uncertain submission. A confirmed submission starts history again from its newest page; failed follow-up reads remain separate from save certainty.
+
+Retain the existing member-card hierarchy, shared-check-in content, published-response notices and narrow layout. Long messages and references wrap at 320px. Loading/retry preserve keyboard context; completion of paging announces the end and focuses My requests as its button disappears. Member scope changes and access denial clear private records/drafts together. No internal staff notes/task history appear in member cards. These rules describe the supplied paging candidate; representative acceptance remains pending.
+
 ### Model origin and research presentation
 
 Qwen fine-tuning does not add another member task: retain the existing source/confirmation controls and manual fallback. Runtime origin and exact model/artifact versions remain inspectable in staff evidence rather than added to the member's main flow. Label generated drafts, templates and prerecorded/simulated responses accurately; an uploaded scan is not an authenticated claim.

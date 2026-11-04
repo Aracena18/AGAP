@@ -14,6 +14,7 @@ export const operations = [
   {id:'getSupportHistory',method:'GET',path:'/support-requests/{id}/history',response:'SupportHistory',owner:'Earl',implemented:true},
   {id:'listSupportActions',method:'GET',path:'/support-requests/{id}/actions',response:'SupportActionPage',owner:'Earl',implemented:true},
   {id:'createSupportAction',method:'POST',path:'/support-requests/{id}/actions',request:'SupportResponse',response:'SupportHistory',owner:'Earl',implemented:true,idempotent:true,versioned:true},
+  {id:'listMemberSupportHistory',method:'GET',path:'/member/support-history',response:'MemberSupportPageView',owner:'Robert',implemented:true,principal:'member'},
   {id:'listSupportFollowUps',method:'GET',path:'/support-follow-ups/queues/{state}',pathParameters:{state:'SupportFollowUpFilter'},response:'SupportFollowUpPage',owner:'Earl',implemented:true},
   {id:'getSupportFollowUp',method:'GET',path:'/support-follow-ups/{id}',response:'SupportFollowUpDetail',owner:'Earl',implemented:true},
   {id:'listSupportFollowUpEvents',method:'GET',path:'/support-follow-ups/{id}/events',response:'SupportFollowUpEventPage',owner:'Earl',implemented:true},

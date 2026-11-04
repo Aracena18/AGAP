@@ -39,6 +39,10 @@ export class MemberPortalService {
   decision(actor:MemberActorContext,id:string){return this.uow.run(actor,async tx=>{await this.applications.own(tx,id);const view=checked(schemas.MemberDecisionView,await this.domains.decision(tx,id));if(view.state==='available'&&view.data?.terms&&!validOption(view.data.terms))throw new ApiError(503,'decision_unavailable','The recorded terms are unavailable until their basis is checked.');return view;});}
   loans(actor:MemberActorContext){return this.uow.run(actor,async tx=>{const view=checked(schemas.MemberLoansView,await this.domains.loans(tx));if(view.state==='available'&&view.data.some(loan=>loan.id!==loan.position.loanId||loan.receipts.some(receipt=>receipt.loanId!==loan.id)))throw new ApiError(503,'loans_unavailable','Your loan information cannot be displayed safely yet.');return view;});}
   support(actor:MemberActorContext){return this.uow.run(actor,async tx=>checked(schemas.MemberSupportView,await this.domains.support(tx)));}
+  supportHistory(actor:MemberActorContext,input:unknown){
+    const query=schemas.MemberSupportHistoryQuery.parse(input);
+    return this.uow.run(actor,async tx=>checked(schemas.MemberSupportPageView,this.domains.supportPage?await this.domains.supportPage(tx,query):unavailable()));
+  }
   confirm(actor:MemberActorContext,id:string,input:unknown,version:number,key:unknown){
     const data=schemas.DraftConfirmation.parse(input),stable=memberKey(key);
     return this.uow.run(actor,async tx=>{await this.applications.own(tx,id);return checked(schemas.CommandReceipt,await this.domains.confirm(tx,id,data,version,stable));});

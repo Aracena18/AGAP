@@ -221,6 +221,9 @@ export const MemberOptionsViewSchema = serviceView(z.array(MemberOptionSchema));
 export const MemberDecisionViewSchema = serviceView(MemberDecisionSchema.nullable());
 export const MemberLoansViewSchema = serviceView(z.array(MemberLoanSchema));
 export const MemberSupportViewSchema = serviceView(z.array(MemberSupportSchema));
+export const MemberSupportPageSchema=z.strictObject({items:z.array(MemberSupportSchema).max(100),nextCursor:Id.nullable()});
+export const MemberSupportPageViewSchema=serviceView(MemberSupportPageSchema);
+export const MemberSupportHistoryQuerySchema=z.strictObject({cursor:Id.optional(),limit:z.coerce.number().int().min(1).max(100).default(25)});
 
 export const schemas = {
   SupportAssignment:SupportAssignmentSchema,SupportResponse:SupportResponseSchema,SupportPage:SupportPageSchema,SupportDetail:SupportDetailSchema,SupportSummary:SupportSummarySchema,SupportAction:SupportActionSchema,SupportActionPage:SupportActionPageSchema,SupportHistory:SupportHistorySchema,
@@ -237,5 +240,6 @@ export const schemas = {
   FinancialCommandCreate: FinancialCommandCreateSchema, FinancialCommand: FinancialCommandSchema, PostingRequest: PostingRequestSchema, JournalReceipt: JournalReceiptSchema,
   LoanPosition: LoanPositionSchema, HealthReviewCreate: HealthReviewCreateSchema, HealthReview: HealthReviewSchema, CommandReceipt: CommandReceiptSchema, Capabilities: CapabilitiesSchema, EventEnvelope: EventEnvelopeSchema,
   SupportFollowUpFilter:SupportFollowUpFilterSchema,SupportFollowUp:SupportFollowUpSchema,SupportFollowUpEvent:SupportFollowUpEventSchema,SupportFollowUpPage:SupportFollowUpPageSchema,SupportFollowUpEventPage:SupportFollowUpEventPageSchema,SupportFollowUpDetail:SupportFollowUpDetailSchema,SupportFollowUpCompletion:SupportFollowUpCompletionSchema,SupportFollowUpReschedule:SupportFollowUpRescheduleSchema,
+  MemberSupportPage:MemberSupportPageSchema,MemberSupportPageView:MemberSupportPageViewSchema,MemberSupportHistoryQuery:MemberSupportHistoryQuerySchema,
 } as const;
 export type SchemaName = keyof typeof schemas;
