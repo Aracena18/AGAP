@@ -2,6 +2,8 @@
 
 5 November 2026, Asia/Manila. User-authorized fictional review-demo implementation on `feat/priority-review-escalation`, base `964ad4b`.
 
+PR publication follow-up: reconciled the later documentation-only `main` update `6a8eccb` while preserving its PLN-05 plan, ownership and retained production requirements. PRV-01 records the subsequent user-confirmed decisions and verified browser slice. Runtime, financial, dependency and test trees remain identical to tested implementation `87962f3`; conflict resolution uses documentation/link consistency checks rather than rerunning unchanged application tests.
+
 ## Internal contract proposal
 
 This proposal precedes shared-type edits and implements the accepted chat plan. Robert retains shared types/state/fixtures/navigation/persistence ownership, Aaron evidence/affordability integration, and Benedict decision guards/snapshots. No receiving-owner or institutional approval is asserted. Public API contracts and production services are unchanged.
