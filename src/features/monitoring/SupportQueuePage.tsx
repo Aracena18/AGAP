@@ -1,4 +1,4 @@
-import {useCallback,useEffect,useRef,useState,type FormEvent} from 'react';
+import {useCallback,useEffect,useLayoutEffect,useRef,useState,type FormEvent} from 'react';
 import type {z} from 'zod';
 import {SupportAssignmentSchema,SupportResponseSchema,SupportHistorySchema,SupportSummarySchema} from '../../../packages/contracts/src/schemas';
 import {ApiClientError,type RequestOptions} from '../../../packages/api-client/src/transport';
@@ -8,6 +8,7 @@ import {useCommand} from '../access/useCommand';
 import {useUnsavedChanges} from '../access/useUnsavedChanges';
 import {Badge,Button,Money,Notice} from '../../shared/ui';
 import {StaffResponseHistory} from './StaffResponseHistory';
+import {StaffFollowUps} from './StaffFollowUps';
 import styles from './support.module.css';
 type Detail=z.output<typeof SupportHistorySchema>;type Summary=z.output<typeof SupportSummarySchema>;
 type Assignment=z.input<typeof SupportAssignmentSchema>;type Response=z.input<typeof SupportResponseSchema>;
@@ -17,15 +18,23 @@ export default function SupportQueuePage(){
  const deny=useCallback(()=>setDenied(true),[]);
  if(denied||!session?.user.roles.some(role=>role==='administrator'||role==='officer'))return <Notice tone="warning">Support requires an assigned officer or branch administrator. Reload after your access is reviewed.</Notice>;
  const scope=[session.user.id,session.user.organizationId,session.user.roles.join(','),session.user.branchIds.join(','),session.expiresAt].join(':');
- return <SupportQueue key={scope} onDenied={deny}/>;
+ return <SupportWorkspace key={scope} onDenied={deny}/>;
 }
-function SupportQueue({onDenied}:{onDenied:()=>void}){
+function SupportWorkspace({onDenied}:{onDenied:()=>void}){
+ const {session}=useStaff(),[view,setView]=useState<'requests'|'follow-ups'>('requests'),[locked,setLocked]=useState(false);
+ return <div className="stack"><header><h1>Payment-help requests</h1><p className="subtle">Review confirmed concerns, record a response and agree a follow-up.</p></header>
+ {session?.user.roles.includes('officer')&&<nav className="actions" aria-label="Support workspace"><Button variant={view==='requests'?'primary':'secondary'} aria-pressed={view==='requests'} disabled={locked} onClick={()=>setView('requests')}>Support requests</Button><Button variant={view==='follow-ups'?'primary':'secondary'} aria-pressed={view==='follow-ups'} disabled={locked} onClick={()=>setView('follow-ups')}>Follow-ups</Button></nav>}
+ {view==='requests'?<SupportQueue onDenied={onDenied} onBlockedChange={setLocked}/>:<StaffFollowUps onAccessDenied={onDenied} onBlockedChange={setLocked}/>}
+ </div>;
+}
+function SupportQueue({onDenied,onBlockedChange}:{onDenied:()=>void;onBlockedChange:(value:boolean)=>void}){
  const {session,client}=useStaff(),administrator=Boolean(session?.user.roles.includes('administrator')),officer=Boolean(session?.user.roles.includes('officer'));
  const [selected,setSelected]=useState<Summary|null>(null),[detail,setDetail]=useState<Detail|null>(null),[error,setError]=useState(''),[loading,setLoading]=useState(false);
  const [officerId,setOfficer]=useState(''),[reason,setReason]=useState(''),[response,setResponse]=useState(''),[internalNote,setNote]=useState(''),[followUp,setFollowUp]=useState(''),[filter,setFilter]=useState('all');
  const assignment=useCommand<Assignment,Summary>(),reply=useCommand<Response,Detail>();
  const request=useRef<AbortController|null>(null),heading=useRef<HTMLHeadingElement>(null),errors=useRef<HTMLDivElement>(null);
  const dirty=Boolean(reason||response||internalNote||followUp),blocked=assignment.saving||assignment.uncertain||reply.saving||reply.uncertain;
+ useLayoutEffect(()=>{onBlockedChange(dirty||blocked);return()=>onBlockedChange(false);},[dirty,blocked,onBlockedChange]);
  useUnsavedChanges(dirty||blocked,assignment.uncertain||reply.uncertain);
  useEffect(()=>()=>request.current?.abort(),[]);
  const failure=useCallback((problem:unknown)=>{if(problem instanceof ApiClientError&&[401,403,404].includes(problem.status)){onDenied();return;}setError(problem instanceof Error?problem.message:'Support is unavailable.');},[onDenied]);
@@ -57,7 +66,7 @@ function SupportQueue({onDenied}:{onDenied:()=>void}){
   }
  }
  const rows=page.items.filter(row=>filter==='all'||row.status===filter);
- return <div className="stack"><header><h1>Payment-help requests</h1><p className="subtle">Review confirmed concerns, record a response and agree a follow-up.</p></header>
+ return <div className="stack">
  <Notice>Requests and responses do not change payments, interest, fees or loan terms. A current repayment record can coexist with reported difficulty.</Notice>
  {(error||commandError)&&<div ref={errors} tabIndex={-1}><Notice role="alert" tone="danger">{commandError||error}</Notice>{(error.includes('multi-factor')||commandError.includes('multi-factor'))&&<a href="/api/v1/auth/login?assurance=mfa&amp;returnTo=%2Fstaff%2Fsupport-requests">Sign in with MFA</a>}</div>}
  <section className="panel" aria-labelledby="support-list"><div className={`panel-header ${styles.heading}`}><h2 id="support-list">Support queue</h2><Button variant="quiet" disabled={blocked||dirty||loading||page.loading} onClick={()=>{setSelected(null);setDetail(null);page.refresh();}}>Refresh queue</Button></div>
@@ -74,7 +83,7 @@ function SupportQueue({onDenied}:{onDenied:()=>void}){
  {loading&&<p role="status">Opening disclosure…</p>}
  {detail&&<><section className="stack"><h3>Confirmed member concern</h3><p className={styles.message}>{detail.message}</p><p>Preferred response: {detail.contactPreference}. Sharing notice: {detail.noticeVersion}.</p><dl className={styles.metadata}><dt>Can meet essentials</dt><dd>{label(detail.checkIn.canMeetEssentials)}</dd><dt>Borrowed to repay</dt><dd>{label(detail.checkIn.borrowedToRepay)}</dd><dt>Financial strain</dt><dd>{label(detail.checkIn.financialStrain)}</dd></dl></section>
  <section className="stack"><h3>Dated loan position</h3><Notice>{detail.positionMessage}</Notice>{detail.position&&<dl className={styles.metadata}><dt>As of</dt><dd>{detail.position.asOfDate}</dd><dt>Posted through</dt><dd>{detail.position.postedThrough}</dd><dt>Principal</dt><dd><Money value={detail.position.principalCentavos}/></dd><dt>Overdue</dt><dd><Money value={detail.position.overdueCentavos}/></dd><dt>Pending movements</dt><dd>{detail.position.pendingMovementCount}</dd></dl>}</section>
- <form className="stack" onSubmit={e=>void respond(e)}><h3>Record a response</h3><fieldset disabled={blocked} className="stack"><div className="field"><label htmlFor="support-response">Response shared with member</label><textarea id="support-response" required maxLength={2000} value={response} onChange={e=>setResponse(e.target.value)}/></div><div className="field"><label htmlFor="support-note">Internal staff action / note</label><textarea id="support-note" required maxLength={2000} value={internalNote} onChange={e=>setNote(e.target.value)}/><p className="small subtle">This note is not included in member history.</p></div><div className="field"><label htmlFor="support-follow-up">Follow-up date (optional)</label><input type="date" id="support-follow-up" value={followUp} onChange={e=>setFollowUp(e.target.value)}/></div></fieldset><div className="actions"><Button type="submit" disabled={reply.saving}>{reply.saving?'Recording…':reply.uncertain?'Retry same response':'Publish response'}</Button></div></form>
+ <form className="stack" onSubmit={e=>void respond(e)}><h3>Record a response</h3><fieldset disabled={blocked} className="stack"><div className="field"><label htmlFor="support-response">Response shared with member</label><textarea id="support-response" required maxLength={2000} value={response} onChange={e=>setResponse(e.target.value)}/></div><div className="field"><label htmlFor="support-note">Internal staff action / note</label><textarea id="support-note" required maxLength={2000} value={internalNote} onChange={e=>setNote(e.target.value)}/><p className="small subtle">This note is not included in member history.</p></div><div className="field"><label htmlFor="support-follow-up">Follow-up date (optional)</label><input type="date" id="support-follow-up" value={followUp} onChange={e=>setFollowUp(e.target.value)}/><p className="small subtle">Each dated response creates a separate staff follow-up. Use Follow-ups to complete or reschedule an existing task.</p></div></fieldset><div className="actions"><Button type="submit" disabled={reply.saving}>{reply.saving?'Recording…':reply.uncertain?'Retry same response':'Publish response'}</Button></div></form>
  <StaffResponseHistory key={`${detail.id}:${detail.version}`} detail={detail} blocked={blocked} onAccessDenied={failure}/></>}
  </section>}</div>;
 }
