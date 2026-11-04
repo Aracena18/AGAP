@@ -1,0 +1,120 @@
+{
+  "verificationType": "fictional_local_startup_smoke",
+  "applicationCommit": "42673378c015b175bd86d2742fba0bf0748c92fc",
+  "tasks": [
+    "SHOW-01",
+    "HLT-01",
+    "ACC-01"
+  ],
+  "environment": {
+    "platform": "Windows",
+    "node": "24.22.2",
+    "database": "PostgreSQL 18",
+    "identity": "Keycloak 26.4.7",
+    "compose": "5.1.0",
+    "browser": "Microsoft Edge headless through Playwright",
+    "webOrigin": "http://127.0.0.1:5174",
+    "apiOrigin": "http://127.0.0.1:4100",
+    "identityIssuer": "http://127.0.0.1:18080/realms/agap",
+    "automaticPresentationMode": false
+  },
+  "sourceReportSha256": "d3172223383b3cde44e1cc4c5fa4312be70fd78e29ceff306edbb83cf80d2429",
+  "runId": "aba1640f-f446-4e19-976c-b37a2a92646e",
+  "fictional": true,
+  "startedAt": "2026-11-04T03:55:00.684Z",
+  "status": "passed",
+  "checks": [
+    {
+      "name": "landing renders after dependency-cache refresh",
+      "result": "passed"
+    },
+    {
+      "name": "member real sign-in",
+      "result": "passed"
+    },
+    {
+      "name": "officer real sign-in",
+      "result": "passed"
+    },
+    {
+      "name": "Ana monthly +2000, before-payday -2000, alternative minimum +1000",
+      "result": "passed"
+    },
+    {
+      "name": "Ben retains shortfall; Cora retains incomplete assessment",
+      "result": "passed"
+    },
+    {
+      "name": "member confirmed support request persisted",
+      "result": "passed",
+      "supportRequestId": "8d7a22e0-a5e3-42fc-8f2a-8daf8bf2de2b"
+    },
+    {
+      "name": "administrator real sign-in",
+      "result": "passed"
+    },
+    {
+      "name": "real MFA assignment; administrator disclosure remains hidden",
+      "result": "passed"
+    },
+    {
+      "name": "officer response visible to member; internal note stays private",
+      "result": "passed"
+    },
+    {
+      "name": "ordinary officer denied accounting report access",
+      "result": "passed"
+    },
+    {
+      "name": "auditor real sign-in",
+      "result": "passed"
+    },
+    {
+      "name": "auditor reconciliation saved; support disclosures denied",
+      "result": "passed",
+      "reconciliationStatus": "empty"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "../screenshots/local-startup-2026-11-04/landing.png",
+      "sha256": "bc890144647953459dcb721642feb71df5234a69add906efe1e4e2aecb1ec041",
+      "bytes": 468391
+    },
+    {
+      "path": "../screenshots/local-startup-2026-11-04/ana-comparison.png",
+      "sha256": "ec35f8c65eefa09e604939bed2bead7f7b288c0e2fd69f421ca8e0c1a03ece1c",
+      "bytes": 226390
+    },
+    {
+      "path": "../screenshots/local-startup-2026-11-04/ben-comparison.png",
+      "sha256": "d72f8da6b2028288b45f8a1847c1d176f534cbd8b92844c386c854bfac46fd20",
+      "bytes": 232482
+    },
+    {
+      "path": "../screenshots/local-startup-2026-11-04/cora-incomplete.png",
+      "sha256": "aaea729a7cd54d060cf6f44126b9687c841c254dbca54cb88c4e4d5a6b9b60c8",
+      "bytes": 78761
+    },
+    {
+      "path": "../screenshots/local-startup-2026-11-04/support-staff.png",
+      "sha256": "eca7de474cb2fde25fce9d8ba1b0ef42af0407e55416b489847c807924719b5b",
+      "bytes": 186267
+    },
+    {
+      "path": "../screenshots/local-startup-2026-11-04/support-member.png",
+      "sha256": "6ce3858fe4adb49e3ee0f83093312874f79d9230d31a385b1e11ef9005f7fbf0",
+      "bytes": 142159
+    },
+    {
+      "path": "../screenshots/local-startup-2026-11-04/reconciliation.png",
+      "sha256": "60ed35b73bea3d407f150d71c2f6888a22d9765fbad4abc787bdbe8e76e7aba4",
+      "bytes": 147112
+    }
+  ],
+  "supportRequestId": "8d7a22e0-a5e3-42fc-8f2a-8daf8bf2de2b",
+  "reconciliationId": "676a230e-4e05-4805-900c-1fbe353ff458",
+  "temporaryCredentialsRemoved": true,
+  "reconciliationStatus": "empty",
+  "finishedAt": "2026-11-04T03:55:17.169Z"
+}

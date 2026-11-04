@@ -66,3 +66,30 @@ Visually inspected the browser captures below. The two install captures addition
 ### Remote CI and remaining authority
 
 The PR head's GitHub Actions [run 41610950677](https://github.com/Aracena18/AGAP/actions/runs/41610950677) reports `startup_failure`; its jobs API returned an empty list. This is not a remote test pass, and the available evidence does not identify a code-level failure or establish a repaired CI service. The merge follows the user's explicit authorization and passing required local checks; no branch protection was overridden. Publication is separate from consuming-owner, institutional, representative-user and production release acceptance. Existing task statuses and unrelated untracked local documents/archives remain preserved.
+
+## Windows local startup — 4 November 2026
+
+Purpose: SHOW-01 local startup evidence, including HLT-01 support and ACC-01 reporting checks. Application checkout: `42673378c015b175bd86d2742fba0bf0748c92fc`. The fictional walkthrough ran from **11:55:00 to 11:55:17 Asia/Manila**, using Node 24.22.2, PostgreSQL 18, Keycloak 26.4.7, Docker Compose 5.1.0 and an isolated headless Microsoft Edge browser through the installed Playwright package. [Machine-readable results and screenshot hashes](evidence/local-startup-2026-11-04.json) retain the run identity and exact recorded checks.
+
+The local Docker engine was started, migrations reported current and the development seed completed without changing existing access. Windows reserved `58020–58119`, blocking Keycloak's original port `58080`; an ignored Compose override and private `.env` used `18080` with normal OIDC and automatic presentation mode disabled. PostgreSQL readiness, matching identity discovery, API health and the web response were checked. The existing API was reused. Missing Vite optimized dependencies returned 404; restarting the verified AGAP Vite process with `--force` repaired the cache. The [setup guide](AGAP_Platform_Foundation.md#windows-powershell-startup) records reproducible commands.
+
+All **12 startup/workflow checks passed**:
+
+| Area | Observed result |
+| --- | --- |
+| Landing | Renders after dependency-cache repair |
+| Identity | Actual member, officer, administrator and auditor OIDC sign-ins passed; staff used real MFA enrollment rather than injected session fixtures |
+| Ana | Source correction preserves PHP 2,000 monthly remaining; requested minimum is minus PHP 2,000; permitted after-payday minimum is PHP 1,000 |
+| Ben and Cora | Ben retains minus PHP 4,000 after a date change; Cora retains an incomplete state with no complete monthly result |
+| Member support | Exact message/check-in preview and sharing confirmation create a persisted fictional request |
+| Assignment and response | Fresh-MFA administrator assigns the officer without disclosure access; assigned officer publishes a response; member sees it without the internal note |
+| Access boundaries | Ordinary officer is denied reconciliation; auditor is denied support disclosures; member session does not grant staff access |
+| Reconciliation | Auditor saves an **Empty** report for 1–4 November: zero event records in the development inventories, rather than a fabricated matched payment |
+
+Actual captures: [landing](screenshots/local-startup-2026-11-04/landing.png), [Ana](screenshots/local-startup-2026-11-04/ana-comparison.png), [Ben](screenshots/local-startup-2026-11-04/ben-comparison.png), [Cora](screenshots/local-startup-2026-11-04/cora-incomplete.png), [staff support](screenshots/local-startup-2026-11-04/support-staff.png), [member support](screenshots/local-startup-2026-11-04/support-member.png), and [reconciliation](screenshots/local-startup-2026-11-04/reconciliation.png). All records shown are fictional. The walkthrough left one explicitly labeled support request and one empty report in the local development database; demo corrections used the isolated browser's storage. Its application sessions ended, and only its uniquely labeled temporary authenticators were removed, restoring the original enrollment requirements.
+
+All seven captures were visually inspected. The landing capture retains the initial scroll position and below-fold lazy placeholders; a complete motion/gallery review is outside this startup check.
+
+Documentation publication checks passed: **43 local links/anchors**, **seven PowerShell examples parsed**, **seven screenshot hashes**, the documented override's equality with the tested file, its single loopback Compose mapping, and `git diff --check`.
+
+Scope: local startup and selected workflows, not a full regression run. `npm run check` and `npm run test:e2e` were **not rerun for this documentation-only change**. No remote CI pass, live model execution, payment movement, institutional acceptance or task completion is established by this record. Existing task statuses and previously recorded verification remain intact.
