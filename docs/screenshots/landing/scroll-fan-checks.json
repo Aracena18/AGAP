@@ -1,0 +1,37 @@
+{
+  "task": "UI-07 scroll-linked screenshot fan",
+  "date": "2026-11-04",
+  "base": "b5bd1d4c3b24fe44bffd4c265174b3e9f440ff88",
+  "check": {
+    "passed": true,
+    "uiDomainTests": 197,
+    "platformBackendTests": 571,
+    "evaluationTests": 91
+  },
+  "browser": {
+    "passed": 79,
+    "skipped": 4,
+    "skipReason": "Existing temporary presentation cases are disabled in the normal suite.",
+    "regressions": [
+      "scroll stack/midpoint/open/hold/reverse at 1366x768 and 1440x900",
+      "fully opaque midpoint captions and axe",
+      "failed image fallback/live reduced motion/short viewport",
+      "delayed hero module preserves restored install focus"
+    ]
+  },
+  "tools": {
+    "graphify": "3511 nodes / 9538 edges / 191 communities; 38 SQL parser omissions and partial contract barrel",
+    "catalogue": "21st search requires sign-in; no retrieved component"
+  },
+  "changes": {
+    "runtimeDependencies": false,
+    "canonicalTokens": false,
+    "financialLogic": false,
+    "authentication": false
+  },
+  "limits": [
+    "Representative acceptance pending",
+    "Native browser zoom not certified",
+    "Single Lighthouse lab sample"
+  ]
+}

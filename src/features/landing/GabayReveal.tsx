@@ -1,4 +1,4 @@
-import { Fragment, lazy, Suspense, useEffect, useRef, useState, type MouseEventHandler, type ReactNode } from 'react';
+import { Fragment, lazy, Suspense, useCallback, useEffect, useRef, useState, type MouseEventHandler, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowForward, CompareArrows, FindInPage, CalendarToday, Description } from '../../shared/icons';
 import { Button } from '../../shared/ui';
@@ -29,6 +29,19 @@ function RevealFrame({ content, animated }: { content: RevealContent; animated: 
 }
 export default function GabayReveal({ onInstall }: { onInstall: MouseEventHandler<HTMLButtonElement> }) {
   const scene = useRef<HTMLElement>(null);
+  const actions = useRef<HTMLDivElement | null>(null);
+  const actionFocus = useRef('');
+  // Keep control focus when Suspense replaces the hero, including after dialog close.
+  const preserveActionFocus = useCallback((element: HTMLDivElement | null) => {
+    if (!element) {
+      const active = document.activeElement;
+      actionFocus.current = active instanceof HTMLElement && actions.current?.contains(active) ? active.id : '';
+    } else if (actionFocus.current) {
+      element.querySelector<HTMLElement>(`#${actionFocus.current}`)?.focus({ preventScroll: true });
+      actionFocus.current = '';
+    }
+    actions.current = element;
+  }, []);
   const [animated, setAnimated] = useState(() => window.matchMedia(motionQuery).matches);
   useEffect(() => {
     const media = window.matchMedia(motionQuery);
@@ -40,7 +53,7 @@ export default function GabayReveal({ onInstall }: { onInstall: MouseEventHandle
     intro: <><h1>AGAP</h1>
       <div className={styles.supportingCopy}><p className={styles.heroTitle}>Loan reviews with<br className={styles.desktopBreak}/> everyday needs in view.</p>
       <p className={styles.heroDescription}>Connect evidence, household cash flow, repayment options, and a recorded human decision.</p></div>
-      <div className={styles.heroActions}><Button id="install-hero" className={styles.installButton} onClick={onInstall}>Install AGAP<ArrowForward size={18}/></Button><Link to="/?section=demo" className={styles.textLink}>See AGAP in action</Link></div></>,
+      <div ref={preserveActionFocus} className={styles.heroActions}><Button id="install-hero" className={styles.installButton} onClick={onInstall}>Install AGAP<ArrowForward size={18}/></Button><Link id="hero-demo" to="/?section=demo" className={styles.textLink}>See AGAP in action</Link></div></>,
     notes: <><p>Everyday needs<br/>in view</p><p>Human decisions,<br/>supported by evidence</p></>,
     mascot: <img src={gabay} srcSet={`${gabaySmall} 400w, ${gabayMedium} 800w, ${gabay} 1600w`} sizes="(prefers-reduced-motion: reduce) min(80vw, 420px), (min-width: 900px) and (min-height: 700px) min(108.8vw, 1472px), (max-width: 767px) min(80vw, 330px), min(80vw, 420px)" width="1600" height="1600" alt="Gabay, AGAP’s friendly green and yellow firefly, with glowing antennae and translucent wings" fetchPriority="high"/>,
     heading: <><h2 id="gabay" tabIndex={-1}>Meet Gabay.</h2><p>AGAP’s friendly guide.<br/>Everyday needs in view.</p></>,

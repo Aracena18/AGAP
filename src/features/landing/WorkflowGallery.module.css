@@ -19,32 +19,6 @@
 .caption > span { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; background: var(--landing-yellow); color: var(--landing-on-yellow); font-size: 14px; font-weight: 500; }
 .caption h3 { font-size: 22px; line-height: 1.3; letter-spacing: -.02em; }
 .caption p { margin-top: 8px !important; color: var(--muted); font-size: 15px; line-height: 1.5; }
-.fan[data-phase='waiting'] > li:first-child .window { transform: translateX(calc(100% + var(--fan-gap))) translateY(14px) rotate(-4deg) scale(.97); }
-.fan[data-phase='waiting'] > li:nth-child(2) .window { transform: none; }
-.fan[data-phase='waiting'] > li:last-child .window { transform: translateX(calc(-100% - var(--fan-gap))) translateY(28px) rotate(4deg) scale(.97); }
-.fan[data-phase='waiting'] .caption { opacity: 0; }
-.fan[data-phase='opening'] > li:first-child .window { animation: fan-left 850ms cubic-bezier(.22,.61,.36,1) both; }
-.fan[data-phase='opening'] > li:nth-child(2) .window { animation: fan-center 700ms cubic-bezier(.16,1,.3,1) both; }
-.fan[data-phase='opening'] > li:last-child .window { animation: fan-right 900ms cubic-bezier(.22,.61,.36,1) both; }
-.fan[data-phase='opening'] .caption { animation: caption-arrive 240ms 580ms ease-out both; }
-@keyframes fan-left {
-  0% { transform: translateX(calc(100% + var(--fan-gap))) translateY(14px) rotate(-4deg) scale(.97); }
-  55% { transform: translateX(18%) translateY(-22px) rotate(-7deg) scale(1); }
-  100% { transform: translateX(0) translateY(24px) rotate(-2deg) scale(1); }
-}
-@keyframes fan-center {
-  from { transform: translateY(0); }
-  to { transform: translateY(-28px); }
-}
-@keyframes fan-right {
-  0% { transform: translateX(calc(-100% - var(--fan-gap))) translateY(28px) rotate(4deg) scale(.97); }
-  55% { transform: translateX(-18%) translateY(-18px) rotate(7deg) scale(1); }
-  100% { transform: translateX(0) translateY(24px) rotate(2deg) scale(1); }
-}
-@keyframes caption-arrive {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: none; }
-}
 @media (max-width: 1100px) and (min-width: 900px) {
   .fan { --fan-gap: 24px; padding-inline: 12px; }
   .chrome { padding-inline: 10px; }

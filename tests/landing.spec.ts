@@ -82,6 +82,22 @@ test('install fallback and FAQs are keyboard accessible; closing restores focus'
   await expect(page.getByText(/Authorized people make lending decisions/)).toBeHidden();
 });
 
+test('hero keeps restored install focus when its lazy animation finishes after dialog close', async ({ page }) => {
+  let release!: () => void;
+  const gate = new Promise<void>(resolve => { release = resolve; });
+  await page.route('**/RevealMotion.tsx*', async route => { await gate; await route.continue(); });
+  await page.goto('/#/', { waitUntil: 'domcontentloaded' });
+  const install = page.locator('#install-hero');
+  await install.click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog')).toBeHidden();
+  await expect(install).toBeFocused();
+  release();
+  await expect(page.locator('[aria-label="Explore AGAP features"]')).toHaveCount(1);
+  await expect(install).toBeFocused();
+});
+
 for (const outcome of ['dismissed', 'accepted', 'error'] as const) {
   test(`native install ${outcome} remains honest and does not repeat a used prompt`, async ({ page }) => {
     await page.goto('/#/');
@@ -157,6 +173,7 @@ test('white landing under either system preference preserves accessible layouts 
       if (process.env.AGAP_CAPTURE_WHITE) await page.screenshot({ path: `docs/screenshots/landing/white-${colorScheme}-${width}.png`, fullPage: true });
       if (process.env.AGAP_CAPTURE_STORY && colorScheme === 'light' && (width === 390 || width === 320)) await page.screenshot({ path: `docs/screenshots/landing/story-static-${width}.png`, fullPage: true });
       if (process.env.AGAP_CAPTURE_FAN && colorScheme === 'light' && (width === 390 || width === 320)) await page.screenshot({ path: `docs/screenshots/landing/fan-static-${width}.png`, fullPage: true });
+      if (process.env.AGAP_CAPTURE_SCROLL_FAN && colorScheme === 'light' && (width === 390 || width === 320)) await page.screenshot({ path: `docs/screenshots/landing/scroll-fan-static-${width}.png`, fullPage: true });
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze()).violations).toEqual([]);
     }
@@ -283,59 +300,69 @@ test('mobile keeps the full guide without requesting turnaround views; the workf
   expect(turns).toEqual([]);
 });
 
-for (const width of [1366, 1440]) {
-  test(`workflow screenshots open from a center stack into clear windows at ${width}px`, async ({ page }) => {
-    await page.setViewportSize({ width, height: 900 });
+for (const [width, height] of [[1366, 768], [1440, 900]]) {
+  test(`workflow fan follows scroll, holds and reverses at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height });
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.goto('/#/');
-    const pause = await page.addStyleTag({ content: '[data-workflow-fan] * { animation-play-state: paused !important; }' });
-    await page.getByRole('link', { name: 'How it works', exact: true }).click();
     const gallery = page.getByRole('list', { name: 'The AGAP review journey' });
-    await expect(gallery).toHaveAttribute('data-phase', 'opening');
-    await gallery.evaluate(element => element.getAnimations({ subtree: true }).forEach(animation => { animation.pause(); animation.currentTime = 0; }));
+    await expect(gallery.locator('[data-scroll-linked]')).toHaveCount(3);
+    const move = (progress: number) => gallery.evaluate((element, value) => {
+      const top = element.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: top - innerHeight * (.7 - .4 * value), behavior: 'instant' });
+    }, progress);
     const bounds = () => gallery.evaluate(element => Array.from(element.children, item => {
       const rect = item.firstElementChild!.getBoundingClientRect();
       return { x: rect.x, y: rect.y, width: rect.width, right: rect.right, center: rect.x + rect.width / 2 };
     }));
+    await move(0);
+    await expect.poll(async () => { const r = await bounds(); return Math.abs(r[0].center - r[1].center) + Math.abs(r[2].center - r[1].center); }).toBeLessThan(3);
     const stack = await bounds();
-    expect(Math.abs(stack[0].center - stack[1].center)).toBeLessThan(2);
-    expect(Math.abs(stack[2].center - stack[1].center)).toBeLessThan(2);
-    if (process.env.AGAP_CAPTURE_FAN) await page.screenshot({ path: `docs/screenshots/landing/fan-stack-${width}.png` });
-    await gallery.evaluate(element => element.getAnimations({ subtree: true }).forEach(animation => { animation.currentTime = 420; }));
+    if (process.env.AGAP_CAPTURE_SCROLL_FAN) await page.screenshot({ path: `docs/screenshots/landing/scroll-fan-stack-${width}.png` });
+    await move(.5);
+    await expect.poll(async () => (await bounds())[0].center).toBeLessThan(stack[0].center - 100);
     const middle = await bounds();
-    expect(middle[0].center).toBeLessThan(stack[0].center - 100);
     expect(middle[2].center).toBeGreaterThan(stack[2].center + 100);
-    if (process.env.AGAP_CAPTURE_FAN) await page.screenshot({ path: `docs/screenshots/landing/fan-opening-${width}.png` });
-    await pause.evaluate(element => { element.parentNode?.removeChild(element); });
-    await gallery.evaluate(element => element.getAnimations({ subtree: true }).forEach(animation => animation.finish()));
-    await expect(gallery).toHaveAttribute('data-phase', 'settled');
+    // A stationary scroll position must not complete the former 900ms entrance.
+    await page.waitForTimeout(1100);
+    expect(Math.abs((await bounds())[0].center - middle[0].center)).toBeLessThan(2);
+    for (const caption of await gallery.locator('li > div:last-child').all()) await expect(caption).toHaveCSS('opacity', '1');
+    if (width === 1440) expect((await new AxeBuilder({ page }).include('[data-workflow-fan]').analyze()).violations).toEqual([]);
+    if (process.env.AGAP_CAPTURE_SCROLL_FAN) await page.screenshot({ path: `docs/screenshots/landing/scroll-fan-midpoint-${width}.png` });
+    await move(1.1);
+    await expect.poll(async () => { const r = await bounds(); return r[1].x - r[0].right; }).toBeGreaterThan(12);
     const spread = await bounds();
-    expect(spread[0].right + 12).toBeLessThan(spread[1].x);
     expect(spread[1].right + 12).toBeLessThan(spread[2].x);
     expect(spread[1].y + 32).toBeLessThan(spread[0].y);
     expect(spread[1].y + 32).toBeLessThan(spread[2].y);
     for (const title of ['Evidence', 'Cash flow', 'Human review']) await expect(gallery.getByRole('heading', { name: title, exact: true })).toBeInViewport();
-    for (const image of await gallery.locator('img').all()) expect(await image.evaluate((img: HTMLImageElement) => img.naturalWidth / img.naturalHeight)).toBeCloseTo(1366 / 850, 3);
+    for (const image of await gallery.locator('img').all()) await expect.poll(() => image.evaluate((img: HTMLImageElement) => img.naturalWidth / img.naturalHeight)).toBeCloseTo(1366 / 850, 3);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    if (process.env.AGAP_CAPTURE_FAN) await page.screenshot({ path: `docs/screenshots/landing/fan-open-${width}.png` });
-    await page.getByRole('link', { name: 'Demo', exact: true }).click();
-    await page.getByRole('link', { name: 'How it works', exact: true }).click();
-    await expect(gallery).toHaveAttribute('data-phase', 'settled');
+    if (process.env.AGAP_CAPTURE_SCROLL_FAN) await page.screenshot({ path: `docs/screenshots/landing/scroll-fan-open-${width}.png` });
+    await move(.5);
+    await expect.poll(async () => Math.abs((await bounds())[0].center - middle[0].center)).toBeLessThan(2);
+    await move(0);
+    await expect.poll(async () => { const r = await bounds(); return Math.abs(r[0].center - r[1].center); }).toBeLessThan(2);
+    if (process.env.AGAP_CAPTURE_SCROLL_FAN) await page.screenshot({ path: `docs/screenshots/landing/scroll-fan-reverse-${width}.png` });
   });
 }
 
-test('reduced motion cancels the fan and image failure preserves the workflow captions', async ({ page }) => {
+test('scroll fan releases to static preferences and preserves failed-image captions', async ({ page }) => {
   await page.route('**/landing/evidence.webp', route => route.abort());
   await page.goto('/#/');
-  await page.addStyleTag({ content: '[data-workflow-fan] * { animation-play-state: paused !important; }' });
   await page.getByRole('link', { name: 'How it works', exact: true }).click();
   const gallery = page.getByRole('list', { name: 'The AGAP review journey' });
-  await expect(gallery).toHaveAttribute('data-phase', 'opening');
+  await expect(gallery.locator('[data-scroll-linked]')).toHaveCount(3);
   await expect(gallery.locator('img').first()).toHaveAttribute('hidden', '');
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await expect(gallery).toHaveAttribute('data-phase', 'static');
-  for (const window of await gallery.locator('li > div:first-child').all()) await expect(window).toHaveCSS('transform', 'none');
+  await expect(gallery).toHaveAttribute('data-mode', 'static');
+  for (const window of await gallery.locator('[data-fan-window]').all()) await expect(window).toHaveCSS('transform', 'none');
   await expect(gallery.getByRole('heading')).toHaveCount(3);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
-  if (process.env.AGAP_CAPTURE_FAN) await page.screenshot({ path: 'docs/screenshots/landing/fan-reduced.png', fullPage: true });
+  if (process.env.AGAP_CAPTURE_SCROLL_FAN) await page.screenshot({ path: 'docs/screenshots/landing/scroll-fan-reduced.png', fullPage: true });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await expect(gallery.locator('[data-scroll-linked]')).toHaveCount(3);
+  await page.setViewportSize({ width: 1366, height: 600 });
+  await expect(gallery).toHaveAttribute('data-mode', 'static');
+  for (const window of await gallery.locator('[data-fan-window]').all()) await expect(window).toHaveCSS('transform', 'none');
 });

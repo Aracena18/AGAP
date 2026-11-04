@@ -9,3 +9,5 @@ The approved plan supplies the composition and existing artwork. No image comp i
 Follow-up: the user selects the supplied turnaround collection for a four-chapter scroll story, one feature at a time, plus a graphic workflow using actual fictional screens. The current composition and behavior are governed solely by design.md section 17 and recorded in UI-07 verification.
 
 Screenshot follow-up: center-stack fan-out and static alternatives follow [design.md section 17](../../design.md#17-public-gabay-landing--ui-07-3-november-2026) and [UI-07 verification](../../docs/AGAP_Landing_Verification.md#screenshot-fan-out--ui-07-follow-up-4-november-2026). This context adds no independent UI rules.
+
+The user’s later scroll-linked refinement supersedes the one-shot fan entrance. Current behavior remains governed by [design section 17](../../design.md#17-public-gabay-landing--ui-07-3-november-2026) and [its verification record](../../docs/AGAP_Landing_Verification.md#scroll-linked-screenshot-fan--ui-07-follow-up-4-november-2026).

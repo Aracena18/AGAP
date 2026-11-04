@@ -1,0 +1,28 @@
+{
+  "tool": "Lighthouse 13.6.0",
+  "fetchedAt": "2026-11-04T02:36:41.377Z",
+  "url": "http://127.0.0.1:5191/",
+  "formFactor": "mobile",
+  "scores": {
+    "performance": 94,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "agentic-browsing": 50
+  },
+  "metrics": {
+    "largest-contentful-paint": {
+      "value": 3115.7574750000003,
+      "display": "3.1\u00a0s"
+    },
+    "total-blocking-time": {
+      "value": 27,
+      "display": "30\u00a0ms"
+    },
+    "cumulative-layout-shift": {
+      "value": 0,
+      "display": "0"
+    }
+  },
+  "limits": "Single production-preview mobile lab sample; not field performance or animation frame-rate certification."
+}

@@ -32,6 +32,12 @@
       "date": "2026-11-04",
       "direction": "User-selected center stack opening into three complete fictional screenshot windows; design.md section 17 remains the authority",
       "evidence": "../docs/AGAP_Landing_Verification.md#screenshot-fan-out--ui-07-follow-up-4-november-2026"
+    },
+    {
+      "id": "UI-07-scroll-fan",
+      "date": "2026-11-04",
+      "direction": "User requests direct reversible scroll control for the screenshot fan; design.md section 17 governs the behavior",
+      "evidence": "../docs/AGAP_Landing_Verification.md#scroll-linked-screenshot-fan--ui-07-follow-up-4-november-2026"
     }
   ]
 }
