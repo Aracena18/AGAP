@@ -27,6 +27,13 @@ test.describe('HLT-01 actual confirmed support journey',()=>{
   await expect(page.getByText('Your payment-help request was sent for staff review. Your current payment terms remain unchanged.')).toBeVisible();expect(keys).toHaveLength(2);expect(keys[0]).toBe(keys[1]);
   const history=await (await page.request.get('/api/v1/member/support-requests')).json();expect(history.data).toHaveLength(1);id=history.data[0].id;
   const admin=await browser.newContext();await signIn(admin,'administrator');const assignment=await admin.newPage();await assignment.goto('/#/staff/support-requests');
+  const target=assignment.getByRole('button',{name:`Open support request ${id}`,exact:true}),rows=assignment.getByRole('region',{name:'Support request queue'}).locator('tbody tr');
+  await expect(rows).not.toHaveCount(0);
+  for(let batch=0;batch<10&&await target.count()===0;batch++){
+   const more=assignment.getByRole('button',{name:'Load more requests',exact:true});await expect(more).toBeVisible();if(await target.count())break;
+   const before=await rows.count(),[response]=await Promise.all([assignment.waitForResponse(response=>response.request().method()==='GET'&&response.url().includes('/api/v1/support-requests?cursor=')),more.click()]);
+   const next=await response.json();await expect(rows).toHaveCount(before+next.items.length);
+  }
   await assignment.getByRole('button',{name:`Open support request ${id}`,exact:true}).click();
   await expect(assignment.getByRole('heading',{name:'Confirmed member concern'})).toHaveCount(0);
   await assignment.getByLabel('Responsible officer',{exact:true}).selectOption({label:'Fictional Officer'});

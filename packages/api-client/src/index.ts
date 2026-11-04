@@ -10,6 +10,7 @@ export class AgapClient extends ClientTransport {
   getSupportHistory(id: string, options: RequestOptions = {}) { return this.request('GET', `/support-requests/${encodeURIComponent(id)}/history`, undefined, schemas.SupportHistory, options); }
   listSupportActions(id: string, options: RequestOptions = {}) { return this.request('GET', `/support-requests/${encodeURIComponent(id)}/actions`, undefined, schemas.SupportActionPage, options); }
   createSupportAction(id: string, body: z.input<typeof schemas.SupportResponse>, options: RequestOptions = {}) { return this.request('POST', `/support-requests/${encodeURIComponent(id)}/actions`, body, schemas.SupportHistory, options); }
+  listMemberSupportHistory(options: RequestOptions = {}) { return this.request('GET', `/member/support-history`, undefined, schemas.MemberSupportPageView, options); }
   listSupportFollowUps(state: z.input<typeof schemas.SupportFollowUpFilter>, options: RequestOptions = {}) { return this.request('GET', `/support-follow-ups/queues/${encodeURIComponent(state)}`, undefined, schemas.SupportFollowUpPage, options); }
   getSupportFollowUp(id: string, options: RequestOptions = {}) { return this.request('GET', `/support-follow-ups/${encodeURIComponent(id)}`, undefined, schemas.SupportFollowUpDetail, options); }
   listSupportFollowUpEvents(id: string, options: RequestOptions = {}) { return this.request('GET', `/support-follow-ups/${encodeURIComponent(id)}/events`, undefined, schemas.SupportFollowUpEventPage, options); }

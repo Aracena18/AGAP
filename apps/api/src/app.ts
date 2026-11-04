@@ -122,7 +122,7 @@ export async function createApp(config: Config,memberDomains?:MemberDomainPorts)
     const services: PlatformServices = {config,database,identityDatabase,identity,staff:new StaffService(new PostgresUnitOfWork(identityDatabase)),members,applications:new ApplicationsService(uow,members),async onModuleDestroy(){await Promise.all([database.end(),identityDatabase.end()]);}};
     const memberUow=new PostgresMemberUnitOfWork(database);
     const loanReads=new LoanReads(uow),monitoring=new MonitoringService(uow,loanReads);
-    const domains:MemberDomainPorts=memberDomains??{...unavailableMemberDomains,loans:tx=>loanReads.memberLoans(tx),support:tx=>monitoring.memberHistory(tx),requestSupport:(tx,data,key)=>monitoring.submit(tx,data,key)};
+    const domains:MemberDomainPorts=memberDomains??{...unavailableMemberDomains,loans:tx=>loanReads.memberLoans(tx),support:tx=>monitoring.memberHistory(tx),supportPage:(tx,query)=>monitoring.memberHistoryPage(tx,query),requestSupport:(tx,data,key)=>monitoring.submit(tx,data,key)};
     const portal=new MemberPortalService(memberUow,new MemberApplicationsService(memberUow,config.PRIVACY_NOTICE_VERSION),config.PRIVACY_NOTICE_VERSION,domains);
     @Module({controllers:[PlatformController,MemberController,WorkflowController,ReconciliationController,MonitoringController,SupportFollowUpController],providers:[{provide:MONITORING,useValue:monitoring},{provide:RECONCILIATIONS,useValue:reconciliations},{provide:WORKFLOW,useValue:workflow},{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal,workflow}}]})
     class AppModule {}

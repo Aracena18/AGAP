@@ -35,6 +35,7 @@ export interface MemberDomainPorts {
   accept(tx:MemberTransactionContext,applicationId:string,input:Output<'MemberAcceptance'>,version:number,key:string):Promise<Output<'CommandReceipt'>>;
   loans(tx:MemberTransactionContext):Promise<Output<'MemberLoansView'>>;
   support(tx:MemberTransactionContext):Promise<Output<'MemberSupportView'>>;
+  supportPage?(tx:MemberTransactionContext,query:Output<'MemberSupportHistoryQuery'>):Promise<Output<'MemberSupportPageView'>>;
   requestSupport(tx:MemberTransactionContext,input:Output<'MemberSupportCreate'>,key:string):Promise<Output<'MemberSupport'>>;
 }
 export interface AssessmentPort { assess(tx: TransactionContext, applicationId: string, request: z.input<typeof AssessmentCreateSchema>): Promise<z.output<typeof AssessmentSchema>> }

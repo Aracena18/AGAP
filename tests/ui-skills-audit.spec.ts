@@ -67,16 +67,16 @@ for (const width of [320, 1366]) test(`payment-help review restores focus and re
 
 test('long member messages reflow within the phone viewport and remain readable', async ({ page, context }) => {
   await signInMember(context);
-  await page.route('**/api/v1/member/support-requests', route => route.fulfill({ json: { state: 'available', data: [{
+  await page.route('**/api/v1/member/support-history', route => route.fulfill({ json: { state: 'available', data: {items:[{
     id: fixtureId(91), submittedAt: '2026-11-03T00:00:00Z', status: 'reviewed',
     message: `SIMULATED long reference: ${'REFERENCE_'.repeat(30)}`,
     response: 'SIMULATED: staff will contact you through your account.',
-  }] } }));
+  }],nextCursor:null} } }));
   for (const width of [320, 1366]) {
     await page.setViewportSize({ width, height: 800 });
     await page.goto('/#/member/help');
     await expect(page.getByText('SIMULATED: staff will contact you through your account.', { exact: true })).toBeVisible();
-    const history = page.getByRole('heading', { name: 'My requests', exact: true }).locator('..');
+    const history = page.getByRole('region', { name: 'My requests', exact: true });
     expect(await history.evaluate(section => {
       const bounds = section.getBoundingClientRect();
       return [...section.querySelectorAll('article, article p, article div')].every(element => {

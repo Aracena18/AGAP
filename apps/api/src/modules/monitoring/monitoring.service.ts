@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { ActorContext,MemberTransactionContext,TransactionContext,UnitOfWork } from '../../../../../packages/contracts/src/ports.js';
-import { Id,MemberSupportCreateSchema,MemberSupportSchema,MemberSupportViewSchema,SupportActionSchema,SupportActionPageSchema,SupportAssignmentSchema,SupportDetailSchema,SupportHistorySchema,SupportPageSchema,SupportResponseSchema,SupportSummarySchema,Version } from '../../../../../packages/contracts/src/schemas.js';
+import { Id,MemberSupportCreateSchema,MemberSupportSchema,MemberSupportViewSchema,MemberSupportPageViewSchema,MemberSupportHistoryQuerySchema,SupportActionSchema,SupportActionPageSchema,SupportAssignmentSchema,SupportDetailSchema,SupportHistorySchema,SupportPageSchema,SupportResponseSchema,SupportSummarySchema,Version } from '../../../../../packages/contracts/src/schemas.js';
 import { command,recordEvent } from '../../platform/commands.js';
 import { memberCommand } from '../../platform/member-commands.js';
 import { ApiError,notFound } from '../../platform/errors.js';
@@ -104,6 +104,13 @@ export class MonitoringService {
   const rows=(await tx.query('SELECT * FROM monitoring.member_history ORDER BY submitted_at DESC,id DESC LIMIT 101')).rows;
   if(rows.length>100)throw new ApiError(422,'support_history_limit','Your support history needs a paginated reader. Contact the cooperative.');
   return MemberSupportViewSchema.parse({state:'available',data:rows.map(r=>({id:r.id,submittedAt:(r.submitted_at as Date).toISOString(),status:r.status,message:r.message,response:r.response,checkIn:r.check_in,loanId:r.loan_id}))});
+ });}
+ memberHistoryPage(tx:MemberTransactionContext,input:unknown){return operation(async()=>{
+  const query=MemberSupportHistoryQuerySchema.parse(input);
+  if(query.cursor&&!(await tx.query('SELECT 1 FROM monitoring.member_history WHERE id=$1',[query.cursor])).rowCount)throw new ApiError(422,'invalid_history_cursor','Refresh your request history before loading older requests.');
+  const rows=(await tx.query(`SELECT * FROM monitoring.member_history WHERE ($1::uuid IS NULL OR (submitted_at,id)<
+   (SELECT submitted_at,id FROM monitoring.member_history WHERE id=$1)) ORDER BY submitted_at DESC,id DESC LIMIT $2`,[query.cursor??null,query.limit+1])).rows;
+  return MemberSupportPageViewSchema.parse({state:'available',data:{items:rows.slice(0,query.limit).map(r=>({id:r.id,submittedAt:(r.submitted_at as Date).toISOString(),status:r.status,message:r.message,response:r.response,checkIn:r.check_in,loanId:r.loan_id})),nextCursor:rows.length>query.limit?rows[query.limit-1].id:null}});
  });}
  submit(tx:MemberTransactionContext,value:unknown,key:string){return operation(async()=>{
   const data=MemberSupportCreateSchema.parse(value);

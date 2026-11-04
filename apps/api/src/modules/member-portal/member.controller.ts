@@ -59,5 +59,6 @@ export class MemberController {
   @Post('applications/:id/acceptances') accept(@Req() r:MemberRequest,@Param('id') id:string,@Body() body:unknown){return this.services.portal.accept(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
   @Get('loans') loans(@Req() r:MemberRequest){return this.services.portal.loans(actor(r));}
   @Get('support-requests') support(@Req() r:MemberRequest){return this.services.portal.support(actor(r));}
+  @Get('support-history') supportHistory(@Req() r:MemberRequest,@Query() query:unknown){return this.services.portal.supportHistory(actor(r),query);}
   @Post('support-requests') requestSupport(@Req() r:MemberRequest,@Body() body:unknown){return this.services.portal.requestSupport(actor(r),body,r.headers['idempotency-key']);}
 }

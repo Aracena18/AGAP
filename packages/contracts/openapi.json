@@ -477,6 +477,64 @@
         }
       }
     },
+    "/api/v1/member/support-history": {
+      "get": {
+        "operationId": "listMemberSupportHistory",
+        "tags": [
+          "Robert"
+        ],
+        "x-agap-state": "implemented",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          }
+        ],
+        "security": [
+          {
+            "memberSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Checked response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberSupportPageView"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured validation, authorization, precondition or availability error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/support-follow-ups/queues/{state}": {
       "get": {
         "operationId": "listSupportFollowUps",
@@ -14504,6 +14562,311 @@
         "required": [
           "date",
           "reason"
+        ],
+        "additionalProperties": false
+      },
+      "MemberSupportPage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "submittedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "submitted",
+                    "assigned",
+                    "reviewed"
+                  ]
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000
+                },
+                "response": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "checkIn": {
+                  "type": "object",
+                  "properties": {
+                    "canMeetEssentials": {
+                      "type": "string",
+                      "enum": [
+                        "yes",
+                        "no",
+                        "declined",
+                        "unavailable"
+                      ]
+                    },
+                    "borrowedToRepay": {
+                      "type": "string",
+                      "enum": [
+                        "yes",
+                        "no",
+                        "declined",
+                        "unavailable"
+                      ]
+                    },
+                    "financialStrain": {
+                      "type": "string",
+                      "enum": [
+                        "reported",
+                        "not_reported",
+                        "declined",
+                        "unavailable"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "canMeetEssentials",
+                    "borrowedToRepay",
+                    "financialStrain"
+                  ],
+                  "additionalProperties": false
+                },
+                "loanId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "submittedAt",
+                "status",
+                "message",
+                "response"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "nextCursor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ],
+        "additionalProperties": false
+      },
+      "MemberSupportPageView": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "type": "string",
+                "const": "available"
+              },
+              "data": {
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "maxItems": 100,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "submittedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "submitted",
+                            "assigned",
+                            "reviewed"
+                          ]
+                        },
+                        "message": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2000
+                        },
+                        "response": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 2000
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "checkIn": {
+                          "type": "object",
+                          "properties": {
+                            "canMeetEssentials": {
+                              "type": "string",
+                              "enum": [
+                                "yes",
+                                "no",
+                                "declined",
+                                "unavailable"
+                              ]
+                            },
+                            "borrowedToRepay": {
+                              "type": "string",
+                              "enum": [
+                                "yes",
+                                "no",
+                                "declined",
+                                "unavailable"
+                              ]
+                            },
+                            "financialStrain": {
+                              "type": "string",
+                              "enum": [
+                                "reported",
+                                "not_reported",
+                                "declined",
+                                "unavailable"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "canMeetEssentials",
+                            "borrowedToRepay",
+                            "financialStrain"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "loanId": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "submittedAt",
+                        "status",
+                        "message",
+                        "response"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "nextCursor": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "items",
+                  "nextCursor"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "state",
+              "data"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "type": "string",
+                "const": "unavailable"
+              },
+              "message": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "state",
+              "message"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "MemberSupportHistoryQuery": {
+        "type": "object",
+        "properties": {
+          "cursor": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "limit": {
+            "default": 25,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "limit"
         ],
         "additionalProperties": false
       }
