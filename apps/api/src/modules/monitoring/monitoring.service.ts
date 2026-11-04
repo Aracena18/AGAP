@@ -1,6 +1,6 @@
 import { z,ZodError } from 'zod';
 import type { ActorContext,MemberTransactionContext,TransactionContext,UnitOfWork } from '../../../../../packages/contracts/src/ports.js';
-import { Id,MemberSupportCreateSchema,MemberSupportSchema,MemberSupportViewSchema,SupportAssignmentSchema,SupportDetailSchema,SupportPageSchema,SupportResponseSchema,SupportSummarySchema,Version } from '../../../../../packages/contracts/src/schemas.js';
+import { Id,MemberSupportCreateSchema,MemberSupportSchema,MemberSupportViewSchema,SupportActionSchema,SupportActionPageSchema,SupportAssignmentSchema,SupportDetailSchema,SupportHistorySchema,SupportPageSchema,SupportResponseSchema,SupportSummarySchema,Version } from '../../../../../packages/contracts/src/schemas.js';
 import { command,recordEvent } from '../../platform/commands.js';
 import { memberCommand } from '../../platform/member-commands.js';
 import { ApiError,notFound } from '../../platform/errors.js';
@@ -18,6 +18,9 @@ async function operation<T>(work:()=>Promise<T>){try{return await work();}catch(
  throw new ApiError(503,'support_unavailable','The result could not be confirmed. Retry the same submission.');
 }}
 function summary(row:Record<string,unknown>){return SupportSummarySchema.parse({id:row.id,memberId:row.member_id,branchId:row.branch_id,submittedAt:(row.submitted_at as Date).toISOString(),status:row.status,version:Number(row.version),assignedOfficerId:row.assigned_officer_id});}
+const historyQuery=z.strictObject({cursor:Id.optional(),limit:z.coerce.number().int().min(1).max(100).default(25)});
+const responseReceipt=z.union([z.strictObject({version:Version}),z.strictObject({version:Version,projection:z.literal('staff-history-v1'),pageSize:z.number().int().min(1).max(100)})]);
+function action(row:Record<string,unknown>){return SupportActionSchema.parse({id:row.id,recordedAt:(row.recorded_at as Date).toISOString(),recordedBy:row.recorded_by,response:row.response,internalNote:row.internal_note,followUpDate:row.follow_up,version:Number(row.version)});}
 export class MonitoringService {
  constructor(private readonly uow:UnitOfWork,private readonly loans:Pick<LoanReads,'memberLoans'>){}
  private async accessible(tx:TransactionContext,id:string,lock=false){
@@ -25,15 +28,36 @@ export class MonitoringService {
   const row=(await tx.query('SELECT * FROM monitoring.requests WHERE organization_id=$1 AND id=$2',[tx.actor.organizationId,id])).rows[0];
   if(!row)throw notFound();return row;
  }
- private async detail(tx:TransactionContext,id:string){
+ private async disclosure(tx:TransactionContext,id:string){
   const row=await this.accessible(tx,id,true);
   const privateRow=(await tx.query('SELECT * FROM monitoring.staff_disclosures WHERE request_id=$1',[id])).rows[0];
   if(!privateRow)throw new ApiError(403,'support_forbidden','Only the assigned officer can read this disclosure.');
-  const actions=(await tx.query(`SELECT *,to_char(follow_up_date,'YYYY-MM-DD') AS follow_up FROM monitoring.staff_actions WHERE request_id=$1 ORDER BY version DESC LIMIT 101`,[id])).rows;
+  return {row,privateRow};
+ }
+ private detailFields(row:Record<string,unknown>,privateRow:Record<string,unknown>){
+  return {...summary(row),message:privateRow.message,contactPreference:privateRow.contact_preference,noticeVersion:privateRow.notice_version,checkIn:privateRow.check_in,position:privateRow.position,
+   positionMessage:privateRow.position?'Position captured when the member submitted this request. A fresh staff position is unavailable.':'No loan position was captured. This does not mean there is no debt.'};
+ }
+ private async detail(tx:TransactionContext,id:string,throughVersion?:number){
+  const {row,privateRow}=await this.disclosure(tx,id);
+  const actions=(await tx.query(`SELECT *,to_char(follow_up_date,'YYYY-MM-DD') AS follow_up FROM monitoring.staff_actions WHERE request_id=$1 AND version<=$2 ORDER BY version DESC LIMIT 101`,[id,throughVersion??Number(row.version)])).rows;
   if(actions.length>100)throw new ApiError(422,'support_history_limit','This request history requires a larger reviewed history reader.');
-  return SupportDetailSchema.parse({...summary(row),message:privateRow.message,contactPreference:privateRow.contact_preference,noticeVersion:privateRow.notice_version,checkIn:privateRow.check_in,position:privateRow.position,
-   positionMessage:privateRow.position?'Position captured when the member submitted this request. A fresh staff position is unavailable.':'No loan position was captured. This does not mean there is no debt.',
-   actions:actions.map(a=>({id:a.id,recordedAt:(a.recorded_at as Date).toISOString(),recordedBy:a.recorded_by,response:a.response,internalNote:a.internal_note,followUpDate:a.follow_up,version:Number(a.version)}))});
+  return SupportDetailSchema.parse({...this.detailFields(row,privateRow),actions:actions.map(action)});
+ }
+ private async actionPage(tx:TransactionContext,id:string,limit:number,cursor?:string,throughVersion?:number){
+  let beforeVersion:number|null=null;
+  if(cursor){
+   const found=(await tx.query<{version:string}>('SELECT version FROM monitoring.staff_actions WHERE request_id=$1 AND id=$2',[id,cursor])).rows[0];
+   if(!found)throw new ApiError(422,'invalid_history_cursor','Reload this request history before loading older responses.');
+   beforeVersion=Version.parse(Number(found.version));
+  }
+  const rows=(await tx.query(`SELECT *,to_char(follow_up_date,'YYYY-MM-DD') AS follow_up FROM monitoring.staff_actions WHERE request_id=$1 AND ($2::bigint IS NULL OR version<$2) AND ($3::bigint IS NULL OR version<=$3) ORDER BY version DESC LIMIT $4`,[id,beforeVersion,throughVersion??null,limit+1])).rows;
+  return SupportActionPageSchema.parse({items:rows.slice(0,limit).map(action),nextCursor:rows.length>limit?rows[limit-1].id:null});
+ }
+ private async historyDetail(tx:TransactionContext,id:string,throughVersion?:number,pageSize=25){
+  const {row,privateRow}=await this.disclosure(tx,id);
+  const page=await this.actionPage(tx,id,pageSize,undefined,throughVersion??Number(row.version));
+  return SupportHistorySchema.parse({...this.detailFields(row,privateRow),actions:page.items,actionsNextCursor:page.nextCursor});
  }
  list(actor:ActorContext,input:unknown){return operation(async()=>{
   requireRoles(actor,['officer','administrator']);
@@ -44,6 +68,11 @@ export class MonitoringService {
   });
  });}
  get(actor:ActorContext,id:unknown){return operation(async()=>{requireRoles(actor,['officer']);return this.uow.run(actor,tx=>this.detail(tx,Id.parse(id)));});}
+ history(actor:ActorContext,id:unknown){return operation(async()=>{requireRoles(actor,['officer']);return this.uow.run(actor,tx=>this.historyDetail(tx,Id.parse(id)));});}
+ actions(actor:ActorContext,id:unknown,input:unknown){return operation(async()=>{
+  requireRoles(actor,['officer']);const request=Id.parse(id),query=historyQuery.parse(input);
+  return this.uow.run(actor,async tx=>{const {row}=await this.disclosure(tx,request);return this.actionPage(tx,request,query.limit,query.cursor,Number(row.version));});
+ });}
  assign(actor:ActorContext,id:unknown,value:unknown,version:number,key:unknown){return operation(async()=>{
   requireRoles(actor,['administrator']);requireFreshMfa(actor);const request=Id.parse(id),data=SupportAssignmentSchema.parse(value);Version.parse(version);
   return this.uow.run(actor,async tx=>{
@@ -54,20 +83,29 @@ export class MonitoringService {
    });
   });
  });}
- respond(actor:ActorContext,id:unknown,value:unknown,version:number,key:unknown){return operation(async()=>{
+ respond(actor:ActorContext,id:unknown,value:unknown,version:number,key:unknown){return this.saveResponse(actor,id,value,version,key,false);}
+ respondPaged(actor:ActorContext,id:unknown,value:unknown,version:number,key:unknown){return this.saveResponse(actor,id,value,version,key,true);}
+ private saveResponse(actor:ActorContext,id:unknown,value:unknown,version:number,key:unknown,paged:boolean){return operation(async()=>{
   requireRoles(actor,['officer']);const request=Id.parse(id),data=SupportResponseSchema.parse(value);Version.parse(version);
   const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Manila'}).format(new Date());
   if(data.followUpDate&&data.followUpDate<today)throw new ApiError(422,'invalid_follow_up','Choose today or a later follow-up date.');
   return this.uow.run(actor,async tx=>{
    await tx.query('SELECT monitoring.lock_disclosure($1,true)',[request]);
-   await this.detail(tx,request); // Current assignment is checked before cached command replay.
-   const receipt=await command(tx,`support.respond:${request}`,key,{data,version},async()=>{
+   await this.disclosure(tx,request); // Current assignment is checked before cached command replay, without loading its history.
+   const binding=paged?{data,version,projection:'staff-history-v1',pageSize:25}:{data,version};
+   const saved=await command<z.output<typeof responseReceipt>>(tx,`support.respond:${request}`,key,binding,async()=>{
     await tx.query('SELECT monitoring.respond_support($1,$2::jsonb,$3)',[request,JSON.stringify(data),version]);
-    const result=summary(await this.accessible(tx,request));await recordEvent(tx,'support.responded',request,result.version);return {version:result.version};
+    const result=summary(await this.accessible(tx,request));await recordEvent(tx,'support.responded',request,result.version);
+    return paged?{version:result.version,projection:'staff-history-v1' as const,pageSize:25}:{version:result.version};
    });
    // Generic platform cache contains only a receipt, never member disclosures or staff notes.
-   const result=await this.detail(tx,request);
-   return SupportDetailSchema.parse({...result,version:receipt.version,status:'reviewed',assignedOfficerId:actor.userId,actions:result.actions.filter(a=>a.version<=receipt.version)});
+   const receipt=responseReceipt.parse(saved);
+   if('projection' in receipt){
+    const result=await this.historyDetail(tx,request,receipt.version,receipt.pageSize);
+    return SupportHistorySchema.parse({...result,version:receipt.version,status:'reviewed',assignedOfficerId:actor.userId});
+   }
+   const result=await this.detail(tx,request,receipt.version);
+   return SupportDetailSchema.parse({...result,version:receipt.version,status:'reviewed',assignedOfficerId:actor.userId});
   });
  });}
  memberHistory(tx:MemberTransactionContext){return operation(async()=>{

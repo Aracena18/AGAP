@@ -13,12 +13,14 @@ import { randomBytes,randomUUID } from 'node:crypto';
 import { prepareReconciliationFixtures,reconciliationFixture } from '../src/modules/accounting/testing/reconciliation-fixture.js';
 import { uow } from './database.js';
 import { presentationFixtures } from './presentation-fixtures.js';
+import { supportHistoryFixture } from './support-history-fixture.js';
 await prepareDatabase();
 const fixture=await resetFixtures();
 const member=await memberFixture(fixture.officer.actor),otherMember=await memberFixture(fixture.officer.actor);
 // Keep the audit suite independent of the existing member logout journey.
 const uiAuditMember=await memberFixture(fixture.officer.actor);
 const supportMember=await memberFixture(fixture.officer.actor);
+const supportHistory=await supportHistoryFixture(fixture.officer.actor,fixture.administrator.actor);
 const memberApplications=new MemberApplicationsService(new PostgresMemberUnitOfWork(runtimePool),config.PRIVACY_NOTICE_VERSION);
 const sample={purpose:'Fictional request awaiting staff assignment',requestedPrincipalCentavos:150_000,requestedTermMonths:6,currency:'PHP',noticeVersion:config.PRIVACY_NOTICE_VERSION,noticeAcknowledged:true};
 const submitted=await memberApplications.create(member.actor,sample,randomUUID());
@@ -41,7 +43,7 @@ if(process.env.AGAP_E2E_PRESENTATION==='1'){await presentationFixtures();config.
 const app=await createApp(config);
 await app.listen(Number(process.env.AGAP_E2E_API_PORT??4101),'127.0.0.1');
 await mkdir('.platform-test',{recursive:true});
-await writeFile('.platform-test/browser.json',JSON.stringify({supportMember:supportMember.token,reconciliationAuditor:reconciliation.token,uiAuditMember:uiAuditMember.token,uiLogout,officer:fixture.officer.token,auditor:fixture.auditor.token,administrator:fixture.administrator.token,target:fixture.revocationTarget.token,organizationId:fixture.org,branchId:fixture.branch,member:member.token,memberId:member.record.id,otherMember:otherMember.token,otherMemberId:otherMember.record.id,otherApplicationId:otherApplication.id,submittedApplicationId:submitted.id}),{mode:0o600});
+await writeFile('.platform-test/browser.json',JSON.stringify({supportHistory,supportMember:supportMember.token,reconciliationAuditor:reconciliation.token,uiAuditMember:uiAuditMember.token,uiLogout,officer:fixture.officer.token,auditor:fixture.auditor.token,administrator:fixture.administrator.token,target:fixture.revocationTarget.token,organizationId:fixture.org,branchId:fixture.branch,member:member.token,memberId:member.record.id,otherMember:otherMember.token,otherMemberId:otherMember.record.id,otherApplicationId:otherApplication.id,submittedApplicationId:submitted.id}),{mode:0o600});
 console.log('Fictional browser-test API ready.');
 const stop=async()=>{await app.close();await closePools();await rm(documentDirectory,{recursive:true,force:true});process.exit(0);};
 process.on('SIGTERM',()=>void stop());process.on('SIGINT',()=>void stop());

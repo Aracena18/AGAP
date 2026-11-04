@@ -392,6 +392,12 @@ After submission, show **Sent for review** and the recorded response when availa
 
 Use the existing table/notice/form patterns and shared tokens; owner briefs do not define competing layouts. Underlying permission enforcement is a server requirement, and hidden controls alone do not establish it.
 
+### Staff response-history pagination — 4 November 2026
+
+Within an opened staff support request, show the newest responses first and append older responses only through **Load older responses**, using the existing secondary button and Notice patterns. Show the number loaded, keeping partial history distinct from the complete history. During loading, announce progress and prevent duplicate activation. On a failed read, retain the existing history and response draft, then offer **Retry older responses**. When the last page is loaded, show **All responses loaded** and return focus to the Response history heading as the paging control disappears. Ordinary page loads keep keyboard focus and scroll context; they never submit a draft.
+
+Request/version changes reset the history view. Later access denial clears private history and draft controls together. Match visible **Open support request** text with its accessible name. Maintain readable wrapping, 320px reflow and shared controls/tokens; pagination adds no decorative motion or new visual system. This is the supplied staff-history candidate; member-history pagination and representative-user acceptance remain separate.
+
 ### Model origin and research presentation
 
 Qwen fine-tuning does not add another member task: retain the existing source/confirmation controls and manual fallback. Runtime origin and exact model/artifact versions remain inspectable in staff evidence rather than added to the member's main flow. Label generated drafts, templates and prerecorded/simulated responses accurately; an uploaded scan is not an authenticated claim.
