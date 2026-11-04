@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useReducer, useRef, useState, type ReactNode } from 'react';
 import type { CaseRecord, CaseRepository, DemoActor, DemoRole } from '../domain/types';
 import { createBrowserRepository } from '../demo/persistence';
+import { DEMO_OFFICER, DEMO_REVIEWER } from '../domain/priorityReview';
 
 interface WorkspaceValue {
   records: CaseRecord[];
@@ -32,7 +33,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   async function saveCase(record: CaseRecord) {
     if (!repository.current) return;
     await repository.current.save(record);
-    dispatch({ type: 'save', record: structuredClone(record) });
+    const saved = await repository.current.load(record.id);
+    if (saved) dispatch({ type: 'save', record: saved });
   }
   async function resetDemo() {
     if (!repository.current) return;
@@ -41,7 +43,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'load', records: items });
     setRole('officer');
   }
-  const actor: DemoActor = { name: role === 'officer' ? 'Mara Santos' : 'Luis Reyes', role };
+  const actor: DemoActor = { ...(role === 'officer' ? DEMO_OFFICER : DEMO_REVIEWER) };
   return <WorkspaceContext.Provider value={{ records, ready, role, actor, setRole, saveCase, resetDemo, storageWarning }}>{children}</WorkspaceContext.Provider>;
 }
 export function useWorkspace() {

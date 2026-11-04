@@ -3,6 +3,7 @@ import { createDemoCases } from '../demo/cases';
 import { makeRecommendation, recordDecision, recordFollowUp, validateDecision } from './review';
 import { buildExplanation } from './explanation';
 import type { CaseRecord, DecisionInput, DemoActor } from './types';
+import { preparedReviewAna } from '../test/reviewFixtures';
 
 const officer: DemoActor = { name: 'Officer', role: 'officer' };
 const reviewer: DemoActor = { name: 'Reviewer', role: 'reviewer' };
@@ -13,7 +14,7 @@ function correctedAna(): CaseRecord {
   Object.assign(income, { value: 2400000, status: 'document-supported', sourceId: 'payslip', effectiveDate: '2026-10-20' });
   return record;
 }
-function ready(offerId = 'payday-aligned'): CaseRecord { return makeRecommendation(correctedAna(), offerId, 'Discussed the available payment dates.', officer, at); }
+function ready(offerId = 'payday-aligned'): CaseRecord { return preparedReviewAna(offerId); }
 function input(patch: Partial<DecisionInput> = {}): DecisionInput {
   return { outcome: 'approve', offerId: 'payday-aligned', rationale: 'Reviewed evidence and discussed household needs.', departureReason: '', exceptions: [], reviewDate: '2026-12-01', explanationReviewed: true, ...patch };
 }
@@ -53,7 +54,7 @@ describe('human decision rules', () => {
       expect(validateDecision(record, input({ outcome, departureReason: 'Member requested further discussion.' })).errors).not.toHaveProperty('departureReason');
     }
   });
-  it('requires an explicit reason for each failing policy check when approving', () => {
+  it('rejects approval of failing checks even with explicit exception reasons', () => {
     const record = makeRecommendation(createDemoCases()[1], 'requested', 'Requesting a human review.', officer, at);
     const noExceptions = input({ offerId: 'requested' });
     expect(validateDecision(record, noExceptions).errors).toHaveProperty('exception.monthly-capacity');
@@ -61,7 +62,7 @@ describe('human decision rules', () => {
     const partiallyExplained = input({ offerId: 'requested', exceptions: [{ policyId: 'monthly-capacity', reason: ' ' }, { policyId: 'cash-timing', reason: 'Recorded timing discussion.' }] });
     expect(validateDecision(record, partiallyExplained).errors).toHaveProperty('exception.monthly-capacity');
     const explained = input({ offerId: 'requested', exceptions: [{ policyId: 'monthly-capacity', reason: 'Explicit fictional exception to negative monthly remaining.' }, { policyId: 'cash-timing', reason: 'Explicit fictional exception to dated shortage.' }] });
-    expect(validateDecision(record, explained).valid).toBe(true);
+    expect(validateDecision(record, explained).valid).toBe(false);
   });
   it('does not turn unavailable offers or incomplete evidence into an approval', () => {
     const unavailable = ready(); unavailable.offers[1].available = false;
@@ -88,7 +89,7 @@ describe('human decision rules', () => {
     record.facts[0].value = 1; record.sources[0].title = 'Changed'; record.offers[0].payments[0].amount = 1;
     decisionInput.rationale = 'Changed'; reviewer.name = 'Changed';
     result.facts[1].value = 1; result.offers[1].payments[0].amount = 1;
-    expect(JSON.stringify(snapshot)).toBe(saved); expect(result.version).toBe(2); expect(record.decisions).toHaveLength(0);
+    expect(JSON.stringify(snapshot)).toBe(saved); expect(result.version).toBe(3); expect(record.decisions).toHaveLength(0);
     expect(snapshot.assessment.status).toBe('complete');
     if (snapshot.assessment.status === 'complete') {
       expect(snapshot.assessment.scenarios.find(scenario => scenario.offerId === 'payday-aligned')).toMatchObject({ monthlyRemaining: 200000, lowestBalance: 100000, closingBalance: 1100000, totalRepayment: 3600000, financingCost: 600000 });

@@ -23,7 +23,7 @@ export default function RecommendationForm({ record, offer }: { record: CaseReco
     finally { setSaving(false); }
   }
   return <section className="panel" aria-labelledby="recommendation-heading">
-    <div className="panel-header"><h2 id="recommendation-heading">Officer recommendation</h2>{record.recommendation && <Badge tone={current ? 'brand' : 'warning'}>{current ? 'Ready for reviewer' : 'Needs renewed review'}</Badge>}</div>
+    <div className="panel-header"><h2 id="recommendation-heading">Officer recommendation</h2>{record.recommendation && <Badge tone={current ? 'brand' : 'warning'}>{current ? 'Recommendation current' : 'Needs renewed review'}</Badge>}</div>
     <div className="panel-body stack">
       {record.recommendation && <div><p><strong>{record.offers.find(item => item.id === record.recommendation?.offerId)?.label}</strong></p><p className="small subtle">{record.recommendation.note}</p></div>}
       {role === 'officer' ? <form className="stack" onSubmit={submit} noValidate>

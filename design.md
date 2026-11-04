@@ -1,5 +1,15 @@
 # AGAP UI/UX design system
 
+## Priority review and escalation — PRV-01, 5 November 2026
+
+Extend the existing fictional review workspace with a dedicated Review summary before Evidence, Compare options and Decision; preserve the order and destinations of the existing steps. Queue entries show every applicable path and a named owner/next action, with material concerns first and original submission age retained. Completed decisions remain available under All applications. No repayment score, risk-free badge or AI-confidence ranking is introduced.
+
+The summary uses existing tokens, panels, badges, notices and labeled forms. Keep readiness blockers, modeled-period figures and full costs, source links, evidence-currentness confirmation, simulated AI checking and escalation actions discoverable. Show unavailable amounts without zero placeholders. Missing information and earlier material findings awaiting recheck must coexist visibly. Sources open the existing evidence/source pane.
+
+Show the assignment action only to Mara and investigation/resolution actions only to Luis under the existing simulated roles. The in-app notice inbox includes a direct case link and an explicit acknowledgment control; explain that receipt does not resolve the concern. Investigation and final lending decisions remain separate forms. Failed current material checks have no approval-exception bypass controls in this demo. Preserve history and frozen member printing; staff review history stays in the expandable staff details.
+
+Use clear labels, recoverable form errors, keyboard-operable controls, existing focus handling and 320px reflow. Queue rows become labeled phone records; summary metrics stack and navigation wraps. No new dependencies, mascot artwork, animation or alternative design system is required. All new capability badges remain Planned until the saved-action browser demonstration in [PRV-01 verification](docs/AGAP_Priority_Review_Verification.md); Working does not assert representative acceptance or production readiness.
+
 **Status:** implemented baseline plus explicitly planned expansion blueprints; visual acceptance and representative staff evaluation are pending.
 
 **Baseline reviewed:** 20 October 2026.

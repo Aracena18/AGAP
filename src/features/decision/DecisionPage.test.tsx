@@ -4,7 +4,8 @@ import userEvent from '@testing-library/user-event';
 import { WorkspaceProvider, useWorkspace } from '../../app/WorkspaceContext';
 import { createDemoCases } from '../../demo/cases';
 import { STORAGE_KEY } from '../../demo/persistence';
-import { makeRecommendation, recordDecision } from '../../domain/review';
+import { recordDecision } from '../../domain/review';
+import { preparedReviewAna } from '../../test/reviewFixtures';
 import type { CaseRecord } from '../../domain/types';
 import DecisionPage from './DecisionPage';
 
@@ -14,13 +15,11 @@ function Harness({ id }: { id: string }) {
   return <><button onClick={() => setRole('reviewer')}>Use reviewer demo role</button>{record && <DecisionPage record={record} />}</>;
 }
 function renderCase(record: CaseRecord) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 1, records: createDemoCases().map(item => item.id === record.id ? record : item) }));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 2, records: createDemoCases().map(item => item.id === record.id ? record : item) }));
   render(<WorkspaceProvider><Harness id={record.id} /></WorkspaceProvider>);
 }
 function preparedAna() {
-  const record = createDemoCases()[0];
-  Object.assign(record.facts[1], { value: 2400000, status: 'document-supported', sourceId: 'payslip', effectiveDate: '2026-10-20' });
-  return makeRecommendation(record, 'payday-aligned', 'Discussed the full cost and date.', { name: 'Officer', role: 'officer' }, '2026-10-20T12:00:00Z');
+  return preparedReviewAna();
 }
 beforeEach(() => localStorage.clear());
 

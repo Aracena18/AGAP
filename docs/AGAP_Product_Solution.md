@@ -1,5 +1,15 @@
 # AGAP product solution and feature priorities
 
+## Priority review demo amendment — 5 November 2026
+
+PRV-01 adds a fictional browser priority queue and review summary. One application can need clarification, AI concern checking and escalated review simultaneously. Substantiated material concerns and unresolved material escalations precede other cases; original submission date and application ID break ties. The active offer is the current recommendation, otherwise the requested offer. Other offers remain inspectable in comparison.
+
+Mara explicitly confirms that evidence applies to the modeled period, checks the source-linked simulated AI observation and assigns escalations to Luis. Luis receives an in-app notice, investigates, records the next action and verifies resolution after passing checked results. Notice acknowledgment does not resolve a concern. Complete/current evidence and assessment, a current recommendation, checked AI concerns and resolved escalations are required for **Ready for approval**, which describes workflow readiness and makes no repayment guarantee.
+
+For this fictional demo, the existing monthly-capacity and cash-timing failures are strict approval blockers: exception reasons cannot bypass them. This supersedes the older demo exception workflow, not production exception policy. A separate explicit decline can retain the failure after evidence/currentness/AI/recommendation and assigned investigation checks. Return for clarification remains available with incomplete evidence. Financial calculations and fictional thresholds are unchanged; AI checks never supply financial facts or decide loans.
+
+Material changes, including restoring earlier values or switching back to an earlier offer, require renewed review without deleting earlier actions or snapshots. Workflow-only actions do not increment the financial case version. The existing three fictional cases and two simulated people are reused; no API, production authorization, reviewer roster or live AI execution is added. Capability status and demonstration evidence are recorded in [PRV-01 verification](AGAP_Priority_Review_Verification.md). Additional effort remains Pending outside the existing core estimate.
+
 **5C revision:** 29 October 2026. Adds planned evidence-based institution-rubric scores, explanations and handoff; numeric policy configuration is unresolved and no repayment probability is claimed.
 
 **Goals revision:** 29 October 2026. The member-goal, savings and cooperative-product guidance below is user-requested target scope, not implemented advice or an approved product catalogue.
