@@ -1,6 +1,6 @@
 # AGAP team assignments
 
-**Updated:** 4 November 2026, Asia/Manila.
+**Updated:** 5 November 2026, Asia/Manila.
 
 **Publication history:** retain the earlier PLN-01/PLN-02 publication, goals/5C planning and authorized UI/platform merge. Merged PRs #15/#16/#17/#19/#20/#21 supply the partial evidence recorded below; publication does not establish complete package integration, consuming-owner acceptance or production readiness. The user authorizes integration of [PR #18](https://github.com/Aracena18/AGAP/pull/18), registering the ledger migrations and shared evaluation checks; current merge verification is recorded in the [foundation review](docs/AGAP_Foundation_Contract_Review.md#2-november-2026--pr-18-integration). See the historical [merge verification](docs/AGAP_UI_Main_Merge_Verification.md).
 
@@ -54,6 +54,10 @@ The changes below reconcile task-specific merged evidence, not every owner's unr
 
 ## Task register
 
+### Selected People/Operations constraint — 5 November 2026
+
+The user supplies the corrected Markdown fact sheet for analysis and implementation planning. [PLN-05](docs/AGAP_Priority_Review_Plan.md) proposes four additions to the fictional demonstration: deterministic application priority queue, consolidated review summary, human checking of source-linked AI concerns, and assigned reviewer escalation with in-app notices. These remain **Planned**, pending contract/capacity review and implementation; the existing support queue is a separate HLT-01 capability. Design.md section 19 governs their planned UI. Robert coordinates FND-03/SHOW-01 queue/shared integration, Aaron EVD-01/CRD-01/AI-01 evidence/concern basis, Benedict DEC-01 escalation/readiness guards, and Earl independent workflow verification. Existing feature statuses, ownership, prerequisites, stages and historical 64-unit budget remain unchanged; incremental estimates are **Pending**. No actual owner agreement, policy, model execution or production release is supplied by this plan.
+
 Stages: **0 — documentation/contracts and review; 1 — first hackathon demonstration; 2 — complete product and live-readiness evidence.** A stage 1 slice can be reviewed while the complete package remains unfinished. The status describes evidenced package progress, not a claim that every stage is delivered.
 
 | Task ID | Owner | Stage | Deliverable | Prerequisites | Owned boundary | Status | Evidence / branch / blocker |
@@ -62,6 +66,7 @@ Stages: **0 — documentation/contracts and review; 1 — first hackathon demons
 | PLN-02 | Robert | 0 | Coordinated model-training plan, architecture and balanced assignments | User-requested Qwen/Benedict and explainable/Aaron ownership; PLN-01 | Shared documentation | Integrated | Published directly to `main`; [publication verification](docs/AGAP_Direct_Publication_Verification.md); [historical revision verification](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/AGAP_Model_Training_Revision_Verification.md) |
 | PLN-03 | Robert | 0 | Coordinated voluntary goals, savings and cooperative-product guidance plan | PLN-02; user-requested scope | Shared documentation | Ready for review | [PR #14](https://github.com/Aracena18/AGAP/pull/14) published the plan; [verification](docs/AGAP_Goals_Guidance_Verification.md); no goal feature implementation or product approval |
 | PLN-04 | Robert | 0 | Coordinated AI-assisted institution-rubric 5C review, explanations and handoff plan | PLN-02; user-requested 5C scope | Shared documentation | Ready for review | [PR #14](https://github.com/Aracena18/AGAP/pull/14) published the plan; [verification](docs/AGAP_Goals_Guidance_Verification.md); actual numerical rubric and feature work remain pending |
+| PLN-05 | Robert | 0 | Analyze selected People/Operations constraint and coordinate priority-review implementation proposal | Corrected user-supplied fact sheet; current product/architecture/delivery baseline | Shared documentation | Ready for review | [Plan and source identity](docs/AGAP_Priority_Review_Plan.md); [documentation verification](docs/AGAP_Verification.md#pln-05-selected-constraint-planning--5-november-2026); four feature additions remain planned, contract/owner/capacity review pending |
 | FND-01 | Robert | 0 | Shared contracts/client and backend transaction foundation | Architecture baseline | Platform/contracts | Ready for review | [PR #10](https://github.com/Aracena18/AGAP/pull/10), `4b03c6b`; 0.1.0 candidate |
 | FND-02 | Robert | 0 | Staff identity, scoped access and member/application intake | FND-01 | Platform/intake | Ready for review | [Verification](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/AGAP_Robert_Verification.md); staff intake, real DB and Keycloak tests |
 | FND-03 | Robert | 0 → 1 | Member identity linkage/access, model provenance and next shared contract revision | FND-01; FND-02 | Platform/member access/shared model contracts | Ready for review | 0.2.0 member/platform candidate published; coordinated 0.3.0 evidence contracts supplied under explicit user authorization ([proposal](docs/AGAP_Evidence_Assessment_Contract_Proposal.md)); [technical contract review and receiving-owner record](docs/AGAP_Foundation_Contract_Review.md) on codex/foundation-contract-handoff; actual consuming-owner agreement remains pending |
@@ -131,6 +136,7 @@ These task-level checks supplement the owned slices in the delivery plan and eac
 | PLN-02 | Model owners, exclusive paths, training/evaluation boundaries, stages and budgets agree | Start the assigned future tasks using this published plan; training remains Not started |
 | PLN-03 | Product/design/architecture/delivery/training/briefs agree; documentation links/ownership/dependencies verified | Review the goal extension; no runtime, trained guidance, product activation or merge is implied |
 | PLN-04 | Rubric semantics/provenance, evidence analysis, explainability, workflow and all owner docs agree | Review source/criterion/weight dependencies and unavailable states; no numeric policy, prediction or merge is implied |
+| PLN-05 | Corrected source mapped to current code, deterministic routes, owner handoffs, planned UI and acceptance matrix; documentation checks pass | Review proposed precedence/materiality/waiting basis and incremental effort, then agree shared contract changes before implementing the fictional slice |
 | FND-01 | Executable contracts and platform evidence reviewed by all consuming owners | Record Aaron/Benedict/Earl interface agreement and accepted base |
 | FND-02 | Scoped runtime-role access, revocation and staff intake reviewed | Complete staff/UI review; member access belongs to FND-03 |
 | FND-03 | Own-record access, separate member principal, domain/model provenance ports and proposed contracts reviewed | Review supplied 0.2.0 member/domain/provenance ports with consuming owners; record accepted version/base before dependent integration |
