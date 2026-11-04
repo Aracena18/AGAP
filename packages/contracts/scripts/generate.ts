@@ -8,7 +8,7 @@ const paths: Record<string, Record<string, unknown>> = {};
 for (const item of operations) {
   const op: Operation = item;
   const path = `/api/v1${op.path}`;
-  const parameters: unknown[] = [...op.path.matchAll(/\{(\w+)\}/g)].map(([,name]) => ({ name, in: 'path', required: true, schema: { type: 'string', format: 'uuid' } }));
+  const parameters: unknown[] = [...op.path.matchAll(/\{(\w+)\}/g)].map(([,name]) => ({ name, in: 'path', required: true, schema: op.pathParameters?.[name]?{$ref:`#/components/schemas/${op.pathParameters[name]}`}:{ type: 'string', format: 'uuid' } }));
   if (op.versioned) parameters.push({ name: 'If-Match', in: 'header', required: true, schema: { type: 'string', pattern: '^"[1-9][0-9]*"$' } });
   if (op.idempotent) parameters.push({ name: 'Idempotency-Key', in: 'header', required: true, schema: { type: 'string', pattern: '^[A-Za-z0-9_-]{16,128}$' } });
   if (op.method !== 'GET') parameters.push({ name: 'X-CSRF-Token', in: 'header', required: true, schema: { type: 'string' } });
@@ -37,7 +37,7 @@ const document = {
 const methods = operations.map(item => {
   const op: Operation = item;
   const params = [...op.path.matchAll(/\{(\w+)\}/g)].map(([,name]) => name);
-  const args = [...params.map(name => `${name}: string`), ...(op.binary?['file: Blob',`metadata: z.input<typeof schemas.${op.request!}>`]:op.request ? [`body: z.input<typeof schemas.${op.request}>`] : []), 'options: RequestOptions = {}'].join(', ');
+  const args = [...params.map(name => `${name}: ${op.pathParameters?.[name]?`z.input<typeof schemas.${op.pathParameters[name]}>`:'string'}`), ...(op.binary?['file: Blob',`metadata: z.input<typeof schemas.${op.request!}>`]:op.request ? [`body: z.input<typeof schemas.${op.request}>`] : []), 'options: RequestOptions = {}'].join(', ');
   const path = op.path.replace(/\{(\w+)\}/g, (_,name: string) => '${encodeURIComponent('+name+')}');
   return op.binary?`  ${op.id}(${args}) { return this.upload(\`${path}\`, file, metadata, schemas.${op.response}, options); }`:op.binaryResponse?`  ${op.id}(${args}) { return this.download(\`${path}\`, options); }`:`  ${op.id}(${args}) { return this.request('${op.method}', \`${path}\`, ${op.request ? 'body' : 'undefined'}, schemas.${op.response}, options); }`;
 }).join('\n');

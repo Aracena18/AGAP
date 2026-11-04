@@ -203,6 +203,14 @@ export const SupportActionSchema=z.strictObject({id:Id,recordedAt:Instant,record
 export const SupportDetailSchema=SupportSummarySchema.extend({message:Text,contactPreference:z.enum(['portal','phone']),noticeVersion:Text,checkIn:SupportCheckInSchema,position:LoanPositionSchema.nullable(),positionMessage:Text,actions:z.array(SupportActionSchema).max(100)});
 export const SupportActionPageSchema=z.strictObject({items:z.array(SupportActionSchema).max(100),nextCursor:Id.nullable()});
 export const SupportHistorySchema=SupportDetailSchema.extend({actionsNextCursor:Id.nullable()});
+export const SupportFollowUpFilterSchema=z.enum(['open','scheduled','due','overdue','completed']);
+export const SupportFollowUpSchema=z.strictObject({id:Id,requestId:Id,memberId:Id,branchId:Id,assignedOfficerId:Id,sourceActionId:Id,sourceActionVersion:Version,sourceRecordedAt:Instant,originalDate:CalendarDay,dueDate:CalendarDay,status:z.enum(['open','completed']),version:Version,recordedAt:Instant,recordedBy:Id,completedAt:Instant.nullable()});
+export const SupportFollowUpEventSchema=z.strictObject({id:Id,version:Version,kind:z.enum(['scheduled','rescheduled','completed']),dueDate:CalendarDay,status:z.enum(['open','completed']),note:Text.nullable(),recordedAt:Instant,recordedBy:Id});
+export const SupportFollowUpPageSchema=z.strictObject({asOfDate:CalendarDay,items:z.array(SupportFollowUpSchema).max(100),nextCursor:Id.nullable()});
+export const SupportFollowUpEventPageSchema=z.strictObject({items:z.array(SupportFollowUpEventSchema).max(100),nextCursor:Id.nullable()});
+export const SupportFollowUpDetailSchema=z.strictObject({task:SupportFollowUpSchema,source:SupportActionSchema,events:z.array(SupportFollowUpEventSchema).max(100),eventsNextCursor:Id.nullable()});
+export const SupportFollowUpCompletionSchema=z.strictObject({note:Text});
+export const SupportFollowUpRescheduleSchema=z.strictObject({date:CalendarDay,reason:Text});
 export const MemberAcceptanceSchema = z.strictObject({decisionId:Id,documentVersionId:Id,acknowledgment:z.literal(true)});
 export const MemberUploadSchema = z.strictObject({fileName:z.string().trim().min(1).max(160),mediaType:z.enum(['application/pdf','image/jpeg','image/png']),size:z.number().int().min(1).max(10*1024*1024)});
 const serviceView = <T extends z.ZodType>(data:T) => z.discriminatedUnion('state',[
@@ -228,5 +236,6 @@ export const schemas = {
   RecommendationCreate: RecommendationCreateSchema, DecisionCreate: DecisionCreateSchema, Decision: DecisionSchema, AcceptanceCreate: AcceptanceCreateSchema,
   FinancialCommandCreate: FinancialCommandCreateSchema, FinancialCommand: FinancialCommandSchema, PostingRequest: PostingRequestSchema, JournalReceipt: JournalReceiptSchema,
   LoanPosition: LoanPositionSchema, HealthReviewCreate: HealthReviewCreateSchema, HealthReview: HealthReviewSchema, CommandReceipt: CommandReceiptSchema, Capabilities: CapabilitiesSchema, EventEnvelope: EventEnvelopeSchema,
+  SupportFollowUpFilter:SupportFollowUpFilterSchema,SupportFollowUp:SupportFollowUpSchema,SupportFollowUpEvent:SupportFollowUpEventSchema,SupportFollowUpPage:SupportFollowUpPageSchema,SupportFollowUpEventPage:SupportFollowUpEventPageSchema,SupportFollowUpDetail:SupportFollowUpDetailSchema,SupportFollowUpCompletion:SupportFollowUpCompletionSchema,SupportFollowUpReschedule:SupportFollowUpRescheduleSchema,
 } as const;
 export type SchemaName = keyof typeof schemas;

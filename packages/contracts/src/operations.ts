@@ -4,6 +4,7 @@ export interface Operation {
   id: string; method: 'GET' | 'POST' | 'PATCH'; path: string; response: SchemaName;
   request?: SchemaName; owner: 'Robert' | 'Aaron' | 'Benedict' | 'Earl'; implemented: boolean;
   versioned?: boolean; idempotent?: boolean; public?: boolean; principal?:'member'; binary?:boolean; binaryResponse?:boolean;
+  pathParameters?: Record<string,SchemaName>;
 }
 export const operations = [
   {id:'listSupportRequests',method:'GET',path:'/support-requests',response:'SupportPage',owner:'Earl',implemented:true},
@@ -13,6 +14,11 @@ export const operations = [
   {id:'getSupportHistory',method:'GET',path:'/support-requests/{id}/history',response:'SupportHistory',owner:'Earl',implemented:true},
   {id:'listSupportActions',method:'GET',path:'/support-requests/{id}/actions',response:'SupportActionPage',owner:'Earl',implemented:true},
   {id:'createSupportAction',method:'POST',path:'/support-requests/{id}/actions',request:'SupportResponse',response:'SupportHistory',owner:'Earl',implemented:true,idempotent:true,versioned:true},
+  {id:'listSupportFollowUps',method:'GET',path:'/support-follow-ups/queues/{state}',pathParameters:{state:'SupportFollowUpFilter'},response:'SupportFollowUpPage',owner:'Earl',implemented:true},
+  {id:'getSupportFollowUp',method:'GET',path:'/support-follow-ups/{id}',response:'SupportFollowUpDetail',owner:'Earl',implemented:true},
+  {id:'listSupportFollowUpEvents',method:'GET',path:'/support-follow-ups/{id}/events',response:'SupportFollowUpEventPage',owner:'Earl',implemented:true},
+  {id:'completeSupportFollowUp',method:'POST',path:'/support-follow-ups/{id}/completions',request:'SupportFollowUpCompletion',response:'SupportFollowUp',owner:'Earl',implemented:true,idempotent:true,versioned:true},
+  {id:'rescheduleSupportFollowUp',method:'POST',path:'/support-follow-ups/{id}/reschedules',request:'SupportFollowUpReschedule',response:'SupportFollowUp',owner:'Earl',implemented:true,idempotent:true,versioned:true},
   {"id": "getStaffWorkflow", "method": "GET", "path": "/applications/{id}/evidence", "response": "WorkflowView", "owner": "Aaron", "implemented": true},
   {"id": "saveStaffFact", "method": "POST", "path": "/applications/{id}/facts", "response": "CommandReceipt", "owner": "Aaron", "implemented": true, "request": "WorkflowFactInput", "idempotent": true, "versioned": true},
   {"id": "reviewStaffDraft", "method": "POST", "path": "/applications/{id}/draft-reviews", "response": "CommandReceipt", "owner": "Aaron", "implemented": true, "request": "WorkflowDraftReview", "idempotent": true, "versioned": true},
