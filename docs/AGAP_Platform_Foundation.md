@@ -129,7 +129,7 @@ docker compose -f infra/compose.yml -f node_modules/.cache/agap-local/compose.ov
 
 The local Keycloak console is then `http://127.0.0.1:18080`; the web and API ports remain `5174` and `4100`. Its discovery document is `http://127.0.0.1:18080/realms/agap/.well-known/openid-configuration`. Wait for that endpoint before signing in. The ignored override must be recreated if a dependency reinstall removes the cache.
 
-Use normal OIDC sign-in with this alternate-port setup. [Automatic presentation mode](#temporary-automatic-presentation-entry) has an existing fixed-issuer guard for port `58080`; the workaround preserves that guard and uses `LOCAL_PRESENTATION_MODE=false`.
+Normal OIDC sign-in works with this alternate-port setup. [Automatic presentation mode](#temporary-automatic-presentation-entry) also accepts the exact fictional issuer `http://127.0.0.1:18080/realms/agap`, alongside the default port `58080`. Set `LOCAL_PRESENTATION_MODE=true` and restart the API, then open the application directly rather than continuing an existing Keycloak login page. Existing account links keep the same issuer. Other issuer ports/hosts/realms and all nonlocal or real-record presentation settings remain rejected.
 
 ### Missing Vite dependency-cache files
 

@@ -18,7 +18,8 @@ export type Config = z.infer<typeof Env>;
 export function assertLocalPresentation(config:Config){
   if(!config.LOCAL_PRESENTATION_MODE)return;
   const loopback=(host:string)=>['127.0.0.1','localhost','[::1]','::1'].includes(host);
-  if(config.NODE_ENV!=='development'||!loopback(config.API_HOST)||!loopback(new URL(config.PUBLIC_ORIGIN).hostname)||config.OIDC_ISSUER!=='http://127.0.0.1:58080/realms/agap'||config.EVIDENCE_RECORD_MODE!=='fictional'||!config.PRIVACY_NOTICE_VERSION.startsWith('fictional')||![config.DATABASE_URL,config.IDENTITY_DATABASE_URL].every(value=>{const url=new URL(value);return loopback(url.hostname)&&['/agap','/agap_test'].includes(url.pathname);}))throw new Error('Presentation mode requires fictional loopback development, the seeded local realm and a loopback API bind.');
+  const localIssuer=['http://127.0.0.1:58080/realms/agap','http://127.0.0.1:18080/realms/agap'].includes(config.OIDC_ISSUER);
+  if(config.NODE_ENV!=='development'||!loopback(config.API_HOST)||!loopback(new URL(config.PUBLIC_ORIGIN).hostname)||!localIssuer||config.EVIDENCE_RECORD_MODE!=='fictional'||!config.PRIVACY_NOTICE_VERSION.startsWith('fictional')||![config.DATABASE_URL,config.IDENTITY_DATABASE_URL].every(value=>{const url=new URL(value);return loopback(url.hostname)&&['/agap','/agap_test'].includes(url.pathname);}))throw new Error('Presentation mode requires fictional loopback development, the seeded local realm and a loopback API bind.');
 }
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   const config = Env.parse(env);

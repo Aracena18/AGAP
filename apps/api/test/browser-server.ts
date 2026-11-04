@@ -41,7 +41,12 @@ const reconciliation=await reconciliationFixture();
 await reconciliation.release();
 await uow.run(reconciliation.authorizer,tx=>reconciliation.ledger.post(tx,{sourceEventId:randomUUID(),postingKind:'repayment',postingRuleVersionId:reconciliation.policy.repaymentRuleId,
   effectiveDate:'2026-11-02',currency:'PHP',reversalOfJournalId:null,lines:[{accountId:reconciliation.policy.cashAccountId,side:'debit',amountCentavos:1},{accountId:reconciliation.policy.principalAccountId,side:'credit',amountCentavos:1}]}));
-if(process.env.AGAP_E2E_PRESENTATION==='1'){await presentationFixtures();config.NODE_ENV='development';config.LOCAL_PRESENTATION_MODE=true;}
+if(process.env.AGAP_E2E_PRESENTATION==='1'){
+ const port=process.env.AGAP_E2E_PRESENTATION_PORT??'58080';
+ if(!['58080','18080'].includes(port))throw new Error('Unsupported fictional presentation test issuer port.');
+ config.OIDC_ISSUER=`http://127.0.0.1:${port}/realms/agap`;
+ await presentationFixtures();config.NODE_ENV='development';config.LOCAL_PRESENTATION_MODE=true;
+}
 const app=await createApp(config);
 await app.listen(Number(process.env.AGAP_E2E_API_PORT??4101),'127.0.0.1');
 await mkdir('.platform-test',{recursive:true});

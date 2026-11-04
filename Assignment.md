@@ -254,6 +254,8 @@ Robert owns PLN-04/FND-05 shared contract/integration proposals; Aaron owns CRD-
 
 ## Progress updates
 
+4 November 2026 — UI-06/FND-02/MOB-01 local presentation compatibility: user requests automatic entry with the existing Windows port-18080 identity setup. `fix/local-presentation-port` accepts only the two exact fictional local issuers on 58080/18080, retaining account links, administrator/member identities and all fictional/loopback/CSRF/MFA/access guards. The [proposal](docs/AGAP_UI_Auth_Proposal.md#alternate-local-identity-port--4-november-2026) precedes edits; [verification and restart instructions](docs/AGAP_UI_Review_Verification.md#alternate-local-presentation-port--4-november-2026) record both-port regression and local session evidence. Existing task statuses and receiving-owner/release acceptance remain unchanged.
+
 30 October 2026 — FND-04/FND-05: prepared field-level goal/planning/guidance and institution-rubric/trace/handoff proposals on `codex/member-goals-fivec-contracts`, based on main `266379ac293572de91a603a72c1a01750a1c3101`. Only these two tasks advance to Ready for review for written proposal evidence; actual receiving-owner acceptance, FND-03 agreement, institutional rubric/advisory inputs and dependent implementation remain pending. See [verification](docs/AGAP_Goal_5C_Contract_Verification.md). Existing task IDs, owners, stages, prerequisites and demonstration budgets are unchanged; this does not merge or replace draft PR #18.
 
 | Date | Update |
