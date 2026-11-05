@@ -61,8 +61,8 @@ def write_private(path, value):
 def validate_credit(evidence, subscription_id, at):
     if evidence.get('subscriptionId') != subscription_id:
         raise ValueError('Credit evidence belongs to another subscription.')
-    if evidence.get('currency') != 'USD' or evidence.get('source') != 'Azure Sponsorships Portal':
-        raise ValueError('Current USD credit evidence from Azure Sponsorships Portal is required.')
+    if evidence.get('currency') != 'USD' or evidence.get('source') not in ['Azure Education Hub', 'Azure Sponsorships Portal']:
+        raise ValueError('Current USD credit evidence from Azure Education Hub or a working Azure Sponsorships balance is required.')
     observed = instant(evidence['observedAt'])
     if not dt.timedelta(0) <= at - observed <= dt.timedelta(hours=24):
         raise ValueError('Credit evidence must be observed within the last 24 hours.')
@@ -83,6 +83,17 @@ def cost_envelope(hourly, hours, credit):
     if projected > min(MAX_CREDIT_USD, credit):
         raise ValueError('The complete pilot forecast exceeds available approved credit.')
     return projected
+
+
+def available_quota(quota):
+    # Azure CLI serializes these ARM integers as strings on some versions.
+    values = []
+    for name in ['limit', 'currentValue']:
+        value = quota.get(name)
+        if isinstance(value, bool) or not str(value).isdigit():
+            raise ValueError('Regional quota values are unavailable.')
+        values.append(int(value))
+    return values[0] - values[1]
 
 
 def retail_price():
@@ -119,7 +130,7 @@ def preflight(credit_path=None):
     family = selected[0]['family'].lower()
     for quota_name in [family, 'cores']:
         quota = next((q for q in usage if q['name']['value'].lower() == quota_name), None)
-        if not quota or quota['limit'] - quota['currentValue'] < 24:
+        if not quota or available_quota(quota) < 24:
             raise ValueError('Insufficient regional/A100-family quota; no paid or different-SKU fallback is permitted.')
     if not credit_path:
         raise ValueError('Current credit/expiry evidence is required before provisioning; see README.')

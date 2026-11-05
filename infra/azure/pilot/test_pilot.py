@@ -15,12 +15,13 @@ class CreditGuards(unittest.TestCase):
     def setUp(self):
         self.at = dt.datetime(2026, 11, 5, tzinfo=dt.timezone.utc)
         self.evidence = {'subscriptionId': 'fictional-subscription', 'currency': 'USD',
-                         'source': 'Azure Sponsorships Portal', 'remainingUsd': 40,
+                         'source': 'Azure Education Hub', 'remainingUsd': 40,
                          'observedAt': self.at.isoformat(), 'expiresAt': (self.at + dt.timedelta(days=2)).isoformat(),
                          'operatorReference': 'Fictional guard test; no live balance asserted'}
 
     def test_credit_is_bounded_and_all_costs_must_fit(self):
         self.assertEqual(pilot.validate_credit(self.evidence, 'fictional-subscription', self.at), 30)
+        self.assertEqual(pilot.validate_credit(dict(self.evidence, source='Azure Sponsorships Portal'), 'fictional-subscription', self.at), 30)
         self.assertAlmostEqual(pilot.cost_envelope(5.326, 4, 30), 29.304)
         with self.assertRaises(ValueError):
             pilot.cost_envelope(5.326, 4, 20)
@@ -53,6 +54,13 @@ class CreditGuards(unittest.TestCase):
         schedule = next(r for r in template['resources'] if r['type'].endswith('/schedules'))
         self.assertEqual(schedule['properties']['timeZoneId'], 'UTC')
         self.assertEqual(schedule['properties']['status'], 'Enabled')
+
+    def test_quota_supports_arm_integer_strings_and_fails_closed(self):
+        self.assertEqual(pilot.available_quota({'limit': '24', 'currentValue': '0'}), 24)
+        self.assertEqual(pilot.available_quota({'limit': 6, 'currentValue': 0}), 6)
+        for invalid in [None, True, 'unknown', -1, 24.5]:
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                pilot.available_quota({'limit': invalid, 'currentValue': 0})
 
     def test_secret_files_are_private(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -50,6 +50,14 @@ it('registers the actual review/decision/member/money services and validates pub
  }
  const loans=await member.listMemberLoans();expect(loans.state).toBe('available');if(loans.state==='available')expect(loans.data[0].receipts).toHaveLength(1);
  expect(Number((await owner.query('SELECT count(*) FROM accounting.journals WHERE organization_id=$1',[f.f.org])).rows[0].count)).toBe(2);
+ await owner.query('UPDATE identity.staff_users SET branch_ids=ARRAY[$1::uuid,$2::uuid] WHERE id=$3',[f.f.branch,f.f.secondBranch,f.f.auditor.actor.userId]);
+ const audit=await client(f.f.auditor).createReconciliation({fromDate:'2026-11-05',throughDate:'2026-11-05'},options(f.f.auditor));expect(audit.report.status).toBe('matched');expect(audit.report.events).toHaveLength(2);
+ const helpKey=options(f.member),body={loanId:loan.id,message:'Fictional request to discuss the settled principal account.',contactPreference:'portal' as const,sharingConfirmed:true as const,noticeVersion:config.PRIVACY_NOTICE_VERSION};
+ const help=await member.createMemberSupport(body,helpKey);expect(await member.createMemberSupport(body,helpKey)).toEqual(help);
+ expect((await owner.query('SELECT position FROM monitoring.disclosures WHERE request_id=$1',[help.id])).rows[0].position).toMatchObject({loanId:loan.id,principalCentavos:0});
+ const assigned=await client(f.f.administrator).assignSupportRequest(help.id,{officerId:f.f.officer.actor.userId,reason:'Fictional linked account support assignment.'},options(f.f.administrator,1));
+ await officer.respondSupportRequest(help.id,{response:'We can discuss your recorded principal account.',internalNote:'Private fictional staff context.',followUpDate:null},options(f.f.officer,assigned.version));
+ const history=await member.listMemberSupport();expect(history.state).toBe('available');expect(JSON.stringify(history)).toContain(help.id);expect(JSON.stringify(history)).not.toContain('Private fictional staff context.');
 });
 it('keeps the static model-off path editable and denies an unreviewed final decision',async()=>{
  const id=f.application.id,officer=client(f.f.officer),workflow=await officer.getStaffWorkflow(id),source=workflow.sources[0];

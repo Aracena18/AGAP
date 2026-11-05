@@ -11,15 +11,19 @@ never receive public inbound rules. The VM has an operator-/32 SSH rule only.
 
 Renew Azure sign-in with the account owning the student subscription. Device
 authentication can be denied by tenant security defaults; use ordinary browser
-sign-in rather than weakening those settings. Check remaining credit/expiry in
-the [Azure Sponsorships Portal](https://www.microsoftazuresponsorships.com/).
+sign-in rather than weakening those settings. Check actual remaining credit and renewal/expiry in the
+[Azure Education Hub](https://portal.azure.com/#view/Microsoft_Azure_Education/EducationMenuBlade/~/overview).
+Microsoft documents this [student usage view](https://learn.microsoft.com/en-us/azure/education-hub/navigate-costs).
+The separate Sponsorships portal is optional if it actually displays this
+account's balance; a missing sponsorship does not disprove the student benefit.
+The original USD100 grant is not evidence of the current remaining balance.
 Create a private `.state/credit.json` with actual observed values:
 
 ```json
 {
   "subscriptionId": "actual-selected-subscription-id",
   "currency": "USD",
-  "source": "Azure Sponsorships Portal",
+  "source": "Azure Education Hub",
   "remainingUsd": 0,
   "observedAt": "actual-observation-with-offset",
   "expiresAt": "actual-credit-expiry-with-offset",
