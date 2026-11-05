@@ -1,3 +1,4 @@
+import { mkdir } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { signInStaff } from './staff-session';
@@ -68,4 +69,24 @@ test('outage recovery stays readable and accessible at phone, tablet and desktop
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
     if (process.env.AGAP_SIGNIN_SCREENSHOTS) await page.screenshot({ path: `docs/screenshots/signin-recovery/unavailable-${width}.png`, fullPage: true });
   }
+});
+
+test('an unbound staff callback returns to a readable fresh sign-in without issuing a session',async({page,context})=>{
+  await page.goto('/api/v1/auth/callback?state=fictional-discarded&code=fictional-discarded');
+  await expect(page).toHaveURL(/\/#\/staff\?signin=retry$/);
+  await expect(page.getByRole('alert')).toContainText('Start a new sign-in');
+  const start=page.getByRole('link',{name:'Start new sign-in',exact:true});
+  await expect(start).toHaveAttribute('href','/api/v1/auth/login?returnTo=%2Fstaff');
+  expect((await context.cookies()).some(cookie=>cookie.name==='agap_session')).toBe(false);
+  expect(page.url()).not.toContain('code=');expect(page.url()).not.toContain('state=');
+  await mkdir('docs/screenshots/signin-recovery',{recursive:true});
+  for(const width of [320,1366]){await page.setViewportSize({width,height:900});await expect(start).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);expect((await new AxeBuilder({page}).analyze()).violations).toEqual([]);await page.screenshot({path:`docs/screenshots/signin-recovery/callback-${width}.png`,fullPage:true});}
+});
+test('callback recovery retains the reviewed route, source fragment and MFA requirement',async({page})=>{
+  await page.goto('/#/applications/ana/evidence?signin=verification&assurance=mfa#source-payslip');
+  await expect(page.getByRole('alert')).toContainText('Complete sign-in verification');
+  await expect(page.getByRole('link',{name:'Start new sign-in',exact:true})).toHaveAttribute('href',`/api/v1/auth/login?${new URLSearchParams({returnTo:'/applications/ana/evidence#source-payslip',assurance:'mfa'})}`);
+});
+test('staff account denial gives a recovery action without exposing provider error text',async({page})=>{
+  await page.goto('/#/staff?signin=access');await expect(page.getByRole('alert')).toContainText('Staff access is not available');await expect(page.getByRole('link',{name:'Start new sign-in',exact:true})).toHaveAttribute('href','/api/v1/auth/login?returnTo=%2Fstaff');
 });
