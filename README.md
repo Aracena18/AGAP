@@ -14,7 +14,29 @@ The [UI/UX design system](design.md) defines the user's Google-inspired visual d
 
 ## Start locally
 
-Use Node 24, npm and the local API/database/identity setup below. The web server alone cannot authenticate a review or staff account.
+Install/select Node 24, open Docker Desktop with its Linux engine, then run these from the repository folder (use `npm` instead of `npm.cmd` outside Windows):
+
+```powershell
+npm.cmd ci
+npm.cmd run local:doctor
+npm.cmd run local:dev
+```
+
+`local:doctor` checks setup without changing services or data. `local:dev` starts/checks PostgreSQL and Keycloak, then starts the API and frontend in one terminal. It uses `.env` ports and selects Node 24 from the current executable or the existing repository cache, so the cached runtime needs no manual PATH prefix. It refuses occupied application ports and pending/incompatible migrations. Ctrl+C stops its own API/frontend; database and identity containers remain running.
+
+The repository runtime is an optional fallback for an existing installation. `npm ci` replaces `node_modules` and can remove that cache; an installed Node 24 is the reliable prerequisite for a fresh dependency installation.
+
+For first-time fictional setup, explicitly request configuration creation, migration and seeding:
+
+```powershell
+npm.cmd run local:dev -- --init-env --migrate --seed
+```
+
+After pulling changes, stop the old API/frontend terminals first. Use `npm.cmd ci` when dependencies changed, then `npm.cmd run local:dev -- --migrate` when diagnostics report pending migrations. Add `--fresh` if Vite reports stale optimized dependencies. Existing `.env`, authentication settings and data are preserved. See [options, safeguards and verification](docs/AGAP_Platform_Foundation.md#local-development-workflow--6-november-2026).
+
+### Manual startup
+
+The existing separate-terminal commands remain available. Use Node 24, npm and the local API/database/identity setup below. The web server alone cannot authenticate a review or staff account.
 
 ```sh
 npm ci

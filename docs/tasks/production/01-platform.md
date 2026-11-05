@@ -1,5 +1,9 @@
 # Robert (A): platform, member portal and integration
 
+## Local startup tooling — 6 November 2026
+
+The user authorizes Earl's coordinated OPS-01/SHOW-01 local-tooling slice on `chore/earl-local-dev-workflow` from `e869591`, after merging PR #41. The [pre-edit proposal, command behavior and verification](../../AGAP_Platform_Foundation.md#local-development-workflow--6-november-2026) cover root scripts, read-only configuration/migration inspection, configured Compose bindings and owned API/frontend supervision. Robert retains consuming-owner review; package statuses, budgets, production controls and model/financial acceptance are unchanged.
+
 Tracker: [Assignment.md — Robert](../../../Assignment.md#robert). **Current direction: 2 November 2026; the policy-source refinement below supplements ongoing work and the retained goal/5C assignments.** This brief supersedes earlier task directions where they differ; dated implementation evidence below remains intact.
 
 Read the [product](../../AGAP_Product_Solution.md), [architecture](../../AGAP_Production_Architecture.md), [delivery/path boundaries](../../AGAP_Delivery_Plan.md), [design](../../../design.md) and root AGENTS.md. Assignment.md alone records current statuses. The first foundation is a review candidate, not an accepted integration base or production release.
