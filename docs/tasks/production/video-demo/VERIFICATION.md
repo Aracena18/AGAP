@@ -39,3 +39,7 @@ Graph refresh succeeds: 5,310 nodes / 16,233 edges, with the existing unavailabl
 - `graphify update .` completed at **5,310 nodes / 16,233 edges**; the SQL parser/contracts-barrel limitations above remain reported.
 
 The local user checkout retains unrelated modified captures and untracked artifacts. This branch restores only incidental captures in its own initially clean worktree. Publication to main is authorized by the contributor contract after the passing checks; consuming-owner review, representative-user acceptance and production release remain pending.
+
+### Publication and local handoff
+
+Publish checked application source `f7fe359cd1ed8d9dc862e5b65dac35af0564c78d` normally to `main` and verify the remote hash. Fast-forward the original checkout while retaining its eight unrelated modified captures and untracked artifacts. Its migrations report current; restart the existing local API on the current source, retaining normal sign-in, evidence/fictional pilot mode and the same private document directory. Health returns 200 with contract 0.4.0, an unauthenticated member session returns 401, and the member web page returns 200. The visible browser confirms the ordinary Welcome/Sign in screen; no credentials are entered. Final local documentation verification covers 348 targets and six capture hashes. This subsequent publication record changes documentation only; the verified application source is unchanged.
