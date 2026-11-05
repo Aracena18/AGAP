@@ -16,6 +16,8 @@ const actor=(request:MemberRequest)=>{if(!request.member)throw new ApiError(401,
 @Controller('member')
 export class MemberController {
   constructor(@Inject(MEMBER_PLATFORM) private readonly services:MemberServices){}
+  @Post('support-requests/:id/corrections') correctSupport(@Req()r:MemberRequest,@Param('id')id:string,@Body()body:unknown){return this.services.portal.correctSupport(actor(r),id,body,r.headers['idempotency-key']);}
+  @Get('support-requests/:id/correction-link') correctionLink(@Req()r:MemberRequest,@Param('id')id:string){return this.services.portal.supportCorrectionLink(actor(r),id);}
   @Get('auth/login') async login(@Req() request:MemberRequest,@Res() response:Response){
     await limitLogin(this.services.identityDatabase,this.services.config.SESSION_SECRET,request.socket.remoteAddress??'unknown');
     const result=await this.services.identity.beginLogin('member');

@@ -7,8 +7,9 @@ export class ApiClientError extends Error {
 }
 export class ClientTransport {
   constructor(private readonly baseUrl = '/api/v1', private readonly fetcher: typeof fetch = fetch) {}
-  protected async request<T>(method: string, path: string, body: unknown, schema: z.ZodType<T>, options: RequestOptions): Promise<T> {
+  protected async request<T>(method: string, path: string, body: unknown, schema: z.ZodType<T>, options: RequestOptions,queryInput?:Record<string,string|number|boolean>): Promise<T> {
     const query = new URLSearchParams();
+    for(const [name,value] of Object.entries(queryInput??{}))query.set(name,String(value));
     if (options.cursor) query.set('cursor', options.cursor);
     if (options.limit !== undefined) query.set('limit', String(options.limit));
     const headers = new Headers({ Accept: 'application/json' });

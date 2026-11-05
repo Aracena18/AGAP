@@ -5,8 +5,13 @@ export interface Operation {
   request?: SchemaName; owner: 'Robert' | 'Aaron' | 'Benedict' | 'Earl'; implemented: boolean;
   versioned?: boolean; idempotent?: boolean; public?: boolean; principal?:'member'; binary?:boolean; binaryResponse?:boolean;
   pathParameters?: Record<string,SchemaName>;
+  querySchema?:SchemaName;
+  pageLimit?:number;
 }
 export const operations = [
+  {id:'createTrialBalance',method:'POST',path:'/accounting/trial-balances',request:'TrialBalanceCreate',response:'TrialBalanceRun',owner:'Earl',implemented:true,idempotent:true},
+  {id:'listTrialBalances',method:'GET',path:'/accounting/trial-balances',response:'TrialBalancePage',owner:'Earl',implemented:true,pageLimit:20},
+  {id:'getTrialBalance',method:'GET',path:'/accounting/trial-balances/{id}',response:'TrialBalanceRun',owner:'Earl',implemented:true},
   {id:'listSupportRequests',method:'GET',path:'/support-requests',response:'SupportPage',owner:'Earl',implemented:true},
   {id:'getSupportRequest',method:'GET',path:'/support-requests/{id}',response:'SupportDetail',owner:'Earl',implemented:true},
   {id:'assignSupportRequest',method:'POST',path:'/support-requests/{id}/assignments',request:'SupportAssignment',response:'SupportSummary',owner:'Earl',implemented:true,idempotent:true,versioned:true},
@@ -49,6 +54,9 @@ export const operations = [
   {id:'listMemberLoans',method:'GET',path:'/member/loans',response:'MemberLoansView',owner:'Robert',implemented:true,principal:'member'},
   {id:'listMemberSupport',method:'GET',path:'/member/support-requests',response:'MemberSupportView',owner:'Robert',implemented:true,principal:'member'},
   {id:'createMemberSupport',method:'POST',path:'/member/support-requests',request:'MemberSupportCreate',response:'MemberSupport',owner:'Robert',implemented:true,idempotent:true,principal:'member'},
+  {id:'correctMemberSupport',method:'POST',path:'/member/support-requests/{id}/corrections',request:'SupportCorrectionCreate',response:'MemberSupport',owner:'Earl',implemented:true,idempotent:true,principal:'member'},
+  {id:'getMemberSupportCorrectionLink',method:'GET',path:'/member/support-requests/{id}/correction-link',response:'SupportCorrectionLink',owner:'Earl',implemented:true,principal:'member'},
+  {id:'getCheckInSummary',method:'GET',path:'/check-in-summary',querySchema:'CheckInSummaryQuery',response:'CheckInSummary',owner:'Earl',implemented:true},
   { id: 'getSession', method: 'GET', path: '/session', response: 'Session', owner: 'Robert', implemented: true },
   { id: 'getCapabilities', method: 'GET', path: '/capabilities', response: 'Capabilities', owner: 'Robert', implemented: true, public: true },
   { id: 'listStaff', method: 'GET', path: '/staff', response: 'StaffPage', owner: 'Robert', implemented: true },
