@@ -76,3 +76,8 @@ Fresh [phone analysis](screenshots/pr40-recheck/analysis-320.png) and [desktop a
 ### Final presentation and publication gate
 
 All **four presentation-mode cases pass** separately (exit 0, 20.2 seconds), after the ordinary suite shuts down. Whitespace, resolved index and **263 local documentation targets** pass. The verified combination retains latest parent `23c93e3` and prior fork `c116987`. Full checks use isolated PostgreSQL ports 55483/55484; browser checks use 55485/55486, with web/API ports 5207/4143/4144. No developer database is reset. Normal non-force source-branch publication follows these results; no parent PR merge or institutional release is authorized by this task.
+
+
+### Renewed source publication — 6 November 2026
+
+Normal non-force publication of verified combined source `5752a97d02fe862d970fa7fca30a1fc04f94d9a4` to the existing fork main succeeds. GitHub reports PR #40 **OPEN, MERGEABLE / CLEAN** against parent `23c93e3`; no merge is performed. [Fork CI for this source](https://github.com/joohhhnnnny/AGAP/actions/runs/42081095071) is in progress at publication, not a claimed remote pass. This follow-up changes documentation only. The four task-only database containers are removed after verification; existing developer services and unrelated checkout edits/artifacts are preserved.
