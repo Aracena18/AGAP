@@ -1,5 +1,9 @@
 # AGAP production architecture
 
+## VID-03 local recording sign-in override
+
+The explicitly requested password-only recording mode reuses `LOCAL_PREVIEW_PASSWORD_ONLY`, guarded in both configuration loading and application construction. It selects the dedicated localhost preview OIDC client for both audiences, retaining audience-bound state, PKCE, nonce/signature checks, opaque scoped sessions and actual assurance1. No realm-wide OTP disable or invented MFA claim is used. Real/production/non-loopback settings are denied; privileged fresh-MFA checks remain authoritative. This supersedes the earlier recording MFA requirement only for the local fictional take.
+
 ## VID-02 fictional recording boundary
 
 The development/test review module owns append-only `reviews.prepared_packets`, restricted current-basis reads and the safe recommendation projection. Runtime has no packet-publication permission. Only explicit localhost operator preparation authors packets and accounts. The actual existing recommendation transaction writes a minimal immutable projection through a trigger; member reads do not receive access to the private recommendation body. Existing organization/branch/own-member access checks and normal OIDC sessions remain authoritative. Financial comparison uses the shared engine. No startup seeding, model-serving deployment, lending-authority bypass or production release is introduced. This implementation is a fictional recording aid; see [VID-02](tasks/production/two-minute-recording/IMPLEMENTATION.md).

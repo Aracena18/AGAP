@@ -16,10 +16,11 @@ async function main(){
   const realm=await (await admin('')).json() as {displayName:string};
   if(realm.displayName!=='AGAP fictional training')throw new Error('Unexpected identity realm.');
   const imported=JSON.parse(await readFile('infra/keycloak/agap-realm.json','utf8')) as {clients:{clientId:string;attributes:Record<string,string>}[]};
-  const client=imported.clients.find(item=>item.clientId==='agap-local-preview');
-  if(!client)throw new Error('Preview fixture missing.');
+  const template=imported.clients.find(item=>item.clientId==='agap-local-preview');
+  if(!template)throw new Error('Preview fixture missing.');
   const existing=await (await admin('/clients?clientId=agap-local-preview')).json() as {id:string;attributes?:Record<string,string>}[];
   if(existing.length>1||existing[0]&&existing[0].attributes?.['agap.local-preview']!=='true')throw new Error('Refusing to replace an unrelated client.');
+  const client={...template,redirectUris:[...new Set([...(template as unknown as {redirectUris:string[]}).redirectUris,`${config.PUBLIC_ORIGIN}/api/v1/auth/callback`,`${config.PUBLIC_ORIGIN}/api/v1/member/auth/callback`])]};
   await admin(existing[0]?`/clients/${existing[0].id}`:'/clients',existing[0]?'PUT':'POST',client);
   const users=await (await admin('/users?username=administrator&exact=true')).json() as {id:string;username:string;requiredActions?:string[]}[];
   const user=users[0];

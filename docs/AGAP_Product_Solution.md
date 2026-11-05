@@ -1,5 +1,7 @@
 # AGAP product solution and feature priorities
 
+The user's6 November follow-up temporarily changes local recording sign-in to email/password only (VID-03), preserving prepared cases and existing authenticator enrollments. This supersedes the earlier recording MFA step for the current take; production identity expectations are unchanged.
+
 ## Recording implementation — VID-02, 6 November 2026
 
 The two-minute recording path now has an explicitly fictional prepared application: normal member/officer sign-in, stored supporting files, saved source-bound answers and confirmed facts, dated financial assessment, requested-term attention ordering, five-C evidence findings without percentages, and an actual saved officer recommendation visible to the member. The zero-charge example compares three payments before payday with six after payday under an explicit repair assumption. It does not predict future events, establish personal honesty/document authenticity, or grant final approval. Live trained-model deployment and evaluated production controls remain separate work. Preparation preserves real file-check statuses and earlier immutable takes. See [recording runbook](tasks/production/two-minute-recording/RUNBOOK.md).

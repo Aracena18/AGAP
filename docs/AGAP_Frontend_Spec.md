@@ -1,5 +1,9 @@
 # AGAP frontend specification
 
+## VID-03 temporary local password-only recording login
+
+On the user's6 November request, recording startup defaults `LOCAL_PREVIEW_PASSWORD_ONLY=true`. Both member and staff use the existing scoped, signed OIDC/PKCE flow through the local preview client at assurance1. Session/callback audiences remain separated; staff sessions record `single_factor`, never MFA. The fictional pilot accepts this explicit opt-in only in fictional loopback development with local databases and a loopback API bind, including direct application construction. Production, real records, test-mode activation and remote endpoints reject this setting. Default non-recording deployments remain MFA-first; explicit MFA step-up and commands requiring fresh MFA remain enforced. Prepared financial packets/recommendations and account credentials are unchanged. `LOCAL_PREVIEW_PASSWORD_ONLY=false` restores the previous recording MFA path. [Recording guide](tasks/production/two-minute-recording/RUNBOOK.md).
+
 ## VID-02 prepared recording review (implemented fictional development/test)
 
 Two authenticated read operations, `getPreparedReview` and own-member `getMemberPreparedReview`, return absent/stale/ready. Ready includes the same current workflow, persisted source-bound clarification history, an immutable operator-authored scenario/five-C packet, shared-engine baseline/what-if comparisons and a restricted current recommendation projection. Packets bind application/input version, sources, facts, drafts, configured offers, saved assessment and clarification revision. Workflow-only recommendation transitions retain the packet; material changes return stale with no old packet body. A recorded separate decision directs the user to the existing application decision view.
