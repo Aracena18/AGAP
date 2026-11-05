@@ -1,5 +1,5 @@
 import { describe,it,expect } from 'vitest';
-import { buildReview,compareAttention,materialBasis,type View,type Assumptions } from './analysis';
+import { buildReview,canConsider,compareAttention,materialBasis,type View,type Assumptions } from './analysis';
 
 function fixture():View{
  const rows=[['opening',100000,'2026-01-01'],['income',200000,'2026-01-15'],['expense',50000,'2026-01-20'],['obligation',25000,'2026-01-15']] as const;
@@ -55,5 +55,15 @@ describe('entered-application demonstration analysis',()=>{
   const view=fixture();view.facts[1].input.value={availability:'recorded',amountCentavos:0};
   const result=buildReview(view,{...assumptions,expense:{label:'Explicit large stress assumption',amount:Number.MAX_SAFE_INTEGER,date:'2026-01-25'}});
   expect(result.priority).toBe('clarification');expect(result.recommended).toBeNull();expect(result.issues.join()).toContain('supported calculation range');
+ });
+ it('retains positive configured minima in stress ranking and follow-up eligibility',()=>{
+  const view=fixture(),baseline=structuredClone(buildReview(view,assumptions).options[0].baseline);
+  baseline.lowestBalanceCentavos=100000;baseline.daily=baseline.daily.map(d=>({...d,balanceCentavos:d.date<'2026-01-15'?100000:200000}));baseline.months=[{month:'2026-01',remainingCentavos:100000}];
+  baseline.checks=[{id:'cash-timing',passed:true,actualCentavos:100000,minimumCentavos:50000,detail:'Configured cash minimum'},{id:'remaining:2026-01',passed:true,actualCentavos:100000,minimumCentavos:50000,detail:'Configured monthly minimum'}];
+  view.facts[0].input.value={availability:'recorded',amountCentavos:100000};
+  view.latestAssessment={id:'saved',applicationId:view.applicationId,inputVersion:view.inputVersion,policyVersionId:'policy',engineVersion:'dated-cash-flow-v4',createdAt:'2026-01-01T00:00:00Z',periodStart:assumptions.start,periodEnd:assumptions.end,status:'complete',issues:[],scenarios:[baseline],stale:false};
+  const a={...assumptions,expense:{label:'Repair',amount:60000,date:'2026-01-12'}},r=buildReview(view,a);
+  expect(r.recommended?.stressChecks).toMatchObject([{id:'cash-timing',minimumCentavos:50000,actualCentavos:40000,passed:false},{id:'remaining:2026-01',minimumCentavos:50000,passed:false}]);
+  expect(r.priority).toBe('urgent');expect(canConsider(r.recommended,a)).toBe(false);
  });
 });

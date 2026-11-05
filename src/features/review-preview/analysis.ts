@@ -7,7 +7,7 @@ import { isCalendarDate } from '../../domain/format';
 export type View = z.output<typeof WorkflowView>;
 export type Scenario = z.output<typeof WorkflowScenario>;
 export interface Assumptions { start:string; end:string; reserve:number|null; expense:null|{label:string;amount:number;date:string} }
-export interface Option { offerId:string;label:string;baseline:Scenario;stressed:ReturnType<typeof cashFlow>|null }
+export interface Option { offerId:string;label:string;baseline:Scenario;stressed:ReturnType<typeof cashFlow>|null;stressChecks:Scenario['checks']|null }
 export type Review = ReturnType<typeof buildReview>;
 export function materialBasis(view:View) { return JSON.stringify([view.applicationId,view.inputVersion,view.sources,view.facts,view.offers,view.latestAssessment]); }
 
@@ -49,20 +49,31 @@ export function buildReview(view:View, assumptions:Assumptions) {
       stressed=cashFlow(opening.amountCentavos,assumptions.start,assumptions.end,movements);
       } catch { issues.push('The hypothetical scenario exceeds the supported calculation range.'); }
     }
-    return {offerId:baseline.offerId,label:baseline.label,baseline,stressed};
+    const stressChecks=stressed?baseline.checks.map(check=>{
+      const actual=check.id==='cash-timing'?stressed!.lowest:check.id.startsWith('remaining:')?stressed!.months.find(month=>month.month===check.id.slice('remaining:'.length))?.remainingCentavos:undefined;
+      if(actual===undefined){issues.push('A configured check cannot be evaluated under the hypothetical expense. Ask an officer to save a new assessment.');return {...check,passed:false};}
+      return {...check,actualCentavos:actual,passed:actual>=check.minimumCentavos};
+    }):null;
+    return {offerId:baseline.offerId,label:baseline.label,baseline,stressed,stressChecks};
   });
   if(issues.length)options.length=0;
   const passes=(o:Option)=>o.baseline.checks.every(c=>c.passed);
-  options.sort((a,b)=>Number(passes(b))-Number(passes(a))|| (b.stressed?.lowest??b.baseline.lowestBalanceCentavos)-(a.stressed?.lowest??a.baseline.lowestBalanceCentavos)||a.baseline.financingCostCentavos-b.baseline.financingCostCentavos||a.offerId.localeCompare(b.offerId));
-  const recommended=options.find(passes)??options[0]??null;
+  const stressPasses=(o:Option)=>!o.stressChecks||o.stressChecks.every(c=>c.passed);
+  options.sort((a,b)=>Number(passes(b))-Number(passes(a))||Number(stressPasses(b))-Number(stressPasses(a))||(b.stressed?.lowest??b.baseline.lowestBalanceCentavos)-(a.stressed?.lowest??a.baseline.lowestBalanceCentavos)||a.baseline.financingCostCentavos-b.baseline.financingCostCentavos||a.offerId.localeCompare(b.offerId));
+  const recommended=options.find(o=>passes(o)&&stressPasses(o))??options.find(passes)??options[0]??null;
   const lowest=recommended?(recommended.stressed?.lowest??recommended.baseline.lowestBalanceCentavos):null;
   const shortfall=recommended?recommended.baseline.months.some(m=>m.remainingCentavos<0)||Boolean(recommended.stressed?.months.some(m=>m.remainingCentavos<0)):false;
   const policyFailure=Boolean(recommended?.baseline.checks.some(c=>!c.passed));
+  const stressFailure=Boolean(recommended?.stressChecks?.some(c=>!c.passed));
   let reserveGap:number|null=null;
   try{reserveGap=lowest!==null&&assumptions.reserve!==null?Math.max(0,sumMoney([assumptions.reserve,-lowest])):null;}catch{issues.push('The reserve gap exceeds the supported integer range.');}
-  const priority:'clarification'|'urgent'|'review'|'routine'=issues.length||!recommended?'clarification':shortfall||policyFailure||lowest!==null&&lowest<0?'urgent':reserveGap!==null&&reserveGap>0||pendingDocuments.length||unreviewed.length?'review':'routine';
-  const reason=priority==='clarification'?'Required information is incomplete.':shortfall?'Recorded income and the supplied scenario do not cover a reviewed month.':policyFailure?'Configured financial checks need officer attention.':lowest!==null&&lowest<0?'A dated cash shortage needs attention.':reserveGap!==null&&reserveGap>0?'The selected scenario falls below the entered reserve.':pendingDocuments.length?'Supporting documents still await file checks.':unreviewed.length?'Source suggestions still need human checking.':'No shortfall was found within the supplied scenario; officer verification remains required.';
+  const priority:'clarification'|'urgent'|'review'|'routine'=issues.length||!recommended?'clarification':shortfall||policyFailure||stressFailure||lowest!==null&&lowest<0?'urgent':reserveGap!==null&&reserveGap>0||pendingDocuments.length||unreviewed.length?'review':'routine';
+  const reason=priority==='clarification'?'Required information is incomplete.':shortfall?'Recorded income and the supplied scenario do not cover a reviewed month.':policyFailure?'Configured financial checks need officer attention.':lowest!==null&&lowest<0?'A dated cash shortage needs attention.':stressFailure?'The hypothetical expense falls below configured financial minimums.':reserveGap!==null&&reserveGap>0?'The selected scenario falls below the entered reserve.':pendingDocuments.length?'Supporting documents still await file checks.':unreviewed.length?'Source suggestions still need human checking.':'No shortfall was found within the supplied scenario; officer verification remains required.';
   return {issues:[...new Set(issues)],options,recommended,lowest,shortfall,reserveGap,priority,reason,pendingDocuments,unreviewed,authoritative,relevant};
+}
+
+export function canConsider(option:Option|null,assumptions:Assumptions):boolean {
+  return Boolean(option&&option.baseline.checks.every(c=>c.passed)&&(!option.stressChecks||option.stressChecks.every(c=>c.passed))&&(!option.stressed||option.stressed.lowest>=0&&option.stressed.months.every(m=>m.remainingCentavos>=0))&&(assumptions.reserve===null||(option.stressed?.lowest??option.baseline.lowestBalanceCentavos)>=assumptions.reserve));
 }
 
 export const priorityLabel={urgent:'Priority review',clarification:'Needs clarification',review:'Officer attention',routine:'Routine officer review'};

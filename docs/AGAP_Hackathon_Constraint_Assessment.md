@@ -2,6 +2,18 @@
 
 **VID-01 follow-up:** the subsequent user-requested [signed-in recording preview](tasks/production/video-demo/IMPLEMENTATION.md) adds entered-application expense scenarios, deterministic offer comparison, narrative 5C, suggested attention ordering and a session-only officer follow-up. These are explicitly scripted/template interactions around actual backend intake/evidence; they do not close the live-trained-model, independent prediction/evaluation or production 5C gaps identified below. [Recording instructions](tasks/production/video-demo/RECORDING.md) preserve the origin and final human-decision distinction. The baseline findings below retain their audit date and meaning.
 
+| Clarified requirement | VID-01 recording coverage | Remaining boundary |
+| --- | --- | --- |
+| Member logs in, applies, supplies information/documents | Actual account routes, saved applications/statements and private upload endpoint | File checks/OCR use their actual worker status; upload receipt is not verified content |
+| Examine an overlooked expense and everyday repayment pressure | Explicit dated what-if expense; baseline/hypothetical monthly values, lowest cash, reserve and configured minimum checks | User supplies the assumption; no validated prediction of which emergency will happen |
+| Suggest repayment options | Deterministic comparison and ordering of returned configured offers, with full costs | No invented offers, autonomous negotiation or model-generated lending terms |
+| Rank cases for scarce officer attention | Separate suggested queue ordered by current concern/clarification and original waiting time | Preview order does not replace the authoritative human-substantiated queue or prove reduced workload |
+| Hand off results under the cooperative's 5C headings | Source-referenced narrative Character, Capacity, Capital, Collateral and Conditions, with downloadable snapshot identity/results | No approved numerical rubric; absent history/collateral remain unknown |
+| Recommend for officer review or escalate | Session-only officer follow-up and link to existing guarded decision workspace | No automatic approval; the final recorded decision remains human-controlled |
+| Run the trained model over the entered application | Existing model integration remains separate | VID-01 analysis is visibly scripted/template-based; live inference and evaluation are not established |
+
+[VID-01 verification](tasks/production/video-demo/VERIFICATION.md) supplies the current evidence for this follow-up; the detailed assessment below is the preserved earlier audit.
+
 **Assessment:** 5 November 2026, Asia/Manila, for the 6 November pitch. **Tasks:** PLN-05 follow-up / SHOW-01 evidence packaging, Robert. **Inspected baseline:** main `64b3cea6a68cfd4cf1d8fe3f2d85a833bd8042a0`.
 
 **Clarified finding:** The complete AI-assisted review flow described by the user is **only partially implemented**. In particular, a connected emergency/expense-scenario workflow, automatic generation/ranking of suitable repayment recommendations and runtime 5C handoff are not delivered. The four Part B queue-related additions work in the bounded fictional browser demonstration, and a default-off fictional server pilot supplies connected review controls. Those narrower results do not establish completion of the full solution, elimination of DCCPEC's staffing constraint, reduced review time or fewer essential-needs shortfalls.

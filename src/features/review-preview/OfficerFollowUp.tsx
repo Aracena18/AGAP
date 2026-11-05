@@ -2,13 +2,13 @@ import { useState,type FormEvent } from 'react';
 import { Badge,Button,Notice } from '../../shared/ui';
 import { usePreview,type PreviewFollowUp } from './PreviewContext';
 import type { Assumptions,Option,View } from './analysis';
-import { materialBasis } from './analysis';
+import { materialBasis,canConsider } from './analysis';
 import styles from './preview.module.css';
 
 const labels={consider:'Draft accepted for decision review',clarify:'More information requested',escalate:'Detailed officer review requested'};
 export function OfficerFollowUp({view,assumptions,option,officer,member}:{view:View;assumptions:Assumptions;option:Option|null;officer?:string;member:boolean}){
  const context=usePreview(),basis=materialBasis(view)+JSON.stringify(assumptions)+(option?.offerId??'none'),note=context.followUp(view.applicationId,basis);
- const clear=Boolean(option&&option.baseline.checks.every(c=>c.passed)&&(!option.stressed||option.stressed.lowest>=0&&option.stressed.months.every(m=>m.remainingCentavos>=0))&&(assumptions.reserve===null||(option.stressed?.lowest??option.baseline.lowestBalanceCentavos)>=assumptions.reserve));
+ const clear=canConsider(option,assumptions);
  const [outcome,setOutcome]=useState<PreviewFollowUp['outcome']>(clear?'consider':option?'escalate':'clarify'),[reason,setReason]=useState(''),[checked,setChecked]=useState(false),[error,setError]=useState('');
  function record(event:FormEvent){event.preventDefault();if(!officer)return;if(!reason.trim()||reason.trim().length>2000||!checked){setError('Add the member-visible next step and confirm your review.');return;}if(outcome==='consider'&&!clear){setError('The selected option has incomplete or failed financial checks. Request clarification or detailed review.');return;}context.record(view.applicationId,{basis,outcome,reason:reason.trim(),officer,at:new Date().toISOString(),offerId:option?.offerId??null});setError('');setReason('');setChecked(false);}
  if(member&&!note)return null;

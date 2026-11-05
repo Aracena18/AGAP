@@ -9,7 +9,8 @@ test('entered member application, exact household retry, upload, scenario, 5C an
  const fixture=JSON.parse(await readFile('.platform-test/browser.json','utf8')) as Record<string,string>;
  const dir='docs/screenshots/video-demo';await mkdir(dir,{recursive:true});
  await signInStaff(context,'officer');
- await context.addCookies([{name:'agap_member_session',value:fixture.member,url:origin,httpOnly:true,sameSite:'Lax'}]);
+ // The legacy member journey intentionally signs its own session out.
+ await context.addCookies([{name:'agap_member_session',value:fixture.uiAuditMember,url:origin,httpOnly:true,sameSite:'Lax'}]);
  const officer=(await(await page.request.get('/api/v1/session')).json()).user.id;
  await page.goto('/#/member/apply');
  await page.getByLabel('What is the loan for?',{exact:true}).fill('Household repair review');
@@ -61,6 +62,15 @@ test('entered member application, exact household retry, upload, scenario, 5C an
  for(const name of ['Character','Capacity','Capital','Collateral','Conditions'])await expect(page.getByRole('heading',{name,exact:true})).toBeVisible();
  await expect(page.getByText('A dated cash shortage needs attention.',{exact:true})).toBeVisible();
  await expect(page.getByText('−₱150',{exact:true}).first()).toBeVisible();
+ await expect(page.getByRole('region',{name:'Baseline and hypothetical monthly remaining',exact:true})).toContainText('₱800');
+ await expect(page.getByRole('region',{name:'Baseline and hypothetical monthly remaining',exact:true})).toContainText('₱200');
+ const downloadPromise=page.waitForEvent('download');
+ await page.getByRole('button',{name:'Download 5C draft',exact:true}).click();
+ const download=await downloadPromise,downloadPath=await download.path();
+ expect(downloadPath).toBeTruthy();
+ const draft=await readFile(downloadPath!,'utf8');
+ expect(draft).toContain(`Application: ${id}`);expect(draft).toMatch(/Snapshot SHA-256: [a-f0-9]{64}/);
+ expect(draft).toContain('Financial input version:');expect(draft).toContain('what-if ₱200');expect(draft).toContain('What-if minimum −₱150');expect(draft).toContain('financing cost ₱100');expect(draft).toContain('Source references');
  await page.setViewportSize({width:390,height:844});
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  expect((await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze()).violations).toEqual([]);
@@ -125,7 +135,7 @@ test('entered member application, exact household retry, upload, scenario, 5C an
 
 test('real-record mode offers no scripted review and performs no private preview reads',async({page,context})=>{
  const fixture=JSON.parse(await readFile('.platform-test/browser.json','utf8')) as Record<string,string>;
- await context.addCookies([{name:'agap_member_session',value:fixture.member,url:origin,httpOnly:true,sameSite:'Lax'}]);
+ await context.addCookies([{name:'agap_member_session',value:fixture.uiAuditMember,url:origin,httpOnly:true,sameSite:'Lax'}]);
  let reads=0;
  await page.route('**/api/v1/member/session',async route=>{const response=await route.fetch();await route.fulfill({response,json:{...(await response.json()),recordMode:'real'}});});
  await page.route('**/api/v1/member/applications/*/workflow',async route=>{reads++;await route.continue();});
