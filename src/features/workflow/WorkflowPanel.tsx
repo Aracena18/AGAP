@@ -22,6 +22,7 @@ type View=z.output<typeof WorkflowView>;
 type Fact=z.output<typeof WorkflowFactInput>;
 type Draft=View['drafts'][number];
 type Props={id:string;client:AgapClient;csrf:string;member?:boolean;changed?:()=>void;canEdit?:boolean;canVerify?:boolean};
+export { Upload as WorkflowUpload };
 const empty:Fact={factId:null,relevance:'included',label:'',category:'income',value:{availability:'unavailable',reason:'Not provided'},sourceId:null,sourceVersion:null,statement:'',effectiveDate:'',coverageStart:null,coverageEnd:null,cashDates:[],period:'unknown',basis:'unknown',deduction:'unknown',reason:''};
 const processingLabel={queued:'Waiting for file checks',scanning:'Checking file safety',extracting:'Reading document text',ai:'Preparing suggestions',available:'Ready for review',failed:'Needs attention',manual:'Manual entry available'};
 const pesos=(n:number)=>`${Math.trunc(n/100)}.${String(n%100).padStart(2,'0')}`;
@@ -58,11 +59,12 @@ export function WorkflowPanel({id,client,csrf,member=false,changed,canEdit=true,
  {editing&&!editing.draft&&!editing.fact.factId&&<div ref={editor} tabIndex={-1}><FactForm key="new" initial={editing.fact} draft={editing.draft} view={editing.basis} currentVersion={read.loading||read.error?null:read.data?.version??null} id={id} client={client} csrf={csrf} member={member} saved={()=>{closeEditor();refresh();}} cancel={closeEditor}/></div>}
  </>}</section>{read.data&&<>{!member&&canEdit&&<AssessmentForm view={read.data} id={id} client={client} csrf={csrf} saved={refresh}/>}<Assessment result={read.data.latestAssessment} member={member}/>{!member&&<History id={id} client={client} revision={read.data.version}/>}</>}</div>;
 }
-function Upload({id,client,csrf,member,saved}:{id:string;client:AgapClient;csrf:string;member:boolean;saved:()=>void}){
+function Upload({id,client,csrf,member,saved,onBusy,disabled=false}:{id:string;client:AgapClient;csrf:string;member:boolean;saved:()=>void;onBusy?:(value:boolean)=>void;disabled?:boolean}){
  const inputId=useId(),[file,setFile]=useState<File|null>(null),[error,setError]=useState(''),command=useCommand<File,unknown>();
  useUnsavedChanges(!!file||command.uncertain,command.uncertain);
+ useEffect(()=>{onBusy?.(command.saving||command.uncertain);return()=>onBusy?.(false);},[onBusy,command.saving,command.uncertain]);
  async function upload(e:FormEvent){e.preventDefault();setError('');if(!file)return;if(!['application/pdf','image/jpeg','image/png'].includes(file.type)||!file.size||file.size>10485760){setError('Choose a PDF, JPEG or PNG no larger than 10 MB.');return;}const result=await command.submit(file,(body,key)=>(member?client.uploadMemberDocument(id,body,{fileName:body.name,mediaType:body.type as 'application/pdf',size:body.size},{csrfToken:csrf,idempotencyKey:key}):client.uploadStaffDocument(id,body,{fileName:body.name,mediaType:body.type as 'application/pdf',size:body.size},{csrfToken:csrf,idempotencyKey:key})));if(result){setFile(null);saved();}}
- return <form className="stack" onSubmit={e=>void upload(e)}><h3>Upload a document</h3><p className="small subtle">PDF, JPEG or PNG · up to 10 MB</p><div className="field"><label htmlFor={inputId}>Supporting document</label><input id={inputId} type="file" accept="application/pdf,image/jpeg,image/png" disabled={command.saving||command.uncertain} onChange={e=>setFile(e.target.files?.[0]??null)}/></div>{(error||command.error)&&<Notice tone="danger" role="alert">{error||command.error}</Notice>}<div><Button type="submit" disabled={!file||command.saving}>{command.saving?'Uploading…':command.uncertain?'Retry same upload':'Upload document'}</Button></div></form>;
+ return <form className="stack" onSubmit={e=>void upload(e)}><h3>Upload a document</h3><p className="small subtle">PDF, JPEG or PNG · up to 10 MB</p><div className="field"><label htmlFor={inputId}>Supporting document</label><input id={inputId} type="file" accept="application/pdf,image/jpeg,image/png" disabled={disabled||command.saving||command.uncertain} onChange={e=>setFile(e.target.files?.[0]??null)}/></div>{(error||command.error)&&<Notice tone="danger" role="alert">{error||command.error}</Notice>}<div><Button type="submit" disabled={disabled||!file||command.saving}>{command.saving?'Uploading…':command.uncertain?'Retry same upload':'Upload document'}</Button></div></form>;
 }
 function StaffGuidanceFactForm(props:Parameters<typeof FactForm>[0]){
  const [basis]=useState(props.view),[draft]=useState(props.draft);
