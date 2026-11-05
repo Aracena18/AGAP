@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { CalendarDate, Money } from '../../../src/domain/types.js';
 
-export const CONTRACT_VERSION = '0.3.0';
+export const CONTRACT_VERSION = '0.4.0';
 export const Id = z.uuid();
 export const MoneyAmount: z.ZodType<Money> = z.number().int().min(0).max(Number.MAX_SAFE_INTEGER);
 export const SignedMoney: z.ZodType<Money> = z.number().int().min(Number.MIN_SAFE_INTEGER).max(Number.MAX_SAFE_INTEGER);

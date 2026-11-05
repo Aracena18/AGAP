@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "financial_semantics_verified": {
+          "type": "boolean",
+          "const": false
+        },
+        "loan_decision_permitted": {
+          "type": "boolean",
+          "const": false
+        },
+        "attempts_used": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2
+        },
+        "status": {
+          "type": "string",
+          "const": "REQUIRES_HUMAN_REVIEW"
+        },
+        "reasons": {
+          "minItems": 0,
+          "maxItems": 0,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "issue_code": {
+              "type": "string",
+              "enum": [
+                "NO_ISSUE",
+                "DOCUMENT_DISCREPANCY",
+                "SOURCE_CONFLICT",
+                "ONE_OFF_EXPENSE",
+                "RECURRING_PATTERN",
+                "INSUFFICIENT_EVIDENCE"
+              ]
+            },
+            "evidence": {
+              "minItems": 1,
+              "maxItems": 12,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "source_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[a-zA-Z0-9._:-]+$"
+                  },
+                  "quote": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 6000
+                  },
+                  "verification_status": {
+                    "type": "string",
+                    "const": "source_asserted_not_independently_verified"
+                  }
+                },
+                "required": [
+                  "source_id",
+                  "quote",
+                  "verification_status"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "finding": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            "clarification_question": {
+              "type": "string",
+              "maxLength": 1200
+            },
+            "review_status": {
+              "type": "string",
+              "const": "requires_human_review"
+            },
+            "loan_decision": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "issue_code",
+            "evidence",
+            "finding",
+            "clarification_question",
+            "review_status",
+            "loan_decision"
+          ],
+          "additionalProperties": false
+        },
+        "source_text_match_verified": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "required": [
+        "financial_semantics_verified",
+        "loan_decision_permitted",
+        "status",
+        "reasons",
+        "payload",
+        "source_text_match_verified"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "financial_semantics_verified": {
+          "type": "boolean",
+          "const": false
+        },
+        "loan_decision_permitted": {
+          "type": "boolean",
+          "const": false
+        },
+        "attempts_used": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2
+        },
+        "status": {
+          "type": "string",
+          "const": "REJECT_AND_ESCALATE"
+        },
+        "reasons": {
+          "minItems": 1,
+          "maxItems": 32,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "payload": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "financial_semantics_verified",
+        "loan_decision_permitted",
+        "status",
+        "reasons",
+        "payload"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+# Fictional, private, disposable pilot image. Operator credentials are injected
+# only into the tools service; API/worker never receive the owner credential.
+FROM node:24-bookworm
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --no-audit --no-fund
+COPY . .
+RUN npm run contracts:check && npm run build && npm run api:build && npm run worker:build
+RUN apt-get update && apt-get install -y --no-install-recommends poppler-utils tesseract-ocr tesseract-ocr-eng python3-pil && rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /private-documents && chown node:node /private-documents
+USER node
+CMD ["node", "dist-api/main.js"]

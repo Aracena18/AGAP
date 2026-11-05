@@ -98,6 +98,7 @@ export class ServicingService {
         const initial = await this.repository.command(tx, id);
         await this.ports.authorize(tx, initial.applicationId);
         return command(tx, `servicing.observe:${id}`, key, { id, data, version }, async () => {
+          if((await tx.query('SELECT id FROM servicing.staff_money_commands WHERE organization_id=$1 AND id=$2',[actor.organizationId,id])).rowCount)throw new ApiError(409,'legacy_adopted','Use the current posted command and the separate correction workflow.');
           // Known movement intake intentionally does not reload release/source prerequisites.
           const authority = await this.ports.observationAuthority(tx, initial.applicationId);
           await this.repository.lockApplication(tx, initial.applicationId);

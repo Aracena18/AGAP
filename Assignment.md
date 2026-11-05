@@ -14,6 +14,10 @@ The [product solution](docs/AGAP_Product_Solution.md) governs scope; the [archit
 
 The user explicitly approves coordinated implementation across Robert's shared/platform/member paths and Aaron's EVD-01/CRD-01/AI-01 paths in this chat, on `codex/evidence-affordability` over `312c6f8`. This is a task-specific authorization, not a permanent ownership transfer or independent acceptance. The [0.3.0 proposal](docs/AGAP_Evidence_Assessment_Contract_Proposal.md), [implementation/evidence and release blockers](docs/AGAP_Evidence_Workflow_Delivery.md) and [cost proposal](docs/AGAP_Hosting_Cost_Proposal.md) govern this supplied slice. The current milestone includes AI extraction code now; actual inference/evaluation, Azure quotas/eligibility, budget and institutional release remain required external inputs. No paid provisioning, DNS changes or real records are enabled.
 
+## Experiment F / fictional lifecycle implementation — 5 November 2026
+
+The user authorizes implementation of the complete selected plan: Experiment F import/private inference, PLN-05 server review/queue/escalation, dated decisions/member acceptance, principal-only simulated money/GL/support and a credit-only Azure pilot. Work is isolated on `codex/model-lifecycle-pilot`; [proposal](docs/AGAP_Experiment_F_Pilot_Contract_Proposal.md) precedes shared edits and [delivery evidence](docs/AGAP_Experiment_F_Pilot_Delivery.md) records actual checks/external gates. QWN-01/AI-01/EVD-01/CRD-01/DEC-01/PAY-01/FND-03/SHOW-01 remain **In progress** for this coordinated slice; existing owner/capacity and independent acceptance statuses are not replaced. Application/HTTP/browser candidate verification is supplied in the delivery record. Actual GPU/scanner/cloud/normal-identity/restore evidence remains required before completion. The new student account signs in, but Australia East A100 has zero family quota and NotAvailableForSubscription; credit balance/expiry is not inferred from the USD100 benefit. No paid resource or fallback is deployed. Direct checked main publication remains authorized; no PR is requested.
+
 ## Team ownership
 
 | Person | Role | Exclusive responsibility | Current task brief |
@@ -338,3 +342,21 @@ Robert owns PLN-04/FND-05 shared contract/integration proposals; Aaron owns CRD-
 5 November 2026 — UI-08 verification: final full checks pass (226 UI/domain, 611 platform/database, 91 evaluation, 111 normal browser tests and four separately enabled presentation cases). All seven member routes at 320/390/768/1366px have no page/main horizontal overflow or automated axe findings; the browser suite retains guarded server drafts, exact-centavo input, uncertain same-key retry, consent/focus, access clearing and history paging. Visual comparison found/corrected bottom-bar overlap before the final run; [evidence and limits](docs/AGAP_UI_Review_Verification.md#ui-08--mobile-first-member-portal--5-november-2026) and the [QA report](design-qa.md) record the supplied candidate. UI-08 is Ready for review, not representative/owner acceptance. `graft`/`graphify` and physical Android/iPhone devices are unavailable. Other package states and the core64 estimate remain unchanged.
 
 5 November 2026 — UI-08 publication: the user explicitly approved pushing the verified redesign to `origin/main`; normal publication of `d5b7f47` succeeded. The exact verified tree is integrated in the original main checkout, retaining all three unrelated untracked files. Fresh live in-app-browser Home/application/install-dialog checks and an error-free browser log supplement the [verification record](docs/AGAP_UI_Review_Verification.md#ui-08--mobile-first-member-portal--5-november-2026). This documentation/evidence follow-up does not change application source, task acceptance, device limitations or institutional release status.
+
+5 November 2026 — AI execution follow-up: the user prioritizes making Experiment F
+run after student A100 access failed and explicitly authorizes free compute or
+existing student-credit billing with no subscription upgrade or out-of-credit
+fallback. QWN-01/AI-01/SHOW-01 CPU compatibility investigation on
+`codex/model-inference-runtime` executes the unchanged `unsloth/Qwen3.5-2B` base
+and Experiment F adapter offline in `float32` on a bounded `Standard_B4as_v2`
+VM in `koreacentral` (`$8.374` 2-hour total forecast under the `$10.00` cap).
+Both `run-4-review` (`68,863 ms` Experiment F `/review`, peak RSS `14.02 GB`)
+and `run-5-full` (`119,581 ms` clean `/extract`, `69,597 ms` Experiment F
+`/review`, `119,892 ms` disabled `/extract`, `cleanDisabledParity: true`,
+`extractionStableAcrossReview: true`, peak RSS `14.44 GB`) pass with verified
+exported evidence (`92d2b847e40eca743faee63a96d44d414e8d236d6f23e2ab7adb5ea78f31bcba`),
+and the temporary VM and resource group are deallocated and deleted (`[]`
+remaining pilot groups). See [CPU experiment record](infra/azure/pilot/CPU_EXPERIMENT.md)
+and [pilot delivery](docs/AGAP_Experiment_F_Pilot_Delivery.md#student-credit-cpu-model-execution--5-november-2026).
+CUDA/BF16 GPU execution, live HTTP `/extract` within the 90s GPU deadline,
+independent evaluation and release gates remain unchanged.
