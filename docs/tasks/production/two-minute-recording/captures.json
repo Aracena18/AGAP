@@ -1,0 +1,81 @@
+{
+  "recordedAt": "2026-11-05T20:09:37.944140+00:00",
+  "codeVerificationBase": "729bdf3",
+  "fictional": true,
+  "desktopViewport": [
+    1366,
+    900
+  ],
+  "phoneViewport": [
+    390,
+    844
+  ],
+  "credentialsIncluded": false,
+  "files": [
+    {
+      "path": "screenshots/member-documents.png",
+      "sha256": "f644784e88b1f35131375890298c61554c84796850fc3b40869752ac7bea13ac",
+      "bytes": 91401
+    },
+    {
+      "path": "screenshots/member-five-c.png",
+      "sha256": "6e69196239b2be1881dd8873b7c355c6cabcc4eacb05f333ef5f69c8763947f6",
+      "bytes": 97828
+    },
+    {
+      "path": "screenshots/member-mobile.png",
+      "sha256": "0928694779c3f5a2fd5049684a7fdd190ea830643ab65864a6d9181f9fd8883d",
+      "bytes": 54725
+    },
+    {
+      "path": "screenshots/member-recommendation.png",
+      "sha256": "032a07dd7d60fb70a244521e9c3159fe113768b88412a1e6690d79cfd39a1719",
+      "bytes": 98725
+    },
+    {
+      "path": "screenshots/member-review.png",
+      "sha256": "da4fb2a04416f26ffab6ce8b46f242684ac2fe133f3c63591dd3b0718df503d6",
+      "bytes": 98743
+    },
+    {
+      "path": "screenshots/officer-confirmation.png",
+      "sha256": "97c364f4ec58fda9502d3cb36610f52f33ff347250b084b64feb9a949dcd5224",
+      "bytes": 85774
+    },
+    {
+      "path": "screenshots/officer-five-c.png",
+      "sha256": "1eee8213054897bc27c99d7d563e6ddc0926a3a86588ef44a18850203699b355",
+      "bytes": 107768
+    },
+    {
+      "path": "screenshots/officer-mobile.png",
+      "sha256": "a55027cd53860660ef69af45673b375c5ce7b4914e229a4ddb0d094a73ba809e",
+      "bytes": 54799
+    },
+    {
+      "path": "screenshots/officer-queue.png",
+      "sha256": "4f0935f8566e8f17c490b5cd71cdbf68f719eb86dfb6a609878f41cc10db2136",
+      "bytes": 105568
+    },
+    {
+      "path": "screenshots/officer-review.png",
+      "sha256": "85cf3ee76a670d244865f323a93dda51e161507ad78f809d3c29512ef569d5ec",
+      "bytes": 109575
+    },
+    {
+      "path": "screenshots/officer-schedule.png",
+      "sha256": "2f956b0d57e0149a016925132db4d83ebd239d068be9e56a681c268d231ca8da",
+      "bytes": 116005
+    },
+    {
+      "path": "screenshots/officer-uncertain.png",
+      "sha256": "d78616880d569b24c5736e88df43451227da1b9b0babca3a6cf247955a6803bf",
+      "bytes": 88353
+    },
+    {
+      "path": "screenshots/recording-ready-queue.png",
+      "sha256": "f446b78d22ad697be3d1a66ee5a8b3166eaadc55bda5a9ab81eb7ed095852b48",
+      "bytes": 105199
+    }
+  ]
+}
