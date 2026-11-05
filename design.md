@@ -746,7 +746,6 @@ The editor starts from recorded message/contact/check-in/loan context and requir
 
 Keep unsent text visible through stale/concurrent-update and transient refresh failures. Require explicit discard or navigation confirmation before leaving it; uncertain saves preserve exact retry details and disable conflicting actions. Later permission denial removes the complete source/editor. Focus opened headings and errors, announce refresh/success states, preserve full long text at 320px and retain Help navigation. Real-record UI remains unavailable pending release approval. Representative/consuming-owner acceptance is separate from these implemented examples.
 
-
 ## 28. Signed-in recording review — VID-01, 5 November 2026
 
 Extend the existing member application with Open repayment review and the normal staff workspace with Analysis queue and application analysis. Preserve the member Nunito/staff Google Sans roles, Gabay colors, shared controls and normal account navigation. Do not add preset personas, simulated role selectors or an alternative login. The existing intake, upload and decision flows keep their actual state and authority.
@@ -768,6 +767,13 @@ Cash dates use individually labeled native date/calendar controls, with Add date
 
 Top-align amount labels and cash-date legends so their first inputs share a baseline on desktop. Stack complete amount/date groups at 320px; date controls and removal actions must fit without clipping. Reuse the member Nunito face, workspace tokens, shared buttons and approved Gabay guiding image in a quiet green header. Use clear peso prefixes and tonal fields consistent with UI-10. Keep guidance beside its group, explicit zero/coverage/payroll confirmation and all existing save/retry boundaries. This is an implemented refinement, not a new visual system or a financial-policy change.
 
+## 29. Connected fictional financial operations — 6 November 2026
+
+Financial roles enter a bounded financial-application list and open the exact accepted principal/terms before creating a pending origination or preparing a release. Use existing staff panels, fields, Money, notices, buttons and responsive figure/table controls. A pending origination, prepared command, submitted intent, recorded settlement and posted result are distinct visible states. State plainly that this principal-only demonstration moves no real funds and that interest/fees are explicit configured zeros only for its fictional product.
+
+Retain the existing loan workspace for the posted position, original schedule, command history and one selected printable saved receipt. Show posting instants with their Manila date, time and timezone; keep contractual dates as calendar dates. Require a recorded action reason. Show the exact next scheduled repayment and its manual simulation method before preparation; retain those reviewed values in the uncertain retry. A preparer cannot authorize their own command. Conflicting known evidence shows a financial-review hold and disables posting. Unknown outcomes refer to the original saved intent; they never offer a replacement transfer. Fictional settlement is generated server-side from that intent, and posting is a separate authorized action.
+
+Keep unsaved reasons, stable request/key/version retries, disabled competing writes, independent refresh after confirmed saves, clear unavailable states and later access-denial clearing. Phone layouts wrap long identifiers and preserve all monetary fields; tables use named, keyboard-reachable scrolling regions. Announce results/errors and focus confirmed origination/release headings. Real operations, unsupported financial components, institutional approval and representative acceptance remain separate gates.
 
 ## 29. Staff queue hierarchy — UI-12, 6 November 2026
 

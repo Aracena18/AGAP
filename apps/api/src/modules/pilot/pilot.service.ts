@@ -1,6 +1,7 @@
+import {publicMoneyCommand as publicCommand} from '../servicing/public-money.js';
 import { createHash } from 'node:crypto';
 import type { ActorContext, MemberActorContext, MemberUnitOfWork, UnitOfWork } from '../../../../../packages/contracts/src/ports.js';
-import { CommandReceiptSchema, PilotDecisionPreviewSchema, FinancialCommandCreateSchema, FinancialCommandSchema, OfferSchema, Id, MemberAcceptanceSchema } from '../../../../../packages/contracts/src/schemas.js';
+import { CommandReceiptSchema, PilotDecisionPreviewSchema, FinancialCommandCreateSchema, OfferSchema, Id, MemberAcceptanceSchema } from '../../../../../packages/contracts/src/schemas.js';
 import { PilotMoneyApplication, PilotMoneyApplicationPage, PilotMoneyApplicationQuery, PilotLoanWorkspace, PilotPostedResult, PilotAction, PilotConflictDeclaration, PilotDecisionRecord, PilotHistory, PilotSavedBrief, PilotMemberDecision, PilotOrigination, PilotSimulationObservation, PilotWorkspace } from '../../../../../packages/contracts/src/lifecycle.js';
 import { command, recordEvent } from '../../platform/commands.js';
 import { ApiError } from '../../platform/errors.js';
@@ -15,12 +16,9 @@ import { MoneyService } from '../servicing/money.service.js';
 import { MoneyRepository } from '../servicing/money.repository.js';
 import { LoanReads } from '../servicing/loan-reads.js';
 import { AccountingService } from '../accounting/accounting.service.js';
-import type { Command, DeepReadonly } from '../servicing/context.js';
-import type { MoneyCommand } from '../servicing/money-context.js';
 import { PilotProducers, type PilotReadiness } from './producers.js';
 import { WorkflowService } from '../evidence/workflow.service.js';
 
-function publicCommand(c:DeepReadonly<Command|MoneyCommand>){if(!('payload' in c))throw new ApiError(503,'command_unavailable','The saved command amount is unavailable.');return FinancialCommandSchema.parse({id:c.id,loanId:c.loanId,version:c.version,amountCentavos:c.payload.amountCentavos,currency:'PHP',state:c.state,preparedBy:c.preparedBy,authorizedBy:c.authorization?.userId??null,providerReference:c.observations.at(-1)?.input.providerReference??null,receiptId:'posting'in c?c.posting?.receiptId??null:c.receiptId,journalId:'posting'in c?c.posting?.journalId??null:c.journalId});}
 function uuid(text:string){const h=createHash('sha256').update(text).digest('hex');return `${h.slice(0,8)}-${h.slice(8,12)}-4${h.slice(13,16)}-a${h.slice(17,20)}-${h.slice(20,32)}`;}
 export class PilotService{
  readonly producers:PilotProducers;readonly decisions:DecisionsService;readonly reads:DecisionStaffReads;readonly servicing:ServicingService;readonly money:MoneyService;readonly loans:LoanReads;

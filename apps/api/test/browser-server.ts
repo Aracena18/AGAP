@@ -23,6 +23,7 @@ import { memberSupportHistoryFixture } from './member-support-history-fixture.js
 import {supportPositionFixture} from './support-position-fixture.js';
 import {assistedCheckInFixture} from './assisted-check-in-fixture.js';
 import {supportCorrectionFixture} from './support-correction-fixture.js';
+import {connectedMoneyFixture} from './connected-money-fixture.js';
 await prepareDatabase();
 const fixture=await resetFixtures();
 const member=await memberFixture(fixture.officer.actor),otherMember=await memberFixture(fixture.officer.actor);
@@ -66,11 +67,12 @@ if(process.env.AGAP_E2E_PRESENTATION==='1'){
  await presentationFixtures();config.NODE_ENV='development';config.LOCAL_PRESENTATION_MODE=true;
 }
 const connectedLending=await connectedLendingFixture();
+const connectedMoney=await connectedMoneyFixture();
 config.CONNECTED_LENDING_ENABLED=true;
 const app=await createApp(config);
 await app.listen(Number(process.env.AGAP_E2E_API_PORT??4101),'127.0.0.1');
 await mkdir('.platform-test',{recursive:true});
-await writeFile('.platform-test/browser.json',JSON.stringify({supportCorrections,connectedLending:{appId:connectedLending.appId,officer:connectedLending.officer.token,reviewer:connectedLending.reviewer.token,member:connectedLending.member.token,cashier:connectedLending.cashier.token},assistedCheckIns,guidanceKeyboardApplicationId:guidanceKeyboardApplication.id,guidanceMember:guidanceMember.token,guidanceApplicationId:guidanceApplication.id,guidanceSourceId:guidanceDraft.source.sourceId,supportPosition,memberSupportHistory,supportFollowUps,supportHistory,supportMember:supportMember.token,reconciliationAuditor:reconciliation.token,uiAuditMember:uiAuditMember.token,uiLogout,officer:fixture.officer.token,auditor:fixture.auditor.token,administrator:fixture.administrator.token,target:fixture.revocationTarget.token,organizationId:fixture.org,branchId:fixture.branch,member:member.token,memberId:member.record.id,otherMember:otherMember.token,otherMemberId:otherMember.record.id,otherApplicationId:otherApplication.id,submittedApplicationId:submitted.id}),{mode:0o600});
+await writeFile('.platform-test/browser.json',JSON.stringify({connectedMoney:{appId:connectedMoney.appId,day:connectedMoney.day,officer:connectedMoney.officer.token,reviewer:connectedMoney.reviewer.token,cashier:connectedMoney.cashier.token,authorizer:connectedMoney.authorizer.token,auditor:connectedMoney.auditor.token,administrator:connectedMoney.administrator.token,officerId:connectedMoney.officer.actor.userId,member:connectedMoney.member.token},supportCorrections,connectedLending:{appId:connectedLending.appId,officer:connectedLending.officer.token,reviewer:connectedLending.reviewer.token,member:connectedLending.member.token,cashier:connectedLending.cashier.token},assistedCheckIns,guidanceKeyboardApplicationId:guidanceKeyboardApplication.id,guidanceMember:guidanceMember.token,guidanceApplicationId:guidanceApplication.id,guidanceSourceId:guidanceDraft.source.sourceId,supportPosition,memberSupportHistory,supportFollowUps,supportHistory,supportMember:supportMember.token,reconciliationAuditor:reconciliation.token,uiAuditMember:uiAuditMember.token,uiLogout,officer:fixture.officer.token,auditor:fixture.auditor.token,administrator:fixture.administrator.token,target:fixture.revocationTarget.token,organizationId:fixture.org,branchId:fixture.branch,member:member.token,memberId:member.record.id,otherMember:otherMember.token,otherMemberId:otherMember.record.id,otherApplicationId:otherApplication.id,submittedApplicationId:submitted.id}),{mode:0o600});
 console.log('Fictional browser-test API ready.');
 const stop=async()=>{await app.close();await closePools();await rm(documentDirectory,{recursive:true,force:true});process.exit(0);};
 process.on('SIGTERM',()=>void stop());process.on('SIGINT',()=>void stop());
