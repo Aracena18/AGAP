@@ -2,7 +2,7 @@
 
 5 November 2026, Asia/Manila. **Checked application candidate; actual GPU/Azure pilot blocked.**
 This records the user-authorized plan on `codex/model-lifecycle-pilot`, based on
-main `6a8eccb`, synchronized with published `61497fd` before final checks, preserving its mobile portal and PRV-01 work. The [compatibility proposal](AGAP_Experiment_F_Pilot_Contract_Proposal.md)
+main `6a8eccb`, synchronized with published `f393537` before final checks, preserving its mobile portal, PRV-01 and accounting/support-position work. The [compatibility proposal](AGAP_Experiment_F_Pilot_Contract_Proposal.md)
 preceded shared edits. Existing task owners, unrelated local work and earlier
 snapshots/manifests are preserved. Independent/receiving-owner acceptance is not
 inferred from implementation or repository publication.
@@ -99,11 +99,11 @@ exists, this remains an incomplete pilot rather than completed live AGAP.
 
 ## Final verification/publication record
 
-The merged candidate passed `npm run check` (232 app/domain, 651 platform/backend,
-91 evaluation tests), including generated contract/schema/client checks and
+The merged candidate passed `npm run check` (237 app/domain, 667 platform/backend,
+100 evaluation tests), including generated contract/schema/client checks and
 frontend/API builds. The 19 Python importer/service tests and five Azure guard/
 template tests passed. The six activation-boundary checks deny production, real
-records, disabled evidence and presentation/password-only shortcuts. The full browser suite passed **112 tests**, with four existing presentation-only
+records, disabled evidence and presentation/password-only shortcuts. The full browser suite passed **114 tests**, with four existing presentation-only
 skips, using `npm run test:e2e -- --workers=1 --trace off`. The populated 320px
 server queue also passed its overflow assertion and automated accessibility check.
 The final entry-route/phone refinement passed lint and a fresh frontend build. Backend test environment explicitly selects the local fictional
@@ -123,6 +123,11 @@ external semantic service was enabled.
 
 Screenshots: [financial desktop](screenshots/experiment-f-pilot/financial-desktop.png),
 [review queue at 320px](screenshots/experiment-f-pilot/queue-320.png).
+The merged accounting reader is connected to the same configured pilot loan
+reader used by servicing/support. A new actual-HTTP regression keeps an unknown
+release pending in the independent report, with no journal/public active loan
+and no automatic resubmission.
+
 The combined browser run initially hit a landing-animation timing limit under
 concurrent laptop load and then filesystem ENOSPC while writing traces. The
 final command uses one worker and `--trace off`, preserving all test cases and
@@ -135,7 +140,7 @@ normal identity-provider acceptance. Task status remains in
 [Assignment.md](../Assignment.md).
 
 Publication: the checked candidate is published by normal direct push under the
-user's standing authorization, with latest main `61497fd` incorporated. This
+user's standing authorization, with latest main `f393537` incorporated. This
 publishes the implementation/evidence and keeps the pilot default off; it does
 not approve a model release, certify production controls or complete the blocked
 Azure/GPU pilot. The main-folder ignored artifact import was reverified after
