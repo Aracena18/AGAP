@@ -5,8 +5,10 @@ import { tmpdir } from 'node:os';
 import { createApp } from '../src/app.js';
 import { config,prepareDatabase,closePools } from './database.js';
 import { createPilotFixture } from './pilot-fixture.js';
+import {assertIndependentTestDatabases} from './pilot-database-url.js';
 
-if(process.env.AGAP_TEST_DATABASE_URL?.includes(':55433/'))throw new Error('Use the separate fictional pilot browser database.');
+if(!process.env.AGAP_PRIMARY_TEST_DATABASE_URL||!process.env.AGAP_TEST_DATABASE_URL)throw new Error('Launch the pilot browser fixture with explicit primary and separate pilot database URLs.');
+assertIndependentTestDatabases(process.env.AGAP_PRIMARY_TEST_DATABASE_URL,process.env.AGAP_TEST_DATABASE_URL);
 await prepareDatabase();
 const fixture=await createPilotFixture(),directory=await mkdtemp(join(tmpdir(),'agap-pilot-browser-'));
 process.env.DOCUMENT_DIRECTORY=directory;

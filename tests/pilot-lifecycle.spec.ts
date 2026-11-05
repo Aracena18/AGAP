@@ -2,12 +2,16 @@ import { test,expect,type BrowserContext,type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { spawn,type ChildProcess } from 'node:child_process';
 import { readFile,mkdir } from 'node:fs/promises';
+import {assertIndependentTestDatabases} from '../apps/api/test/pilot-database-url';
 
 test.describe.configure({mode:'serial'});
 let server:ChildProcess,fixture:{applicationId:string;officer:string;reviewer:string;cashier:string;authorizer:string;member:string};
 const apiPort=Number(process.env.AGAP_PILOT_TEST_API_PORT??4114),origin=`http://127.0.0.1:${process.env.AGAP_E2E_WEB_PORT??5174}`;
 test.beforeAll(async()=>{
- server=spawn(process.execPath,['node_modules/tsx/dist/cli.mjs','--tsconfig','tsconfig.platform.json','apps/api/test/pilot-browser-server.ts'],{env:{...process.env,AGAP_TEST_DATABASE_URL:'postgresql://agap_owner:development-owner@127.0.0.1:55435/agap_test',AGAP_PILOT_TEST_API_PORT:String(apiPort)},stdio:['ignore','pipe','pipe']});
+ const primary=process.env.AGAP_TEST_DATABASE_URL??'postgresql://agap_owner:development-owner@127.0.0.1:55433/agap_test';
+ const pilot=process.env.AGAP_PILOT_TEST_DATABASE_URL??`postgresql://agap_owner:development-owner@127.0.0.1:${process.env.AGAP_PILOT_TEST_DATABASE_PORT??'55436'}/agap_test`;
+ assertIndependentTestDatabases(primary,pilot);
+ server=spawn(process.execPath,['node_modules/tsx/dist/cli.mjs','--tsconfig','tsconfig.platform.json','apps/api/test/pilot-browser-server.ts'],{env:{...process.env,AGAP_PRIMARY_TEST_DATABASE_URL:primary,AGAP_TEST_DATABASE_URL:pilot,AGAP_PILOT_TEST_API_PORT:String(apiPort)},stdio:['ignore','pipe','pipe']});
  let failure='';server.stderr?.on('data',b=>{failure+=String(b);});
  const deadline=Date.now()+25000;let ready=false;
  while(Date.now()<deadline){if(server.exitCode!==null)throw new Error('Pilot browser API stopped: '+failure);try{ready=(await fetch(`http://127.0.0.1:${apiPort}/api/v1/health`)).ok;if(ready)break;}catch{/* bounded readiness poll */}await new Promise(resolve=>setTimeout(resolve,200));}

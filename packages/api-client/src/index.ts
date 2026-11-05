@@ -3,6 +3,9 @@ import type { z } from 'zod';
 import { schemas } from '../../contracts/src/schemas.js';
 import { ClientTransport, type RequestOptions } from './transport.js';
 export class AgapClient extends ClientTransport {
+  createTrialBalance(body: z.input<typeof schemas.TrialBalanceCreate>, options: RequestOptions = {}) { return this.request('POST', `/accounting/trial-balances`, body, schemas.TrialBalanceRun, options); }
+  listTrialBalances(options: RequestOptions = {}) { return this.request('GET', `/accounting/trial-balances`, undefined, schemas.TrialBalancePage, options); }
+  getTrialBalance(id: string, options: RequestOptions = {}) { return this.request('GET', `/accounting/trial-balances/${encodeURIComponent(id)}`, undefined, schemas.TrialBalanceRun, options); }
   getPilotMoneyApplications(options: RequestOptions = {}) { return this.request('GET', `/pilot/financial-applications`, undefined, schemas.PilotMoneyApplicationPage, options); }
   getPilotMoneyApplication(id: string, options: RequestOptions = {}) { return this.request('GET', `/applications/${encodeURIComponent(id)}/pilot-money`, undefined, schemas.PilotMoneyApplication, options); }
   getPilotWorkspace(id: string, options: RequestOptions = {}) { return this.request('GET', `/applications/${encodeURIComponent(id)}/pilot-workspace`, undefined, schemas.PilotWorkspace, options); }
@@ -77,6 +80,9 @@ export class AgapClient extends ClientTransport {
   listMemberLoans(options: RequestOptions = {}) { return this.request('GET', `/member/loans`, undefined, schemas.MemberLoansView, options); }
   listMemberSupport(options: RequestOptions = {}) { return this.request('GET', `/member/support-requests`, undefined, schemas.MemberSupportView, options); }
   createMemberSupport(body: z.input<typeof schemas.MemberSupportCreate>, options: RequestOptions = {}) { return this.request('POST', `/member/support-requests`, body, schemas.MemberSupport, options); }
+  correctMemberSupport(id: string, body: z.input<typeof schemas.SupportCorrectionCreate>, options: RequestOptions = {}) { return this.request('POST', `/member/support-requests/${encodeURIComponent(id)}/corrections`, body, schemas.MemberSupport, options); }
+  getMemberSupportCorrectionLink(id: string, options: RequestOptions = {}) { return this.request('GET', `/member/support-requests/${encodeURIComponent(id)}/correction-link`, undefined, schemas.SupportCorrectionLink, options); }
+  getCheckInSummary(query: z.input<typeof schemas.CheckInSummaryQuery>, options: RequestOptions = {}) { return this.request('GET', `/check-in-summary`, undefined, schemas.CheckInSummary, options, schemas.CheckInSummaryQuery.parse(query)); }
   getSession(options: RequestOptions = {}) { return this.request('GET', `/session`, undefined, schemas.Session, options); }
   getCapabilities(options: RequestOptions = {}) { return this.request('GET', `/capabilities`, undefined, schemas.Capabilities, options); }
   listStaff(options: RequestOptions = {}) { return this.request('GET', `/staff`, undefined, schemas.StaffPage, options); }

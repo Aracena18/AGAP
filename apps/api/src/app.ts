@@ -28,6 +28,10 @@ import { WorkflowController,WORKFLOW } from './modules/evidence/workflow.control
 import { configureWorkflow,requireRelease } from './modules/evidence/configure.js';
 import { LoanReads } from './modules/servicing/loan-reads.js';
 import { ReconciliationService } from './modules/accounting/reconciliation.service.js';
+import {TrialBalanceService} from './modules/accounting/trial-balance.service.js';
+import {TrialBalanceController,TRIAL_BALANCES} from './modules/accounting/trial-balance.controller.js';
+import {CheckInSummaryService,SupportCorrections} from './modules/monitoring/support-expansion.service.js';
+import {CHECK_IN_SUMMARY,CheckInSummaryController} from './modules/monitoring/check-in-summary.controller.js';
 import { ReconciliationController,RECONCILIATIONS } from './modules/accounting/reconciliation.controller.js';
 import { MonitoringService } from './modules/monitoring/monitoring.service.js';
 import { MonitoringController,SupportFollowUpController,MONITORING } from './modules/monitoring/monitoring.controller.js';
@@ -129,9 +133,11 @@ export async function createApp(config: Config,memberDomains?:MemberDomainPorts)
     if(pilot)reviews=configureReviews({uow,workflow:workflow!.workflow,adapter:workflow!.ai?.reviewAdapter()??null,basis:pilot.basis});
     const loanReads=pilot?.loans??new LoanReads(uow),monitoring=new MonitoringService(uow,loanReads);
     const reconciliations = new ReconciliationService(new PostgresUnitOfWork(database,{isolation:'repeatable read',materialGuard:config.FICTIONAL_PILOT_ENABLED}),loanReads);
-    const domains:MemberDomainPorts=memberDomains??{...unavailableMemberDomains,loans:tx=>loanReads.memberLoans(tx),support:tx=>monitoring.memberHistory(tx),supportPage:(tx,query)=>monitoring.memberHistoryPage(tx,query),requestSupport:(tx,data,key)=>monitoring.submit(tx,data,key),...pilot?.memberDomains};
+    const trialBalances=new TrialBalanceService(new PostgresUnitOfWork(database,{isolation:'repeatable read',materialGuard:config.FICTIONAL_PILOT_ENABLED}));
+    const corrections=new SupportCorrections(loanReads),checkInSummary=new CheckInSummaryService(new PostgresUnitOfWork(database,{isolation:'repeatable read',materialGuard:config.FICTIONAL_PILOT_ENABLED}));
+    const domains:MemberDomainPorts=memberDomains??{...unavailableMemberDomains,loans:tx=>loanReads.memberLoans(tx),support:tx=>monitoring.memberHistory(tx),supportPage:(tx,query)=>monitoring.memberHistoryPage(tx,query),requestSupport:(tx,data,key)=>monitoring.submit(tx,data,key),correctSupport:(tx,id,data,key)=>corrections.correct(tx,id,data,key),supportCorrectionLink:(tx,id)=>corrections.link(tx,id),...pilot?.memberDomains};
     const portal=new MemberPortalService(memberUow,new MemberApplicationsService(memberUow,config.PRIVACY_NOTICE_VERSION),config.PRIVACY_NOTICE_VERSION,domains);
-    @Module({controllers:[PlatformController,MemberController,WorkflowController,PilotController,ReviewsController,ReconciliationController,MonitoringController,SupportFollowUpController],providers:[{provide:PILOT,useValue:pilot?.service??null},{provide:REVIEWS,useValue:reviews},{provide:MONITORING,useValue:monitoring},{provide:RECONCILIATIONS,useValue:reconciliations},{provide:WORKFLOW,useValue:workflow},{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal,workflow}}]})
+    @Module({controllers:[PlatformController,MemberController,WorkflowController,PilotController,ReviewsController,ReconciliationController,TrialBalanceController,MonitoringController,SupportFollowUpController,CheckInSummaryController],providers:[{provide:CHECK_IN_SUMMARY,useValue:checkInSummary},{provide:TRIAL_BALANCES,useValue:trialBalances},{provide:PILOT,useValue:pilot?.service??null},{provide:REVIEWS,useValue:reviews},{provide:MONITORING,useValue:monitoring},{provide:RECONCILIATIONS,useValue:reconciliations},{provide:WORKFLOW,useValue:workflow},{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal,workflow}}]})
     class AppModule {}
     const app = await NestFactory.create<NestExpressApplication>(AppModule,{logger:false,bodyParser:false,abortOnError:false});
     app.set('trust proxy',false);

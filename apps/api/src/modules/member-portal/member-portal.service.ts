@@ -68,6 +68,15 @@ export class MemberPortalService {
       return checked(schemas.MemberSupport,await this.domains.requestSupport(tx,data,stable));
     });
   }
+  correctSupport(actor:MemberActorContext,id:unknown,input:unknown,key:unknown){
+    const request=schemas.SupportCorrectionCreate.parse(input),prior=schemas.MemberSupport.shape.id.parse(id),stable=memberKey(key);
+    if(request.noticeVersion!==this.noticeVersion)throw new ApiError(409,'notice_changed','Review who will receive your correction before submitting.');
+    return this.uow.run(actor,async tx=>{if(!this.domains.correctSupport)return pending();return checked(schemas.MemberSupport,await this.domains.correctSupport(tx,prior,request,stable));});
+  }
+  supportCorrectionLink(actor:MemberActorContext,id:unknown){
+    const request=schemas.MemberSupport.shape.id.parse(id);
+    return this.uow.run(actor,async tx=>{if(!this.domains.supportCorrectionLink)return pending();return checked(schemas.SupportCorrectionLink,await this.domains.supportCorrectionLink(tx,request));});
+  }
   async upload(actor:MemberActorContext,id:string,input:unknown,stream:AsyncIterable<Uint8Array>,key:unknown){
     const metadata=schemas.MemberUpload.parse(input),stable=memberKey(key);
     if(/[/\\]/.test(metadata.fileName)||[...metadata.fileName].some(char=>char.charCodeAt(0)<32))throw new ApiError(422,'invalid_file_name','Use a file name without folders or control characters.');
