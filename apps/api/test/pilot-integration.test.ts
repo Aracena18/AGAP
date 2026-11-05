@@ -66,3 +66,17 @@ it('keeps the static model-off path editable and denies an unreviewed final deci
  await expect(client(f.reviewer).recordPilotDecision(id,{previewId:randomUUID(),explanationReviewed:false} as unknown as {previewId:string;explanationReviewed:true},options(f.reviewer,workflow.version))).rejects.toMatchObject({status:422});
  expect(schemas.PilotDecisionPreview.safeParse({explanationReviewed:true}).success).toBe(false);
 });
+it('reconciles the original unknown release with configured pilot policy and never automatically resubmits it',async()=>{
+ const {member}=await decide(),cashier=client(f.cashier),authorizer=client(f.authorizer),id=f.application.id;
+ const loan=await cashier.originatePilotLoan({applicationId:id,method:'cash'},options(f.cashier));
+ const body={loanId:loan.id,amountCentavos:100000,currency:'PHP' as const,effectiveDate:'2026-11-05',method:'cash' as const,instrumentReference:'FICTIONAL-UNKNOWN',reason:'Exercise unknown settlement reconciliation; no real funds.'};
+ let movement=await cashier.preparePilotDisbursement(loan.id,body,options(f.cashier));
+ movement=await authorizer.authorizePilotCommand(movement.id,options(f.authorizer,movement.version));movement=await cashier.submitPilotCommand(movement.id,options(f.cashier,movement.version));
+ movement=await cashier.simulatePilotCommand(movement.id,{outcome:'unknown',reason:'The simulated outcome needs reconciliation of the saved intent.'},options(f.cashier,movement.version));
+ expect(movement.state).toBe('unknown');await expect(cashier.submitPilotCommand(movement.id,options(f.cashier,movement.version))).rejects.toMatchObject({status:409});
+ await owner.query('UPDATE identity.staff_users SET branch_ids=ARRAY[$1::uuid,$2::uuid] WHERE id=$3',[f.f.branch,f.f.secondBranch,f.f.auditor.actor.userId]);
+ const report=await client(f.f.auditor).createReconciliation({fromDate:'2026-11-05',throughDate:'2026-11-05'},options(f.f.auditor));
+ expect(report.report.status).toBe('pending');expect(report.report.events).toHaveLength(1);expect(report.report.events[0].status).toBe('pending');
+ expect((await cashier.getPilotCommand(movement.id)).state).toBe('unknown');const loans=await member.listMemberLoans();expect(loans.state).toBe('available');if(loans.state==='available')expect(loans.data).toEqual([]);
+ expect((await owner.query('SELECT count(*) FROM accounting.journals WHERE organization_id=$1',[f.f.org])).rows[0].count).toBe('0');
+});

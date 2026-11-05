@@ -120,7 +120,6 @@ export async function createApp(config: Config,memberDomains?:MemberDomainPorts)
     }
     const uow = new PostgresUnitOfWork(database,{materialGuard:config.FICTIONAL_PILOT_ENABLED});
     const memberUow=new PostgresMemberUnitOfWork(database,{materialGuard:config.FICTIONAL_PILOT_ENABLED});
-    const reconciliations = new ReconciliationService(new PostgresUnitOfWork(database,{isolation:'repeatable read',materialGuard:config.FICTIONAL_PILOT_ENABLED}),new LoanReads(uow));
     const workflow=config.EVIDENCE_WORKFLOW_ENABLED?await configureWorkflow(config,uow,memberUow):null;
     const members = new MembersService(uow,config.PRIVACY_NOTICE_VERSION);
     const identity = new IdentityService(identityDatabase,config);
@@ -128,7 +127,8 @@ export async function createApp(config: Config,memberDomains?:MemberDomainPorts)
     let reviews:ReviewService|null=null;
     const pilot=config.FICTIONAL_PILOT_ENABLED?configurePilot({uow,memberUow,workflow:workflow!.workflow,readiness:(tx,id,options)=>reviews!.readyGuard(tx,id,options)}):null;
     if(pilot)reviews=configureReviews({uow,workflow:workflow!.workflow,adapter:workflow!.ai?.reviewAdapter()??null,basis:pilot.basis});
-    const loanReads=new LoanReads(uow),monitoring=new MonitoringService(uow,loanReads);
+    const loanReads=pilot?.loans??new LoanReads(uow),monitoring=new MonitoringService(uow,loanReads);
+    const reconciliations = new ReconciliationService(new PostgresUnitOfWork(database,{isolation:'repeatable read',materialGuard:config.FICTIONAL_PILOT_ENABLED}),loanReads);
     const domains:MemberDomainPorts=memberDomains??{...unavailableMemberDomains,loans:tx=>loanReads.memberLoans(tx),support:tx=>monitoring.memberHistory(tx),supportPage:(tx,query)=>monitoring.memberHistoryPage(tx,query),requestSupport:(tx,data,key)=>monitoring.submit(tx,data,key),...pilot?.memberDomains};
     const portal=new MemberPortalService(memberUow,new MemberApplicationsService(memberUow,config.PRIVACY_NOTICE_VERSION),config.PRIVACY_NOTICE_VERSION,domains);
     @Module({controllers:[PlatformController,MemberController,WorkflowController,PilotController,ReviewsController,ReconciliationController,MonitoringController,SupportFollowUpController],providers:[{provide:PILOT,useValue:pilot?.service??null},{provide:REVIEWS,useValue:reviews},{provide:MONITORING,useValue:monitoring},{provide:RECONCILIATIONS,useValue:reconciliations},{provide:WORKFLOW,useValue:workflow},{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal,workflow}}]})
