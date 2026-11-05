@@ -57,3 +57,8 @@ The suite regenerated three historical evidence captures; they are copied into t
 ## Remaining gates
 
 Actual Robert/Aaron/Benedict/Earl receiving-owner acceptance remains pending. The user authorizes implementation, but this AI work cannot record another person's review. CL7 still needs actual approved product/rate/fee/allocation/quorum/execution rules; CL8 needs genuine deployment/security/recovery/model runtime and institutional release evidence. No live funds, production readiness or cooperative approval is claimed.
+
+
+## Exact source verification
+
+Source commit `c23071a916ee429b5524d02f3072ab2d423d2715` passes [origin-fork CI run 41991864161](https://github.com/joohhhnnnny/AGAP/actions/runs/41991864161), completed 5 November 2026 at 08:14:15 UTC. That run includes the exact locked install, production advisory/context checks, default-URL actual PostgreSQL checks, web/API builds, evaluation checks and all normal browser cases. Local presentation-mode checks are recorded separately above. This establishes the technical source gate for proceeding to the next phase; it does not record another owner's acceptance or activate public financial operations. The follow-up publication record changes documentation only.
