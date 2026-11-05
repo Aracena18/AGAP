@@ -41,3 +41,5 @@ No final approval, disbursement, representative model evaluation or production-r
 ## Publication
 
 The checked code integrates current main `00de236` through `729bdf3`, preserving the connected-money module and new startup tooling. Final evidence/tracker changes are documentation and public fictional metadata only. Normal non-force direct main publication is authorized by the contributor contract; no PR merge is performed by this task. Receiving-owner/institutional release approval remains separate.
+
+Published checked implementation/evidence commit `1f4a2b5` to `origin/main` by normal non-force push. Canonical main checkout now runs the recording API on4108 and web app on5186; API health, web and web-to-API proxy each returned HTTP200. Unrelated local archives/documents remain untouched. Only the three task-owned disposable test database containers were stopped.
