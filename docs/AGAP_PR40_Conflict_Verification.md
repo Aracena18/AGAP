@@ -34,3 +34,8 @@ The final ordinary `npm run test:e2e` passes **143 Chromium cases**, with four p
 Combined-candidate [phone repayment/receipt](screenshots/pr40-conflicts/posted-repayment-320.png) and [desktop repayment/receipt](screenshots/pr40-conflicts/posted-repayment-1366.png) captures were visually inspected. The connected journey also checks 320/683/820/1366px reflow and axe. These are fictional Chromium lab examples; receiving-owner and representative acceptance remain separate. Historical browser-generated evidence is restored from the merged index rather than replacing earlier records.
 
 Full checks use task-only PostgreSQL containers on ports 55473/55474; ordinary browser fixtures use 55475/55476. Web/API ports are 5197/4133/4134 and presentation uses 5198/4135. Test runs share no developer database. Ordinary and presentation browser launches must be sequential in this worktree because their private session manifest has one path. Whitespace, authored local links, preserved API/migration checks and the resolved index pass. Publication updates the existing fork source branch normally; it does not merge the parent PR or authorize operational release.
+
+
+## Source-branch publication
+
+Normal non-force publication of checked merge `507fe4e267ae43c022c8f3ae9ca8dc368c129787` to `joohhhnnnny/AGAP:main` succeeds. GitHub reports PR #40 **OPEN, MERGEABLE / CLEAN**, unmerged, against parent `61fb0c5`. [Fork CI on the checked source](https://github.com/joohhhnnnny/AGAP/actions/runs/42050667255) is in progress at this checkpoint, not a claimed remote pass. This publication follow-up changes documentation only. The four task-only test database containers are stopped/removed after all checks; developer services and unrelated checkout edits remain untouched.
