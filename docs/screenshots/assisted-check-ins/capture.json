@@ -1,0 +1,70 @@
+{
+  "taskIds": [
+    "HLT-01",
+    "MOB-01",
+    "FND-03"
+  ],
+  "branch": "feat/earl-accounting-health-workflows",
+  "baseCommit": "0e8152f",
+  "recordMode": "fictional",
+  "capturedAt": "2026-11-05T11:59:21.000Z",
+  "test": "tests/assisted-check-ins.spec.ts",
+  "fullBrowserResult": {
+    "passed": 126,
+    "skipped": 4,
+    "skippedReason": "Existing separately enabled presentation cases"
+  },
+  "applicationSourceSha256": "16c724f221636a93f19c6d1ca5c481fdc82da4ace6b11c7c2885e66b77c810f9",
+  "sourceFiles": [
+    "apps/api/src/app.ts",
+    "apps/api/src/modules/member-portal/member-portal.service.ts",
+    "apps/api/src/modules/member-portal/member.controller.ts",
+    "apps/api/src/modules/monitoring/assisted-check-ins.controller.ts",
+    "apps/api/src/modules/monitoring/assisted-check-ins.service.ts",
+    "apps/api/src/modules/monitoring/migrations/007-assisted-check-ins.sql",
+    "apps/api/src/modules/monitoring/monitoring.errors.ts",
+    "apps/api/test/assisted-check-in-fixture.ts",
+    "apps/api/test/assisted-check-ins.test.ts",
+    "apps/api/test/browser-server.ts",
+    "packages/api-client/src/index.ts",
+    "packages/contracts/src/operations.ts",
+    "packages/contracts/src/ports.ts",
+    "packages/contracts/src/schemas.ts",
+    "src/features/member-portal/MemberApp.tsx",
+    "src/features/member-portal/MemberAssistedCheckIns.tsx",
+    "src/features/member-portal/MemberPages.tsx",
+    "src/features/monitoring/AssistedCheckInStaff.tsx",
+    "src/features/monitoring/SupportQueuePage.tsx",
+    "src/features/monitoring/useAssistedDrafts.ts",
+    "tests/assisted-check-ins.spec.ts"
+  ],
+  "notes": "Actual isolated PostgreSQL/API/browser workflow. Phone review and consent captures show separate scroll positions in the existing member shell; staff captures are full-page.",
+  "files": {
+    "staff-desktop.png": {
+      "sha256": "534e8afd5546fae6d9ef374da4504ed367e7f93ee6215700e4d1091d230650b2",
+      "width": 1366,
+      "height": 3338
+    },
+    "staff-320.png": {
+      "sha256": "6372fdd254b108b2e64eb69a42c862aa28e87532f87c83b58c15cac298ac2912",
+      "width": 320,
+      "height": 4617
+    },
+    "member-review-desktop.png": {
+      "sha256": "228fa4a44e2b512ccf7be77e5f80165498bf0a08017c8ef52d23fe48a48f4f12",
+      "width": 1366,
+      "height": 1711
+    },
+    "member-review-320.png": {
+      "sha256": "b8f39deda56b6ececcd118ab76b369da644642b26ed1c9ec29c1b9e896568c72",
+      "width": 320,
+      "height": 800
+    },
+    "member-confirm-320.png": {
+      "sha256": "954c4fc3834cc28793b8d8bb81be21e57ecce0c0d1fc11bf9509294ab904d958",
+      "width": 320,
+      "height": 800
+    }
+  },
+  "initialBaseCommit": "5efc99a"
+}

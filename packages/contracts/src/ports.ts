@@ -39,6 +39,10 @@ export interface MemberDomainPorts {
   requestSupport(tx:MemberTransactionContext,input:Output<'MemberSupportCreate'>,key:string):Promise<Output<'MemberSupport'>>;
   correctSupport?(tx:MemberTransactionContext,id:string,input:Output<'SupportCorrectionCreate'>,key:string):Promise<Output<'MemberSupport'>>;
   supportCorrectionLink?(tx:MemberTransactionContext,id:string):Promise<Output<'SupportCorrectionLink'>>;
+  assistedCheckIns?(tx:MemberTransactionContext,query:Output<'AssistedCheckInQuery'>):Promise<Output<'AssistedCheckInPage'>>;
+  assistedCheckIn?(tx:MemberTransactionContext,id:string):Promise<Output<'AssistedCheckIn'>>;
+  confirmAssistedCheckIn?(tx:MemberTransactionContext,id:string,input:Output<'AssistedCheckInConfirm'>,version:number,key:string):Promise<Output<'AssistedCheckInReceipt'>>;
+  declineAssistedCheckIn?(tx:MemberTransactionContext,id:string,input:Output<'AssistedCheckInDecline'>,version:number,key:string):Promise<Output<'AssistedCheckInReceipt'>>;
 }
 export interface AssessmentPort { assess(tx: TransactionContext, applicationId: string, request: z.input<typeof AssessmentCreateSchema>): Promise<z.output<typeof AssessmentSchema>> }
 export interface ReleaseAuthorizationPort { authorizeRelease(tx: TransactionContext, loanId: string, commandId: string): Promise<void> }

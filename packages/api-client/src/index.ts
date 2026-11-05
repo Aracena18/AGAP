@@ -113,4 +113,13 @@ export class AgapClient extends ClientTransport {
   createReconciliation(body: z.input<typeof schemas.ReconciliationCreate>, options: RequestOptions = {}) { return this.request('POST', `/reconciliations`, body, schemas.ReconciliationRun, options); }
   listReconciliations(options: RequestOptions = {}) { return this.request('GET', `/reconciliations`, undefined, schemas.ReconciliationPage, options); }
   getReconciliation(id: string, options: RequestOptions = {}) { return this.request('GET', `/reconciliations/${encodeURIComponent(id)}`, undefined, schemas.ReconciliationRun, options); }
+  createAssistedCheckIn(id: string, body: z.input<typeof schemas.AssistedCheckInContent>, options: RequestOptions = {}) { return this.request('POST', `/support-requests/${encodeURIComponent(id)}/assisted-check-ins`, body, schemas.AssistedCheckInReceipt, options); }
+  listAssistedCheckIns(id: string, options: RequestOptions = {}) { return this.request('GET', `/support-requests/${encodeURIComponent(id)}/assisted-check-ins`, undefined, schemas.AssistedCheckInPage, options); }
+  getAssistedCheckIn(id: string, options: RequestOptions = {}) { return this.request('GET', `/support-assisted-check-ins/${encodeURIComponent(id)}`, undefined, schemas.AssistedCheckIn, options); }
+  reviseAssistedCheckIn(id: string, body: z.input<typeof schemas.AssistedCheckInContent>, options: RequestOptions = {}) { return this.request('POST', `/support-assisted-check-ins/${encodeURIComponent(id)}/revisions`, body, schemas.AssistedCheckInReceipt, options); }
+  withdrawAssistedCheckIn(id: string, body: z.input<typeof schemas.AssistedCheckInWithdraw>, options: RequestOptions = {}) { return this.request('POST', `/support-assisted-check-ins/${encodeURIComponent(id)}/withdrawals`, body, schemas.AssistedCheckInReceipt, options); }
+  listMemberAssistedCheckIns(options: RequestOptions = {}) { return this.request('GET', `/member/assisted-check-ins`, undefined, schemas.AssistedCheckInPage, options); }
+  getMemberAssistedCheckIn(id: string, options: RequestOptions = {}) { return this.request('GET', `/member/assisted-check-ins/${encodeURIComponent(id)}`, undefined, schemas.AssistedCheckIn, options); }
+  confirmMemberAssistedCheckIn(id: string, body: z.input<typeof schemas.AssistedCheckInConfirm>, options: RequestOptions = {}) { return this.request('POST', `/member/assisted-check-ins/${encodeURIComponent(id)}/confirmations`, body, schemas.AssistedCheckInReceipt, options); }
+  declineMemberAssistedCheckIn(id: string, body: z.input<typeof schemas.AssistedCheckInDecline>, options: RequestOptions = {}) { return this.request('POST', `/member/assisted-check-ins/${encodeURIComponent(id)}/declines`, body, schemas.AssistedCheckInReceipt, options); }
 }

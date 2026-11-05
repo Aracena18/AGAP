@@ -99,4 +99,13 @@ export const operations = [
   { id: 'createReconciliation', method: 'POST', path: '/reconciliations', request: 'ReconciliationCreate', response: 'ReconciliationRun', owner: 'Earl', implemented: true, idempotent: true },
   { id: 'listReconciliations', method: 'GET', path: '/reconciliations', response: 'ReconciliationPage', owner: 'Earl', implemented: true },
   { id: 'getReconciliation', method: 'GET', path: '/reconciliations/{id}', response: 'ReconciliationRun', owner: 'Earl', implemented: true },
+  {id:'createAssistedCheckIn',method:'POST',path:'/support-requests/{id}/assisted-check-ins',request:'AssistedCheckInContent',response:'AssistedCheckInReceipt',owner:'Earl',implemented:true,idempotent:true,versioned:true},
+  {id:'listAssistedCheckIns',method:'GET',path:'/support-requests/{id}/assisted-check-ins',querySchema:'AssistedCheckInQuery',response:'AssistedCheckInPage',owner:'Earl',implemented:true},
+  {id:'getAssistedCheckIn',method:'GET',path:'/support-assisted-check-ins/{id}',response:'AssistedCheckIn',owner:'Earl',implemented:true},
+  {id:'reviseAssistedCheckIn',method:'POST',path:'/support-assisted-check-ins/{id}/revisions',request:'AssistedCheckInContent',response:'AssistedCheckInReceipt',owner:'Earl',implemented:true,idempotent:true,versioned:true},
+  {id:'withdrawAssistedCheckIn',method:'POST',path:'/support-assisted-check-ins/{id}/withdrawals',request:'AssistedCheckInWithdraw',response:'AssistedCheckInReceipt',owner:'Earl',implemented:true,idempotent:true,versioned:true},
+  {id:'listMemberAssistedCheckIns',method:'GET',path:'/member/assisted-check-ins',querySchema:'AssistedCheckInQuery',response:'AssistedCheckInPage',owner:'Earl',implemented:true,principal:'member'},
+  {id:'getMemberAssistedCheckIn',method:'GET',path:'/member/assisted-check-ins/{id}',response:'AssistedCheckIn',owner:'Earl',implemented:true,principal:'member'},
+  {id:'confirmMemberAssistedCheckIn',method:'POST',path:'/member/assisted-check-ins/{id}/confirmations',request:'AssistedCheckInConfirm',response:'AssistedCheckInReceipt',owner:'Earl',implemented:true,idempotent:true,versioned:true,principal:'member'},
+  {id:'declineMemberAssistedCheckIn',method:'POST',path:'/member/assisted-check-ins/{id}/declines',request:'AssistedCheckInDecline',response:'AssistedCheckInReceipt',owner:'Earl',implemented:true,idempotent:true,versioned:true,principal:'member'},
 ] satisfies Operation[];
