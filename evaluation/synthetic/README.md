@@ -12,6 +12,10 @@ The PNG renderer produces readable text-document previews. Its unreadable-field 
 
 The existing [demo cases](../../src/demo/cases.ts) and [historical calculation oracles](../../docs/AGAP_Product_Freeze.md#5-the-fictional-demonstration) remain known regression references. They are not copied into this corpus or presented as unseen evaluation data.
 
+## Frozen interface compatibility
+
+The existing `eval-01-corpus/v1` extraction interface remains pinned to contract 0.3.0, including the original public development pack and its checksums. Later application lending-contract additions (0.4.0) do not change these extraction fields or relabel/regenerate research material. An actual extraction-interface change requires its own explicit versioned corpus migration and review. No D/E data, ratings, mappings or selection evidence is modified by this compatibility pin.
+
 ## Candidate file interfaces
 
 All `eval-01-* /v1` envelopes in [model.ts](src/model.ts), [bundle.ts](src/bundle.ts) and [compare.ts](src/compare.ts) are evaluation-local proposals for Robert/Aaron/Benedict to review. They do not change the canonical API contract. Money, dates, source references and model provenance reuse the [existing schemas](../../packages/contracts/src/schemas.ts).

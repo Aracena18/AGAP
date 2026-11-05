@@ -151,4 +151,8 @@
   .summary { gap: 20px 16px; }
   .dialog { padding: 24px; }
 }
+
+.exactTerms { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; margin: 0; }
+
+.document { min-width: 0; overflow-wrap: anywhere; }
 @media print { .nav, .connection, .guide, .journey { display: none; } .footer { padding-bottom: 16px; } }

@@ -44,7 +44,7 @@ export class WorkflowService {
   view(actor: WorkflowActor, id: string) { return this.run(actor, tx => this.viewIn(tx, id)); }
   async viewIn(tx: Tx, id: string) {
     const a = await this.access(tx, id), policy = await this.policy(tx);
-    const sources = (await tx.query(`SELECT s.*,p.state,p.stage,p.message,p.pages,p.text_version_id,EXISTS(SELECT 1 FROM evidence.retirements r WHERE r.source_id=s.id) AS retired,
+    const sources = (await tx.query(`SELECT s.*,s.source_date::text AS calendar_source_date,p.state,p.stage,p.message,p.pages,p.text_version_id,EXISTS(SELECT 1 FROM evidence.retirements r WHERE r.source_id=s.id) AS retired,
       (SELECT v.outcome FROM evidence.verification_outcomes v WHERE v.source_id=s.id ORDER BY v.recorded_at DESC,v.id DESC LIMIT 1) AS verification
       FROM evidence.sources s LEFT JOIN evidence.processing p ON p.source_id=s.id WHERE s.application_id=$1 ORDER BY s.created_at,s.id`, [id])).rows;
     const facts = (await tx.query('SELECT DISTINCT ON(id) body FROM evidence.facts WHERE application_id=$1 ORDER BY id,revision DESC', [id])).rows.map(row => WorkflowFact.parse(row.body));
@@ -52,7 +52,7 @@ export class WorkflowService {
     const result = (await tx.query('SELECT body FROM credit.assessment_views WHERE application_id=$1 ORDER BY created_at DESC,id DESC LIMIT 1', [id])).rows[0];
     return WorkflowView.parse({ applicationId: id, version: Number(a.version), inputVersion: Number(a.assessment_input_version),
       sources: sources.map(s => ({ id: s.id, version: Number(s.version), textVersionId:s.text_version_id??null, kind: s.kind, label: s.label,
-        date: String(s.source_date instanceof Date ? s.source_date.toISOString().slice(0,10) : s.source_date), state: s.retired?'blocked':s.kind === 'statement' ? 'cleared' : s.state,
+        date: s.calendar_source_date, state: s.retired?'blocked':s.kind === 'statement' ? 'cleared' : s.state,
         processing: s.retired?'manual':s.kind === 'statement' ? 'manual' : s.stage, message: s.retired?'This document is unavailable under a recorded retention decision.':s.message ?? null,
         verification: s.verification ?? 'not_checked', pages: s.kind === 'statement' ? [{ page: 1, text: s.statement }] : s.state === 'cleared'&&!s.retired ? s.pages : [] })),
       facts, drafts, offers: policy?.offers.map(({ separateFees: _fees, ...offer }) => { void _fees; return {...offer,available:offer.available&&offer.principalCentavos===Number(a.requested_principal_centavos)}; }) ?? [],

@@ -24,8 +24,8 @@ export const moneyPorts: MoneyPorts = {
     if (!row) throw notFound(); return PrincipalPolicySchema.parse(row.policy);
   },
 };
-export async function seedMoneyFixture(withheldFee = false) {
-  const f = ruleFixture(withheldFee, '2026-11-02'), a = f.context.basis.current.application;
+export async function seedMoneyFixture(withheldFee = false, paymentDate = '2026-11-02') {
+  const f = ruleFixture(withheldFee, paymentDate), a = f.context.basis.current.application;
   let at: string = times.prepare;
   const clock = () => new Date(at), setTime = (value: string) => { at = value; };
   const policy: PrincipalPolicy = { format: 'principal-only-v1', versionId: randomUUID(), organizationId: a.organizationId,

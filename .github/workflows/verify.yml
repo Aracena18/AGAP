@@ -17,6 +17,8 @@ jobs:
       - name: Native PDF validation tools
         run: sudo apt-get update && sudo apt-get install -y poppler-utils
       - run: npm ci
+      - run: npm run security:check
+      - run: npm run test:build-context
       - run: npm run test:db
       - run: npm run check
       - run: npx playwright install --with-deps chromium

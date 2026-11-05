@@ -50,9 +50,9 @@ export class DecisionsRepository {
         horizonStart: s.basis.periodStart, horizonEnd: s.basis.periodEnd, assumptions: ['These supplied checked figures cover the stated horizon.'] } : null });
     await tx.query(`INSERT INTO decisions.records(id,organization_id,application_id,branch_id,member_id,reviewer_id,recommendation_id,preview_id,
       document_id,outcome,input_version,basis_hash,snapshot_format,snapshot_text,snapshot_hash,member_view,recorded_at)
-      VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,'decision-snapshot-v1',$13,$14,$15,$16)`,
+      VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)`,
     [s.id, a.organizationId, a.id, a.branchId, a.memberId, s.reviewerId, s.basis.recommendation?.id ?? null, previewId,
-      s.document?.id ?? null, s.input.outcome, a.assessmentInputVersion, s.explanation.basisHash, canonical(s), d.snapshotHash, JSON.stringify(memberView), s.recordedAt]);
+      s.document?.id ?? null, s.input.outcome, a.assessmentInputVersion, s.explanation.basisHash, s.format ?? 'decision-snapshot-v1', canonical(s), d.snapshotHash, JSON.stringify(memberView), s.recordedAt]);
     if (s.document && terms !== null) {
       if (termsChecksum(terms) !== s.document.sha256) throw new ApiError(409, 'document_changed', 'The exact reviewed terms changed.');
       await tx.query(`INSERT INTO decisions.documents(id,organization_id,application_id,branch_id,decision_id,bytes,sha256,media_type,member_id)

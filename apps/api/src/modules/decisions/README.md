@@ -1,4 +1,11 @@
-# DEC-01 — Phase 1 decision-rule candidate
+# DEC-01 — decision rules and connected review candidate
+
+## Current connected candidate — CL2, 5 November 2026
+
+The [CL2 record](../../../../../docs/tasks/production/connected-lending-cl2/IMPLEMENTATION.md) supersedes historical implementation-availability statements below. The module now supplies actual PostgreSQL persistence, authoritative workflow producers, default-off authenticated staff routes, generated-client navigation and immutable review/escalation/notice/currentness controls. Connected fictional review uses `connected-review/v2` and the lossless `decision-snapshot/v2`; older formats remain decoded unchanged. Recording requires an explicit preview proof envelope and exact unchanged explanation/terms before expiry. Staff-assisted acceptance is still unavailable; member facade connection and money transport follow CL3–CL6.
+
+The following Phase 1 sections retain their original scope/history. They do not override the later canonical schemas, migrations, implementation record or current frontend specification. Technical tests do not supply receiving-owner or institutional acceptance.
+
 
 This module implements the standalone rule/immutable-basis slice of Benedict's [assignment](../../../../../docs/tasks/production/03-decisions-servicing.md). It is not a database service, authenticated endpoint, approved DCCPEC policy, model integration or completed DEC-01 feature. The existing fictional browser review remains unchanged.
 

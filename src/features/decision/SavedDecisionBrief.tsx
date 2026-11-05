@@ -1,3 +1,4 @@
+import { CheckedRemaining } from '../../shared/ui/CheckedRemaining';
 import { Badge, Button, Money } from '../../shared/ui';
 import { dateLabel } from '../../domain/format';
 import type { SavedBrief } from './staff-gateway';
@@ -18,7 +19,7 @@ export function SavedDecisionBrief({ brief, historical }: { brief: SavedBrief; h
         <div><dt>Separately paid fees</dt><dd><Money value={brief.considered.offer.feesPaidSeparatelyCentavos}/></dd></div>
         <div><dt>Total repayment</dt><dd><Money value={brief.considered.checked.totalRepaymentCentavos}/></dd></div>
         <div><dt>Financing cost</dt><dd><Money value={brief.considered.checked.financingCostCentavos}/></dd></div>
-        <div><dt>Monthly remaining</dt><dd><Money value={brief.considered.checked.monthlyRemainingCentavos}/></dd></div>
+        <CheckedRemaining scenario={brief.considered.checked}/>
         <div><dt>Lowest dated balance</dt><dd><Money value={brief.considered.checked.lowestBalanceCentavos}/></dd></div>
       </dl><p>Term: {brief.considered.offer.termMonths} months.</p>
       {brief.considered.checked.shortageDates.length > 0 && <p>Modeled shortage dates: {brief.considered.checked.shortageDates.map(dateLabel).join('; ')}.</p>}

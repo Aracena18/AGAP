@@ -1,5 +1,19 @@
 # Earl (D): accounting, financial health and independent model evaluation
 
+## PR #39 main conflict repair — 5 November 2026
+
+The user requests resolution of `apps/api/src/app.ts` and `apps/api/test/browser-server.ts` on `feat/earl-support-completion`, head `4c5d5af`, against main `1f0f651` (merged PR #38). Both conflicts are resolved by retaining main's connected-lending decision/member ports, guarded transactions, controller registration and independent browser fixture together with the correction source/recovery ports and correction fixture. Main's separate repeatable-read report coordinators, pilot/connected mode exclusion and existing default-off switches remain intact. No unresolved paths or conflict markers remain. The merge changes no institutional policy, financial calculation or task ownership; Robert's consuming-owner review remains pending. This updates PR #39 only; no main push or PR merge is authorized by this repair request.
+
+| Combined verification | Observed result |
+| --- | --- |
+| `npm run check` | **Passed, exit 0**: generated parity, lint/build/typechecks, **255 UI/domain**, **804 backend/contracts** and **109 evaluation** tests |
+| `npm run test:e2e` | **Passed, exit 0**: **143 Chromium cases**, including connected lending and all six correction journeys; four existing presentation-only cases skipped in the normal suite |
+| `npm run security:check` | **Passed**, zero production dependency vulnerabilities |
+| `npm run test:build-context` | **Passed** using Docker: seven required inputs retained, 25 synthetic private/local inputs excluded |
+| Compatibility | All **137 prior client methods, 123 API paths and 163 schemas** match main `1f0f651`; the correction source operation/schema remains additive |
+
+All 16 changed application/test/SQL files over main `1f0f651` match the passing isolated runner's LF-normalized source fingerprint `84f1c0bf7b63533f818dfd71ade19a77cc0cfe912b78f221e32ffae5809dc51c`. Fresh phone review and desktop confirmation captures were visually inspected; automated overflow/accessibility assertions pass. Existing migration bytes, canonical fixtures and historical screenshots are preserved. `graft` and `graphify` are unavailable on PATH and through the enabled tools. Verification is against `1f0f651`; the later independent UI-10 update `d2400ca` changes neither conflicted file and is not included in these test counts. The three task containers were label-verified and removed after evidence collection; development database/identity services remain running, with no development migration/reset. Remote CI and publication are recorded in [PR #39](https://github.com/Aracena18/AGAP/pull/39) separately from these local results; the earlier account billing/spending-limit blocker is not repaired by code changes.
+
 ## Member support completion candidate — 5 November 2026
 
 Purpose: complete the fictional member correction journey without rewriting confirmed support history. The user authorizes this coordinated HLT-01/MOB-01/FND-03 batch on `feat/earl-support-completion`, base `44a9b57`. The [module proposal](../../../apps/api/src/modules/monitoring/README.md#member-correction-completion-proposal--5-november-2026) precedes shared/member edits; Robert retains consuming-owner review. No institution-dependent accounting, goals/5C or retention rules are invented.

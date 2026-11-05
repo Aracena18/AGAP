@@ -32,6 +32,7 @@ export interface MemberDomainPorts {
   confirm(tx:MemberTransactionContext,applicationId:string,input:Output<'DraftConfirmation'>,version:number,key:string):Promise<Output<'CommandReceipt'>>;
   options(tx:MemberTransactionContext,applicationId:string):Promise<Output<'MemberOptionsView'>>;
   decision(tx:MemberTransactionContext,applicationId:string):Promise<Output<'MemberDecisionView'>>;
+  decisionDocument?(tx:MemberTransactionContext,applicationId:string,documentId:string):Promise<Output<'MemberDecisionDocument'>>;
   accept(tx:MemberTransactionContext,applicationId:string,input:Output<'MemberAcceptance'>,version:number,key:string):Promise<Output<'CommandReceipt'>>;
   loans(tx:MemberTransactionContext):Promise<Output<'MemberLoansView'>>;
   support(tx:MemberTransactionContext):Promise<Output<'MemberSupportView'>>;

@@ -1,0 +1,10 @@
+import { CheckedRemaining } from '../../shared/ui/CheckedRemaining';
+import type { z } from 'zod';
+import type { schemas } from '../../../packages/contracts/src/schemas';
+import { Money, Notice } from '../../shared/ui';
+import { dateLabel } from '../../domain/format';
+import styles from './MemberApp.module.css';
+type Output<K extends keyof typeof schemas>=z.output<(typeof schemas)[K]>;
+export function OptionSummary({option}:{option:NonNullable<Output<'MemberDecision'>['terms']>}){
+  return <article className={styles.section}><h3>{option.offer.label}</h3><dl className={styles.summary}><div><dt>Net amount received</dt><dd><Money value={option.offer.netReceivedCentavos}/></dd></div><div><dt>Separately paid fees</dt><dd><Money value={option.offer.feesPaidSeparatelyCentavos}/></dd></div><div><dt>Total repayment</dt><dd><Money value={option.checked.totalRepaymentCentavos}/></dd></div><div><dt>Financing cost</dt><dd><Money value={option.checked.financingCostCentavos}/></dd></div><CheckedRemaining scenario={option.checked} legacyLabel="Monthly money remaining"/><div><dt>Lowest dated cash balance</dt><dd><Money value={option.checked.lowestBalanceCentavos}/></dd></div></dl><p>Household projection: {dateLabel(option.horizonStart)} to {dateLabel(option.horizonEnd)}.</p>{option.checked.shortageDates.length>0&&<Notice tone="warning">A cash shortage is modeled on {option.checked.shortageDates.map(dateLabel).join(', ')}.</Notice>}{option.assumptions.length>0&&<ul>{option.assumptions.map((text,index)=><li key={index}>{text}</li>)}</ul>}<details><summary>View all payment dates</summary><div className="table-scroll" role="region" tabIndex={0} aria-label={`${option.offer.label} payment dates`}><table><caption>Contractual payments · {option.offer.termMonths} months</caption><thead><tr><th scope="col">Date</th><th scope="col" className="numeric">Amount</th></tr></thead><tbody>{option.offer.payments.map((payment,index)=><tr key={index}><td>{dateLabel(payment.date)}</td><td className="numeric"><Money value={payment.amountCentavos}/></td></tr>)}</tbody></table></div></details></article>;
+}
