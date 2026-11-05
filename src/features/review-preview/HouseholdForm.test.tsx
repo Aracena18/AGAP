@@ -18,10 +18,10 @@ function fill(){
 it('stops a partially completed batch on concurrent change without overwriting later facts',async()=>{
  const saved=vi.fn(),getMemberWorkflow=vi.fn().mockResolvedValueOnce(view).mockResolvedValueOnce({...view,version:3}),saveMemberFact=vi.fn().mockResolvedValue({id:view.applicationId,version:2});
  render(<HouseholdForm view={view} client={{getMemberWorkflow,saveMemberFact} as unknown as AgapClient} csrf="csrf" member saved={saved}/>);
- fill();fireEvent.click(screen.getByRole('button',{name:'Save household information',exact:true}));
+ fill();fireEvent.click(screen.getByRole('button',{name:'Save household information'}));
  await waitFor(()=>expect(screen.getByRole('alert')).toHaveTextContent('Saved information changed during this save'));
  expect(saveMemberFact).toHaveBeenCalledTimes(1);expect(saved).not.toHaveBeenCalled();
- expect(screen.queryByRole('button',{name:'Retry original save',exact:true})).not.toBeInTheDocument();
+ expect(screen.queryByRole('button',{name:'Retry original save'})).not.toBeInTheDocument();
  expect(screen.getByLabelText('Take-home income (PHP)',{exact:true})).toHaveValue('100.25');
 });
 it('replays the original uncertain step and then resumes the remaining saved statements',async()=>{
@@ -29,9 +29,9 @@ it('replays the original uncertain step and then resumes the remaining saved sta
  const getMemberWorkflow=vi.fn(async()=>({...view,version}));
  const saveMemberFact=vi.fn(async()=>{if(!failed){failed=true;version=2;throw new Error('Response lost after commit');}if(saveMemberFact.mock.calls.length===2)return {id:view.applicationId,version:2};return {id:view.applicationId,version:++version};});
  const saved=vi.fn();render(<HouseholdForm view={view} client={{getMemberWorkflow,saveMemberFact} as unknown as AgapClient} csrf="csrf" member saved={saved}/>);
- fill();fireEvent.click(screen.getByRole('button',{name:'Save household information',exact:true}));
- await screen.findByRole('button',{name:'Retry original save',exact:true});
- fireEvent.click(screen.getByRole('button',{name:'Retry original save',exact:true}));
+ fill();fireEvent.click(screen.getByRole('button',{name:'Save household information'}));
+ await screen.findByRole('button',{name:'Retry original save'});
+ fireEvent.click(screen.getByRole('button',{name:'Retry original save'}));
  await waitFor(()=>expect(saved).toHaveBeenCalledOnce());
  expect(saveMemberFact).toHaveBeenCalledTimes(6);expect(saveMemberFact.mock.calls[0]).toEqual(saveMemberFact.mock.calls[1]);
  const bodies=saveMemberFact.mock.calls as unknown as [string,{value:{amountCentavos:number};category:string},{version:number;idempotencyKey:string}][];
