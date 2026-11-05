@@ -40,6 +40,8 @@ export interface MemberDomainPorts {
   requestSupport(tx:MemberTransactionContext,input:Output<'MemberSupportCreate'>,key:string):Promise<Output<'MemberSupport'>>;
   correctSupport?(tx:MemberTransactionContext,id:string,input:Output<'SupportCorrectionCreate'>,key:string):Promise<Output<'MemberSupport'>>;
   supportCorrectionLink?(tx:MemberTransactionContext,id:string):Promise<Output<'SupportCorrectionLink'>>;
+  supportCorrectionSource?(tx:MemberTransactionContext,id:string):Promise<Omit<Output<'SupportCorrectionSource'>,'sharingNoticeVersion'>>;
+  recoverSupportCorrection?(tx:MemberTransactionContext,id:string,input:Output<'SupportCorrectionCreate'>,key:string):Promise<Output<'MemberSupport'>>;
   assistedCheckIns?(tx:MemberTransactionContext,query:Output<'AssistedCheckInQuery'>):Promise<Output<'AssistedCheckInPage'>>;
   assistedCheckIn?(tx:MemberTransactionContext,id:string):Promise<Output<'AssistedCheckIn'>>;
   confirmAssistedCheckIn?(tx:MemberTransactionContext,id:string,input:Output<'AssistedCheckInConfirm'>,version:number,key:string):Promise<Output<'AssistedCheckInReceipt'>>;
