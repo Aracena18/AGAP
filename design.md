@@ -1,5 +1,12 @@
 # AGAP UI/UX design system
 
+## Prepared recording review — VID-02, 6 November 2026
+
+Extend the current workspace visual system. A current server-backed prepared packet opens directly to a repayment comparison, followed by five-C findings, source/answer disclosure and an officer recommendation form. Requested terms and the calculated alternative use parallel figures for baseline minimum cash, the explicit what-if, full repayments and financing charge; payment dates remain expandable. Give the per-payment amount visual emphasis and retain tabular numerals. Stack comparisons at phone widths and retain normal page scrolling/navigation.
+
+Findings use the five C names, concise evidence and explicit unknowns, with no percentage meters or predictive-confidence badges. Uploaded-file states remain specific and truthful; pending or blocked files cannot appear verified. Keep original-request attention visible after an alternative passes. The officer must explicitly confirm review before saving the existing persisted recommendation; internal reason stays internal. Show the member the saved terms as awaiting a separate decision. Disable conflicting controls during save or uncertain retry. Reuse existing Money, Notice, Button, Badge, focus, surfaces and branding; add no dependencies, global tokens or ornamental motion. Implemented fictional recording behavior is documented in [VID-02](docs/tasks/production/two-minute-recording/RUNBOOK.md); it does not certify production identity, model or lending controls.
+
+
 ## Current support position — HLT-01, 5 November 2026
 
 In the assigned officer's support detail, retain the submitted dated position and place a separate Current posted loan position section immediately after the submission-time position, before the response form. Label the as-of date and posted-through time beside principal, interest/fees due, overdue and pending movements using existing Money and metadata controls. Keep the distinction between unavailable and recorded zero. State that pending movements do not reduce debt and that the submitted snapshot remains preserved.

@@ -1,0 +1,51 @@
+{
+  "result": "passed",
+  "executedAt": "2026-11-05T19:56:56.626Z",
+  "take": "rehearsal-final",
+  "applicationId": "100ac238-399d-4e22-8942-8ed534ce2562",
+  "normalOidc": true,
+  "staffPasswordAndTotp": true,
+  "separateBrowserContexts": true,
+  "downloadWithoutPercentages": true,
+  "recommendationSaved": true,
+  "memberReloadPersistence": true,
+  "pace": true,
+  "lostResponseRecovery": false,
+  "events": [
+    {
+      "step": "normal_member_sign_in",
+      "seconds": 2.44
+    },
+    {
+      "step": "saved_documents_and_answers",
+      "seconds": 13.14
+    },
+    {
+      "step": "member_comparison",
+      "seconds": 25.24
+    },
+    {
+      "step": "normal_officer_password_and_mfa",
+      "seconds": 50.22
+    },
+    {
+      "step": "ranked_queue",
+      "seconds": 65.92
+    },
+    {
+      "step": "officer_evidence_and_terms",
+      "seconds": 80.43
+    },
+    {
+      "step": "persist_officer_recommendation",
+      "seconds": 100.26
+    },
+    {
+      "step": "member_sees_saved_pending_recommendation",
+      "seconds": 109.28
+    }
+  ],
+  "continuousPathSeconds": 109.28,
+  "viewportFit": true,
+  "credentialsInArtifacts": false
+}

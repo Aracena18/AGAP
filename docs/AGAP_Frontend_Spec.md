@@ -1,5 +1,14 @@
 # AGAP frontend specification
 
+## VID-02 prepared recording review (implemented fictional development/test)
+
+Two authenticated read operations, `getPreparedReview` and own-member `getMemberPreparedReview`, return absent/stale/ready. Ready includes the same current workflow, persisted source-bound clarification history, an immutable operator-authored scenario/five-C packet, shared-engine baseline/what-if comparisons and a restricted current recommendation projection. Packets bind application/input version, sources, facts, drafts, configured offers, saved assessment and clarification revision. Workflow-only recommendation transitions retain the packet; material changes return stale with no old packet body. A recorded separate decision directs the user to the existing application decision view.
+
+Prepared applications open their saved results immediately; no artificial reading delay or live-inference claim is added. Five C findings and download omit numerical scores/confidence claims and retain source references, unknowns, actual file status, explicit expense/reserve assumptions, full repayment totals and dates. The queue evaluates requested terms independently from a passing alternative. Authoritative review readiness remains separate.
+
+The assigned officer saves through the existing `recommendPilotOffer` command, using its authorization, version and exact-retry contract. A reviewable internal reason and explicit confirmation are required. Ambiguous saves retain the same body/key and lock edits/refresh; successful saves retain success across a failed independent refresh. Own-member projection exposes recommended offer/recorded time and pending separate decision, never the private recommendation reason or staff snapshot. A localhost-only operator command provisions isolated fictional accounts and immutable takes without resetting unrelated records. See [runbook](tasks/production/two-minute-recording/RUNBOOK.md) and [verification](tasks/production/two-minute-recording/VERIFICATION.md). This is prepared authored evidence, not live model deployment.
+
+
 ## Member support correction completion — 5 November 2026
 
 In fictional-record mode, My requests links each loaded card to `/#/member/help/requests/{id}`. The additive own-member `GET /member/support-requests/{id}/correction-source` returns one checked public request, original contact preference, adjacent replacement links, the member's correction reason if applicable, and the facade's current sharing-notice version. It works beyond the loaded history page without scanning all requests or automatically traversing a chain. No private staff notes, assignments or follow-up details are returned. Invalid/missing source evidence or cross-member relationships fail closed; every read asserts current member linkage/session. Existing strict history DTOs and command signatures are preserved.

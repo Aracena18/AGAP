@@ -10,7 +10,7 @@ import { ApiError,notFound } from '../../platform/errors.js';
 type Tx=TransactionContext|MemberTransactionContext;
 export class GuidanceService {
  constructor(private readonly workflow:WorkflowService){}
- private async readIn(tx:Tx,id:string){
+ async readIn(tx:Tx,id:string){
   const view=await this.workflow.viewIn(tx,id);
   const records=(await tx.query<{body:unknown;revision:string}>('SELECT body,revision FROM evidence.clarifications WHERE application_id=$1 ORDER BY revision',[id])).rows;
   const history=records.map(r=>GuidanceEvent.parse(r.body));

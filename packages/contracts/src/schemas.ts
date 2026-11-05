@@ -1,3 +1,4 @@
+import { PreparedReview } from './prepared-review.js';
 import { guidanceSchemas } from './guidance.js';
 import { z } from 'zod';
 import { RecordMode, VerificationSchema, CONTRACT_VERSION, Id, MoneyAmount, SignedMoney, PositiveMoneyAmount, CalendarDay, Instant, Version, Text, Currency, Role, FactValueSchema, PolicyCheckSchema, OfferSchema, SourceReferenceSchema, ModelArtifactSchema } from './common.js';
@@ -328,6 +329,7 @@ export const SupportPositionViewSchema=serviceView(LoanPositionSchema);
 export const MemberSupportHistoryQuerySchema=z.strictObject({cursor:Id.optional(),limit:z.coerce.number().int().min(1).max(100).default(25)});
 
 export const schemas = {
+  PreparedReview,
   DecisionPreviewCreate:DecisionPreviewCreateSchema,DecisionPreview:DecisionPreviewSchema,DecisionRecordCreate:DecisionRecordCreateSchema,
   StaffDecisionWorkspace:StaffDecisionWorkspaceSchema,StaffDecisionHistoryPage:StaffDecisionHistoryPageSchema,StaffDecisionBrief:StaffDecisionBriefSchema,
   DecisionConflictCreate:DecisionConflictCreateSchema,DecisionReviewConfirm:DecisionReviewConfirmSchema,DecisionConcernCreate:DecisionConcernCreateSchema,

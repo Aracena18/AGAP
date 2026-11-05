@@ -72,3 +72,5 @@ it('rejects duplicate or malformed browser bindings and leaves an existing sessi
   }
   expect((await owner.query('SELECT count(*) FROM identity.sessions')).rows[0].count).toBe('1');
 });
+
+it.each(['/staff/analysis-queue','/staff/applications/10000000-0000-4000-8000-000000000001/analysis'])('preserves an allowlisted analysis destination with MFA: %s',async path=>{const flow=await begin(new URLSearchParams({returnTo:path,assurance:'mfa'}).toString());provider.behavior.badNonce=true;expectRecovery(await fetch(flow.callback,{headers:{Cookie:flow.cookie},redirect:'manual'}),{path,mfa:true});});

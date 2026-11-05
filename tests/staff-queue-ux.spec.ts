@@ -63,6 +63,7 @@ test('analysis queue preserves ranked identities while search, attention counts 
  await signInStaff(context,'officer');
  const applications=members.map((memberName,i)=>ApplicationSchema.parse({id:id(i+1),organizationId:id(90),branchId:id(91),assessmentInputVersion:1,memberId:id(i+11),memberName,purpose:['Home repair','School expenses','Business supplies'][i],requestedPrincipalCentavos:3000000,requestedTermMonths:12,currency:'PHP',status:'submitted',version:1,assignedOfficerId:id(7),createdAt:at,updatedAt:at}));
  await page.route(/\/api\/v1\/applications(?:\?.*)?$/,route=>route.fulfill({json:{items:applications,nextCursor:null}}));
+ await page.route('**/api/v1/applications/*/prepared-review',route=>route.fulfill({json:{state:'absent'}}));
  await page.route('**/api/v1/applications/*/evidence',route=>{
   const appId=route.request().url().split('/applications/')[1].split('/')[0];
   if(appId===id(3))return route.fulfill({status:403,json:{error:{code:'evidence_denied',message:'Evidence access unavailable.',correlationId:id(99)}}});
