@@ -338,7 +338,7 @@ export const schemas = {
   ...accountingReportSchemas,
   SupportAssignment:SupportAssignmentSchema,SupportResponse:SupportResponseSchema,SupportPage:SupportPageSchema,SupportDetail:SupportDetailSchema,SupportSummary:SupportSummarySchema,SupportAction:SupportActionSchema,SupportActionPage:SupportActionPageSchema,SupportHistory:SupportHistorySchema,
   ReconciliationCreate:ReconciliationCreateSchema,ReconciliationRun:ReconciliationRunSchema,ReconciliationPage:ReconciliationPageSchema,
-  ...guidanceSchemas,...workflowSchemas,...modelReviewSchemas,...priorityReviewSchemas,...lifecycleSchemas,...connectedMoneySchemas,PilotDecisionPreview:PilotDecisionPreviewSchema,
+  ...guidanceSchemas,...workflowSchemas,...modelReviewSchemas,...priorityReviewSchemas,...lifecycleSchemas,PilotDecisionPreview:PilotDecisionPreviewSchema,
   MemberSession:MemberSessionSchema,MemberProfile:MemberProfileSchema,MemberApplicationCreate:MemberApplicationCreateSchema,MemberApplication:MemberApplicationSchema,MemberApplicationPage:MemberApplicationPageSchema,MemberSubmit:MemberSubmitSchema,
   ReminderPreferenceUpdate:ReminderPreferenceUpdateSchema,ReminderPreferences:ReminderPreferencesSchema,ModelArtifact:ModelArtifactSchema,AiDraft:AiDraftSchema,DraftConfirmation:DraftConfirmationSchema.or(workflowSchemas.WorkflowDraftReview),IrregularExpense:IrregularExpenseSchema,
   MemberSource:MemberSourceSchema,MemberEvidenceView:MemberEvidenceViewSchema,MemberOptionsView:MemberOptionsViewSchema,MemberDecisionView:MemberDecisionViewSchema,MemberLoansView:MemberLoansViewSchema,MemberSupportView:MemberSupportViewSchema,MemberSupportCreate:MemberSupportCreateSchema,MemberSupport:MemberSupportSchema,MemberAcceptance:MemberAcceptanceSchema,MemberUpload:MemberUploadSchema,
@@ -355,5 +355,6 @@ export const schemas = {
   AssistedCheckInContent:AssistedCheckInContentSchema,AssistedCheckIn:AssistedCheckInSchema,AssistedCheckInPage:AssistedCheckInPageSchema,AssistedCheckInQuery:AssistedCheckInQuerySchema,AssistedCheckInReceipt:AssistedCheckInReceiptSchema,AssistedCheckInConfirm:AssistedCheckInConfirmSchema,AssistedCheckInWithdraw:AssistedCheckInWithdrawSchema,AssistedCheckInDecline:AssistedCheckInDeclineSchema,
   SupportPositionView:SupportPositionViewSchema,
   SupportCorrectionSource:SupportCorrectionSourceSchema,
+  ...connectedMoneySchemas,
 } as const;
 export type SchemaName = keyof typeof schemas;

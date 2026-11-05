@@ -9,7 +9,6 @@ export interface Operation {
   pathParameters?: Record<string,SchemaName>; querySchema?: SchemaName; queryArgument?:boolean; pageLimit?:number;
 }
 export const operations = [
-  ...connectedMoneyOperations,
   {id:'getMemberDecisionDocument',method:'GET',path:'/member/applications/{id}/decision-documents/{documentId}',response:'MemberDecisionDocument',owner:'Robert',implemented:true,principal:'member'},
   {id:'createPendingOrigination',method:'POST',path:'/applications/{id}/originations',request:'OriginationCreate',response:'CommandReceipt',owner:'Benedict',implemented:true,idempotent:true},
   {id:'getStaffDecisionWorkspace',method:'GET',path:'/applications/{id}/decision-workspace',response:'StaffDecisionWorkspace',owner:'Benedict',implemented:true},
@@ -129,4 +128,5 @@ export const operations = [
   {id:'confirmMemberAssistedCheckIn',method:'POST',path:'/member/assisted-check-ins/{id}/confirmations',request:'AssistedCheckInConfirm',response:'AssistedCheckInReceipt',owner:'Earl',implemented:true,idempotent:true,versioned:true,principal:'member'},
   {id:'declineMemberAssistedCheckIn',method:'POST',path:'/member/assisted-check-ins/{id}/declines',request:'AssistedCheckInDecline',response:'AssistedCheckInReceipt',owner:'Earl',implemented:true,idempotent:true,versioned:true,principal:'member'},
   {id:'getMemberSupportCorrectionSource',method:'GET',path:'/member/support-requests/{id}/correction-source',response:'SupportCorrectionSource',owner:'Earl',implemented:true,principal:'member'},
+  ...connectedMoneyOperations,
 ] satisfies Operation[];

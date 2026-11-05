@@ -61,6 +61,7 @@ async function closePeriod(){await owner.query("UPDATE accounting.periods SET st
 describe('Connected actual financial transport and posting',()=>{
  it('runs accepted terms through separate release, scheduled repayment, member reads, immutable receipt and balanced GL',async()=>{
   await normalIntake();const c=await release();expect(c.state).toBe('prepared');expect(await counts()).toMatchObject({journals:0,postings:0});
+  const queue=await client('cashier').getConnectedFinancialApplications({limit:25}),application=await client('cashier').getConnectedFinancialApplication(f.appId);expect(queue.items).toContainEqual(application);expect(application).toMatchObject({applicationId:f.appId,loanId:c.loanId,releaseBasisAvailable:true});expect(Number.isSafeInteger(application.applicationVersion)).toBe(true);
   const settled=await settle(c);expect(settled.state).toBe('confirmed_unposted');expect(await counts()).toMatchObject({journals:0,postings:0});
   const posted=await client('authorizer').postConnectedFinancialCommand(c.id,reason,options('authorizer',settled.version));expect(posted.principalAfterCentavos).toBe(100000);
   const view=await client('cashier').getConnectedLoanWorkspace(c.loanId,{asOfDate:f.day});expect(view.position).toMatchObject({principalCentavos:100000,interestDueCentavos:0,feesDueCentavos:0});expect(view.commands[0]).toMatchObject({preparedBy:f.cashier.actor.userId,reviewRequired:false});

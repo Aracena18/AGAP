@@ -81,6 +81,7 @@ npm run typecheck:platform
 ```
 
 Full repository checks still use the guarded isolated fictional test database and run sequentially with browser regression. Exact results are in the [implementation record](../../../../../docs/tasks/production/benedict-phase4/IMPLEMENTATION.md). No new dependency, shared configuration, canonical fixture, design or model file is needed for this slice.
+
 # Connected money completion proposal — 5 November 2026
 
 The additive staff session advertises `connectedLending: true` only when the guarded fictional connected mode is enabled. Existing sessions and member-session shapes remain compatible; navigation consumes this server flag.

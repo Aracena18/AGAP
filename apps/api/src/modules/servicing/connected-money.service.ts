@@ -33,7 +33,7 @@ export class ConnectedMoneyService{
   const loan=await this.origins.originForApplication(tx,id);let terms=loan?.offer??null,available=false;
   try{const context=await this.ports.operation(tx,id),saved=context.basis.saved;if(loan)binding(loan,context,new Date().toISOString());else terms=saved.snapshot.basis.offers.find(o=>o.id===saved.snapshot.input.offerVersionId)??null;available=terms!==null;}
   catch(e){if(!(e instanceof ApiError&&[409,501].includes(e.status))&&!(e instanceof ServicingRuleError))throw e;}
-  return ConnectedFinancialApplication.parse({applicationId:id,applicationVersion:a.version,memberName:`Member identifier: ${a.member_id}`,status:a.status,loanId:loan?.id??null,releaseBasisAvailable:available,terms,asOfDate:businessDay(new Date().toISOString())});
+  return ConnectedFinancialApplication.parse({applicationId:id,applicationVersion:Number(a.version),memberName:`Member identifier: ${a.member_id}`,status:a.status,loanId:loan?.id??null,releaseBasisAvailable:available,terms,asOfDate:businessDay(new Date().toISOString())});
  }
  application(actor:ActorContext,id:string){return servicingOperation(()=>{requireRoles(actor,['cashier','financial_authorizer']);const app=Id.parse(id);return this.uow.run(actor,tx=>this.applicationIn(tx,app));});}
  applications(actor:ActorContext,input:unknown){return servicingOperation(async()=>{

@@ -9,10 +9,15 @@ import { loanUiFixture } from './loan.test-fixture';
 import type { LoanGateway } from './loan-gateway';
 import { useState } from 'react';
 import { testId } from '../decision/staff.test-fixture';
+import { postingTimeLabel } from './loan-format';
 function mount(f = loanUiFixture(), gateway: LoanGateway | undefined = f.gateway) {
   return render(<RouterProvider router={createMemoryRouter([{ path: '*', element: <UnsavedChangesProvider><StaffLoanWorkspace loanId={f.loanId} day="2026-11-02" session={f.session} gateway={gateway}/></UnsavedChangesProvider> }])}/>);
 }
 describe('Staff loan workspace with explicit simulated gateway', () => {
+  it('keeps posting instants on the correct Manila day across midnight',()=>{
+    expect(postingTimeLabel('2026-11-05T16:30:00Z')).toBe('Nov 6, 2026, 12:30 AM (Asia/Manila)');
+    expect(postingTimeLabel('2026-11-05T15:30:00Z')).toBe('Nov 5, 2026, 11:30 PM (Asia/Manila)');
+  });
   it('hides self-authorization and disables posting while recorded evidence needs review',async()=>{
     const f=loanUiFixture();f.view.commands[0].state='prepared';f.view.commands[0].preparedBy=f.session.user.id;
     const mounted=mount(f);await screen.findByText(/No posted balance/);expect(screen.queryByRole('button',{name:'Authorize release'})).not.toBeInTheDocument();
@@ -67,8 +72,8 @@ describe('Staff loan workspace with explicit simulated gateway', () => {
     expect(await screen.findByText(/Action recorded/)).toBeVisible();
     expect(send.mock.calls[0][1]).toEqual({ action: 'record_simulation', commandId: f.commandId, version: 4, reason: 'Fictional manual evidence review.' });
   });
-  it('hides private content after scoped denial and never prints a cached receipt', async () => {
-    const f = loanUiFixture(true), user = userEvent.setup(), load = vi.fn(f.gateway.workspace).mockResolvedValueOnce(f.view).mockRejectedValue(new ApiClientError(403, 'forbidden', 'Denied'));
+  it.each([401,403,404])('hides private content after scoped denial %s and never prints a cached receipt', async status => {
+    const f = loanUiFixture(true), user = userEvent.setup(), load = vi.fn(f.gateway.workspace).mockResolvedValueOnce(f.view).mockRejectedValue(new ApiClientError(status, 'forbidden', 'Denied'));
     mount(f, { ...f.gateway, workspace: load }); await screen.findByLabelText('Selected saved receipt');
     await user.selectOptions(screen.getByLabelText('Selected saved receipt'), f.receipt.receiptId!); await user.click(screen.getByRole('button', { name: 'Refresh saved position' }));
     expect(await screen.findByRole('alert')).toHaveTextContent('unavailable to the current account'); expect(screen.queryByRole('article')).not.toBeInTheDocument();

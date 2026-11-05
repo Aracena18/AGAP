@@ -8,6 +8,7 @@ import { useUnsavedChanges } from '../access/useUnsavedChanges';
 import { Badge, Button, Money, Notice } from '../../shared/ui';
 import { dateLabel } from '../../domain/format';
 import { ReceiptBrief } from '../payments/ReceiptBrief';
+import { postingTimeLabel } from './loan-format';
 import { unavailableLoans, type LoanGateway, type LoanWorkspace, type MoneyAction } from './loan-gateway';
 import styles from './loans.module.css';
 
@@ -42,7 +43,7 @@ function Controller({ loanId, day, session, gateway = unavailableLoans }: { loan
       setResource({ epoch, gateway, value });
     }).catch((error: unknown) => {
       if (!abort.signal.aborted) {
-        if (error instanceof ApiClientError && [401, 403].includes(error.status)) setDenied(true);
+        if (error instanceof ApiClientError && [401, 403, 404].includes(error.status)) setDenied(true);
         setResource({ epoch, gateway, error: error instanceof Error ? error.message : 'The loan view is unavailable.' });
       }
     });
@@ -57,7 +58,7 @@ function Controller({ loanId, day, session, gateway = unavailableLoans }: { loan
     if (!command.uncertain) attempt.current = body;
     const result = await command.submit(attempt.current ?? body, async (saved, key) => {
       try { return Result.parse(await gateway.act(saved.loanId, saved.input, { csrfToken: saved.csrf, idempotencyKey: key })); }
-      catch (error) { if (error instanceof ApiClientError && [401, 403].includes(error.status)) setDenied(true); throw error; }
+      catch (error) { if (error instanceof ApiClientError && [401, 403, 404].includes(error.status)) setDenied(true); throw error; }
     });
     if (result) { setReason(''); setNotice('Action recorded. Refreshing the saved financial position.'); setEpoch(e => e + 1); }
   }
@@ -70,7 +71,7 @@ function Controller({ loanId, day, session, gateway = unavailableLoans }: { loan
       {command.uncertain && <div><p>The action may already have completed. Retry the original submission before starting another. Reloading loses the in-memory retry details.</p><Button onClick={() => { const a = attempt.current; if (a) void execute(a.input.action, a.input.commandId, a.input.version); }}>Retry same submission</Button></div>}
     </div>
     {view && <><div className="no-print"><Notice>Fictional manual payment demonstration. These actions do not send a bank transfer.</Notice></div><section className="panel no-print"><div className="panel-header"><h2>Posted loan position</h2><Badge>{view.position?.state ?? 'Pending release'}</Badge></div><div className="panel-body"><p>{view.message}</p>
-      {view.position ? <><p>As of {dateLabel(view.position.asOfDate)} · Posted through {dateLabel(view.position.postedThrough)}</p><dl className={styles.figures}><div><dt>Principal remaining</dt><dd><Money value={view.position.principalCentavos}/></dd></div><div><dt>Overdue principal</dt><dd><Money value={view.position.overdueCentavos}/></dd></div><div><dt>Pending movements</dt><dd>{view.position.pendingMovementCount}</dd></div></dl>
+      {view.position ? <><p>As of {dateLabel(view.position.asOfDate)} · Posted through {postingTimeLabel(view.position.postedThrough)}</p><dl className={styles.figures}><div><dt>Principal remaining</dt><dd><Money value={view.position.principalCentavos}/></dd></div><div><dt>Overdue principal</dt><dd><Money value={view.position.overdueCentavos}/></dd></div><div><dt>Pending movements</dt><dd>{view.position.pendingMovementCount}</dd></div></dl>
         <div className="table-scroll" role="region" aria-label="Original accepted schedule" tabIndex={0}><table><caption>Original accepted schedule</caption><thead><tr><th scope="col">Due date</th><th scope="col">Amount</th></tr></thead><tbody>{view.position.schedule.map((p, i) => <tr key={i}><td>{dateLabel(p.date)}</td><td><Money value={p.amountCentavos}/></td></tr>)}</tbody></table></div></> : <Notice>No posted balance is available. Approval or settlement evidence alone does not make the loan active.</Notice>}
     </div></section>
     <section className="panel no-print"><div className="panel-header"><h2>Financial actions</h2></div><div className={`panel-body ${styles.form}`}>
