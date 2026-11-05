@@ -344,9 +344,19 @@ Robert owns PLN-04/FND-05 shared contract/integration proposals; Aaron owns CRD-
 5 November 2026 — UI-08 publication: the user explicitly approved pushing the verified redesign to `origin/main`; normal publication of `d5b7f47` succeeded. The exact verified tree is integrated in the original main checkout, retaining all three unrelated untracked files. Fresh live in-app-browser Home/application/install-dialog checks and an error-free browser log supplement the [verification record](docs/AGAP_UI_Review_Verification.md#ui-08--mobile-first-member-portal--5-november-2026). This documentation/evidence follow-up does not change application source, task acceptance, device limitations or institutional release status.
 
 5 November 2026 — AI execution follow-up: the user prioritizes making Experiment F
-run after student A100 access failed. QWN-01/AI-01/SHOW-01 CPU compatibility
-investigation on `codex/model-inference-runtime` prepares an isolated unchanged-
-weights run and bounded student-credit CPU plan. Actual inference is not yet
-claimed. The original A100 package/release gates remain. The user subsequently explicitly
-authorized free compute or existing student-credit billing for the bounded CPU
-experiment; no subscription upgrade or out-of-credit fallback is authorized.
+run after student A100 access failed and explicitly authorizes free compute or
+existing student-credit billing with no subscription upgrade or out-of-credit
+fallback. QWN-01/AI-01/SHOW-01 CPU compatibility investigation on
+`codex/model-inference-runtime` executes the unchanged `unsloth/Qwen3.5-2B` base
+and Experiment F adapter offline in `float32` on a bounded `Standard_B4as_v2`
+VM in `koreacentral` (`$8.374` 2-hour total forecast under the `$10.00` cap).
+Both `run-4-review` (`68,863 ms` Experiment F `/review`, peak RSS `14.02 GB`)
+and `run-5-full` (`119,581 ms` clean `/extract`, `69,597 ms` Experiment F
+`/review`, `119,892 ms` disabled `/extract`, `cleanDisabledParity: true`,
+`extractionStableAcrossReview: true`, peak RSS `14.44 GB`) pass with verified
+exported evidence (`92d2b847e40eca743faee63a96d44d414e8d236d6f23e2ab7adb5ea78f31bcba`),
+and the temporary VM and resource group are deallocated and deleted (`[]`
+remaining pilot groups). See [CPU experiment record](infra/azure/pilot/CPU_EXPERIMENT.md)
+and [pilot delivery](docs/AGAP_Experiment_F_Pilot_Delivery.md#actual-cpu-model-execution--5-november-2026).
+CUDA/BF16 GPU execution, live HTTP `/extract` within the 90s GPU deadline,
+independent evaluation and release gates remain unchanged.

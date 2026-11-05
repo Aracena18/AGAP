@@ -98,4 +98,7 @@ validation incorrectly applies that array schema to an object. Preserve the
 schema, prompt and candidate identity. Add a nonempty financial-suggestion
 regression. Allow a separately selected review-only CPU probe so a slow or
 malformed extraction does not prevent measuring F; this must explicitly record
-that extraction/whole-workflow parity were not tested. Preserve every failed run.
+that extraction/whole-workflow parity were not tested. Use the tracked public
+development smoke case (`development-smoke.inputs.json[0]`) for CPU review and
+the bounded no-amount extraction text (`FICTIONAL no financial amounts.`) for
+CPU extraction parity. Preserve every failed run.

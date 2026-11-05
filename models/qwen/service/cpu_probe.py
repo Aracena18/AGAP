@@ -90,11 +90,10 @@ def run(args, model_factory=CpuCompatibilityModel):
     start = time.monotonic()
     try:
         model = model_factory(root, args.threads)
-        extraction = {'page': 1, 'text': 'FICTIONAL net pay PHP 2000.00',
+        extraction = {'page': 1, 'text': 'FICTIONAL no financial amounts.',
                       'provenance': bindings['extraction']}
-        review = {'question': 'Identify discrepancies without deciding eligibility.',
-                  'sources': [{'source_id': 'fictional-1', 'quote': 'FICTIONAL total PHP 3,450.00.'},
-                              {'source_id': 'fictional-2', 'quote': 'FICTIONAL total PHP 3,920.00.'}],
+        smoke = read_json(HERE.parent / 'experiment_f/development-smoke.inputs.json')[0]
+        review = {'question': smoke['question'], 'sources': smoke['sources'],
                   'provenance': bindings['review']}
         results, metrics = {}, {}
         phases = [('review-f', 'review', review)] if args.review_only else [
