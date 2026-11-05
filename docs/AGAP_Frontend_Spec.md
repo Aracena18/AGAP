@@ -1,5 +1,13 @@
 # AGAP frontend specification
 
+## Current support position and bounded reconciliation — 5 November 2026
+
+Assigned officers can read `GET /support-requests/{id}/position` through the generated client. The server resolves the loan from the currently authorized, locked disclosure; there is no arbitrary loan/member parameter or broader financial-workspace permission. The additive strict available/unavailable envelope contains only the existing safe loan-position fields. Missing producer/linked posted position remains unavailable; malformed or mismatched producer output is rejected. Every read rechecks current assignment/session. The original submitted position remains unchanged.
+
+The staff detail presents Current posted loan position separately from the submission-time position, with as-of date, posted-through time, principal/interest/fees/overdue and pending movements. Refresh removes the previous current figures while loading and offers an independent read retry after failure; the response draft remains intact. Saving/uncertain writes disable refresh. Disposed reads are aborted/ignored and later access denial clears private detail/drafts through the existing boundary. Principal-only posted facts retain the current servicing semantics; this extension does not introduce other financial components.
+
+Reconciliation internally reads bounded source pages of 250 within the existing single REPEATABLE READ transaction, with a 5000-record budget per inventory collection and a 5000-event union/result limit. The 31-day request range and public report DTOs remain unchanged. Missing/incomplete/over-budget sources remain unavailable. A source page is never an independent HTTP snapshot; UI report-history pagination retains its existing meaning. Stored results, metadata hashes and exact retry outcomes remain immutable.
+
 ## PRV-01 priority review demo — 5 November 2026
 
 The fictional `/applications` queue defaults to active cases and ranks substantiated material concerns/unresolved escalations before other cases, then original `createdAt` and application ID. All-applications retains completed decisions. Parallel review-path filters retain all applicable paths. Entries open `/applications/:id/summary`; evidence, comparison, decision and source-fragment routes remain available.
@@ -18,7 +26,7 @@ The member payment-help page now uses the monitoring service for confirmed submi
 
 `/#/staff/support-requests` provides a paginated support queue, a filter explicitly applying to loaded records, assignment and assigned-officer detail/response history. Branch administrators see assignment metadata and choose active same-branch officers with a reason and fresh MFA. Only assigned officers see shared concerns, check-ins and internal notes; ordinary financial auditing grants no support access. Public responses are separate from internal notes; follow-up dates record a staff action without scheduling external delivery or changing terms. Later denial hides cached disclosures. Versions, exact retries, draft guards and explicit discard/reload protect unsaved work and concurrent changes. The merged shell's duplicate route/navigation blocks are reconciled to one workspace.
 
-Saved loan positions are visibly dated submission evidence, with fresh staff positions explicitly unavailable until a support-purpose reader is supplied. Reported strain can coexist with no overdue balance; no health score or lending consequence is inferred. The existing standalone health-review operation remains contract-only. Existing design rules govern responsive controls, named keyboard-scroll regions, wrapping, focus and unavailable states. [Technical boundaries and receiving owners](../apps/api/src/modules/monitoring/README.md) record the implementation and limits.
+Saved loan positions remain visibly dated submission evidence. The additive 5 November support-purpose reader above supplies a separate current position; missing producers or posted positions stay explicitly unavailable. Reported strain can coexist with no overdue balance; no health score or lending consequence is inferred. The existing standalone health-review operation remains contract-only. Existing design rules govern responsive controls, named keyboard-scroll regions, wrapping, focus and unavailable states. [Technical boundaries and receiving owners](../apps/api/src/modules/monitoring/README.md) record the implementation and limits.
 
 ### Staff response-history pagination — 4 November 2026
 

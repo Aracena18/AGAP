@@ -9,6 +9,7 @@ import {useUnsavedChanges} from '../access/useUnsavedChanges';
 import {Badge,Button,Money,Notice} from '../../shared/ui';
 import {StaffResponseHistory} from './StaffResponseHistory';
 import {StaffFollowUps} from './StaffFollowUps';
+import {CurrentSupportPosition} from './CurrentSupportPosition';
 import styles from './support.module.css';
 type Detail=z.output<typeof SupportHistorySchema>;type Summary=z.output<typeof SupportSummarySchema>;
 type Assignment=z.input<typeof SupportAssignmentSchema>;type Response=z.input<typeof SupportResponseSchema>;
@@ -83,7 +84,10 @@ function SupportQueue({onDenied,onBlockedChange}:{onDenied:()=>void;onBlockedCha
  {loading&&<p role="status">Opening disclosure…</p>}
  {detail&&<><section className="stack"><h3>Confirmed member concern</h3><p className={styles.message}>{detail.message}</p><p>Preferred response: {detail.contactPreference}. Sharing notice: {detail.noticeVersion}.</p><dl className={styles.metadata}><dt>Can meet essentials</dt><dd>{label(detail.checkIn.canMeetEssentials)}</dd><dt>Borrowed to repay</dt><dd>{label(detail.checkIn.borrowedToRepay)}</dd><dt>Financial strain</dt><dd>{label(detail.checkIn.financialStrain)}</dd></dl></section>
  <section className="stack"><h3>Dated loan position</h3><Notice>{detail.positionMessage}</Notice>{detail.position&&<dl className={styles.metadata}><dt>As of</dt><dd>{detail.position.asOfDate}</dd><dt>Posted through</dt><dd>{detail.position.postedThrough}</dd><dt>Principal</dt><dd><Money value={detail.position.principalCentavos}/></dd><dt>Overdue</dt><dd><Money value={detail.position.overdueCentavos}/></dd><dt>Pending movements</dt><dd>{detail.position.pendingMovementCount}</dd></dl>}</section>
+
+ <CurrentSupportPosition key={`position:${detail.id}:${detail.version}`} requestId={detail.id} blocked={blocked} onAccessDenied={failure}/>
  <form className="stack" onSubmit={e=>void respond(e)}><h3>Record a response</h3><fieldset disabled={blocked} className="stack"><div className="field"><label htmlFor="support-response">Response shared with member</label><textarea id="support-response" required maxLength={2000} value={response} onChange={e=>setResponse(e.target.value)}/></div><div className="field"><label htmlFor="support-note">Internal staff action / note</label><textarea id="support-note" required maxLength={2000} value={internalNote} onChange={e=>setNote(e.target.value)}/><p className="small subtle">This note is not included in member history.</p></div><div className="field"><label htmlFor="support-follow-up">Follow-up date (optional)</label><input type="date" id="support-follow-up" value={followUp} onChange={e=>setFollowUp(e.target.value)}/><p className="small subtle">Each dated response creates a separate staff follow-up. Use Follow-ups to complete or reschedule an existing task.</p></div></fieldset><div className="actions"><Button type="submit" disabled={reply.saving}>{reply.saving?'Recording…':reply.uncertain?'Retry same response':'Publish response'}</Button></div></form>
+
  <StaffResponseHistory key={`${detail.id}:${detail.version}`} detail={detail} blocked={blocked} onAccessDenied={failure}/></>}
  </section>}</div>;
 }

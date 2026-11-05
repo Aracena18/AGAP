@@ -1,5 +1,11 @@
 # AGAP UI/UX design system
 
+## Current support position — HLT-01, 5 November 2026
+
+In the assigned officer's support detail, retain the submitted dated position and place a separate Current posted loan position section immediately after the submission-time position, before the response form. Label the as-of date and posted-through time beside principal, interest/fees due, overdue and pending movements using existing Money and metadata controls. Keep the distinction between unavailable and recorded zero. State that pending movements do not reduce debt and that the submitted snapshot remains preserved.
+
+Use the existing secondary Refresh current position button, loading status, warning Notice and Retry current position action. Refresh clears the old current figures while a new read is pending; failed reads preserve the response draft. Disable refresh during saving/uncertain commands. Keep keyboard focus on the read action; render all fields without page overflow at 320px. A later access denial clears private details and drafts together. No new tokens, financial actions or ornamental motion are added.
+
 ## Priority review and escalation — PRV-01, 5 November 2026
 
 Extend the existing fictional review workspace with a dedicated Review summary before Evidence, Compare options and Decision; preserve the order and destinations of the existing steps. Queue entries show every applicable path and a named owner/next action, with material concerns first and original submission age retained. Completed decisions remain available under All applications. No repayment score, risk-free badge or AI-confidence ranking is introduced.
