@@ -126,4 +126,5 @@ export const operations = [
   {id:'getMemberAssistedCheckIn',method:'GET',path:'/member/assisted-check-ins/{id}',response:'AssistedCheckIn',owner:'Earl',implemented:true,principal:'member'},
   {id:'confirmMemberAssistedCheckIn',method:'POST',path:'/member/assisted-check-ins/{id}/confirmations',request:'AssistedCheckInConfirm',response:'AssistedCheckInReceipt',owner:'Earl',implemented:true,idempotent:true,versioned:true,principal:'member'},
   {id:'declineMemberAssistedCheckIn',method:'POST',path:'/member/assisted-check-ins/{id}/declines',request:'AssistedCheckInDecline',response:'AssistedCheckInReceipt',owner:'Earl',implemented:true,idempotent:true,versioned:true,principal:'member'},
+  {id:'getMemberSupportCorrectionSource',method:'GET',path:'/member/support-requests/{id}/correction-source',response:'SupportCorrectionSource',owner:'Earl',implemented:true,principal:'member'},
 ] satisfies Operation[];

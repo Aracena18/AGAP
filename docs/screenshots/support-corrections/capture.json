@@ -1,0 +1,67 @@
+{
+  "taskIds": [
+    "HLT-01",
+    "MOB-01",
+    "FND-03"
+  ],
+  "branch": "feat/earl-support-completion",
+  "initialBaseCommit": "44a9b57",
+  "baseCommit": "64b3cea",
+  "documentationIntegrationCommit": "7decaa0",
+  "recordMode": "fictional",
+  "capturedAt": "2026-11-05T13:17:28.000Z",
+  "test": "tests/support-corrections.spec.ts",
+  "fullBrowserResult": {
+    "passed": 135,
+    "skipped": 4,
+    "skippedReason": "Existing separately enabled presentation cases"
+  },
+  "requiredCheck": {
+    "uiDomain": 239,
+    "platformContracts": 738,
+    "evaluation": 109
+  },
+  "applicationSourceSha256": "372e241e5cc71748ff620ff677604d620a6e00c9c9e075b83f432fc01289ad9e",
+  "sourceFingerprintMethod": "Sorted path + NUL + SHA256(UTF-8 text with LF newlines) + newline, then SHA256 of the concatenation",
+  "sourceFiles": [
+    "apps/api/src/app.ts",
+    "apps/api/src/modules/member-portal/member-portal.service.ts",
+    "apps/api/src/modules/member-portal/member.controller.ts",
+    "apps/api/src/modules/monitoring/migrations/008-correction-source.sql",
+    "apps/api/src/modules/monitoring/support-expansion.service.ts",
+    "apps/api/test/browser-server.ts",
+    "apps/api/test/support-correction-completion.test.ts",
+    "apps/api/test/support-correction-fixture.ts",
+    "packages/api-client/src/index.ts",
+    "packages/contracts/src/operations.ts",
+    "packages/contracts/src/ports.ts",
+    "packages/contracts/src/schemas.ts",
+    "src/features/member-portal/MemberApp.tsx",
+    "src/features/member-portal/MemberSupportCorrection.tsx",
+    "src/features/member-portal/MemberSupportHistory.tsx",
+    "tests/support-corrections.spec.ts"
+  ],
+  "notes": "Actual isolated PostgreSQL/API/browser workflow. Phone captures show separate scroll positions in the existing member shell; the desktop confirmation capture is full-page. Fictional fixtures only; no production or representative-user acceptance.",
+  "files": {
+    "member-edit-320.png": {
+      "sha256": "6758246cd22d4d3b4d45697d0465e4c99c3b0f23e9c3f65c89ada7fc5f9671c2",
+      "width": 320,
+      "height": 800
+    },
+    "member-review-320.png": {
+      "sha256": "c43cd0f64ebd9421b574426e50044c2a817f721bd96ae2034f709d4f498033af",
+      "width": 320,
+      "height": 800
+    },
+    "member-sent-desktop.png": {
+      "sha256": "5163fec7779cbfde85420176290c33cd6a50736201e1a5d5103c3d7c436ac240",
+      "width": 1366,
+      "height": 1585
+    },
+    "member-source-320.png": {
+      "sha256": "cf65e2b64f74ef7da0c918b24ee1503e3925ebe5beb20d0fea7d5de652e008c4",
+      "width": 320,
+      "height": 800
+    }
+  }
+}
