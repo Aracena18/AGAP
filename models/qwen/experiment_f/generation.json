@@ -1,0 +1,10 @@
+{
+  "maxInputTokens": 1536,
+  "generation": {
+    "do_sample": false,
+    "max_new_tokens": 384,
+    "num_beams": 1
+  },
+  "maximumAttempts": 2,
+  "maximumRequestSeconds": 90
+}

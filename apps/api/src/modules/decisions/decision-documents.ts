@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { money } from '../../../../../src/domain/format.js';
 import { Text } from '../../../../../packages/contracts/src/schemas.js';
 import { ApiError } from '../../platform/errors.js';
+import { reviewScenarios } from './rules.js';
 import type { ReviewContext } from './context.js';
 import type { PreviewRequestSchema } from './backend-contracts.js';
 
@@ -10,12 +11,15 @@ export function termsChecksum(text: string) { return createHash('sha256').update
 /** No financial calculation or external rendering. Exact supplied numbers only. */
 export function decisionDocument(c: ReviewContext, request: z.output<typeof PreviewRequestSchema>) {
   const selected = c.offers.find(o => o.id === request.offerVersionId);
-  const scenario = c.assessment?.status === 'complete' ? c.assessment.scenarios.find(s => s.offerVersionId === selected?.id) : undefined;
+  const checked = reviewScenarios(c).find(s=>s.offerVersionId===selected?.id);
+  const scenario = checked && ('dated' in checked?checked.dated:checked.legacy);
   const explanation = [
     `Application ${request.outcome === 'return' ? 'returned for clarification' : request.outcome === 'approve' ? 'approved by the reviewer' : 'declined by the reviewer'}.`,
     request.rationale,
     ...(selected && scenario ? [`Net proceeds ${money(selected.netReceivedCentavos)}; total repayment ${money(scenario.totalRepaymentCentavos)}; financing cost ${money(scenario.financingCostCentavos)}.`,
-      ...('workflow' in scenario ? [
+      ...('horizonNetCentavos' in scenario ? [
+        `For ${c.periodStart} to ${c.periodEnd}, horizon net remaining ${money(scenario.horizonNetCentavos)}; lowest dated balance ${money(scenario.lowestBalanceCentavos)}. Calendar-month segments: ${scenario.months.map(m=>m.month+': '+money(m.remainingCentavos)).join('; ')}.`,
+      ] : 'workflow' in scenario ? [
         `For ${c.periodStart} to ${c.periodEnd}, full-horizon remaining ${money(scenario.workflow.horizonNetCentavos)}; lowest dated balance ${money(scenario.lowestBalanceCentavos)}.`,
         ...scenario.workflow.months.map(m => `${m.month} reviewed calendar-month segment: ${money(m.remainingCentavos)} remaining.`),
       ] : [`For ${c.periodStart} to ${c.periodEnd}, monthly remaining ${money(scenario.monthlyRemainingCentavos)}; lowest dated balance ${money(scenario.lowestBalanceCentavos)}.`])] : ['No complete approved terms are supplied.']),

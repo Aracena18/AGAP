@@ -25,5 +25,5 @@ export async function configureWorkflow(config:Config,uow:UnitOfWork,memberUow:M
  const production=config.NODE_ENV==='production',real=config.EVIDENCE_RECORD_MODE==='real';if(real){if(!production)throw new Error('Real records require a production server and institutional release.');await requireRelease(process.env);}
  const store=await documentStore(process.env,production),ai=await QwenAdapter.configured(process.env,production,real);
  const workflow=new WorkflowService(uow,memberUow,!!ai,!real);
- return {workflow,documents:new DocumentsService(workflow,store)};
+ return {workflow,ai,documents:new DocumentsService(workflow,store)};
 }

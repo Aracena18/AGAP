@@ -1,6 +1,6 @@
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 /graft/
-node_modules/
+node_modules
 dist/
 dist-api/
 backups/
@@ -21,6 +21,8 @@ graphify-out/
 # Large model artifacts are shared separately rather than committed to Git.
 /models/qwen/base_model/
 /models/qwen/adapter/
+/models/qwen/artifacts/
+/infra/azure/pilot/.state/
 
 # Local review packets and cooperative source documents are not release inputs.
 /private_blind_key.csv
@@ -59,3 +61,5 @@ Thumbs.db
 /03-decisions-servicing.md
 
 dist-worker/
+
+__pycache__/

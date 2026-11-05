@@ -38,6 +38,12 @@
       "date": "2026-11-04",
       "direction": "User requests direct reversible scroll control for the screenshot fan; design.md section 17 governs the behavior",
       "evidence": "../docs/AGAP_Landing_Verification.md#scroll-linked-screenshot-fan--ui-07-follow-up-4-november-2026"
+    },
+    {
+      "id": "UI-09",
+      "date": "2026-11-05",
+      "direction": "User-confirmed archived member-screen direction: warmer member typography, Gabay guidance, quieter copy and intake steps; design.md section 22 remains authoritative",
+      "evidence": "../docs/AGAP_UI_Review_Verification.md#ui-09--friendly-member-guidance--5-november-2026"
     }
   ]
 }

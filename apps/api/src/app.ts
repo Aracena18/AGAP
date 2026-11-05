@@ -13,8 +13,8 @@ import { CONTRACT_VERSION } from '../../../packages/contracts/src/schemas.js';
 import { createPool, PostgresUnitOfWork } from './platform/database.js';
 import { ApiError } from './platform/errors.js';
 import { expectedVersion } from './platform/commands.js';
-import { assertConnectedLending, assertLocalPresentation, type Config } from './platform/config.js';
-import { IdentityService, cookieValue } from './modules/identity/identity.service.js';
+import { assertConnectedLending, assertLocalPresentation, assertFictionalPilot, type Config } from './platform/config.js';
+import { IdentityService, LoginRecoveryError, cookieValue } from './modules/identity/identity.service.js';
 import { MembersService } from './modules/members/members.service.js';
 import { ApplicationsService } from './modules/applications/applications.service.js';
 import { StaffService } from './modules/identity/staff.service.js';
@@ -28,8 +28,14 @@ import { WorkflowController,WORKFLOW } from './modules/evidence/workflow.control
 import { configureWorkflow,requireRelease } from './modules/evidence/configure.js';
 import { LoanReads } from './modules/servicing/loan-reads.js';
 import { ReconciliationService } from './modules/accounting/reconciliation.service.js';
+import {TrialBalanceService} from './modules/accounting/trial-balance.service.js';
+import {TrialBalanceController,TRIAL_BALANCES} from './modules/accounting/trial-balance.controller.js';
+import {CheckInSummaryService,SupportCorrections} from './modules/monitoring/support-expansion.service.js';
+import {CHECK_IN_SUMMARY,CheckInSummaryController} from './modules/monitoring/check-in-summary.controller.js';
 import { ReconciliationController,RECONCILIATIONS } from './modules/accounting/reconciliation.controller.js';
 import { MonitoringService } from './modules/monitoring/monitoring.service.js';
+import {AssistedCheckInsService} from './modules/monitoring/assisted-check-ins.service.js';
+import {AssistedCheckInsController,ASSISTED_CHECK_INS} from './modules/monitoring/assisted-check-ins.controller.js';
 import { MonitoringController,SupportFollowUpController,MONITORING } from './modules/monitoring/monitoring.controller.js';
 import { unavailableMemberDomains } from './modules/member-portal/member-portal.service.js';
 import { DECISIONS, DecisionsController, type DecisionServices } from './modules/decisions/decisions.controller.js';
@@ -41,6 +47,10 @@ import { WorkflowDecisionProducer } from './modules/evidence/decision-basis.prod
 import { ORIGINATION, OriginationController } from './modules/servicing/origination.controller.js';
 import { ServicingService } from './modules/servicing/servicing.service.js';
 import { LendingMoneyProducers } from './modules/servicing/lending-money.producers.js';
+import { configurePilot } from './modules/pilot/configure.js';
+import { PilotController, PILOT } from './modules/pilot/pilot.controller.js';
+import { configureReviews, type ReviewService } from './modules/reviews/reviews.service.js';
+import { ReviewsController, REVIEWS } from './modules/reviews/reviews.controller.js';
 import type { MemberDomainPorts } from '../../../packages/contracts/src/ports.js';
 
 interface StaffRequest extends Request,MemberRequest { staff?: Awaited<ReturnType<IdentityService['authenticate']>> }
@@ -73,7 +83,7 @@ class PlatformController {
   @Get('health') async health() { await Promise.all([this.services.database.query('SELECT 1'),this.services.identityDatabase.query('SELECT 1')]); return {status:'ok',contractVersion:CONTRACT_VERSION}; }
   @Get('openapi.json') async openapi() { return JSON.parse(await readFile('packages/contracts/openapi.json','utf8')) as unknown; }
   @Get('capabilities') capabilities() {
-    return {contractVersion:CONTRACT_VERSION,modules:[{name:'platform',owner:'Robert',state:'available'},{name:'identity',owner:'Robert',state:'available'},{name:'members',owner:'Robert',state:'available'},{name:'applications',owner:'Robert',state:'available'},{name:'member_portal',owner:'Robert',state:'available'},{name:'evidence',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'credit',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'decisions',owner:'Benedict',state:'contract_only'},{name:'decisions.staff_review',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'decisions.member_acceptance',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'servicing.pending_origination',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'servicing',owner:'Benedict',state:'contract_only'},{name:'accounting',owner:'Earl',state:'contract_only'},{name:'monitoring',owner:'Earl',state:'contract_only'},{name:'servicing.member_loan_reads',owner:'Benedict',state:'available'},{name:'accounting.principal_reconciliation',owner:'Earl',state:'available'},{name:'monitoring.payment_help',owner:'Earl',state:'available'},{name:'monitoring.follow_ups',owner:'Earl',state:'available'}]};
+    return {contractVersion:CONTRACT_VERSION,modules:[{name:'platform',owner:'Robert',state:'available'},{name:'identity',owner:'Robert',state:'available'},{name:'members',owner:'Robert',state:'available'},{name:'applications',owner:'Robert',state:'available'},{name:'member_portal',owner:'Robert',state:'available'},{name:'evidence',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'credit',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'decisions.staff_review',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'decisions.member_acceptance',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'servicing.pending_origination',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'decisions',owner:'Benedict',state:this.services.config.FICTIONAL_PILOT_ENABLED?'available':'contract_only'},{name:'servicing',owner:'Benedict',state:this.services.config.FICTIONAL_PILOT_ENABLED?'available':'contract_only'},{name:'accounting',owner:'Earl',state:this.services.config.FICTIONAL_PILOT_ENABLED?'available':'contract_only'},{name:'monitoring',owner:'Earl',state:'available'},{name:'priority_review',owner:'Aaron',state:this.services.config.FICTIONAL_PILOT_ENABLED?'available':'contract_only'},{name:'servicing.member_loan_reads',owner:'Benedict',state:'available'},{name:'accounting.principal_reconciliation',owner:'Earl',state:'available'},{name:'monitoring.payment_help',owner:'Earl',state:'available'},{name:'monitoring.follow_ups',owner:'Earl',state:'available'}]};
   }
   @Get('auth/login') async login(@Req() request:StaffRequest,@Res() response: Response) {
     await limitLogin(this.services.identityDatabase,this.services.config.SESSION_SECRET,request.socket.remoteAddress??'unknown');
@@ -85,7 +95,16 @@ class PlatformController {
     const login = cookieValue(request.headers.cookie,'agap_login');
     const previous = cookieValue(request.headers.cookie,'agap_session',this.services.config.LOCAL_PRESENTATION_MODE);
     response.clearCookie('agap_login',{path:'/api/v1/auth',httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax'});
-    const result = await this.services.identity.finishLogin(login,new URL(request.originalUrl,this.services.config.PUBLIC_ORIGIN),previous);
+    let result:Awaited<ReturnType<IdentityService['finishLogin']>>;
+    try{result=await this.services.identity.finishLogin(login,new URL(request.originalUrl,this.services.config.PUBLIC_ORIGIN),previous);}
+    catch(error){
+      if(!(error instanceof ApiError))throw error;
+      const target=new URL(error instanceof LoginRecoveryError?error.returnTo:'/staff',this.services.config.PUBLIC_ORIGIN);
+      target.searchParams.set('signin',error.code==='staff_access_required'?'access':error.code==='assurance_required'?'verification':'retry');
+      if(error instanceof LoginRecoveryError&&error.requireMfa)target.searchParams.set('assurance','mfa');
+      response.redirect(302,`${this.services.config.PUBLIC_ORIGIN}/#${target.pathname}${target.search}${target.hash}`);
+      return;
+    }
     response.cookie('agap_session',result.token,{httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax',path:'/',maxAge:this.services.config.SESSION_TTL_SECONDS*1000});
     response.redirect(302,`${this.services.config.PUBLIC_ORIGIN}/#${result.returnTo}`);
   }
@@ -96,7 +115,7 @@ class PlatformController {
   }
   @Get('session') session(@Req() request: StaffRequest) {
     const current = actor(request);
-    return {user:{id:current.userId,displayName:request.staff!.displayName,organizationId:current.organizationId,branchIds:current.branchIds,branches:request.staff!.branches,roles:current.roles},csrfToken:request.staff!.csrfToken,expiresAt:request.staff!.expiresAt,privacyNoticeVersion:this.services.config.PRIVACY_NOTICE_VERSION,contractVersion:CONTRACT_VERSION,recordMode:this.services.config.EVIDENCE_RECORD_MODE};
+    return {user:{id:current.userId,displayName:request.staff!.displayName,organizationId:current.organizationId,branchIds:current.branchIds,branches:request.staff!.branches,roles:current.roles},csrfToken:request.staff!.csrfToken,expiresAt:request.staff!.expiresAt,privacyNoticeVersion:this.services.config.PRIVACY_NOTICE_VERSION,contractVersion:CONTRACT_VERSION,recordMode:this.services.config.EVIDENCE_RECORD_MODE,...(this.services.config.FICTIONAL_PILOT_ENABLED?{fictionalPilot:true}:{})};
   }
   @Get('members') listMembers(@Req() request: StaffRequest,@Query() query: unknown) { return this.services.members.list(actor(request),query); }
   @Get('staff') listStaff(@Req() request: StaffRequest,@Query() query: unknown) { return this.services.staff.list(actor(request),query); }
@@ -112,8 +131,7 @@ class PlatformController {
 }
 
 export async function createApp(config: Config,memberDomains?:MemberDomainPorts) {
-  assertLocalPresentation(config);
-  assertConnectedLending(config);
+  assertLocalPresentation(config);assertFictionalPilot(config);assertConnectedLending(config);
   if(config.EVIDENCE_RECORD_MODE==='real'){if(config.NODE_ENV!=='production')throw new Error('Real records require production and institutional release.');await requireRelease(process.env);}
   const database = createPool(config.DATABASE_URL);
   const identityDatabase = createPool(config.IDENTITY_DATABASE_URL);
@@ -121,13 +139,12 @@ export async function createApp(config: Config,memberDomains?:MemberDomainPorts)
     for (const pool of [database,identityDatabase]) {
       const result = await pool.query<{rolsuper:boolean;rolbypassrls:boolean}>("SELECT rolsuper,rolbypassrls FROM pg_roles WHERE rolname=current_user");
       if (result.rows[0].rolsuper || result.rows[0].rolbypassrls) throw new Error('API database credentials must not be superuser or BYPASSRLS roles.');
-      const owned=await pool.query("SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('platform','identity','members','applications','portal','evidence','credit','decisions','servicing','accounting','monitoring') AND c.relkind IN ('r','p') AND pg_has_role(current_user,c.relowner,'MEMBER') LIMIT 1");
+      const owned=await pool.query("SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('platform','identity','members','applications','portal','evidence','credit','accounting','monitoring','decisions','servicing','reviews') AND c.relkind IN ('r','p') AND pg_has_role(current_user,c.relowner,'MEMBER') LIMIT 1");
       if(owned.rowCount)throw new Error('API database credentials must not own application tables or inherit their owner role.');
     }
-    const guarded={lendingGuard:config.CONNECTED_LENDING_ENABLED};
+    const guarded={materialGuard:config.FICTIONAL_PILOT_ENABLED,lendingGuard:config.CONNECTED_LENDING_ENABLED};
     const uow = new PostgresUnitOfWork(database,guarded);
     const memberUow=new PostgresMemberUnitOfWork(database,guarded);
-    const reconciliations = new ReconciliationService(new PostgresUnitOfWork(database,{isolation:'repeatable read'}),new LoanReads(uow));
     const workflow=config.EVIDENCE_WORKFLOW_ENABLED?await configureWorkflow(config,uow,memberUow):null;
     const members = new MembersService(uow,config.PRIVACY_NOTICE_VERSION);
     const identity = new IdentityService(identityDatabase,config);
@@ -135,10 +152,17 @@ export async function createApp(config: Config,memberDomains?:MemberDomainPorts)
     const producers=config.CONNECTED_LENDING_ENABLED&&workflow?new LendingDecisionProducers(new WorkflowDecisionProducer(workflow.workflow),true):null;
     const decisionServices:DecisionServices|null=producers?{reads:new DecisionStaffReads(uow,producers),commands:new DecisionsService(uow,producers),reviews:new DecisionReviewService(uow,producers)}:null;
     const origination=producers?new ServicingService(uow,new LendingMoneyProducers(producers,true)):null;
-    const loanReads=new LoanReads(uow),monitoring=new MonitoringService(uow,loanReads);
-    const domains:MemberDomainPorts=memberDomains??{...unavailableMemberDomains,...(decisionServices?decisionMemberPorts(decisionServices.commands):{}),loans:tx=>loanReads.memberLoans(tx),support:tx=>monitoring.memberHistory(tx),supportPage:(tx,query)=>monitoring.memberHistoryPage(tx,query),requestSupport:(tx,data,key)=>monitoring.submit(tx,data,key)};
-    const portal=new MemberPortalService(memberUow,new MemberApplicationsService(memberUow,config.PRIVACY_NOTICE_VERSION),config.PRIVACY_NOTICE_VERSION,domains);
-    @Module({controllers:[OriginationController,DecisionsController,PlatformController,MemberController,WorkflowController,ReconciliationController,MonitoringController,SupportFollowUpController],providers:[{provide:ORIGINATION,useValue:origination},{provide:DECISIONS,useValue:decisionServices},{provide:MONITORING,useValue:monitoring},{provide:RECONCILIATIONS,useValue:reconciliations},{provide:WORKFLOW,useValue:workflow},{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal,workflow}}]})
+    let reviews:ReviewService|null=null;
+    const pilot=config.FICTIONAL_PILOT_ENABLED?configurePilot({uow,memberUow,workflow:workflow!.workflow,readiness:(tx,id,options)=>reviews!.readyGuard(tx,id,options)}):null;
+    if(pilot)reviews=configureReviews({uow,workflow:workflow!.workflow,adapter:workflow!.ai?.reviewAdapter()??null,basis:pilot.basis});
+    const loanReads=pilot?.loans??new LoanReads(uow),monitoring=new MonitoringService(uow,loanReads);
+    const assistance=new AssistedCheckInsService(uow,loanReads,config.PRIVACY_NOTICE_VERSION,config.EVIDENCE_RECORD_MODE==='fictional');
+    const reconciliations = new ReconciliationService(new PostgresUnitOfWork(database,{isolation:'repeatable read'}),loanReads);
+    const trialBalances=new TrialBalanceService(new PostgresUnitOfWork(database,{isolation:'repeatable read'}));
+    const corrections=new SupportCorrections(loanReads),checkInSummary=new CheckInSummaryService(new PostgresUnitOfWork(database,{isolation:'repeatable read'}));
+    const domains:MemberDomainPorts=memberDomains??{...unavailableMemberDomains,...(decisionServices?decisionMemberPorts(decisionServices.commands):{}),loans:tx=>loanReads.memberLoans(tx),support:tx=>monitoring.memberHistory(tx),supportPage:(tx,query)=>monitoring.memberHistoryPage(tx,query),requestSupport:(tx,data,key)=>monitoring.submit(tx,data,key),correctSupport:(tx,id,data,key)=>corrections.correct(tx,id,data,key),supportCorrectionLink:(tx,id)=>corrections.link(tx,id),assistedCheckIns:(tx,q)=>assistance.memberList(tx,q),assistedCheckIn:(tx,id)=>assistance.memberGet(tx,id),confirmAssistedCheckIn:(tx,id,data,version,key)=>assistance.confirm(tx,id,data,version,key),declineAssistedCheckIn:(tx,id,data,version,key)=>assistance.decline(tx,id,data,version,key),...pilot?.memberDomains};
+    const portal=new MemberPortalService(memberUow,new MemberApplicationsService(memberUow,config.PRIVACY_NOTICE_VERSION),config.PRIVACY_NOTICE_VERSION,domains,config.EVIDENCE_RECORD_MODE==='fictional');
+    @Module({controllers:[OriginationController,DecisionsController,PlatformController,MemberController,WorkflowController,PilotController,ReviewsController,ReconciliationController,TrialBalanceController,MonitoringController,SupportFollowUpController,CheckInSummaryController,AssistedCheckInsController],providers:[{provide:ORIGINATION,useValue:origination},{provide:DECISIONS,useValue:decisionServices},{provide:ASSISTED_CHECK_INS,useValue:assistance},{provide:CHECK_IN_SUMMARY,useValue:checkInSummary},{provide:TRIAL_BALANCES,useValue:trialBalances},{provide:PILOT,useValue:pilot?.service??null},{provide:REVIEWS,useValue:reviews},{provide:MONITORING,useValue:monitoring},{provide:RECONCILIATIONS,useValue:reconciliations},{provide:WORKFLOW,useValue:workflow},{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal,workflow}}]})
     class AppModule {}
     const app = await NestFactory.create<NestExpressApplication>(AppModule,{logger:false,bodyParser:false,abortOnError:false});
     app.set('trust proxy',false);

@@ -1,5 +1,5 @@
 /** Fictional UI simulation only. Not an authoritative producer or application adapter. */
-import { CONTRACT_VERSION } from '../../../packages/contracts/src/schemas';
+import { CONTRACT_VERSION } from '../../../packages/contracts/src/common';
 import type { StaffSession } from '../access/StaffContext';
 import { createDemoCases } from '../../demo/cases';
 import { assessCase } from '../../domain/assessment';

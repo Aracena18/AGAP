@@ -66,6 +66,7 @@ function context(input: DeepReadonly<ReviewContext>): ReviewContext {
   }
   if (c.recommendation) requireRule(c.recommendation.applicationId === c.application.id, 'recommendation_scope', 'The recommendation belongs to another application.');
   if (c.workflowBasis) {
+    requireRule(!c.datedAssessment && !c.datedFacts && !c.datedSources, 'mixed_basis', 'A review must use one complete dated evidence representation.');
     const b = c.workflowBasis, a = b.assessment;
     requireRule(!c.facts.length && !c.sources.length, 'mixed_basis', 'A workflow basis cannot be mixed with legacy evidence projections.');
     requireRule(a.applicationId === c.application.id && a.periodStart === c.periodStart && a.periodEnd === c.periodEnd,
@@ -97,8 +98,13 @@ function scope(actor: ActorContext, c: ReviewContext, role: 'officer' | 'reviewe
 function version(c: ReviewContext, expected: number): void {
   requireRule(expected === c.application.version, 'stale_version', 'Reload the current application version before submitting.');
 }
+export function currentAssessment(c: DeepReadonly<ReviewContext>) { return c.datedAssessment ?? c.assessment; }
+export function reviewScenarios(c: DeepReadonly<ReviewContext>) {
+  if(c.datedAssessment) return c.datedAssessment.scenarios.map(s=>({offerVersionId:s.offerId,policyChecks:s.checks.map(p=>({policyId:p.id,passed:p.passed,detail:p.detail,overridable:false})),dated:s}));
+  return c.assessment?.status==='complete'?c.assessment.scenarios.map(s=>({offerVersionId:s.offerVersionId,policyChecks:s.policyChecks,legacy:s})):[];
+}
 function ready(c: ReviewContext, at: string, evidenceOnly=false) {
-  const a = c.assessment;
+  const a = currentAssessment(c);
   requireRule(a?.status === 'complete', 'assessment_incomplete', 'A complete checked assessment is required; clarification remains available.');
   requireRule(a.inputVersion === c.application.assessmentInputVersion && a.policyVersionId === c.currentAssessmentPolicyVersionId, 'stale_assessment', 'The assessment input or financial policy version has changed.');
   requireRule(new Date(a.createdAt).getTime() <= new Date(at).getTime(), 'future_assessment', 'The assessment cannot be recorded after this action.');
@@ -116,10 +122,14 @@ function ready(c: ReviewContext, at: string, evidenceOnly=false) {
         && (c.integration?.sourceReview !== 'independent_support_required' || s.verification === 'supported')),
       'source_unavailable', 'Each included fact needs its current cleared source and the configured verification standard.');
     }
-  } else requireRule(c.sources.length > 0 && c.facts.length > 0, 'evidence_basis_unavailable', 'The checked assessment needs its authorized evidence basis.');
+  } else requireRule(c.sources.length > 0 && (c.datedFacts?.length ?? c.facts.length) > 0, 'evidence_basis_unavailable', 'The checked assessment needs its authorized evidence basis.');
   for (const fact of c.facts) {
     if (fact.critical) requireRule(fact.confirmation === 'accepted' && fact.value.availability === 'recorded', 'critical_evidence_gap', 'Missing or unresolved critical evidence cannot be overridden.');
     if (fact.confirmation === 'accepted' && fact.value.availability === 'recorded') requireRule(fact.sourceId !== null, 'source_reference', 'Accepted recorded facts need an exact source reference.');
+  }
+  if(c.datedAssessment){
+    requireRule(!c.datedAssessment.stale,'stale_assessment','The dated assessment needs renewed review.');
+    for(const fact of c.datedFacts??[]) if(fact.input.relevance==='included') requireRule(fact.input.value.availability==='recorded' && c.datedSources?.some(source=>source.id===fact.sourceId&&source.version===fact.sourceVersion&&source.state==='cleared'),'critical_evidence_gap','Included dated facts need current confirmed values and cleared sources.');
   }
   if (!evidenceOnly && c.integration?.format==='connected-review/v2') {
     const proof=c.reviewReadiness;
@@ -162,6 +172,7 @@ function material(c: ReviewContext) {
     ...(c.workflowBasis ? { workflowBasis:c.workflowBasis } : {}),
     ...(c.integration ? {integration:c.integration} : {}),
     ...(c.reviewReadiness ? {reviewReadiness:c.reviewReadiness} : {}),
+    ...(c.datedAssessment?{datedAssessment:c.datedAssessment,datedFacts:c.datedFacts,datedSources:c.datedSources,pilotConfigurationVersion:c.pilotConfigurationVersion,conflictVersions:c.conflictVersions}:{}),
   };
 }
 function evidenceMaterial(c:ReviewContext) {
@@ -178,7 +189,7 @@ export function prepareRecommendation(actor: ActorContext, input: DeepReadonly<R
   const assessment = ready(c, p.at);
   requireRule(p.request.assessmentId === assessment.id && p.request.inputVersion === assessment.inputVersion, 'recommendation_basis', 'The request must reference the current checked assessment.');
   offer(c, p.request.offerVersionId);
-  requireRule(assessment.scenarios.some(s => s.offerVersionId === p.request.offerVersionId), 'scenario_unavailable', 'A checked scenario is required for the recommended offer.');
+  requireRule(reviewScenarios(c).some(s => s.offerVersionId === p.request.offerVersionId), 'scenario_unavailable', 'A checked scenario is required for the recommended offer.');
   return freeze({ ...p.request, id: p.id, applicationId: c.application.id, preparedBy: actor.userId, preparedAt: new Date(p.at).toISOString(), basisHash: hash(material(c)) });
 }
 
@@ -192,12 +203,12 @@ export function prepareDecision(actor: ActorContext, input: DeepReadonly<ReviewC
   requireRule(p.explanation.basisHash === basisHash && p.explanation.reviewedBy === actor.userId, 'explanation_review', 'Review the explanation against this exact basis before recording.');
   unique(p.explanation.sourceIds, 'duplicate_explanation_source');
   requireRule(p.explanation.sourceIds.every(id => reviewSourceIds(c).includes(id)), 'explanation_source', 'Explanation references must resolve to the saved sources.');
-  requireRule(request.assessmentId === null || request.assessmentId === c.assessment?.id, 'decision_assessment', 'The requested assessment reference is not current.');
+  requireRule(request.assessmentId === null || request.assessmentId === currentAssessment(c)?.id, 'decision_assessment', 'The requested assessment reference is not current.');
   requireRule(request.recommendationId === null || request.recommendationId === c.recommendation?.id, 'decision_recommendation', 'The requested recommendation reference is not current.');
   const recommendation = c.recommendation;
   const currentRecommendation = recommendation && recommendation.basisHash === basisHash
     && recommendation.inputVersion === c.application.assessmentInputVersion
-    && recommendation.assessmentId === c.assessment?.id;
+    && recommendation.assessmentId === currentAssessment(c)?.id;
   if (request.outcome === 'return') {
     requireRule(['submitted', 'evidence_review', 'clarification', 'assessment_ready', 'recommended'].includes(c.application.status), 'workflow_state', 'This application cannot be returned from its current state.');
     requireRule(request.offerVersionId === null && request.exceptions.length === 0 && p.document === null, 'clarification_terms', 'Clarification cannot carry approved terms, policy exceptions or an acceptance document.');
@@ -209,7 +220,7 @@ export function prepareDecision(actor: ActorContext, input: DeepReadonly<ReviewC
     requireRule(request.assessmentId === assessment.id && request.recommendationId === recommendation.id, 'decision_basis', 'Bind the decision to its current assessment and recommendation.');
     requireRule(request.offerVersionId !== null, 'offer_unavailable', 'A reviewer must identify the considered offer.');
     const selected = offer(c, request.offerVersionId);
-    const scenario = assessment.scenarios.find(s => s.offerVersionId === selected.id);
+    const scenario = reviewScenarios(c).find(s => s.offerVersionId === selected.id);
     requireRule(scenario, 'scenario_unavailable', 'The selected offer has no checked scenario.');
     if (request.outcome === 'approve') {
       requireRule(policy.requiredApprovers === 1, 'quorum_not_supported', 'This standalone slice cannot finalize a multi-approver decision.');

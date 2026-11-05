@@ -44,6 +44,7 @@ export function reconcilePrincipalMovements(value: PrincipalReconciliationInput)
   const receiptIds = group(servicing.receipts, record => record.id);
   const journalIds = group(ledger.journals, record => record.journalId);
   const ids = [...new Set([...events.keys(), ...allocations.keys(), ...receipts.keys(), ...journals.keys()])].sort();
+  if(ids.length>5000)return{scope,status:'unavailable',sourceIssues:['Report exceeds the 5000-event result budget. Choose a smaller date range.'],events:[]};
   const results = ids.map(sourceEventId => {
     const matches = events.get(sourceEventId) ?? [];
     const event = matches.length === 1 ? matches[0] : undefined;

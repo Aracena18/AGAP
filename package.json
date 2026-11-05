@@ -17,8 +17,8 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "check": "npm run lint && npm run contracts:check && npm run build && npm run api:build && npm test && npm run test:platform && npm run typecheck:evaluation && npm run test:evaluation",
-    "contracts:generate": "tsx packages/contracts/scripts/generate.ts",
-    "contracts:check": "tsx packages/contracts/scripts/generate.ts --check",
+    "contracts:generate": "tsx packages/contracts/scripts/generate.ts && tsx models/qwen/service/generate-review-schema.ts",
+    "contracts:check": "tsx packages/contracts/scripts/generate.ts --check && tsx models/qwen/service/generate-review-schema.ts --check",
     "api:dev": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/src/main.ts",
     "api:build": "tsc -p tsconfig.platform.json --noEmit && esbuild --tsconfig=tsconfig.platform.json apps/api/src/main.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-api/main.js",
     "api:start": "node --env-file=.env dist-api/main.js",
@@ -41,7 +41,9 @@
     "worker:build": "tsc -p tsconfig.platform.json --noEmit && esbuild --tsconfig=tsconfig.platform.json apps/worker/src/main.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-worker/main.js",
     "evidence:retire": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/scripts/retire-evidence.ts",
     "security:check": "npm audit --omit=dev --audit-level=high",
-    "test:build-context": "node infra/scripts/verify-build-context.mjs"
+    "test:build-context": "node infra/scripts/verify-build-context.mjs",
+    "model:schemas": "tsx models/qwen/service/generate-review-schema.ts",
+    "pilot:configure": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/src/modules/pilot/operator.ts"
   },
   "dependencies": {
     "@azure/identity": "4.14.1",

@@ -1,0 +1,7 @@
+.terms { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 30rem; overflow: auto; padding: var(--space-4); background: var(--surface-variant); font: inherit; }
+.reference { overflow-wrap: anywhere; }
+.form { max-width: 48rem; }
+.record { border-top: 1px solid var(--line); padding-block: var(--space-4); }
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: var(--space-4); }
+.summary dt { color: var(--muted); }
+.summary dd { margin: 0; font-variant-numeric: tabular-nums; }

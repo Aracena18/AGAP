@@ -43,7 +43,7 @@ describe('guarded password-only staff preview and explicit MFA step-up',()=>{
   });
   it.each(['1',null] as const)('rejects a downgraded or missing assurance (%s) for MFA state',async acr=>{
     provider.behavior.acr=acr;const result=await complete(await begin('assurance=mfa&returnTo=%2Fstaff'));
-    expect(result.response.status).toBe(401);expect(result.cookie).toBeUndefined();expect((await owner.query('SELECT count(*) FROM identity.sessions')).rows[0].count).toBe('0');
+    expect(result.response.status).toBe(302);expect(result.response.headers.get('location')).toBe(`${base}/#/staff?signin=verification&assurance=mfa`);expect(result.cookie).toBeUndefined();expect((await owner.query('SELECT count(*) FROM identity.sessions')).rows[0].count).toBe('0');
   });
   it.each(['https://example.invalid','//example.invalid','/member','/staff/../member','/api/v1/session','/staff?next=evil','/staff%5caccess'])('rejects an unsafe or unrelated return route: %s',async path=>{
     const response=await fetch(`${base}/api/v1/auth/login?${new URLSearchParams({returnTo:path})}`,{redirect:'manual'});expect(response.status).toBe(422);

@@ -23,7 +23,7 @@ describe('signed member OIDC login',()=>{
   });
   it('does not consume member state through the staff callback or grant staff access',async()=>{
     const flow=await begin(),staffCallback=new URL(flow.callback);staffCallback.pathname='/api/v1/auth/callback';
-    const wrong=await fetch(staffCallback,{headers:{Cookie:flow.cookie.replace('agap_member_login=','agap_login=')},redirect:'manual'});expect(wrong.status).toBe(401);
+    const wrong=await fetch(staffCallback,{headers:{Cookie:flow.cookie.replace('agap_member_login=','agap_login=')},redirect:'manual'});expect(wrong.status).toBe(302);expect(wrong.headers.get('location')).toBe(`${base}/#/staff?signin=retry`);expect(wrong.headers.getSetCookie().some(cookie=>cookie.startsWith('agap_session='))).toBe(false);
     const correct=await fetch(flow.callback,{headers:{Cookie:flow.cookie},redirect:'manual'});expect(correct.headers.get('location')).toBe(`${base}/#/member`);expect((await owner.query('SELECT count(*) FROM identity.member_sessions')).rows[0].count).toBe('1');
   });
   it.each(['badNonce','badSignature','badIssuer','missingSubject','missingAuthTime','oldAuthTime'] as const)('rejects %s without issuing a member session',async option=>{

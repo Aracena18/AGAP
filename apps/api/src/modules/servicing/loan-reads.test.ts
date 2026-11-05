@@ -119,11 +119,12 @@ describe('Dated safe projections and actual independent principal reconciliation
       GRANT USAGE ON SCHEMA servicing,platform,identity TO ${role};
       GRANT SELECT ON servicing.originations,servicing.money_commands,servicing.money_revisions,servicing.postings,identity.member_links TO ${role};
       GRANT EXECUTE ON FUNCTION platform.current_organization(),platform.current_member(),platform.allowed_branch(uuid),servicing.staff_role(text) TO ${role};
-      ALTER FUNCTION servicing.member_loans(date) OWNER TO ${role};`);
+      ALTER FUNCTION servicing.member_loans(date) OWNER TO ${role};
+      ALTER FUNCTION servicing.posted_loan_view(uuid,date) OWNER TO ${role};`);
     try {
       const v = await new PostgresMemberUnitOfWork(runtimePool).run(member, tx => reads.memberLoans(tx));
       expect(v.state).toBe('available'); if (v.state === 'available') expect(v.data).toHaveLength(1);
-    } finally { await owner.query('ALTER FUNCTION servicing.member_loans(date) OWNER TO agap_owner'); }
+    } finally { await owner.query('ALTER FUNCTION servicing.member_loans(date) OWNER TO agap_owner; ALTER FUNCTION servicing.posted_loan_view(uuid,date) OWNER TO agap_owner'); }
   });
   it('reconciles actual GL and servicing events using the independent checker', async () => {
     await repaid(); const r = await report();

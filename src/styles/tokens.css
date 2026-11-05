@@ -92,3 +92,8 @@
   --brand-on-yellow: #123d2d;
   --workspace-width: 1360px;
 }
+
+/* UI-09: member typography only. Staff/review and landing inherit their existing face. */
+[data-member-shell] {
+  --member-font-family: 'Nunito', 'Google Sans Variable', 'Google Sans', sans-serif;
+}

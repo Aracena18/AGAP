@@ -1,15 +1,24 @@
+import { guidanceSchemas } from './guidance.js';
 import { z } from 'zod';
 import { RecordMode, VerificationSchema, CONTRACT_VERSION, Id, MoneyAmount, SignedMoney, PositiveMoneyAmount, CalendarDay, Instant, Version, Text, Currency, Role, FactValueSchema, PolicyCheckSchema, OfferSchema, SourceReferenceSchema, ModelArtifactSchema } from './common.js';
 export * from './common.js';
 import { workflowSchemas, WorkflowScenario } from './workflow.js';
+import { modelReviewSchemas } from './model-review.js';
+import { priorityReviewSchemas } from './priority-review.js';
+import { lifecycleSchemas } from './lifecycle.js';
+export * from './model-review.js';
+export * from './priority-review.js';
+export * from './lifecycle.js';
 export * from './workflow.js';
+import {accountingReportSchemas} from './accounting-reports.js';
+export * from './accounting-reports.js';
 
 export const ApiErrorSchema = z.strictObject({
   error: z.strictObject({ code: z.string(), message: z.string(), correlationId: z.string(), fields: z.array(z.strictObject({ path: z.string(), message: z.string() })).optional() }),
 });
 export const SessionSchema = z.strictObject({
   user: z.strictObject({ id: Id, displayName: z.string(), organizationId: Id, branchIds: z.array(Id), branches: z.array(z.strictObject({id:Id,name:z.string()})), roles: z.array(Role) }),
-  csrfToken: z.string(), expiresAt: Instant, privacyNoticeVersion: z.string(), contractVersion: z.literal(CONTRACT_VERSION), recordMode:RecordMode.optional(),
+  csrfToken: z.string(), expiresAt: Instant, privacyNoticeVersion: z.string(), contractVersion: z.literal(CONTRACT_VERSION), recordMode:RecordMode.optional(),fictionalPilot:z.boolean().optional(),
 });
 export const StaffSchema = z.strictObject({ id: Id, displayName: z.string(), branchIds: z.array(Id), roles: z.array(Role), active: z.boolean(), version: Version });
 export const StaffPageSchema = z.strictObject({ items: z.array(StaffSchema), nextCursor: Id.nullable() });
@@ -69,6 +78,7 @@ export const DecisionCreateSchema = z.strictObject({
   rationale: Text, departureReason: z.string().max(2000), exceptions: z.array(z.strictObject({ policyId: z.string(), reason: Text })),
   reviewDate: CalendarDay, explanationReviewed: z.literal(true),
 });
+export const PilotDecisionPreviewSchema=DecisionCreateSchema.omit({explanationReviewed:true});
 export const DecisionSchema = z.strictObject({ id: Id, applicationId: Id, inputVersion: Version, outcome: z.enum(['approve', 'decline', 'return']), recordedAt: Instant, reviewerId: Id, snapshotHash: z.string().regex(/^[a-f0-9]{64}$/) });
 const Sha256=z.string().regex(/^[a-f0-9]{64}$/);
 const DecisionAction=z.enum(['approve','decline','return']);
@@ -230,13 +240,13 @@ export const HealthReviewCreateSchema = z.strictObject({
 });
 export const HealthReviewSchema = HealthReviewCreateSchema.extend({ id: Id, recordedBy: Id, recordedAt: Instant });
 export const CommandReceiptSchema = z.strictObject({ id: Id, version: Version });
-export const CapabilitiesSchema = z.strictObject({ contractVersion: z.literal(CONTRACT_VERSION), recordMode:RecordMode.optional(), modules: z.array(z.strictObject({ name: z.string(), owner: z.string(), state: z.enum(['available', 'contract_only']) })) });
+export const CapabilitiesSchema = z.strictObject({ contractVersion: z.literal(CONTRACT_VERSION), recordMode:RecordMode.optional(),fictionalPilot:z.boolean().optional(), modules: z.array(z.strictObject({ name: z.string(), owner: z.string(), state: z.enum(['available', 'contract_only']) })) });
 export const EventEnvelopeSchema = z.strictObject({ id: Id, type: z.string(), schemaVersion: z.literal(1), organizationId: Id, aggregateId: Id, aggregateVersion: Version, occurredAt: Instant, correlationId: z.string(), payload: z.record(z.string(), z.unknown()) });
 
 // Member principals and projections deliberately contain no staff authority.
 export const MemberSessionSchema = z.strictObject({
   principal: z.strictObject({ kind: z.literal('member'), memberId: Id, displayName: Text }),
-  csrfToken: z.string(), expiresAt: Instant, privacyNoticeVersion: Text, contractVersion: z.literal(CONTRACT_VERSION), recordMode:RecordMode.optional(),
+  csrfToken: z.string(), expiresAt: Instant, privacyNoticeVersion: Text, contractVersion: z.literal(CONTRACT_VERSION), recordMode:RecordMode.optional(),fictionalPilot:z.boolean().optional(),
 });
 export const MemberProfileSchema = MemberSchema.pick({id:true,fullName:true,phone:true,externalReference:true});
 export const MemberApplicationCreateSchema = ApplicationCreateSchema.omit({memberId:true}).extend({noticeVersion:Text,noticeAcknowledged:z.literal(true)});
@@ -265,6 +275,25 @@ export const MemberLoanSchema = z.strictObject({
 });
 export const SupportCheckInSchema = z.strictObject({canMeetEssentials:z.enum(['yes','no','declined','unavailable']),borrowedToRepay:z.enum(['yes','no','declined','unavailable']),financialStrain:z.enum(['reported','not_reported','declined','unavailable'])});
 export const MemberSupportCreateSchema = z.strictObject({loanId:Id.nullable(),message:Text,contactPreference:z.enum(['portal','phone']),sharingConfirmed:z.literal(true),noticeVersion:Text,checkIn:SupportCheckInSchema.optional()});
+export const AssistedCheckInContentSchema=MemberSupportCreateSchema.pick({message:true,contactPreference:true}).extend({checkIn:SupportCheckInSchema});
+export const AssistedCheckInStateSchema=z.enum(['pending','withdrawn','declined','confirmed']);
+export const AssistedCheckInSchema=z.strictObject({
+  id:Id,sourceRequestId:Id,version:Version,state:AssistedCheckInStateSchema,fictional:z.literal(true),
+  preparedAt:Instant,updatedAt:Instant,preparedByName:Text,
+  content:AssistedCheckInContentSchema.extend({loanId:Id.nullable()}),noticeVersion:Text,payloadSha256:z.string().regex(/^[a-f0-9]{64}$/),
+  confirmationAllowed:z.boolean(),reviewMessage:Text.nullable(),resultingRequestId:Id.nullable(),
+}).superRefine((draft,ctx)=>{if((draft.state==='confirmed')!==(draft.resultingRequestId!==null)||draft.confirmationAllowed&&draft.state!=='pending')ctx.addIssue({code:'custom',message:'Draft state and confirmation evidence disagree.'});});
+export const AssistedCheckInPageSchema=z.strictObject({items:z.array(AssistedCheckInSchema).max(25),nextCursor:Id.nullable()});
+export const AssistedCheckInQuerySchema=z.strictObject({cursor:Id.optional(),limit:z.coerce.number().int().min(1).max(25).default(25)});
+export const AssistedCheckInReceiptSchema=z.strictObject({id:Id,version:Version,state:AssistedCheckInStateSchema,resultingRequestId:Id.nullable()});
+export const AssistedCheckInConfirmSchema=z.strictObject({sharingConfirmed:z.literal(true),noticeVersion:Text,payloadSha256:z.string().regex(/^[a-f0-9]{64}$/)});
+export const AssistedCheckInWithdrawSchema=z.strictObject({reason:Text});
+export const AssistedCheckInDeclineSchema=z.strictObject({});
+export const SupportCorrectionCreateSchema=MemberSupportCreateSchema.extend({reason:Text});
+export const SupportCorrectionLinkSchema=z.strictObject({requestId:Id,replacesId:Id.nullable(),replacedById:Id.nullable()});
+export const CheckInSummaryQuerySchema=z.strictObject({fromDate:CalendarDay,throughDate:CalendarDay}).refine(v=>v.throughDate>=v.fromDate&&(Date.parse(v.throughDate)-Date.parse(v.fromDate))/86400000<366,{message:'Choose up to 366 inclusive days.'});
+const answerCounts=z.strictObject({yes:z.number().int().nonnegative(),no:z.number().int().nonnegative(),declined:z.number().int().nonnegative(),unavailable:z.number().int().nonnegative()});
+export const CheckInSummarySchema=z.strictObject({fromDate:CalendarDay,throughDate:CalendarDay,cutoffAt:Instant,scope:z.literal('currently-assigned-submissions'),state:z.enum(['available','unavailable']),message:Text,submissionCount:z.number().int().min(0).max(1000).nullable(),answers:z.strictObject({canMeetEssentials:answerCounts,borrowedToRepay:answerCounts,financialStrain:z.strictObject({reported:z.number().int().nonnegative(),not_reported:z.number().int().nonnegative(),declined:z.number().int().nonnegative(),unavailable:z.number().int().nonnegative()})}).nullable()}).superRefine((v,ctx)=>{if(v.state==='unavailable'){if(v.submissionCount!==null||v.answers!==null)ctx.addIssue({code:'custom',message:'Unavailable is not a partial count.'});}else if(v.submissionCount===null||!v.answers||Object.values(v.answers).some(counts=>Object.values(counts).reduce((a,b)=>a+b,0)!==v.submissionCount))ctx.addIssue({code:'custom',message:'Answer counts must cover every submission.'});});
 export const MemberSupportSchema = z.strictObject({id:Id,submittedAt:Instant,status:z.enum(['submitted','assigned','reviewed']),message:Text,response:Text.nullable(),checkIn:SupportCheckInSchema.optional(),loanId:Id.nullable().optional()});
 export const SupportAssignmentSchema=z.strictObject({officerId:Id,reason:Text});
 export const SupportResponseSchema=z.strictObject({response:Text,internalNote:Text,followUpDate:CalendarDay.nullable()});
@@ -294,6 +323,7 @@ export const MemberLoansViewSchema = serviceView(z.array(MemberLoanSchema));
 export const MemberSupportViewSchema = serviceView(z.array(MemberSupportSchema));
 export const MemberSupportPageSchema=z.strictObject({items:z.array(MemberSupportSchema).max(100),nextCursor:Id.nullable()});
 export const MemberSupportPageViewSchema=serviceView(MemberSupportPageSchema);
+export const SupportPositionViewSchema=serviceView(LoanPositionSchema);
 export const MemberSupportHistoryQuerySchema=z.strictObject({cursor:Id.optional(),limit:z.coerce.number().int().min(1).max(100).default(25)});
 
 export const schemas = {
@@ -302,9 +332,10 @@ export const schemas = {
   DecisionConflictCreate:DecisionConflictCreateSchema,DecisionReviewConfirm:DecisionReviewConfirmSchema,DecisionConcernCreate:DecisionConcernCreateSchema,
   DecisionConcernCheck:DecisionConcernCheckSchema,DecisionReviewAssignment:DecisionReviewAssignmentSchema,DecisionReviewDisposition:DecisionReviewDispositionSchema,
   DecisionNoticeAcknowledgment:DecisionNoticeAcknowledgmentSchema,DecisionReview:DecisionReviewSchema,DecisionReviewEventPage:DecisionReviewEventPageSchema,DecisionNoticePage:DecisionNoticePageSchema,
+  ...accountingReportSchemas,
   SupportAssignment:SupportAssignmentSchema,SupportResponse:SupportResponseSchema,SupportPage:SupportPageSchema,SupportDetail:SupportDetailSchema,SupportSummary:SupportSummarySchema,SupportAction:SupportActionSchema,SupportActionPage:SupportActionPageSchema,SupportHistory:SupportHistorySchema,
   ReconciliationCreate:ReconciliationCreateSchema,ReconciliationRun:ReconciliationRunSchema,ReconciliationPage:ReconciliationPageSchema,
-  ...workflowSchemas,
+  ...guidanceSchemas,...workflowSchemas,...modelReviewSchemas,...priorityReviewSchemas,...lifecycleSchemas,PilotDecisionPreview:PilotDecisionPreviewSchema,
   MemberSession:MemberSessionSchema,MemberProfile:MemberProfileSchema,MemberApplicationCreate:MemberApplicationCreateSchema,MemberApplication:MemberApplicationSchema,MemberApplicationPage:MemberApplicationPageSchema,MemberSubmit:MemberSubmitSchema,
   ReminderPreferenceUpdate:ReminderPreferenceUpdateSchema,ReminderPreferences:ReminderPreferencesSchema,ModelArtifact:ModelArtifactSchema,AiDraft:AiDraftSchema,DraftConfirmation:DraftConfirmationSchema.or(workflowSchemas.WorkflowDraftReview),IrregularExpense:IrregularExpenseSchema,
   MemberSource:MemberSourceSchema,MemberEvidenceView:MemberEvidenceViewSchema,MemberOptionsView:MemberOptionsViewSchema,MemberDecisionView:MemberDecisionViewSchema,MemberLoansView:MemberLoansViewSchema,MemberSupportView:MemberSupportViewSchema,MemberSupportCreate:MemberSupportCreateSchema,MemberSupport:MemberSupportSchema,MemberAcceptance:MemberAcceptanceSchema,MemberUpload:MemberUploadSchema,
@@ -317,5 +348,8 @@ export const schemas = {
   LoanPosition: LoanPositionSchema, HealthReviewCreate: HealthReviewCreateSchema, HealthReview: HealthReviewSchema, CommandReceipt: CommandReceiptSchema, Capabilities: CapabilitiesSchema, EventEnvelope: EventEnvelopeSchema,
   SupportFollowUpFilter:SupportFollowUpFilterSchema,SupportFollowUp:SupportFollowUpSchema,SupportFollowUpEvent:SupportFollowUpEventSchema,SupportFollowUpPage:SupportFollowUpPageSchema,SupportFollowUpEventPage:SupportFollowUpEventPageSchema,SupportFollowUpDetail:SupportFollowUpDetailSchema,SupportFollowUpCompletion:SupportFollowUpCompletionSchema,SupportFollowUpReschedule:SupportFollowUpRescheduleSchema,
   MemberSupportPage:MemberSupportPageSchema,MemberSupportPageView:MemberSupportPageViewSchema,MemberSupportHistoryQuery:MemberSupportHistoryQuerySchema,
+  SupportCorrectionCreate:SupportCorrectionCreateSchema,SupportCorrectionLink:SupportCorrectionLinkSchema,CheckInSummaryQuery:CheckInSummaryQuerySchema,CheckInSummary:CheckInSummarySchema,
+  AssistedCheckInContent:AssistedCheckInContentSchema,AssistedCheckIn:AssistedCheckInSchema,AssistedCheckInPage:AssistedCheckInPageSchema,AssistedCheckInQuery:AssistedCheckInQuerySchema,AssistedCheckInReceipt:AssistedCheckInReceiptSchema,AssistedCheckInConfirm:AssistedCheckInConfirmSchema,AssistedCheckInWithdraw:AssistedCheckInWithdrawSchema,AssistedCheckInDecline:AssistedCheckInDeclineSchema,
+  SupportPositionView:SupportPositionViewSchema,
 } as const;
 export type SchemaName = keyof typeof schemas;
