@@ -1,5 +1,32 @@
 # Robert's platform foundation
 
+## Local development workflow — 6 November 2026
+
+The user authorizes coordinated OPS-01/SHOW-01 tooling on `chore/earl-local-dev-workflow`, based on merged main `e869591`. The proposal recorded before root script edits adds `local:doctor` for read-only configuration/dependency/service/migration diagnostics and `local:dev` for foreground API/frontend supervision. The candidate reuses the existing application configuration, migration registry, migration/seed commands and Compose services; no dependency or business rule is added. Robert retains consuming-owner review.
+
+Application/operator commands use Node 24 from the current executable or the existing `node_modules/.cache/agap-gl01` runtime, without downloading a runtime or changing PATH. Local fictional settings come from `.env`; existing contents and configured ports are preserved. A temporary Compose override replaces the base ports using `!override`, which requires [Compose 2.24.4 or later](https://docs.docker.com/reference/compose-file/merge/). A running project with different/non-loopback bindings is refused before Compose startup. No volume reset, credential changes, unrelated process termination, authentication-mode change or lending/model activation is introduced. Diagnostics display non-secret endpoints/status, never dump `.env`, and withhold raw configuration/database errors. Server output redacts PostgreSQL credentials and bearer tokens.
+
+Install/select Node 24 for a fresh checkout or dependency reinstall. The existing runtime cache is only a fallback; `npm ci` replaces `node_modules` and can remove it. The commands do not install runtimes, preserve a cache across arbitrary external installations or alter the system Node selection.
+
+Startup requires development mode, fictional records/notice, loopback endpoints, matching runtime/identity/operator database targets named `agap` or independently managed `agap_test`, a local `agap` identity realm and distinct valid ports. Database probes use read-only transactions. Missing migration history is reported rather than created; changed checksums or migrations absent from the checkout block startup even with `--migrate`. The existing migration runner remains authoritative.
+
+| Command/option | Behavior |
+| --- | --- |
+| `npm.cmd run local:doctor` | Read-only setup, dependency, Docker, configuration, database/history, identity-discovery and application-port diagnostics; exit 1 for unresolved checks |
+| `npm.cmd run local:doctor -- --json` | The same diagnostics as structured JSON, without credentials |
+| `npm.cmd run local:dev` | Start/check development Compose dependencies, require current migrations, then supervise API and Vite on the configured ports |
+| `--init-env` | Explicitly copy `.env.example` only when `.env` is absent; never overwrite an existing environment |
+| `--migrate` | Explicitly run the existing migration command, then recheck history |
+| `--seed` | Explicitly run the existing fictional seed; its original `agap`-only restriction remains |
+| `--fresh` | Request Vite `--force` re-optimization without deleting dependencies or data |
+| `--no-infra` | Use independently managed local PostgreSQL/identity services; no Docker commands are executed; accepted by both commands |
+
+Open Docker Desktop first and run `npm.cmd ci` for missing dependencies or after lockfile changes. First-time setup can combine `npm.cmd run local:dev -- --init-env --migrate --seed`. Later use `npm.cmd run local:dev`; after a pull, stop the previous API/frontend terminals first and request `--migrate` only when needed. If an application port is occupied, the command identifies it and stops before data writes or infrastructure startup. On Windows, reserved-port failures point to `Get-NetTCPConnection` and `netsh interface ipv4 show excludedportrange protocol=tcp`; the tool does not silently select other ports or rewrite `.env`.
+
+The API must pass canonical contract-version health, Vite must respond, and the frontend API proxy must pass health before **AGAP is ready** is printed. Ctrl+C, readiness failure and unexpected server exit stop the child processes/groups created by this invocation. Windows uses the tracked child PID tree; POSIX uses its detached process group, following the [Node subprocess boundaries](https://nodejs.org/docs/latest-v24.x/api/child_process.html). No persisted PID file, process-name sweep or port-owner kill is used. Shared PostgreSQL/Keycloak containers remain running. In PowerShell, answer `Y` if npm subsequently asks to terminate its batch job.
+
+This starts the API/frontend plus database/identity dependencies; workers, scanners, inference services, provider configuration and release approvals retain their existing setup/gates. Identity discovery is a readiness check, not proof of a successful sign-in/MFA walkthrough. Default feature flags and credentials remain unchanged. No browser appearance or financial contract changes require a design/frontend-spec revision. Verification is recorded below after the required runs complete.
+
 ## HLT-01 integration candidate — 3 November 2026
 
 The [monitoring candidate](../apps/api/src/modules/monitoring/README.md) adds actual confirmed member support submission/history, branch-scoped assignment and assigned-officer response history. The startup member adapter also consumes servicing's existing safe posted-loan projection; a complete empty loan list is now available rather than an unimplemented default. Optional linked loans produce a preserved submission-time position, with fresh staff positions still explicitly unavailable. Other unavailable domain defaults and financial-command restrictions remain in effect. The staff route is `/#/staff/support-requests`; the existing `/#/member/help` uses the new service. Apply new module migrations with the existing `npm run db:migrate`. This candidate does not establish institutional permission/retention approval or complete monitoring/financial capabilities. The sections below preserve the dated foundation baseline; their original all-unavailable descriptions do not describe these newly supplied adapters.
