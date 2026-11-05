@@ -70,3 +70,24 @@ v1 is the historical 0.3 extraction corpus/reviewer handoff. Pin that corpus's
 contract identity to 0.3.0 rather than inheriting the additive application API
 version. Preserve its exact corpus, hashes, labels and reviewer pack; the 0.4
 qualitative review API is a different task and does not rewrite this evidence.
+
+## CPU compatibility experiment — 5 November 2026
+
+The user's renewed objective is to make the supplied AI model execute. A100 is
+unavailable under the student offer. Read-only investigation found an eligible
+Standard_B4as_v2 in Korea Central (4 CPUs,16 GB; Linux compute USD0.187/hour at
+observation). Preparing a two-hour CPU compatibility experiment is authorized;
+The user subsequently explicitly authorized a free route or billing through
+existing student credits, revising the original A100-only selection for this
+bounded CPU experiment. No paid subscription upgrade is authorized. Existing USD30/credit limits remain.
+
+Use the same verified local base and F weights, prompts and schema. A separate
+Transformers/PEFT CPU float32 runner tests loading, actual source-review output,
+and clean-base/disabled-adapter parity. Float32 CPU is a compatibility candidate,
+not evidence for the BF16 CUDA runtime, performance or release promotion. Do not
+alter canonical application contracts, production release gates or the resident
+GPU service. The CPU runner is initially offline: no new public listener, model
+provider, training, merge, quantization or source truncation. Preserve failures
+and measured latency/memory. Connect HTTP only after actual compatibility and
+latency evidence exists. Deployment approval must concern the concrete bounded
+CPU plan, not a paid subscription upgrade or unrestricted fallback.
