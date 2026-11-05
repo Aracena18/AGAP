@@ -1,0 +1,86 @@
+{
+  "task": "UI-12",
+  "date": "2026-11-06",
+  "captures": [
+    {
+      "path": "../../../screenshots/staff-queue-ux/analysis-1366.png",
+      "sha256": "4ea172ee8ad2c68d514fc8834787dc8ae108dc7b5e5255decac5266009cfec1b",
+      "width": 1366,
+      "height": 1093,
+      "scope": "full page",
+      "source": "Controlled fictional read projections with genuine test sessions; not live user records"
+    },
+    {
+      "path": "../../../screenshots/staff-queue-ux/analysis-1920.png",
+      "sha256": "01f44ff319c723700899db45b706a28475e88000d9c9792144339d53cf5f8b6c",
+      "width": 1920,
+      "height": 1093,
+      "scope": "full page",
+      "source": "Controlled fictional read projections with genuine test sessions; not live user records"
+    },
+    {
+      "path": "../../../screenshots/staff-queue-ux/analysis-320.png",
+      "sha256": "296d9480aa5fcf441614f1d0ff098b1d4bab542cea509ab10e8a6ac362ea4480",
+      "width": 320,
+      "height": 2059,
+      "scope": "full page",
+      "source": "Controlled fictional read projections with genuine test sessions; not live user records"
+    },
+    {
+      "path": "../../../screenshots/staff-queue-ux/analysis-768.png",
+      "sha256": "3a98ac321cc4892a2a610fb6f987c574fe2308fda29cf870355126b8ee9f819c",
+      "width": 768,
+      "height": 1262,
+      "scope": "full page",
+      "source": "Controlled fictional read projections with genuine test sessions; not live user records"
+    },
+    {
+      "path": "../../../screenshots/staff-queue-ux/analysis-details-1366.png",
+      "sha256": "9ea57aa3211af483aaf7ee46a078507d94f85b467191cfc5a72f11485ca17152",
+      "width": 1366,
+      "height": 1454,
+      "scope": "full page",
+      "source": "Controlled fictional read projections with genuine test sessions; not live user records"
+    },
+    {
+      "path": "../../../screenshots/staff-queue-ux/priority-1366.png",
+      "sha256": "d80dea00b85c93005c10cf699272ab4aee6e0c60367f64bd66fc1726c1b6e1fd",
+      "width": 1366,
+      "height": 1102,
+      "scope": "full page",
+      "source": "Controlled fictional read projections with genuine test sessions; not live user records"
+    },
+    {
+      "path": "../../../screenshots/staff-queue-ux/priority-1920.png",
+      "sha256": "80abbf8aada7ec5aa29d8ec37eeb3d3f591c031482fab299b249d5e5f9891737",
+      "width": 1920,
+      "height": 1102,
+      "scope": "full page",
+      "source": "Controlled fictional read projections with genuine test sessions; not live user records"
+    },
+    {
+      "path": "../../../screenshots/staff-queue-ux/priority-320.png",
+      "sha256": "f8b221278e6066fd2f2ea23421bddff218cc26b5a2065c012ac01d7f0c25cfdd",
+      "width": 320,
+      "height": 1940,
+      "scope": "full page",
+      "source": "Controlled fictional read projections with genuine test sessions; not live user records"
+    },
+    {
+      "path": "../../../screenshots/staff-queue-ux/priority-768.png",
+      "sha256": "60deb192242cee8de27bb80182318f6b5667ed88cb0135d2f53c7df1653f86db",
+      "width": 768,
+      "height": 1271,
+      "scope": "full page",
+      "source": "Controlled fictional read projections with genuine test sessions; not live user records"
+    },
+    {
+      "path": "../../../screenshots/staff-queue-ux/priority-details-1366.png",
+      "sha256": "5ed8864908edb22ff7021f58a75ac808d78b964a40242ec244cae99f5ffe1ea6",
+      "width": 1366,
+      "height": 1513,
+      "scope": "full page",
+      "source": "Controlled fictional read projections with genuine test sessions; not live user records"
+    }
+  ]
+}

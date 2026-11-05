@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach,expect,it,vi } from 'vitest';
 import { ApiClientError } from '../../../packages/api-client/src/transport';
+import { queueReference } from './QueuePresentation';
 import { PriorityQueuePage } from './PriorityQueuePage';
 import { PriorityReviewPage } from './PriorityReviewPage';
 import { ReviewNotices } from './ReviewNotices';
@@ -18,7 +19,33 @@ const summary={applicationId:id,memberName:'Fictional review member',application
 const typed=gateway as unknown as PriorityReviewGateway;
 const wrap=(children:React.ReactNode)=><MemoryRouter>{children}</MemoryRouter>;
 beforeEach(()=>{Object.values(gateway).forEach(mock=>mock.mockReset());gateway.getPriorityReviewSummary.mockResolvedValue(summary);gateway.getPriorityReviewHistory.mockResolvedValue({events:[]});gateway.getPriorityReviewers.mockResolvedValue({items:[]});gateway.getStaffWorkflow.mockResolvedValue({sources:[{id,version:1,textVersionId:null,state:'cleared',label:'Fictional statement',pages:[{page:1,text:'Fictional source statement.'}]}]});gateway.createPrioritySourceReview.mockResolvedValue({id,version:4,status:'completed',message:'Source draft saved for human checking.'});gateway.checkPriorityConcern.mockResolvedValue({id,version:4,status:'saved',message:'Human check saved without changing financial facts.'});gateway.getPriorityReviewNotices.mockResolvedValue({items:[{id,applicationId:id,escalationId:id,createdAt:at,acknowledgedAt:null,version:1,destination:`/staff/applications/${id}/review`,current:true}]});gateway.acknowledgePriorityReviewNotice.mockResolvedValue({id,version:2,status:'saved',message:'Acknowledged'});});
-it('shows reasons, responsibility and original waiting time; filters start a new server snapshot',async()=>{const {concerns:_c,escalations:_e,canPrepare:_p,canDisposition:_d,...row}=summary;void _c;void _e;void _p;void _d;gateway.getPriorityReviewQueue.mockResolvedValue({items:[{...row,attentionGroup:'other',positionReason:'Original waiting time and application ID.'}],nextCursor:null,asOf:at});render(wrap(<PriorityQueuePage gateway={typed}/>));expect(await screen.findByRole('link',{name:'Fictional review member'})).toHaveAttribute('href',`/staff/applications/${id}/review`);expect(screen.getByText('Original waiting time and application ID.')).toBeVisible();expect(screen.getByText(/Preparing officer:/)).toHaveTextContent(id);expect(screen.getByText('Recorded received date')).toBeVisible();fireEvent.change(screen.getByLabelText('Next action'),{target:{value:'escalated_review'}});await waitFor(()=>expect(gateway.getPriorityReviewQueue).toHaveBeenLastCalledWith(expect.objectContaining({route:'escalated_review',limit:20})));});
+it('keeps the next action scannable and preserves full reasons/responsibility in expandable details',async()=>{
+ const {concerns:_c,escalations:_e,canPrepare:_p,canDisposition:_d,...row}=summary;void _c;void _e;void _p;void _d;
+ gateway.getPriorityReviewQueue.mockResolvedValue({items:[{...row,attentionGroup:'other',positionReason:'Original waiting time and application ID.'}],nextCursor:null,asOf:at});
+ render(wrap(<PriorityQueuePage gateway={typed}/>));
+ expect(await screen.findByRole('link',{name:'Open review'})).toHaveAttribute('href',`/staff/applications/${id}/review`);
+ expect(screen.getByText('Fictional review member')).toBeVisible();expect(screen.getByText(readiness.nextAction)).toBeVisible();
+ expect(screen.getByText('Original waiting time and application ID.')).not.toBeVisible();
+ await userEvent.click(screen.getByText('1 check to complete'));
+ expect(screen.getByText('Original waiting time and application ID.')).toBeVisible();expect(screen.getByText('Preparing officer: Assigned to you')).toBeVisible();
+ expect(screen.getByText('Recorded received date')).toBeVisible();expect(screen.getByText('Check this source-linked suggestion.')).toBeVisible();
+ fireEvent.change(screen.getByLabelText('Next action'),{target:{value:'escalated_review'}});
+ await waitFor(()=>expect(gateway.getPriorityReviewQueue).toHaveBeenLastCalledWith(expect.objectContaining({route:'escalated_review',limit:20})));
+});
+it('appends server pages without reordering and clears the disclosure after permission denial',async()=>{
+ const {concerns:_c,escalations:_e,canPrepare:_p,canDisposition:_d,...row}=summary;void _c;void _e;void _p;void _d;
+ const first={...row,attentionGroup:'other',positionReason:'Original order.'},second={...first,applicationId:'00000000-0000-4000-8000-000000000002',memberName:'Second returned member'};
+ gateway.getPriorityReviewQueue.mockResolvedValueOnce({items:[first],nextCursor:'saved-cursor',asOf:at}).mockResolvedValueOnce({items:[second],nextCursor:null,asOf:at}).mockRejectedValueOnce(new ApiClientError(403,'denied','Access was removed.'));
+ render(wrap(<PriorityQueuePage gateway={typed}/>));
+ await userEvent.click(await screen.findByRole('button',{name:'Load more applications'}));
+ await screen.findByText('Second returned member');
+ expect(screen.getByRole('heading',{name:'Review priority'})).toHaveFocus();
+ expect(screen.getAllByRole('link',{name:'Open review'}).map(link=>link.getAttribute('href'))).toEqual([`/staff/applications/${id}/review`,`/staff/applications/${second.applicationId}/review`]);
+ expect(gateway.getPriorityReviewQueue.mock.calls[1][0]).toMatchObject({cursor:'saved-cursor',limit:20,route:'all'});
+ await userEvent.click(screen.getByRole('button',{name:'Refresh queue'}));
+ expect(await screen.findByRole('alert')).toHaveTextContent('Access was removed.');
+ expect(screen.queryByText('Fictional review member')).not.toBeInTheDocument();expect(screen.getByRole('button',{name:'Refresh queue'})).toBeDisabled();
+});
 it('submits source coordinates rather than browser quotes and labels simulated concern evidence',async()=>{const user=userEvent.setup();render(wrap(<PriorityReviewPage applicationId={id} gateway={typed}/>));expect(await screen.findByText('Simulated suggestion',{exact:false})).toBeVisible();await user.selectOptions(screen.getByLabelText('Available source excerpt'),`${id}:1:0`);await user.type(screen.getByLabelText('Question about this source'),'What needs clarification?');await user.click(screen.getByRole('button',{name:'Request source review'}));expect(await screen.findByText('Source draft saved for human checking.')).toBeVisible();const call=gateway.createPrioritySourceReview.mock.calls[0];expect(call[1]).toEqual({question:'What needs clarification?',sources:[span]});expect(call[2]).toMatchObject({version:3,csrfToken:'fictional-csrf'});expect(JSON.stringify(call[1])).not.toContain('quote');});
 it('locks a concern draft and retries the identical uncertain command with the original review version',async()=>{const user=userEvent.setup();gateway.checkPriorityConcern.mockRejectedValueOnce(new ApiClientError(503,'lost','Fictional lost response')).mockResolvedValueOnce({id,version:4,status:'saved',message:'Human check saved without changing financial facts.'});render(wrap(<PriorityReviewPage applicationId={id} gateway={typed}/>));await user.click(await screen.findByRole('button',{name:'Check this concern'}));await user.type(screen.getByLabelText('Evidence and reason for this check'),'Confirmed exact fictional source date.');await user.click(screen.getByRole('button',{name:'Save human check'}));expect(await screen.findByRole('alert')).toHaveTextContent('uncertain');expect(screen.getByLabelText('Finding supported by the source')).toBeDisabled();await user.click(screen.getByRole('button',{name:'Retry same submission'}));expect(await screen.findByText('Human check saved without changing financial facts.')).toBeVisible();expect(gateway.checkPriorityConcern.mock.calls[1]).toEqual(gateway.checkPriorityConcern.mock.calls[0]);expect(gateway.checkPriorityConcern.mock.calls[0][2].version).toBe(3);});
 it('acknowledges only notice metadata, leaving disposition to its separate action',async()=>{render(wrap(<ReviewNotices gateway={typed}/>));await userEvent.click(await screen.findByRole('button',{name:'Acknowledge notice'}));await waitFor(()=>expect(gateway.acknowledgePriorityReviewNotice).toHaveBeenCalledTimes(1));expect(gateway.acknowledgePriorityReviewNotice.mock.calls[0]).toEqual([id,{acknowledgment:true},expect.objectContaining({version:1,csrfToken:'fictional-csrf'})]);expect(gateway.recordPriorityEscalationDisposition).not.toHaveBeenCalled();});
@@ -35,4 +62,12 @@ it('reconciles an interrupted review with its request and the current review ver
  const user=userEvent.setup();gateway.getPriorityReviewSummary.mockResolvedValue({...summary,pendingReviews:[{id,createdAt:at,interrupted:true}]});gateway.recoverPrioritySourceReview.mockResolvedValue({id,version:4,status:'saved',message:'Interrupted review reconciled for manual checking.'});
  render(wrap(<PriorityReviewPage applicationId={id} gateway={typed}/>));await user.type(await screen.findByLabelText('Reason for manual reconciliation'),'The persisted generation deadline elapsed; check the source manually.');await user.click(screen.getByRole('button',{name:'Reconcile interrupted review'}));
  expect(await screen.findByText('Interrupted review reconciled for manual checking.')).toBeVisible();expect(gateway.recoverPrioritySourceReview.mock.calls[0]).toEqual([id,{requestId:id,reason:'The persisted generation deadline elapsed; check the source manually.'},expect.objectContaining({version:3,csrfToken:'fictional-csrf',idempotencyKey:expect.any(String)})]);expect(gateway.createPrioritySourceReview).not.toHaveBeenCalled();
+});
+
+it('keeps shared-prefix references compact and expands colliding visible references',()=>{
+ const first='10000000-0000-4000-8000-000000000001',second='10000000-0000-4000-8000-000000000002',collision='10000000-0000-4000-8000-999990000001';
+ expect(queueReference(first,[first,second])).toBe('10000000…0001');
+ expect(queueReference(second,[first,second])).toBe('10000000…0002');
+ expect(queueReference(first,[first,collision])).not.toBe(queueReference(collision,[first,collision]));
+ expect(queueReference(first,[first,collision]).length).toBeGreaterThan('10000000…0001'.length);
 });
