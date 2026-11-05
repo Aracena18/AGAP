@@ -25,6 +25,6 @@ describe('application workspace', () => {
     await userEvent.click(screen.getByText('Demo tools',{exact:true}));
     await userEvent.selectOptions(screen.getByLabelText('Demo role'), 'reviewer');
     expect(screen.getByLabelText('Demo role')).toHaveValue('reviewer');
-    expect(screen.getByRole('link', { name: 'Review Ana Dela Cruz' })).toHaveAttribute('href', '/applications/AG-001/evidence');
+    expect(screen.getByRole('link', { name: 'Review Ana Dela Cruz' })).toHaveAttribute('href', '/applications/AG-001/summary');
   });
 });

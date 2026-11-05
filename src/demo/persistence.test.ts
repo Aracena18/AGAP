@@ -1,5 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createBrowserRepository, STORAGE_KEY } from './persistence';
+import { createBrowserRepository, LEGACY_STORAGE_KEY, STORAGE_KEY } from './persistence';
+import { createDemoCases } from './cases';
+import { preparedReviewAna, reviewTestAt } from '../test/reviewFixtures';
+import { recordDecision } from '../domain/review';
+import { DEMO_REVIEWER, evaluateReview, evidenceBasis } from '../domain/priorityReview';
 
 describe('fictional case repository', () => {
   beforeEach(() => localStorage.clear());
@@ -16,6 +20,35 @@ describe('fictional case repository', () => {
     const records = await repository.list();
     records[0].member.name = 'Changed outside save';
     expect((await repository.load('AG-001'))?.member.name).toBe('Ana Dela Cruz');
+  });
+  it('migrates legacy corrections and frozen decisions while preserving the original saved bytes', async () => {
+    const ana = recordDecision(preparedReviewAna(), { outcome: 'approve', offerId: 'payday-aligned', rationale: 'Checked.', departureReason: '', exceptions: [], reviewDate: '2026-12-01', explanationReviewed: true }, DEMO_REVIEWER, reviewTestAt);
+    delete ana.review;
+    delete ana.decisions[0].review;
+    const records = createDemoCases().map(record => record.id === ana.id ? ana : record);
+    records.forEach(record => delete record.review);
+    const original = JSON.stringify({ schemaVersion: 1, records });
+    localStorage.setItem(LEGACY_STORAGE_KEY, original);
+    const repository = createBrowserRepository(localStorage);
+    const loaded = (await repository.load(ana.id))!;
+    expect(loaded.corrections).toEqual(ana.corrections);
+    expect(loaded.decisions).toEqual(ana.decisions);
+    expect(loaded.review!.aiConcerns).toHaveLength(1);
+    await repository.save(loaded);
+    expect(localStorage.getItem(LEGACY_STORAGE_KEY)).toBe(original);
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).schemaVersion).toBe(2);
+    expect((await createBrowserRepository(localStorage).load(ana.id))!.decisions).toEqual(ana.decisions);
+  });
+  it('preserves confirmed readiness, notice receipt and resolution through schema parsing and reload', async () => {
+    const repository = createBrowserRepository(localStorage);
+    const ana = preparedReviewAna();
+    const notice = ana.review!.escalation!.notices.at(-1)!;
+    notice.acknowledged = { actor: { ...DEMO_REVIEWER }, at: reviewTestAt };
+    await repository.save(ana);
+    const restored = (await createBrowserRepository(localStorage).load(ana.id))!;
+    expect(evidenceBasis(restored)).toBe(evidenceBasis(ana));
+    expect(evaluateReview(restored)).toMatchObject({ ready: true, confirmed: true, resolved: true });
+    expect(restored.review!.escalation!.notices.at(-1)!.acknowledged).toEqual(notice.acknowledged);
   });
   it('does not silently overwrite incompatible saved data', async () => {
     const original = JSON.stringify({ schemaVersion: 999, records: [] });

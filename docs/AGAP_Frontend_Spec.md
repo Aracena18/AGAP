@@ -1,5 +1,17 @@
 # AGAP frontend specification
 
+## PRV-01 priority review demo — 5 November 2026
+
+The fictional `/applications` queue defaults to active cases and ranks substantiated material concerns/unresolved escalations before other cases, then original `createdAt` and application ID. All-applications retains completed decisions. Parallel review-path filters retain all applicable paths. Entries open `/applications/:id/summary`; evidence, comparison, decision and source-fragment routes remain available.
+
+One `evaluateReview` projection supplies readiness, active-offer checks, parallel paths and pending actions. Complete assessment differs from evidence-currentness confirmation and independent source verification. The active offer is the current recommendation, otherwise the requested offer. Mara confirms evidence for the modeled period, checks the seeded simulated income-source concern and assigns Luis. Luis receives a saved in-app notice, investigates and verifies resolution after current confirmed evidence and active-offer checks pass. Acknowledgment never resolves a concern. Final lending decisions remain separate actions.
+
+Approval rejects material failures even with policy exception reasons. Decline requires complete/current evidence, current recommendation, completed AI checking and a current assigned investigation when escalated. Return for clarification remains possible with incomplete evidence. New decision snapshots freeze review state alongside sources, costs and facts; legacy snapshots remain unchanged and readable. Existing financial arithmetic and production APIs are unchanged.
+
+Internal optional `CaseRecord.review` contains evidence confirmations, simulated concerns/checks and escalation observations/assignment/notices/actions. Evidence identity includes recorded facts, sources, offers, horizon and an evidence revision; escalation context also includes the active offer and offer revision. Restoring earlier values or returning to an earlier offer cannot resurrect old confirmation/resolution. Recommendation notes, notice receipt and investigation actions do not change financial case versions. Reconciliation occurs at save boundaries, never during rendering.
+
+`agap.demo.v2` stores schema version 2. Valid version-1 workspaces migrate with corrections/recommendations/decisions intact and legacy bytes retained. Malformed current or legacy data is preserved with explicit memory-only recovery until reset. Reset recreates the same three canonical fictional cases. [PRV-01 verification](AGAP_Priority_Review_Verification.md) records capability status, checks and screenshots.
+
 ## HLT-01 support candidate — 3 November 2026
 
 The member payment-help page now uses the monitoring service for confirmed submissions/history. It retains the existing preview, edit focus, renewed sharing acknowledgement and stable uncertain retry. Optional answers distinguish yes/no or reported/not-reported from declined and unavailable. Every shared answer and optional owned loan reference is included in the preview and retained in member history. General requests need no linked loan or check-in answer. The public servicing member projection supplies selectable posted loans and a server-captured submission-time position; complete empty loan evidence is distinct from unavailable evidence. Financial-command routes remain unregistered.

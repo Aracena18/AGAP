@@ -11,6 +11,12 @@
 .table { min-width: 890px; }
 .table th { background: var(--surface); padding-top: 12px; padding-bottom: 12px; }
 .table td { height: 88px; }
+.paths { display: flex; flex-wrap: wrap; gap: 6px; }
+.actions { padding-left: 18px; margin: 10px 0 0; font-size: 13px; min-width: 210px; }
+.actions li { margin: 5px 0; }
+.concerns { margin-top: 12px; font-size: 13px; max-width: 370px; }
+.concerns ul { padding-left: 18px; }
+.concerns li { margin: 8px 0; }
 .table th:first-child, .table td:first-child { padding-left: 24px; }
 .table td:last-child { padding-right: 24px; }
 .table tbody tr:hover { background: var(--hover); }
@@ -42,4 +48,6 @@
   .table td[data-label]::before { content: attr(data-label); color: var(--muted); font-size: 12px; font-weight: 400; }
   .table td:last-child { justify-self: end; align-self: end; }
   .review { padding: 8px 0 8px 8px; }
+  .actions { min-width: 0; }
+  .table td:nth-child(4) { grid-column: 1 / -1; }
 }

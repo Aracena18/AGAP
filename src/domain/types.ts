@@ -96,6 +96,42 @@ export interface ExplanationDraft {
   summary: string;
   sections: { title: string; body: string; sourceIds: string[] }[];
 }
+export interface ReviewAction {
+  basis: string;
+  actor: DemoActor;
+  at: string;
+  reason: string;
+}
+export interface SimulatedConcern { id: string; text: string; sourceIds: string[] }
+export interface ConcernReview extends ReviewAction {
+  concernId: string;
+  outcome: 'confirm' | 'correct' | 'dismiss';
+  correctedText: string;
+}
+export interface EscalationAction extends ReviewAction {
+  kind: 'investigate' | 'clarification' | 'options' | 'respond' | 'resolve' | 'declined';
+  decisionId?: string;
+}
+export interface EscalationNotice {
+  id: string;
+  basis: string;
+  recipient: DemoActor;
+  at: string;
+  acknowledged?: { actor: DemoActor; at: string };
+}
+export interface ReviewState {
+  evidenceRevision?: number;
+  offerRevision?: number;
+  aiConcerns: SimulatedConcern[];
+  evidenceConfirmations: ReviewAction[];
+  concernReviews: ConcernReview[];
+  escalation?: {
+    observations: { basis: string; offerId: string; at: string; checks: PolicyCheck[]; sourceIds: string[] }[];
+    assignments: (ReviewAction & { reviewer: DemoActor })[];
+    notices: EscalationNotice[];
+    actions: EscalationAction[];
+  };
+}
 export interface DecisionSnapshot {
   id: string;
   caseId: string;
@@ -112,6 +148,7 @@ export interface DecisionSnapshot {
   recommendation: Recommendation | null;
   assessment: AssessmentResult;
   explanation?: ExplanationDraft;
+  review?: ReviewState;
 }
 export interface CaseRecord {
   id: string;
@@ -128,6 +165,7 @@ export interface CaseRecord {
   recommendation: Recommendation | null;
   decisions: DecisionSnapshot[];
   followUp: { reviewDate: CalendarDate; note: string; updatedAt: string } | null;
+  review?: ReviewState;
 }
 export interface CaseRepository {
   list(): Promise<CaseRecord[]>;

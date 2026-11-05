@@ -1,4 +1,5 @@
 import type { CaseRecord, EvidenceFact, LoanOffer } from '../domain/types';
+import { synchronizeReview } from '../domain/priorityReview';
 
 const pesos = (value: number) => value * 100;
 function offer(id: string, label: string, day: number): LoanOffer {
@@ -56,5 +57,7 @@ export function createDemoCases(): CaseRecord[] {
   const coraIncome = cora.facts.find(item => item.id === 'income')!;
   Object.assign(coraIncome, { value: null, status: 'missing', sourceId: null });
   cora.sources = cora.sources.filter(source => !['payslip', 'old-worksheet'].includes(source.id));
-  return [ana, ben, cora];
+  return [ana, ben, cora].map(record => synchronizeReview(record, '2026-10-20T00:00:00.000Z', record.id === ana.id ? [{
+    id: 'ana-income-sources', text: 'The prior worksheet and current payslip show different take-home pay. Check which figure applies.', sourceIds: ['old-worksheet', 'payslip'],
+  }] : []));
 }

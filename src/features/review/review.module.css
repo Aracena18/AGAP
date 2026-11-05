@@ -1,0 +1,21 @@
+.page { display: grid; gap: 24px; }
+.page section { min-width: 0; }
+.page h2, .inbox h2 { margin-bottom: 12px; }
+.page h3 { font-size: 15px; }
+.page p { margin: 10px 0; }
+.page ul { padding-left: 24px; }
+.badges, .links { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0; }
+.tasks li, .inbox li { margin: 12px 0; }
+.sources { display: flex; flex-wrap: wrap; column-gap: 28px; row-gap: 8px; }
+.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 20px; margin: 24px 0; }
+.metrics dt { font-size: 13px; color: var(--muted); }
+.metrics dd { font-size: 20px; margin: 8px 0 0; }
+.concern { border-top: 1px solid var(--line); padding-top: 16px; margin: 16px 0; }
+.form { display: grid; gap: 12px; max-width: 680px; margin-top: 20px; }
+.form fieldset { display: grid; gap: 16px; border: 0; padding: 0; margin: 0; min-width: 0; }
+.form button { justify-self: start; }
+.history { display: grid; gap: 16px; padding-top: 20px; }
+.history article { border-bottom: 1px solid var(--line); padding-bottom: 16px; overflow-wrap: anywhere; }
+.inbox { margin-bottom: 24px; }
+.inbox ul { padding-left: 24px; }
+@media (max-width: 600px) { .metrics { grid-template-columns: 1fr; } .page { gap: 16px; } .page h2 { font-size: 18px; } }
