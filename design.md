@@ -722,7 +722,6 @@ Use the existing narrow member layout, member typography, reassuring Gabay guide
 
 Bounded draft lists have loading/empty/error/older-page states. Focus opened version headings and errors, wrap long content at 320px, preserve exact retry details and ignore obsolete reads. Later permission denial removes the complete private workspace. Real-record mode offers no prototype action. These are implemented fictional examples; institutional authority/notice/retention and consuming-owner/representative acceptance remain pending.
 
-
 ## 26. Member portal hierarchy and form polish — UI-10, 5 November 2026
 
 Member screens lead with one clear title, then the value the member needs, then a single action. Keep helper copy to one short line; keep required qualifications (draft ≠ approval, requested terms ≠ decision, pending ≠ confirmed payment, file checks ≠ claim verification) but state them once, in the smallest accurate wording. Do not repeat the Gabay guide message in a card.
@@ -731,3 +730,11 @@ Member screens lead with one clear title, then the value the member needs, then 
 - **Application form (and Payment help):** a Gabay-tinted header band (`AGAP Cooperative Request`) with a 3px primary top border; tonal fields with 48px height, 12px radius and a 3px primary-container focus ring; hints are short and tied to their field; the consent statement sits in a tinted callout, not as floating text.
 - **Secondary actions:** Cancel and Edit draft are `secondaryLink` controls (outlined, 48px, same radius as buttons), full-width and stacked below the primary action on phones. A bare underlined link is never the only way to leave a form.
 - **Phone spacing:** `main` starts 16px below the header so page titles are never clipped; stacked sections use 16px gaps; action rows are 56px tiles with a tinted icon.
+
+## 27. Member payment-help corrections — 5 November 2026
+
+My requests offers a plain **Review or correct request** link in fictional mode. Reuse the member narrow layout, typography, shared fields/buttons/notices and existing check-in control. The detail keeps the recorded request/public response separate from the correction form and shows previous/newer links explicitly. A replaced request directs the member to the newer one; opening a link never copies old edits into a different record automatically.
+
+The editor starts from recorded message/contact/check-in/loan context and requires a correction reason. **Review correction** shows all replacement fields and the recipients; consent starts unchecked and resets after editing or refreshing. **Send correction** creates a new request awaiting normal staff assignment, with the original and its follow-ups preserved. A successful save has its own focused confirmation and link to the new record, even if a later read fails. Never imply changed payment terms or a lending outcome.
+
+Keep unsent text visible through stale/concurrent-update and transient refresh failures. Require explicit discard or navigation confirmation before leaving it; uncertain saves preserve exact retry details and disable conflicting actions. Later permission denial removes the complete source/editor. Focus opened headings and errors, announce refresh/success states, preserve full long text at 320px and retain Help navigation. Real-record UI remains unavailable pending release approval. Representative/consuming-owner acceptance is separate from these implemented examples.

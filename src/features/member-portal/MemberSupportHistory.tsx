@@ -1,4 +1,5 @@
 import {useEffect,useRef,useState} from 'react';
+import {Link} from 'react-router-dom';
 import type {z} from 'zod';
 import type {MemberSupportPageViewSchema,MemberSupportSchema} from '../../../packages/contracts/src/schemas';
 import {ApiClientError} from '../../../packages/api-client/src/transport';
@@ -14,7 +15,7 @@ export function MemberSupportHistory({blocked,onAccessDenied}:{blocked:boolean;o
  return <HistoryRead key={attempt} blocked={blocked} onAccessDenied={onAccessDenied} onRefresh={()=>setAttempt(value=>value+1)}/>;
 }
 function HistoryRead({blocked,onAccessDenied,onRefresh}:{blocked:boolean;onAccessDenied:()=>void;onRefresh:()=>void}){
- const {client}=useMember(),[view,setView]=useState<View|null>(null),[items,setItems]=useState<Item[]>([]),[cursor,setCursor]=useState<string|null>(null),[loading,setLoading]=useState(true),[error,setError]=useState('');
+ const {client,session}=useMember(),[view,setView]=useState<View|null>(null),[items,setItems]=useState<Item[]>([]),[cursor,setCursor]=useState<string|null>(null),[loading,setLoading]=useState(true),[error,setError]=useState('');
  const request=useRef<AbortController|null>(null),busy=useRef(false),heading=useRef<HTMLHeadingElement>(null);
  function accept(value:View){setView(value);if(value.state==='unavailable'){setItems([]);setCursor(null);}}
  useEffect(()=>{
@@ -38,7 +39,7 @@ function HistoryRead({blocked,onAccessDenied,onRefresh}:{blocked:boolean;onAcces
  {!view&&!loading&&error&&<div className="actions"><Button variant="secondary" disabled={blocked} onClick={onRefresh}>Retry request history</Button></div>}
  {view?.state==='unavailable'?<Notice tone="warning">{view.message}</Notice>:<>
  {view?.state==='available'&&items.length===0&&!loading&&<p>No support requests are recorded.</p>}
- {items.map(item=><article className={`${styles.section} ${styles.supportRequest}`} key={item.id}><h3>{item.status==='submitted'?'Sent for review':item.status==='assigned'?'Assigned to staff':'Reviewed'}</h3><p>{item.message}</p>{item.checkIn&&<SupportCheckIn value={item.checkIn} onChange={()=>{}} preview/>}{item.loanId&&<p>Linked loan: {item.loanId}</p>}<p className="small subtle">Sent {dateLabel(item.submittedAt)}</p>{item.response&&<Notice>{item.response}</Notice>}</article>)}
+ {items.map(item=><article className={`${styles.section} ${styles.supportRequest}`} key={item.id}><h3>{item.status==='submitted'?'Sent for review':item.status==='assigned'?'Assigned to staff':'Reviewed'}</h3><p>{item.message}</p>{item.checkIn&&<SupportCheckIn value={item.checkIn} onChange={()=>{}} preview/>}{item.loanId&&<p>Linked loan: {item.loanId}</p>}<p className="small subtle">Sent {dateLabel(item.submittedAt)}</p>{item.response&&<Notice>{item.response}</Notice>}{session?.recordMode==='fictional'&&<Link to={`/member/help/requests/${item.id}`} aria-disabled={blocked} onClick={e=>{if(blocked)e.preventDefault();}}>Review or correct request</Link>}</article>)}
  <p role="status" aria-live="polite">{loading?'Loading request history…':view?.state==='available'?`Showing ${items.length} request${items.length===1?'':'s'}.`:''}</p>
  {cursor?<div className="actions"><Button variant="secondary" disabled={blocked||loading} onClick={()=>void more()}>{loading?'Loading older requests…':error?'Retry older requests':'Load older requests'}</Button></div>:view?.state==='available'&&items.length>0&&<p>All requests loaded.</p>}
  </>}
