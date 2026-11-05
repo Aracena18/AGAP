@@ -1,5 +1,5 @@
 import type { ActorContext, MemberDomainPorts, MemberTransactionContext, TransactionContext, UnitOfWork } from '../../../../../packages/contracts/src/ports.js';
-import { CalendarDay, Id, MemberLoansViewSchema } from '../../../../../packages/contracts/src/schemas.js';
+import { CalendarDay, Id, MemberLoansViewSchema,SupportPositionViewSchema } from '../../../../../packages/contracts/src/schemas.js';
 import { requireRoles } from '../identity/identity.service.js';
 import { servicingOperation } from './servicing.service.js';
 import { ServicingRepository } from './servicing.repository.js';
@@ -10,9 +10,17 @@ import { businessDay } from './command-rules.js';
 import { unavailableMoneyPorts, type MoneyPorts } from './money.service.js';
 import type { PrincipalReconciliationInput } from '../accounting/reconciliation.js';
 import { inspectCommand } from './command-rules.js';
+import { ServicingReportingReader } from './reporting-reader.js';
+import type { InventoryCursor,InventoryScope } from '../../../../../packages/contracts/src/reporting.js';
 
 /** Safe presentation proposal; no staff snapshots or provider evidence escape. */
 export class LoanReads {
+  inventoryPage(tx:TransactionContext,scope:InventoryScope,cursor:InventoryCursor|null){return new ServicingReportingReader(this.ports).inventoryPage(tx,scope,cursor);}
+  async supportPosition(tx:TransactionContext,requestId:string){
+    requireRoles(tx.actor,['officer']);
+    const result=await tx.query('SELECT servicing.support_position($1,$2::date) AS position',[Id.parse(requestId),businessDay(this.now().toISOString())]);
+    return SupportPositionViewSchema.parse(result.rows[0].position===null?{state:'unavailable',message:'No current posted loan position is available for this support request.'}:{state:'available',data:result.rows[0].position});
+  }
   constructor(private readonly uow: UnitOfWork, private readonly ports: MoneyPorts = unavailableMoneyPorts,
     private readonly origins = new ServicingRepository(), private readonly money = new MoneyRepository(), private readonly now = () => new Date()) {}
   async memberLoans(tx: MemberTransactionContext) {

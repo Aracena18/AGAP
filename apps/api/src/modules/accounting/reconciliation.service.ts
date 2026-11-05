@@ -6,9 +6,12 @@ import { canonical, command } from '../../platform/commands.js';
 import { ApiError, notFound } from '../../platform/errors.js';
 import { LedgerReader, INVENTORY_LIMIT, requireReconciliationScope, requireReportingSnapshot, type ReportingScope, type ReconciliationInput } from './ledger-reader.js';
 import { reconcilePrincipalMovements } from './reconciliation.js';
+import { servicingInventory } from './inventory.js';
+import type { PagedServicingInventoryPort } from '../../../../../packages/contracts/src/reporting.js';
 
 export interface ServicingInventoryPort {
   inventory(tx: TransactionContext, scope: ReportingScope): Promise<z.input<typeof PrincipalReconciliationInputSchema>['servicing']>;
+  inventoryPage?:PagedServicingInventoryPort['inventoryPage'];
 }
 export const RECONCILIATION_CHECKER_VERSION = 'principal-reconciliation-v1' as const;
 async function operation<T>(work:()=>Promise<T>) {
@@ -36,14 +39,14 @@ export class ReconciliationService {
           const metadata=(await tx.query<{cutoff:string;snapshot:string}>(`SELECT to_char(clock_timestamp() AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS cutoff,pg_current_snapshot()::text AS snapshot`)).rows[0];
           const scope={organizationId:actor.organizationId,...request,cutoffAt:metadata.cutoff,snapshotId:randomUUID()};
           let servicing:ReconciliationInput['servicing'];
-          try { servicing=PrincipalReconciliationInputSchema.shape.servicing.parse(await this.servicing.inventory(tx,scope)); }
+          try { servicing=PrincipalReconciliationInputSchema.shape.servicing.parse(this.servicing.inventoryPage?await servicingInventory(tx,scope,{inventoryPage:this.servicing.inventoryPage.bind(this.servicing)}):await this.servicing.inventory(tx,scope)); }
           catch(error){
             // A specifically unavailable producer is not an authorization or database failure.
             if(error instanceof ApiError && error.status===501 && error.code==='module_not_available')
               servicing={state:'unavailable',reason:'The servicing inventory producer is not configured.'};
             else throw error;
           }
-          if(servicing.state==='available' && [servicing.events,servicing.allocations,servicing.receipts].some(items=>items.length>INVENTORY_LIMIT))
+          if(!this.servicing.inventoryPage && servicing.state==='available' && [servicing.events,servicing.allocations,servicing.receipts].some(items=>items.length>INVENTORY_LIMIT))
             servicing={state:'unavailable',reason:'Servicing inventory exceeds 1000 records per collection. Choose a smaller date range.'};
           const ledger=await this.ledger.inventory(tx,scope), mappings=await this.ledger.mappings(tx,scope);
           const input=PrincipalReconciliationInputSchema.parse({scope,servicing,ledger,mappings:mappings.values});

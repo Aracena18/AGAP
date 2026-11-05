@@ -6,6 +6,8 @@ import { ApiError } from '../../platform/errors.js';
 import { LedgerReader,requireReportingSnapshot } from './ledger-reader.js';
 import { ReconciliationService } from './reconciliation.service.js';
 import { prepareReconciliationFixtures,reconciliationFixture } from './testing/reconciliation-fixture.js';
+import {ServicingReportingReader} from '../servicing/reporting-reader.js';
+import {moneyPorts} from '../servicing/testing/money-db-fixture.js';
 
 let f:Awaited<ReturnType<typeof reconciliationFixture>>,base:Awaited<ReturnType<typeof resetFixtures>>;
 const request={fromDate:'2026-11-01',throughDate:'2026-11-03'},key=()=>randomUUID();
@@ -18,6 +20,15 @@ beforeEach(async()=>{base=await resetFixtures();f=await reconciliationFixture();
 afterAll(closePools);
 
 describe('ACC-01 actual snapshot, journal reader and immutable run persistence',()=>{
+  it('pages real posted source records one at a time without repeating bridged legacy events',async()=>{
+    const r=await f.release(),c=await f.money.prepareRepayment(f.cashier,r.loan.id,r.request,key());await f.money.authorize(f.authorizer,c.id,1,key());const intent=await f.money.submitIntent(f.cashier,c.id,2,key());await f.money.observe(f.cashier,c.id,await f.paymentEvidence(intent),3,key());await f.money.finalize(f.authorizer,c.id,4,key());
+    const reader=new ServicingReportingReader(moneyPorts,1),service=new ReconciliationService(f.snapshot,{inventory:(tx,scope)=>f.reads.inventory(tx,scope),inventoryPage:(tx,scope,cursor)=>reader.inventoryPage(tx,scope,cursor)});
+    const result=await service.create(f.actor,request,key());expect(result.report.status).toBe('matched');expect(result.report.events).toHaveLength(2);
+  });
+  it('enumerates more than 1000 actual journals and preserves unmatched evidence',async()=>{
+    await uow.run(f.authorizer,async tx=>{for(let n=0;n<1001;n++)await f.ledger.post(tx,{sourceEventId:key(),postingKind:'repayment',postingRuleVersionId:f.policy.repaymentRuleId,effectiveDate:'2026-11-02',currency:'PHP',reversalOfJournalId:null,lines:[{accountId:f.policy.cashAccountId,side:'debit',amountCentavos:1},{accountId:f.policy.principalAccountId,side:'credit',amountCentavos:1}]});});
+    const result=await f.service.create(f.actor,request,key());expect(result.report.status).toBe('discrepancy');expect(result.report.events).toHaveLength(1001);expect(result.report.events.every(e=>e.findings.some(f=>f.code==='missing_event'))).toBe(true);
+  },60000);
   it('reconciles actual release/repayment/GL records and records one audit event without financial changes',async()=>{
     const r=await f.release(),c=await f.money.prepareRepayment(f.cashier,r.loan.id,r.request,key());
     await f.money.authorize(f.authorizer,c.id,1,key());const intent=await f.money.submitIntent(f.cashier,c.id,2,key());
