@@ -6,6 +6,7 @@ import { Hash, type ReviewContext } from './context.js';
 
 /** Local consumer proposals. Robert/Aaron must supply actual owner adapters. */
 export interface DecisionBackendPorts {
+  assertReady?(tx:TransactionContext,applicationId:string,stage:'recommend'|'decision'):Promise<void>;
   authorizeStaff(tx: TransactionContext, applicationId: string): Promise<void>;
   loadStaffBasis(tx: TransactionContext, applicationId: string): Promise<Omit<ReviewContext, 'recommendation'>>;
   transitionStaff(tx: TransactionContext, applicationId: string, expectedVersion: number, action: 'recommend' | 'approve' | 'decline' | 'return'): Promise<number>;

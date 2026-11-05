@@ -32,6 +32,7 @@ export class DecisionsService {
         await this.ports.authorizeStaff(tx, app);
         return command(tx, `decisions.recommend:${app}`, key, { app, data, version }, async () => {
           const { c, stream } = await this.basis(tx, app);
+          await this.ports.assertReady?.(tx,app,'recommend');
           const r = prepareRecommendation(actor, c, { id: randomUUID(), at: this.now().toISOString(), expectedVersion: version, request: data });
           await this.repository.insertRecommendation(tx, c, r);
           await this.repository.advance(tx, app, stream.revision, r.id, null);
@@ -49,6 +50,7 @@ export class DecisionsService {
         await this.ports.authorizeStaff(tx, app);
         return command(tx, `decisions.preview:${app}`, key, { app, data, version }, async () => {
           const { c } = await this.basis(tx, app), at = this.now(), id = randomUUID(), decisionId = randomUUID();
+          if(data.outcome!=='return')await this.ports.assertReady?.(tx,app,'decision');
           const { explanation, terms } = decisionDocument(c, data), documentId = terms === null ? null : randomUUID();
           const explanationData = { origin: 'template' as const, text: explanation, basisHash: reviewBasisHash(c), sourceIds: reviewSourceIds(c), reviewedBy: actor.userId };
           const anticipated = { ...data, explanationReviewed: true as const };
@@ -74,6 +76,7 @@ export class DecisionsService {
         await this.ports.authorizeStaff(tx, app);
         return command(tx, `decisions.record:${app}`, key, { app, data, version, proof }, async () => {
           const { c, stream } = await this.basis(tx, app), preview = await this.repository.preview(tx, app, proof), at = this.now();
+          if(data.outcome!=='return')await this.ports.assertReady?.(tx,app,'decision');
           const currentDocument = decisionDocument(c, data);
           if (preview.application_version !== version || preview.expires_at.getTime() <= at.getTime()
             || canonical(preview.request) !== canonical(data) || preview.basis_hash !== reviewBasisHash(c)

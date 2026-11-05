@@ -142,6 +142,7 @@ test('actual separate staff review, unresolved notice, exact approval and reload
         await member.goto('/#/member/loans');await expect(member.getByText('Outstanding principal',{exact:true}).first()).toBeVisible();
         const linkedLoanId=loanUrl.split('/loans/')[1];
         await member.goto('/#/member/help');
+        await member.getByText('Add a loan or check-in (optional)',{exact:true}).click();
         await expect(member.getByLabel('Related loan (optional)',{exact:true}).locator(`option[value="${linkedLoanId}"]`)).toBeAttached();
         await member.getByLabel('Related loan (optional)',{exact:true}).selectOption(linkedLoanId);
         await member.getByLabel('What changed, and what help do you need?',{exact:true}).fill('Fictional household needs changed; please arrange a support conversation without changing the accepted loan terms.');
@@ -190,10 +191,10 @@ test('actual separate staff review, unresolved notice, exact approval and reload
           await expect(admin.getByText(`${supportId} · Version 2`,{exact:true})).toBeVisible();
           await page.goto('/#/staff/support-requests');
           await page.getByRole('button',{name:`Open support request ${supportId}`,exact:true}).click();
-          const captured=page.getByRole('heading',{name:'Captured submission-time loan position',exact:true}).locator('..');
+          const captured=page.getByRole('heading',{name:'Dated loan position',exact:true}).locator('..');
           await expect(captured.getByText('₱1,000',{exact:true})).toBeVisible();
-          await page.getByRole('button',{name:'Load fresh position',exact:true}).click();
-          const fresh=page.getByRole('region',{name:'Fresh posted loan position',exact:true});
+          await page.getByRole('button',{name:'Refresh current position',exact:true}).click();
+          const fresh=page.getByRole('region',{name:'Current posted loan position',exact:true});
           await expect(fresh.getByText('₱500',{exact:true})).toBeVisible();
           await expect(captured.getByText('₱1,000',{exact:true})).toBeVisible();
           await page.getByLabel('Response shared with member',{exact:true}).fill('We received your concern and will discuss options. Your accepted loan terms remain unchanged.');

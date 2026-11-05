@@ -112,3 +112,9 @@ describe('lossless workflow decision compatibility',()=>{
     b.sources[0].originalSha256=null;b.confirmations[0].staffId=null;expect(WorkflowDecisionBasisSchema.safeParse(b).success).toBe(false);
   });
 });
+
+// The merged pilot and connected formats are alternatives, never two sources of truth.
+it('rejects mixing the pilot assessment with a connected immutable workflow basis',()=>{
+  const {c}=fixture();
+  expect(()=>reviewBasisHash({...c,datedAssessment:c.workflowBasis!.assessment})).toThrow('one complete dated evidence representation');
+});

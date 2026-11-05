@@ -95,7 +95,7 @@ test('clears private financial facts and an open draft after a later access deni
   // UI denial simulation; actual revocation is exercised by the DB/API suites.
   await page.route(`**${f.viewPath}`, route => route.fulfill({ status: 403, json: { error: { code: 'evidence_forbidden', message: 'Fictional later access denial.', correlationId: 'fixture' } } }));
   await page.getByRole('button', { name: 'Refresh evidence', exact: true }).click();
-  await expect(page.getByRole('alert')).toContainText('Evidence is no longer available to this account.');
+  await expect(page.getByRole('alert')).toContainText('This private evidence is no longer accessible.');
   await expect(page.getByLabel('Amount per cash date (PHP)', { exact: true })).toHaveCount(0);
   await expect(page.getByText('Concurrency opening cash', { exact: true })).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Save fact', exact: true })).toHaveCount(0);

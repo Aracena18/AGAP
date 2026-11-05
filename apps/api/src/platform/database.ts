@@ -7,8 +7,8 @@ export function createPool(connectionString: string, options: PoolConfig = {}) {
   return new Pool({ connectionString, max: 10, connectionTimeoutMillis: 5000, idleTimeoutMillis: 30_000, ...options });
 }
 export class PostgresUnitOfWork implements UnitOfWork {
-  constructor(private readonly pool: Pool, private readonly options: { isolation?: 'repeatable read'; lendingGuard?: boolean } = {}) {
-    if (options.lendingGuard && options.isolation) throw new Error('Snapshot reporting must use its own coordinator, outside connected lending writes.');
+  constructor(private readonly pool: Pool, private readonly options: { isolation?: 'repeatable read'; lendingGuard?: boolean; materialGuard?: boolean } = {}) {
+    if ((options.lendingGuard || options.materialGuard) && options.isolation) throw new Error('Snapshot reporting must use its own coordinator, outside connected lending writes.');
   }
   async run<T>(actor: ActorContext, work: (tx: TransactionContext) => Promise<T>): Promise<T> {
     const attempts = this.options.isolation === 'repeatable read' ? 3 : 1;
@@ -25,13 +25,13 @@ export class PostgresUnitOfWork implements UnitOfWork {
     let discard = false;
     try {
       await client.query(this.options.isolation === 'repeatable read' ? 'BEGIN ISOLATION LEVEL REPEATABLE READ'
-        : this.options.lendingGuard ? 'BEGIN ISOLATION LEVEL READ COMMITTED' : 'BEGIN');
+        : this.options.lendingGuard || this.options.materialGuard ? 'BEGIN ISOLATION LEVEL READ COMMITTED' : 'BEGIN');
       await client.query("SELECT set_config('agap.organization_id', $1, true), set_config('agap.user_id', $2, true), set_config('agap.branch_ids', $3, true),set_config('agap.member_id','',true),set_config('agap.member_link_id','',true)", [actor.organizationId, actor.userId, JSON.stringify(actor.branchIds)]);
       await client.query("SET LOCAL statement_timeout = '10s'");
       await client.query("SET LOCAL lock_timeout = '5s'");
       // Before participant/period/application/loan/command locks. No external I/O
       // is allowed inside these short transactions. Reports use a separate snapshot.
-      if (this.options.lendingGuard) await client.query(lendingLockSql,[actor.organizationId]);
+      if (this.options.lendingGuard || this.options.materialGuard) await client.query(lendingLockSql,[actor.organizationId]);
       const current = await client.query<{ authorized: boolean }>('SELECT identity.assert_actor($1,$2,$3,$4,$5) AS authorized',[actor.sessionId,actor.userId,actor.organizationId,[...actor.branchIds],[...actor.roles]]);
       if (!current.rows[0].authorized) throw new ApiError(401,'access_changed','Your staff access changed. Reload and sign in again.');
       const tx: TransactionContext = { actor, query: async (sql, values) => client.query(sql, values ? [...values] : undefined) };

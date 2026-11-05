@@ -1,0 +1,8 @@
+.response { min-width: 0; padding-block: var(--space-4); border-bottom: 1px solid var(--line); overflow-wrap: anywhere; display: grid; gap: var(--space-4); }
+.heading { display: flex; align-items: start; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); }
+.heading h4 { margin: 0; font-size: 18px; }
+.evidence { min-width: 0; }
+.evidence blockquote { margin: var(--space-2) 0; padding: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.evidence a { display: inline-flex; align-items: center; min-height: 44px; }
+
+.response [hidden] { display: none; }

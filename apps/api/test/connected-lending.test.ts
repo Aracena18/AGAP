@@ -38,6 +38,7 @@ async function ready(){
 describe('CL2 authenticated HTTP and actual owner services',()=>{
   it('keeps connected lending default-off and refuses real/production or evidence-disabled activation',()=>{
     expect(loadConfig({DATABASE_URL:config.DATABASE_URL,IDENTITY_DATABASE_URL:config.IDENTITY_DATABASE_URL,SESSION_SECRET:config.SESSION_SECRET,OIDC_CLIENT_SECRET:config.OIDC_CLIENT_SECRET}).CONNECTED_LENDING_ENABLED).toBe(false);
+    expect(()=>assertConnectedLending({...config,EVIDENCE_WORKFLOW_ENABLED:true,CONNECTED_LENDING_ENABLED:true,FICTIONAL_PILOT_ENABLED:true})).toThrow('Select one fictional lending workflow');
     for(const extra of [{NODE_ENV:'production' as const},{EVIDENCE_RECORD_MODE:'real' as const},{EVIDENCE_WORKFLOW_ENABLED:false}])expect(()=>assertConnectedLending({...config,EVIDENCE_WORKFLOW_ENABLED:true,CONNECTED_LENDING_ENABLED:true,...extra})).toThrow('fictional non-production');
   });
   it('records a scoped recommendation and separate exact preview approval, then downloads the immutable bytes',async()=>{

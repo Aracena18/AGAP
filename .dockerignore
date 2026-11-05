@@ -13,6 +13,10 @@ graft
 .graphify
 models/qwen/base_model
 models/qwen/adapter
+models/qwen/artifacts
+infra/azure/pilot/.state
+artifacts
+.worktrees
 **/__pycache__
 
 # Local records, research and tooling never enter the API/worker build context.

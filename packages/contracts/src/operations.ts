@@ -1,10 +1,11 @@
 import type { SchemaName } from './schemas.js';
+import { lifecycleOperations } from './lifecycle.js';
 
 export interface Operation {
   id: string; method: 'GET' | 'POST' | 'PATCH'; path: string; response: SchemaName;
   request?: SchemaName; owner: 'Robert' | 'Aaron' | 'Benedict' | 'Earl'; implemented: boolean;
   versioned?: boolean; idempotent?: boolean; public?: boolean; principal?:'member'; binary?:boolean; binaryResponse?:boolean;
-  pathParameters?: Partial<Record<string,SchemaName>>;
+  pathParameters?: Partial<Record<string,SchemaName>>; querySchema?: SchemaName; queryArgument?:boolean; pageLimit?:number;
 }
 export const operations = [
   {id:'getSupportLoanPosition',method:'GET',path:'/support-requests/{id}/loan-position',response:'SupportFreshPositionView',owner:'Earl',implemented:true},
@@ -36,6 +37,26 @@ export const operations = [
   {id:'recordDecisionConcernDisposition',method:'POST',path:'/applications/{id}/decision-review/concerns/{concernId}/dispositions',request:'DecisionReviewDisposition',response:'CommandReceipt',owner:'Benedict',implemented:true,versioned:true,idempotent:true},
   {id:'listDecisionNotices',method:'GET',path:'/decision-notices',response:'DecisionNoticePage',owner:'Benedict',implemented:true},
   {id:'acknowledgeDecisionNotice',method:'POST',path:'/decision-notices/{noticeId}/acknowledgments',request:'DecisionNoticeAcknowledgment',response:'CommandReceipt',owner:'Benedict',implemented:true,idempotent:true},
+  {id:'getStaffGuidance',method:'GET',path:'/applications/{id}/guidance',response:'GuidanceResponse',owner:'Aaron',implemented:true},
+  {id:'respondStaffGuidance',method:'POST',path:'/applications/{id}/guidance/responses',request:'GuidanceResponseCreate',response:'CommandReceipt',owner:'Aaron',implemented:true,idempotent:true,versioned:true},
+  {id:'getMemberGuidance',method:'GET',path:'/member/applications/{id}/guidance',response:'GuidanceResponse',owner:'Robert',implemented:true,principal:'member'},
+  {id:'respondMemberGuidance',method:'POST',path:'/member/applications/{id}/guidance/responses',request:'GuidanceResponseCreate',response:'CommandReceipt',owner:'Robert',implemented:true,idempotent:true,versioned:true,principal:'member'},
+  {id:'createTrialBalance',method:'POST',path:'/accounting/trial-balances',request:'TrialBalanceCreate',response:'TrialBalanceRun',owner:'Earl',implemented:true,idempotent:true},
+  {id:'listTrialBalances',method:'GET',path:'/accounting/trial-balances',response:'TrialBalancePage',owner:'Earl',implemented:true,pageLimit:20},
+  {id:'getTrialBalance',method:'GET',path:'/accounting/trial-balances/{id}',response:'TrialBalanceRun',owner:'Earl',implemented:true},
+  ...lifecycleOperations,
+  {id:'getPriorityReviewQueue',method:'GET',path:'/review-queue',response:'PriorityReviewPage',querySchema:'PriorityReviewQueueQuery',owner:'Robert',implemented:true},
+  {id:'getPriorityReviewSummary',method:'GET',path:'/applications/{id}/review-summary',response:'PriorityReviewSummary',owner:'Robert',implemented:true},
+  {id:'getPriorityReviewHistory',method:'GET',path:'/applications/{id}/review-history',response:'PriorityReviewHistory',owner:'Aaron',implemented:true},
+  {id:'getPriorityReviewers',method:'GET',path:'/applications/{id}/eligible-reviewers',response:'PriorityReviewers',owner:'Benedict',implemented:true},
+  {id:'createPrioritySourceReview',method:'POST',path:'/applications/{id}/source-reviews',request:'PrioritySourceReview',response:'PriorityReviewReceipt',owner:'Aaron',implemented:true,idempotent:true,versioned:true},
+  {id:'recoverPrioritySourceReview',method:'POST',path:'/applications/{id}/source-review-recoveries',request:'PriorityReviewRecover',response:'PriorityReviewReceipt',owner:'Aaron',implemented:true,idempotent:true,versioned:true},
+  {id:'createPriorityRuleConcern',method:'POST',path:'/applications/{id}/rule-concerns',request:'PriorityRuleConcern',response:'PriorityReviewReceipt',owner:'Aaron',implemented:true,idempotent:true,versioned:true},
+  {id:'checkPriorityConcern',method:'POST',path:'/applications/{id}/concern-checks',request:'PriorityConcernCheck',response:'PriorityReviewReceipt',owner:'Aaron',implemented:true,idempotent:true,versioned:true},
+  {id:'assignPriorityEscalation',method:'POST',path:'/applications/{id}/escalations',request:'PriorityEscalationAssign',response:'PriorityReviewReceipt',owner:'Benedict',implemented:true,idempotent:true,versioned:true},
+  {id:'recordPriorityEscalationDisposition',method:'POST',path:'/applications/{id}/escalation-dispositions',request:'PriorityEscalationDisposition',response:'PriorityReviewReceipt',owner:'Benedict',implemented:true,idempotent:true,versioned:true},
+  {id:'getPriorityReviewNotices',method:'GET',path:'/review-notices',response:'PriorityReviewNotices',owner:'Robert',implemented:true},
+  {id:'acknowledgePriorityReviewNotice',method:'POST',path:'/review-notices/{id}/acknowledgments',request:'PriorityNoticeAck',response:'PriorityReviewReceipt',owner:'Robert',implemented:true,idempotent:true,versioned:true},
   {id:'listSupportRequests',method:'GET',path:'/support-requests',response:'SupportPage',owner:'Earl',implemented:true},
   {id:'getSupportRequest',method:'GET',path:'/support-requests/{id}',response:'SupportDetail',owner:'Earl',implemented:true},
   {id:'assignSupportRequest',method:'POST',path:'/support-requests/{id}/assignments',request:'SupportAssignment',response:'SupportSummary',owner:'Earl',implemented:true,idempotent:true,versioned:true},
@@ -44,6 +65,7 @@ export const operations = [
   {id:'listSupportActions',method:'GET',path:'/support-requests/{id}/actions',response:'SupportActionPage',owner:'Earl',implemented:true},
   {id:'createSupportAction',method:'POST',path:'/support-requests/{id}/actions',request:'SupportResponse',response:'SupportHistory',owner:'Earl',implemented:true,idempotent:true,versioned:true},
   {id:'listMemberSupportHistory',method:'GET',path:'/member/support-history',response:'MemberSupportPageView',owner:'Robert',implemented:true,principal:'member'},
+  {id:'getSupportPosition',method:'GET',path:'/support-requests/{id}/position',response:'SupportPositionView',owner:'Earl',implemented:true},
   {id:'listSupportFollowUps',method:'GET',path:'/support-follow-ups/queues/{state}',pathParameters:{state:'SupportFollowUpFilter'},response:'SupportFollowUpPage',owner:'Earl',implemented:true},
   {id:'getSupportFollowUp',method:'GET',path:'/support-follow-ups/{id}',response:'SupportFollowUpDetail',owner:'Earl',implemented:true},
   {id:'listSupportFollowUpEvents',method:'GET',path:'/support-follow-ups/{id}/events',response:'SupportFollowUpEventPage',owner:'Earl',implemented:true},
@@ -77,6 +99,9 @@ export const operations = [
   {id:'listMemberLoans',method:'GET',path:'/member/loans',response:'MemberLoansView',owner:'Robert',implemented:true,principal:'member'},
   {id:'listMemberSupport',method:'GET',path:'/member/support-requests',response:'MemberSupportView',owner:'Robert',implemented:true,principal:'member'},
   {id:'createMemberSupport',method:'POST',path:'/member/support-requests',request:'MemberSupportCreate',response:'MemberSupport',owner:'Robert',implemented:true,idempotent:true,principal:'member'},
+  {id:'correctMemberSupport',method:'POST',path:'/member/support-requests/{id}/corrections',request:'SupportCorrectionCreate',response:'MemberSupport',owner:'Earl',implemented:true,idempotent:true,principal:'member'},
+  {id:'getMemberSupportCorrectionLink',method:'GET',path:'/member/support-requests/{id}/correction-link',response:'SupportCorrectionLink',owner:'Earl',implemented:true,principal:'member'},
+  {id:'getCheckInSummary',method:'GET',path:'/check-in-summary',querySchema:'CheckInSummaryQuery',queryArgument:true,response:'CheckInSummary',owner:'Earl',implemented:true},
   { id: 'getSession', method: 'GET', path: '/session', response: 'Session', owner: 'Robert', implemented: true },
   { id: 'getCapabilities', method: 'GET', path: '/capabilities', response: 'Capabilities', owner: 'Robert', implemented: true, public: true },
   { id: 'listStaff', method: 'GET', path: '/staff', response: 'StaffPage', owner: 'Robert', implemented: true },
@@ -103,4 +128,13 @@ export const operations = [
   { id: 'createReconciliation', method: 'POST', path: '/reconciliations', request: 'ReconciliationCreate', response: 'ReconciliationRun', owner: 'Earl', implemented: true, idempotent: true },
   { id: 'listReconciliations', method: 'GET', path: '/reconciliations', response: 'ReconciliationPage', owner: 'Earl', implemented: true },
   { id: 'getReconciliation', method: 'GET', path: '/reconciliations/{id}', response: 'ReconciliationRun', owner: 'Earl', implemented: true },
+  {id:'createAssistedCheckIn',method:'POST',path:'/support-requests/{id}/assisted-check-ins',request:'AssistedCheckInContent',response:'AssistedCheckInReceipt',owner:'Earl',implemented:true,idempotent:true,versioned:true},
+  {id:'listAssistedCheckIns',method:'GET',path:'/support-requests/{id}/assisted-check-ins',querySchema:'AssistedCheckInQuery',response:'AssistedCheckInPage',owner:'Earl',implemented:true},
+  {id:'getAssistedCheckIn',method:'GET',path:'/support-assisted-check-ins/{id}',response:'AssistedCheckIn',owner:'Earl',implemented:true},
+  {id:'reviseAssistedCheckIn',method:'POST',path:'/support-assisted-check-ins/{id}/revisions',request:'AssistedCheckInContent',response:'AssistedCheckInReceipt',owner:'Earl',implemented:true,idempotent:true,versioned:true},
+  {id:'withdrawAssistedCheckIn',method:'POST',path:'/support-assisted-check-ins/{id}/withdrawals',request:'AssistedCheckInWithdraw',response:'AssistedCheckInReceipt',owner:'Earl',implemented:true,idempotent:true,versioned:true},
+  {id:'listMemberAssistedCheckIns',method:'GET',path:'/member/assisted-check-ins',querySchema:'AssistedCheckInQuery',response:'AssistedCheckInPage',owner:'Earl',implemented:true,principal:'member'},
+  {id:'getMemberAssistedCheckIn',method:'GET',path:'/member/assisted-check-ins/{id}',response:'AssistedCheckIn',owner:'Earl',implemented:true,principal:'member'},
+  {id:'confirmMemberAssistedCheckIn',method:'POST',path:'/member/assisted-check-ins/{id}/confirmations',request:'AssistedCheckInConfirm',response:'AssistedCheckInReceipt',owner:'Earl',implemented:true,idempotent:true,versioned:true,principal:'member'},
+  {id:'declineMemberAssistedCheckIn',method:'POST',path:'/member/assisted-check-ins/{id}/declines',request:'AssistedCheckInDecline',response:'AssistedCheckInReceipt',owner:'Earl',implemented:true,idempotent:true,versioned:true,principal:'member'},
 ] satisfies Operation[];

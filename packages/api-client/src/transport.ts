@@ -1,15 +1,17 @@
 import type { z } from 'zod';
 import { ApiErrorSchema } from '../../contracts/src/schemas.js';
 
-export interface RequestOptions { version?: number; idempotencyKey?: string; csrfToken?: string; cursor?: string; limit?: number; signal?: AbortSignal }
+export interface RequestOptions { version?: number; idempotencyKey?: string; csrfToken?: string; cursor?: string; limit?: number; signal?: AbortSignal; route?: string }
 export class ApiClientError extends Error {
   constructor(public readonly status: number, public readonly code: string, message: string, public readonly correlationId?: string, public readonly fields?: {path:string;message:string}[]) { super(message); }
 }
 export class ClientTransport {
   constructor(private readonly baseUrl = '/api/v1', private readonly fetcher: typeof fetch = fetch) {}
-  protected async request<T>(method: string, path: string, body: unknown, schema: z.ZodType<T>, options: RequestOptions): Promise<T> {
+  protected async request<T>(method: string, path: string, body: unknown, schema: z.ZodType<T>, options: RequestOptions,queryInput?:Record<string,string|number|boolean>): Promise<T> {
     const query = new URLSearchParams();
+    for(const [name,value] of Object.entries(queryInput??{}))query.set(name,String(value));
     if (options.cursor) query.set('cursor', options.cursor);
+    if (options.route) query.set('route', options.route);
     if (options.limit !== undefined) query.set('limit', String(options.limit));
     const headers = new Headers({ Accept: 'application/json' });
     if (body !== undefined) headers.set('Content-Type','application/json');

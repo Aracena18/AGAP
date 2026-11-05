@@ -1,0 +1,41 @@
+{
+  "branch": "feat/earl-accounting-monitoring-expansion",
+  "base": "f393537",
+  "capturedAt": "2026-11-05T07:21:02.650Z",
+  "records": "Fictional isolated API/browser fixtures only",
+  "command": "npm run test:e2e after latest-main integration: 117 passed, 4 existing presentation-only skips",
+  "fullPage": true,
+  "viewports": {
+    "desktop": {
+      "width": 1366,
+      "height": 768
+    },
+    "mobile": {
+      "width": 320,
+      "height": 800
+    }
+  },
+  "files": {
+    "check-in-summary-320.png": {
+      "sha256": "256101c848d75c2dfd21cd43b54c0fbc105ed55b810188d4b24e2a7c4d9e28ae",
+      "width": 320,
+      "height": 2339
+    },
+    "check-in-summary-desktop.png": {
+      "sha256": "22044162046d425e0797187eac8eaff894993daa801f52288cd7b9a93e5878f9",
+      "width": 1366,
+      "height": 1720
+    },
+    "trial-balance-320.png": {
+      "sha256": "3cae9aafb4817c0f0a2e63d57438484d946c98c332b1cfc262dc5953c377c548",
+      "width": 320,
+      "height": 2079
+    },
+    "trial-balance-desktop.png": {
+      "sha256": "c4f52a55c655178ee9aee79e42e5f6639287323771e83a804f2e6d75283666fe",
+      "width": 1366,
+      "height": 1498
+    }
+  },
+  "integratedMain": "c6f572834a262849c5abb4005e6417f5374c80c6"
+}

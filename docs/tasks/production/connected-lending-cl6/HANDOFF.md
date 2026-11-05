@@ -2,6 +2,18 @@
 
 5 November 2026 · Branch `feat/connected-lending-cl4` · Base `6649ffc` (includes the user's root ignore cleanup). This is the user-authorized coordinated code contribution; deployment on the teammate's laptop is outside this task. All records, principal-only products and movements exercised here are fictional. No named teammate, accountant, institution or human evaluator acceptance is invented.
 
+## Current merge-repair checkpoint — 5 November 2026
+
+The user checkpointed this candidate as `589ec96` and initiated a merge of upstream `d2400ca0115a5150c32c80001dab0c4d89821b29`. Files containing conflict markers had already been staged, so an empty unmerged-index list did not mean the source was resolved. The working-source repair removes all markers, fixes the invalid attributes entry, retains both independently authored support test suites under distinct filenames, and regenerates the canonical client/OpenAPI. This section supersedes the older uncommitted/upstream-gate instructions below; their original evidence remains historical.
+
+Upstream pilot/guidance/priority review, mode exclusivity/material locks, bounded reporting, correction/assisted check-ins and member UI hierarchy remain. Connected financial routes are added without replacing pilot registration. The existing upstream current support-position UI is retained rather than displaying two competing fresh views. The connected compatibility endpoint remains separately purpose-checked. Public safe financial schemas reuse the upstream pilot base shapes; optional connected preparation fields extend the workspace. The bounded reporting reader retains upstream paging and only uses the connected original-component policy hook when explicitly supplied. Upstream adopted-legacy-command restrictions remain in force. Separate controller method names avoid an automatic-merge collision.
+
+Final local verification on the resolved combined tree: `npm run check` passes, including lint, canonical generation parity, application/API builds, 265 UI/domain tests, 803 backend/contract tests, evaluation typecheck and 109 evaluation tests. `npm run test:e2e` passes 137 ordinary cases; its four presentation-only cases are intentionally skipped in that mode and all four pass in the separate presentation-mode run. Platform typecheck also passes. Dedicated fictional databases were isolated for full backend, ordinary browser and pilot browser runs; no developer database was reset.
+
+Verification caught and corrected one integration regression: the shared loan reader now supplies optional connected-preparation metadata, so the pilot service explicitly projects its existing strict public fields. The generated-client pilot integration and full pilot browser journey pass afterward. The connected browser journey opens the upstream optional loan/check-in disclosure before selecting the linked loan and verifies separate captured/current support positions. Current CL4 captures at 320, 683, 820 and 1366 pixels are retained; phone and desktop captures were visually inspected, and the journey also checks horizontal overflow and automated accessibility. Incidental historical captures were restored from the merged index so upstream evidence is preserved.
+
+The repair is staged for a normal two-parent merge of user checkpoint `589ec96` and upstream `d2400ca`. No main integration, push, remote CI, named-owner acceptance or operational release is claimed here. Neither `graft` nor `graphify` is installed in this environment; indexed navigation/graph refresh could not run. The older blocked/uncommitted descriptions below are historical and superseded by this checkpoint.
+
 ## Code delivered in the candidate
 
 | Phase | Implemented connection |

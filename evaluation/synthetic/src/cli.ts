@@ -8,6 +8,7 @@ import { renderSources } from './render.js';
 import { scorePredictions } from './score.js';
 import { ComparisonFilesSchema, comparePredictions, writeComparison } from './compare.js';
 import { verifyReviewPack, writeReviewPack } from './review.js';
+import { reviewReadiness } from './readiness.js';
 
 const help = `EVAL-01 offline candidate tools (run through npx tsx):
   cli.ts preview --out DIRECTORY [--seed TEXT]
@@ -19,6 +20,7 @@ const help = `EVAL-01 offline candidate tools (run through npx tsx):
   cli.ts render --corpus FILE --out DIRECTORY
   cli.ts review --corpus FILE --out DIRECTORY
   cli.ts verify-review --pack DIRECTORY
+  cli.ts review-readiness --pack DIRECTORY --worksheet FILE --out FILE
 Preview is development-only. Freeze needs actual hash-bound reviews and a private holdout outside the checkout.
 Output directories/files must be new. No command downloads data, trains models, or calls an inference provider.`;
 const allowed: Record<string, string[]> = {
@@ -26,6 +28,7 @@ const allowed: Record<string, string[]> = {
   freeze: ['corpus', 'holdout', 'review', 'split-seed', 'out'], score: ['corpus', 'predictions', 'out', 'release'], render: ['corpus', 'out'],
   compare: ['corpus', 'runs', 'out', 'release'],
   review: ['corpus', 'out'], 'verify-review': ['pack'],
+  'review-readiness': ['pack', 'worksheet', 'out'],
 };
 export function parseArgs(argv: string[]) {
   const [command, ...args] = argv;
@@ -92,6 +95,10 @@ export async function main(argv: string[]): Promise<void> {
     console.log(serialize(await writeReviewPack(options.out, await readJson(options.corpus))));
   } else if (command === 'verify-review') {
     console.log(serialize(await verifyReviewPack(options.pack)));
+  } else if (command === 'review-readiness') {
+    const report = await reviewReadiness(options.pack, options.worksheet);
+    await writeFile(resolve(options.out), serialize(report), {encoding:'utf8',flag:'wx'});
+    console.log(serialize(report));
   } else if (command === 'render') {
     await renderSources(await readJson(options.corpus), options.out);
     console.log('Development source images rendered; no model inference was run.');

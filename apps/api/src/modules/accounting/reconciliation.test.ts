@@ -32,6 +32,9 @@ function fixture(): AvailableInput {
   };
 }
 const codes = (data: PrincipalReconciliationInput) => reconcilePrincipalMovements(data).events.flatMap(row => row.findings.map(finding => finding.code));
+describe('combined report budget',()=>{
+ it('does not declare a partial report complete when the independent source union exceeds 5000 events',()=>{const data=fixture();data.servicing.events=[];data.servicing.allocations=[];data.servicing.receipts=[];data.ledger.journals=Array.from({length:5001},(_,n)=>({...data.ledger.journals[0],journalId:id(n+100),sourceEventId:id(n+10000)}));expect(reconcilePrincipalMovements(data)).toMatchObject({status:'unavailable',events:[],sourceIssues:[expect.stringContaining('5000-event')]});});
+});
 function addSecondPayment(data: AvailableInput) {
   data.servicing.events.push({ ...data.servicing.events[0], id: id(20), loanId: id(21), receiptId: id(22), journalId: id(23) });
   data.servicing.allocations.push({ ...data.servicing.allocations[0], id: id(24), sourceEventId: id(20), loanId: id(21) });

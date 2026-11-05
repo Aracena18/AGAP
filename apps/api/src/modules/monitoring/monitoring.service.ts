@@ -8,6 +8,7 @@ import { requireFreshMfa,requireRoles } from '../identity/identity.service.js';
 import type { LoanReads } from '../servicing/loan-reads.js';
 import {supportOperation as operation} from './monitoring.errors.js';
 import {SupportFollowUps} from './support-follow-ups.service.js';
+import {SupportPositionViewSchema} from '../../../../../packages/contracts/src/schemas.js';
 function summary(row:Record<string,unknown>){return SupportSummarySchema.parse({id:row.id,memberId:row.member_id,branchId:row.branch_id,submittedAt:(row.submitted_at as Date).toISOString(),status:row.status,version:Number(row.version),assignedOfficerId:row.assigned_officer_id});}
 const historyQuery=z.strictObject({cursor:Id.optional(),limit:z.coerce.number().int().min(1).max(100).default(25)});
 const responseReceipt=z.union([z.strictObject({version:Version}),z.strictObject({version:Version,projection:z.literal('staff-history-v1'),pageSize:z.number().int().min(1).max(100)})]);
@@ -15,7 +16,16 @@ function action(row:Record<string,unknown>){return SupportActionSchema.parse({id
 export interface SupportPositionProducer {position(tx:TransactionContext,requestId:string):Promise<z.output<typeof SupportFreshPositionViewSchema>>}
 export class MonitoringService {
  readonly followUps:SupportFollowUps;
- constructor(private readonly uow:UnitOfWork,private readonly loans:Pick<LoanReads,'memberLoans'>,private readonly supportPosition?:SupportPositionProducer){this.followUps=new SupportFollowUps(uow);}
+ constructor(private readonly uow:UnitOfWork,private readonly loans:Pick<LoanReads,'memberLoans'>&Partial<Pick<LoanReads,'supportPosition'>>,private readonly supportPosition?:SupportPositionProducer){this.followUps=new SupportFollowUps(uow);}
+ currentPosition(actor:ActorContext,id:unknown){return operation(async()=>{
+  requireRoles(actor,['officer']);return this.uow.run(actor,async tx=>{
+   const request=Id.parse(id),{privateRow}=await this.disclosure(tx,request);
+   if(!privateRow.loan_id||!this.loans.supportPosition)return{state:'unavailable' as const,message:'No current posted loan position is available for this support request.'};
+   const result=SupportPositionViewSchema.safeParse(await this.loans.supportPosition(tx,request));
+   if(!result.success||(result.data.state==='available'&&result.data.data.loanId!==privateRow.loan_id))throw new ApiError(503,'support_position_unavailable','The current loan position could not be validated.');
+   return result.data;
+  });
+ });}
  private async accessible(tx:TransactionContext,id:string,lock=false){
   if(lock)await tx.query('SELECT monitoring.lock_disclosure($1,false)',[id]);
   const row=(await tx.query('SELECT * FROM monitoring.requests WHERE organization_id=$1 AND id=$2',[tx.actor.organizationId,id])).rows[0];
@@ -29,7 +39,7 @@ export class MonitoringService {
  }
  private detailFields(row:Record<string,unknown>,privateRow:Record<string,unknown>){
   return {...summary(row),message:privateRow.message,contactPreference:privateRow.contact_preference,noticeVersion:privateRow.notice_version,checkIn:privateRow.check_in,position:privateRow.position,
-   positionMessage:privateRow.position?'Position captured when the member submitted this request. This saved snapshot does not change when later payments post.':'No loan position was captured. This does not mean there is no debt.'};
+   positionMessage:privateRow.position?'Position captured when the member submitted this request. Later posted changes do not replace this record.':'No loan position was captured. This does not mean there is no debt.'};
  }
  private async detail(tx:TransactionContext,id:string,throughVersion?:number){
   const {row,privateRow}=await this.disclosure(tx,id);

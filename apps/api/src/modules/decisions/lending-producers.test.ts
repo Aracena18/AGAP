@@ -303,7 +303,7 @@ describe('CL1 real owner producers under PostgreSQL runtime authorization',()=>{
       const pending=uow.run(f.officer.actor,tx=>ports.loadStaffBasis(tx,app)).then(c=>{completed=true;return c;});
       // Confirm an actual PostgreSQL advisory-lock waiter, not a timer assumption.
       let waiting=false;
-      for(let n=0;n<100;n++){waiting=Number((await owner.query("SELECT count(*) FROM pg_stat_activity WHERE wait_event='advisory' AND query LIKE '%agap:connected-lending:%'")).rows[0].count)>0;if(waiting)break;await delay(10);}
+      for(let n=0;n<100;n++){waiting=Number((await owner.query("SELECT count(*) FROM pg_stat_activity WHERE wait_event='advisory' AND query=$1",[lendingLockSql])).rows[0].count)>0;if(waiting)break;await delay(10);}
       expect(waiting).toBe(true);expect(completed).toBe(false);
       const next={...policy,id:key()};await client.query('INSERT INTO credit.policies(id,organization_id,body) VALUES($1,$2,$3)',[next.id,f.org,JSON.stringify(next)]);
       await client.query('COMMIT');

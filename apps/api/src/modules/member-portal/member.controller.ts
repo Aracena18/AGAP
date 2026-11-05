@@ -16,6 +16,8 @@ const actor=(request:MemberRequest)=>{if(!request.member)throw new ApiError(401,
 @Controller('member')
 export class MemberController {
   constructor(@Inject(MEMBER_PLATFORM) private readonly services:MemberServices){}
+  @Post('support-requests/:id/corrections') correctSupport(@Req()r:MemberRequest,@Param('id')id:string,@Body()body:unknown){return this.services.portal.correctSupport(actor(r),id,body,r.headers['idempotency-key']);}
+  @Get('support-requests/:id/correction-link') correctionLink(@Req()r:MemberRequest,@Param('id')id:string){return this.services.portal.supportCorrectionLink(actor(r),id);}
   @Get('auth/login') async login(@Req() request:MemberRequest,@Res() response:Response){
     await limitLogin(this.services.identityDatabase,this.services.config.SESSION_SECRET,request.socket.remoteAddress??'unknown');
     const result=await this.services.identity.beginLogin('member');
@@ -32,7 +34,7 @@ export class MemberController {
     await this.services.identity.logoutMember(cookieValue(request.headers.cookie,'agap_member_session',this.services.config.LOCAL_PRESENTATION_MODE)!);
     response.clearCookie('agap_member_session',{path:'/api/v1/member',httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax'});response.status(200).json({signedOut:true});
   }
-  @Get('session') async session(@Req() request:MemberRequest){const profile=await this.services.portal.applications.profile(actor(request));return {principal:{kind:'member',memberId:profile.id,displayName:profile.fullName},csrfToken:request.member!.csrfToken,expiresAt:request.member!.expiresAt,privacyNoticeVersion:this.services.config.PRIVACY_NOTICE_VERSION,contractVersion:CONTRACT_VERSION,recordMode:this.services.config.EVIDENCE_RECORD_MODE};}
+  @Get('session') async session(@Req() request:MemberRequest){const profile=await this.services.portal.applications.profile(actor(request));return {principal:{kind:'member',memberId:profile.id,displayName:profile.fullName},csrfToken:request.member!.csrfToken,expiresAt:request.member!.expiresAt,privacyNoticeVersion:this.services.config.PRIVACY_NOTICE_VERSION,contractVersion:CONTRACT_VERSION,recordMode:this.services.config.EVIDENCE_RECORD_MODE,...(this.services.config.FICTIONAL_PILOT_ENABLED?{fictionalPilot:true}:{})};}
   @Get('me') profile(@Req() r:MemberRequest){return this.services.portal.applications.profile(actor(r));}
   @Get('applications') list(@Req() r:MemberRequest,@Query() q:unknown){return this.services.portal.applications.list(actor(r),q);}
   @Get('applications/:id') get(@Req() r:MemberRequest,@Param('id') id:string){return this.services.portal.applications.get(actor(r),id);}
@@ -59,6 +61,10 @@ export class MemberController {
   @Get('applications/:id/decision-documents/:documentId') decisionDocument(@Req() r:MemberRequest,@Param('id') id:string,@Param('documentId') documentId:string){return this.services.portal.decisionDocument(actor(r),id,documentId);}
   @Post('applications/:id/acceptances') accept(@Req() r:MemberRequest,@Param('id') id:string,@Body() body:unknown){return this.services.portal.accept(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
   @Get('loans') loans(@Req() r:MemberRequest){return this.services.portal.loans(actor(r));}
+  @Get('assisted-check-ins') assistedCheckIns(@Req() r:MemberRequest,@Query() q:unknown){return this.services.portal.assistedCheckIns(actor(r),q);}
+  @Get('assisted-check-ins/:id') assistedCheckIn(@Req() r:MemberRequest,@Param('id') id:string){return this.services.portal.assistedCheckIn(actor(r),id);}
+  @Post('assisted-check-ins/:id/confirmations') confirmAssistedCheckIn(@Req() r:MemberRequest,@Param('id') id:string,@Body() body:unknown){return this.services.portal.confirmAssistedCheckIn(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
+  @Post('assisted-check-ins/:id/declines') declineAssistedCheckIn(@Req() r:MemberRequest,@Param('id') id:string,@Body() body:unknown){return this.services.portal.declineAssistedCheckIn(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
   @Get('support-requests') support(@Req() r:MemberRequest){return this.services.portal.support(actor(r));}
   @Get('support-history') supportHistory(@Req() r:MemberRequest,@Query() query:unknown){return this.services.portal.supportHistory(actor(r),query);}
   @Post('support-requests') requestSupport(@Req() r:MemberRequest,@Body() body:unknown){return this.services.portal.requestSupport(actor(r),body,r.headers['idempotency-key']);}
