@@ -13,6 +13,12 @@ function mount(f = loanUiFixture(), gateway: LoanGateway | undefined = f.gateway
   return render(<RouterProvider router={createMemoryRouter([{ path: '*', element: <UnsavedChangesProvider><StaffLoanWorkspace loanId={f.loanId} day="2026-11-02" session={f.session} gateway={gateway}/></UnsavedChangesProvider> }])}/>);
 }
 describe('Staff loan workspace with explicit simulated gateway', () => {
+  it('hides self-authorization and disables posting while recorded evidence needs review',async()=>{
+    const f=loanUiFixture();f.view.commands[0].state='prepared';f.view.commands[0].preparedBy=f.session.user.id;
+    const mounted=mount(f);await screen.findByText(/No posted balance/);expect(screen.queryByRole('button',{name:'Authorize release'})).not.toBeInTheDocument();
+    mounted.unmount();f.view.commands[0].state='confirmed_unposted';f.view.commands[0].reviewRequired=true;mount(f);
+    expect(await screen.findByText(/Conflicting movement evidence/)).toBeVisible();expect(screen.getByRole('button',{name:'Post recorded movement'})).toBeDisabled();
+  });
   it('defaults unavailable without inventing a financial position', async () => {
     const f = loanUiFixture();
     render(<RouterProvider router={createMemoryRouter([{ path: '*', element: <UnsavedChangesProvider><StaffLoanWorkspace loanId={f.loanId} day="2026-11-02" session={f.session}/></UnsavedChangesProvider> }])}/>);

@@ -6,6 +6,8 @@ import { workflowSchemas, WorkflowScenario } from './workflow.js';
 import { modelReviewSchemas } from './model-review.js';
 import { priorityReviewSchemas } from './priority-review.js';
 import { lifecycleSchemas } from './lifecycle.js';
+import {connectedMoneySchemas} from './connected-money.js';
+export * from './connected-money.js';
 export * from './model-review.js';
 export * from './priority-review.js';
 export * from './lifecycle.js';
@@ -18,7 +20,7 @@ export const ApiErrorSchema = z.strictObject({
 });
 export const SessionSchema = z.strictObject({
   user: z.strictObject({ id: Id, displayName: z.string(), organizationId: Id, branchIds: z.array(Id), branches: z.array(z.strictObject({id:Id,name:z.string()})), roles: z.array(Role) }),
-  csrfToken: z.string(), expiresAt: Instant, privacyNoticeVersion: z.string(), contractVersion: z.literal(CONTRACT_VERSION), recordMode:RecordMode.optional(),fictionalPilot:z.boolean().optional(),
+  csrfToken: z.string(), expiresAt: Instant, privacyNoticeVersion: z.string(), contractVersion: z.literal(CONTRACT_VERSION), recordMode:RecordMode.optional(),fictionalPilot:z.boolean().optional(),connectedLending:z.literal(true).optional(),
 });
 export const StaffSchema = z.strictObject({ id: Id, displayName: z.string(), branchIds: z.array(Id), roles: z.array(Role), active: z.boolean(), version: Version });
 export const StaffPageSchema = z.strictObject({ items: z.array(StaffSchema), nextCursor: Id.nullable() });
@@ -336,7 +338,7 @@ export const schemas = {
   ...accountingReportSchemas,
   SupportAssignment:SupportAssignmentSchema,SupportResponse:SupportResponseSchema,SupportPage:SupportPageSchema,SupportDetail:SupportDetailSchema,SupportSummary:SupportSummarySchema,SupportAction:SupportActionSchema,SupportActionPage:SupportActionPageSchema,SupportHistory:SupportHistorySchema,
   ReconciliationCreate:ReconciliationCreateSchema,ReconciliationRun:ReconciliationRunSchema,ReconciliationPage:ReconciliationPageSchema,
-  ...guidanceSchemas,...workflowSchemas,...modelReviewSchemas,...priorityReviewSchemas,...lifecycleSchemas,PilotDecisionPreview:PilotDecisionPreviewSchema,
+  ...guidanceSchemas,...workflowSchemas,...modelReviewSchemas,...priorityReviewSchemas,...lifecycleSchemas,...connectedMoneySchemas,PilotDecisionPreview:PilotDecisionPreviewSchema,
   MemberSession:MemberSessionSchema,MemberProfile:MemberProfileSchema,MemberApplicationCreate:MemberApplicationCreateSchema,MemberApplication:MemberApplicationSchema,MemberApplicationPage:MemberApplicationPageSchema,MemberSubmit:MemberSubmitSchema,
   ReminderPreferenceUpdate:ReminderPreferenceUpdateSchema,ReminderPreferences:ReminderPreferencesSchema,ModelArtifact:ModelArtifactSchema,AiDraft:AiDraftSchema,DraftConfirmation:DraftConfirmationSchema.or(workflowSchemas.WorkflowDraftReview),IrregularExpense:IrregularExpenseSchema,
   MemberSource:MemberSourceSchema,MemberEvidenceView:MemberEvidenceViewSchema,MemberOptionsView:MemberOptionsViewSchema,MemberDecisionView:MemberDecisionViewSchema,MemberLoansView:MemberLoansViewSchema,MemberSupportView:MemberSupportViewSchema,MemberSupportCreate:MemberSupportCreateSchema,MemberSupport:MemberSupportSchema,MemberAcceptance:MemberAcceptanceSchema,MemberUpload:MemberUploadSchema,

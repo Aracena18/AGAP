@@ -1,5 +1,6 @@
 import type { SchemaName } from './schemas.js';
 import { lifecycleOperations } from './lifecycle.js';
+import {connectedMoneyOperations} from './connected-money.js';
 
 export interface Operation {
   id: string; method: 'GET' | 'POST' | 'PATCH'; path: string; response: SchemaName;
@@ -8,6 +9,7 @@ export interface Operation {
   pathParameters?: Record<string,SchemaName>; querySchema?: SchemaName; queryArgument?:boolean; pageLimit?:number;
 }
 export const operations = [
+  ...connectedMoneyOperations,
   {id:'getMemberDecisionDocument',method:'GET',path:'/member/applications/{id}/decision-documents/{documentId}',response:'MemberDecisionDocument',owner:'Robert',implemented:true,principal:'member'},
   {id:'createPendingOrigination',method:'POST',path:'/applications/{id}/originations',request:'OriginationCreate',response:'CommandReceipt',owner:'Benedict',implemented:true,idempotent:true},
   {id:'getStaffDecisionWorkspace',method:'GET',path:'/applications/{id}/decision-workspace',response:'StaffDecisionWorkspace',owner:'Benedict',implemented:true},
