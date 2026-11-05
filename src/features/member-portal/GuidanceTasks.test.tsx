@@ -1,0 +1,25 @@
+import { render,screen,waitFor } from '@testing-library/react';
+import { expect,it,vi } from 'vitest';
+import type { AgapClient } from '../../../packages/api-client/src';
+import { WorkflowDraft,WorkflowView } from '../../../packages/contracts/src/workflow';
+import { questionsFor } from '../../../packages/contracts/src/guidance';
+import { GuidanceTasks } from './GuidanceTasks';
+vi.mock('../access/useUnsavedChanges',()=>({useUnsavedChanges:vi.fn()}));
+it('loads newly processed suggestions and invalidates retired sources even when application version is unchanged',async()=>{
+ const id='00000000-0000-4000-8000-000000000001',sourceId='00000000-0000-4000-8000-000000000002',textId='00000000-0000-4000-8000-000000000003';
+ const draft=WorkflowDraft.parse({id,textVersionId:textId,origin:'simulated',state:'suggested',source:{sourceId,sourceVersion:1,page:1,excerpt:'FICTIONAL school cost'},provenance:{baseModel:'simulated',baseRevision:'a'.repeat(40),artifactSha256:null,promptVersion:'test',schemaVersion:'test',datasetManifestSha256:null,evaluationReference:'simulated'},suggestion:{factId:null,relevance:'included',label:'Newly processed school cost',category:'expense',value:{availability:'unavailable',reason:'Not known yet'},sourceId,sourceVersion:1,statement:null,effectiveDate:null,coverageStart:null,coverageEnd:null,cashDates:[],period:'unknown',basis:'unknown',deduction:'unknown',reason:'Fictional suggestion'}});
+ const view=WorkflowView.parse({applicationId:id,version:1,inputVersion:1,sources:[],facts:[],drafts:[],offers:[],latestAssessment:null,aiAvailable:false});
+ const item={draftId:id,source:draft.source,textVersionId:textId,sourceLabel:'Fictional source',origin:'simulated',title:draft.suggestion.label,summary:'Check this information.',current:true,reviewState:'suggested',questions:questionsFor(draft),actions:['answer','confirm','not_applicable','inspect_source']};
+ const response={schemaVersion:1,applicationId:id,applicationVersion:1,version:1,items:[],history:[]};
+ const get=vi.fn().mockResolvedValueOnce(response).mockResolvedValueOnce({...response,items:[item]}).mockResolvedValueOnce({...response,items:[{...item,current:false,actions:['inspect_source']}]});
+ const client={getMemberGuidance:get} as unknown as AgapClient;
+ const props={id,client,csrf:'fictional',member:true,canEdit:true,saved:vi.fn(),fallback:<p>Legacy review</p>,onAccessDenied:vi.fn()};
+ const rendered=render(<GuidanceTasks {...props} view={view}/>);
+ await screen.findByText('No suggestions await review. Manual entry is available.');
+ const populated={...view,drafts:[draft],sources:[{id:sourceId,version:1,textVersionId:textId,kind:'document' as const,label:'Fictional source',date:'2026-11-01',state:'cleared' as const,processing:'available' as const,message:null,verification:'not_checked' as const,pages:[{page:1,text:draft.source.excerpt}]}]};
+ rendered.rerender(<GuidanceTasks {...props} view={populated}/>);
+ expect(await screen.findByRole('button',{name:'Review Newly processed school cost'})).toBeVisible();
+ rendered.rerender(<GuidanceTasks {...props} view={{...populated,sources:populated.sources.map(source=>({...source,state:'blocked' as const,pages:[]}))}}/>);
+ await waitFor(()=>expect(screen.queryByRole('button',{name:'Review Newly processed school cost'})).not.toBeInTheDocument());
+ expect(await screen.findByText('Source changed · review again')).toBeVisible();expect(get).toHaveBeenCalledTimes(3);
+});

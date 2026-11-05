@@ -5,16 +5,16 @@
     "FND-03"
   ],
   "branch": "feat/earl-accounting-health-workflows",
-  "baseCommit": "5efc99a",
+  "baseCommit": "0e8152f",
   "recordMode": "fictional",
-  "capturedAt": "2026-11-05T09:28:39.000Z",
+  "capturedAt": "2026-11-05T11:59:21.000Z",
   "test": "tests/assisted-check-ins.spec.ts",
   "fullBrowserResult": {
-    "passed": 123,
+    "passed": 126,
     "skipped": 4,
     "skippedReason": "Existing separately enabled presentation cases"
   },
-  "applicationSourceSha256": "49fc92e2b00c5ca375676874c3055e4fbd06fbf655ec798ec5621752ff87088a",
+  "applicationSourceSha256": "16c724f221636a93f19c6d1ca5c481fdc82da4ace6b11c7c2885e66b77c810f9",
   "sourceFiles": [
     "apps/api/src/app.ts",
     "apps/api/src/modules/member-portal/member-portal.service.ts",
@@ -41,12 +41,12 @@
   "notes": "Actual isolated PostgreSQL/API/browser workflow. Phone review and consent captures show separate scroll positions in the existing member shell; staff captures are full-page.",
   "files": {
     "staff-desktop.png": {
-      "sha256": "2253fb505addad6f27b9181c0175690ed7020107defa3829a7e05becfa61fdcc",
+      "sha256": "534e8afd5546fae6d9ef374da4504ed367e7f93ee6215700e4d1091d230650b2",
       "width": 1366,
       "height": 3338
     },
     "staff-320.png": {
-      "sha256": "2d700fac13832a99bd9a0e578d76ed4eb7fc004e7e885d672c2fc302cadd9f69",
+      "sha256": "6372fdd254b108b2e64eb69a42c862aa28e87532f87c83b58c15cac298ac2912",
       "width": 320,
       "height": 4617
     },
@@ -65,5 +65,6 @@
       "width": 320,
       "height": 800
     }
-  }
+  },
+  "initialBaseCommit": "5efc99a"
 }

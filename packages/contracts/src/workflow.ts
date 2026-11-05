@@ -19,7 +19,7 @@ export const WorkflowSource = z.strictObject({
 export const WorkflowFinding=z.strictObject({page:z.number().int().positive(),excerpt:Text,fact:WorkflowSuggestion});
 export const WorkflowDraft = z.strictObject({ id: Id, textVersionId:Id, origin: z.enum(['model','simulated']), source: SourceReferenceSchema, suggestion: WorkflowSuggestion,
   provenance: ModelArtifactSchema, state: z.enum(['suggested','accepted','rejected']) });
-export const WorkflowDraftReview = z.strictObject({ draftId: Id, action: z.enum(['confirm','correct','not_applicable']), fact: WorkflowFactInput.nullable(), reason: Text });
+export const WorkflowDraftReview = z.strictObject({ draftId: Id, action: z.enum(['confirm','correct','not_applicable']), fact: WorkflowFactInput.nullable(), reason: Text, guidanceVersion:Version.optional() });
 export const WorkflowMonth = z.strictObject({ month: z.string().regex(/^\d{4}-\d{2}$/), remainingCentavos: SignedMoney });
 export const WorkflowScenario = z.strictObject({ offerId: Id, label: Text, horizonNetCentavos: SignedMoney,
   lowestBalanceCentavos: SignedMoney, closingBalanceCentavos: SignedMoney, totalRepaymentCentavos: MoneyAmount, financingCostCentavos: SignedMoney,
