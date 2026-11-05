@@ -78,6 +78,13 @@ test('entered member application, exact household retry, upload, scenario, 5C an
  await page.getByRole('button',{name:'Upload document',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Income-support.png',exact:true})).toBeVisible();
  await expect(page.getByText('Received · awaiting file checks',{exact:true})).toBeVisible();
+ await page.getByRole('button',{name:'Prepare review preview',exact:true}).click();
+ await page.getByRole('button',{name:'Show review now',exact:true}).click();
+ await expect(page.getByText('No hypothetical expense has been supplied.',{exact:false})).toBeVisible();
+ await expect(page.getByRole('progressbar')).toHaveCount(0);
+ await expect(page.getByText('Rubric unavailable · narrative draft',{exact:true})).toBeVisible();
+ await expect(page.getByText(/Readiness Score|High Readiness|Healthy debt ratio|automatically includes typical emergency/)).toHaveCount(0);
+ await page.getByRole('button',{name:'Change scenario',exact:true}).click();
  await page.getByLabel('Illustrative household reserve (PHP, optional)',{exact:true}).fill('500');
  await page.getByLabel('Explore an unexpected or irregular expense',{exact:true}).check();
  await page.getByLabel('What expense would you like to explore?',{exact:true}).fill('Unexpected repair');
@@ -101,6 +108,7 @@ test('entered member application, exact household retry, upload, scenario, 5C an
  expect(downloadPath).toBeTruthy();
  const draft=await readFile(downloadPath!,'utf8');
  expect(draft).toContain(`Application: ${id}`);expect(draft).toMatch(/Snapshot SHA-256: [a-f0-9]{64}/);
+ expect(draft).not.toMatch(/Readiness Score|Automated modeled risk|40%|60%|Policy Compliant/);
  expect(draft).toContain('Financial input version:');expect(draft).toContain('what-if ₱200');expect(draft).toContain('What-if minimum −₱150');expect(draft).toContain('financing cost ₱100');expect(draft).toContain('Source references');
  await page.setViewportSize({width:390,height:844});
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
@@ -134,6 +142,11 @@ test('entered member application, exact household retry, upload, scenario, 5C an
  await page.evaluate(()=>window.scrollTo(0,0));
  await page.screenshot({path:`${dir}/staff-5c-1366.png`,fullPage:true});
  await page.setViewportSize({width:320,height:800});
+ const summaryHeading=page.getByRole('heading',{name:'Review prepared',exact:true});
+ const summaryBounds=await summaryHeading.boundingBox();
+ expect(summaryBounds!.width).toBeGreaterThan(100);
+ expect(summaryBounds!.height).toBeLessThanOrEqual(72);
+
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  expect((await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze()).violations).toEqual([]);
  await page.getByRole('heading',{name:'Application analysis',exact:true}).click();

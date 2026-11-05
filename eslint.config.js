@@ -4,7 +4,7 @@ import hooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 
 export default tseslint.config(
-  { ignores: ['dist', 'dist-api', 'dist-worker', 'node_modules', '.worktrees', '.superpowers', 'graft', 'graphify-out', 'playwright-report', 'test-results', 'backups', '.backups', 'private-documents', '.platform-test'] },
+  { ignores: ['dist', 'dist-api', 'dist-worker', 'node_modules', '.worktrees', '.superpowers', 'graft', 'graphify-out', 'playwright-report', 'test-results', 'backups', '.backups', 'private-documents', '.platform-test', 'artifacts', 'AGAP_Accepted_Design_Archive_*'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   { files: ['infra/scripts/*.mjs'], languageOptions: { globals: globals.node } },

@@ -46,3 +46,33 @@ Normal non-force publication of checked merge `507fe4e267ae43c022c8f3ae9ca8dc368
 The user requests another GitHub review and repair. Prior source `c116987` and checked merge `507fe4e` both subsequently pass fork CI; those results do not verify a newly combined tree. Parent main has advanced to `1570df8` with VID-01 recording/scenario analysis and UI-11 household calendars. PR #40 now has one new conflict in `src/app/StaffApp.tsx`; GitHub still has no review submissions or inline threads.
 
 Isolated `codex/pr40-recheck` starts at fork `c116987` and merges parent `1570df8`. Proposed resolution retains both staff navigation/route sets: connected lending and loan operations plus the fictional analysis queue/application analysis. Preserve role, record-mode, pilot exclusivity, normal identity, preview-provider and existing authority boundaries. Put navigation and routes on separate lines to reduce repeated conflicts in this shared shell. No new contract, calculation, policy, dependency or UI rule is proposed. Preserve canonical fixtures, historical snapshots, migrations and unrelated local work. Full check/browser results and source publication are recorded only after execution; PR merge remains unrequested.
+
+
+### Latest-parent findings and correction proposal
+
+Parent advances again to `23c93e3` (`001481a` analysis plus result-first layout). Preserve its result-first hierarchy, household calendars, collapsed input inspection and shared navigation. Review finds unsupported hardcoded 26% emergency probability, arbitrary 5C/overall scores, invented good-standing/collateral claims and promised 40–60% repayment improvements. Raw per-date amounts are also summed into an incorrect monthly cash/DTI display, ignoring recurrence and already-deducted obligations; an absent hypothetical result can appear shock-resilient. Selected-offer summaries can retain the suggested offer's figures. These violate the existing product/design/financial rules and are not legitimized by being upstream.
+
+Correction restores the established deterministic preview calculation and selected-offer narrative contract; retain actual permitted offers, all monthly segments, configured checks, explicit hypothetical amount/date, cost/history/export binding and human follow-up. Remove unsupported probabilities, numerical scores, invented financial summaries and solver guarantees. Missing rubric/repayment history/collateral configuration stays unavailable. The result-first shell and existing Gabay styling remain. Update design/spec and meaningful tests together, then rerun full checks/browser suites on the final combined tree. No canonical contract, dependency, production policy or migration change is proposed.
+
+
+### Implemented correction and verification checkpoint
+
+Resolved the staff shell as a union of both route/navigation sets, with shared entries on separate lines. Incorporated parent `23c93e3` without overwriting the result-first layout, calendar editor or collapsed input inspection. Restored source-bound narrative 5C and the existing deterministic preview, removing unsupported scores/probabilities, unmodeled emergency claims, raw-fact monthly/DTI summaries and guaranteed solver outcomes from both rendering and download. Capacity and financial details follow the selected offer. Missing evidence remains unavailable; no new offer, calculator, policy or decision authority is introduced.
+
+Focused analysis/household tests pass **18 cases**. Final `npm run check` passes **283 UI/domain, 816 backend/contract and 109 evaluation tests**, lint, generated parity, application/API builds and evaluation typecheck. The phone header receives a subsequent lint/build pass after visual review found narrow wrapping; the updated browser assertion checks usable heading width/height. A preceding browser attempt ended with status 143 before a summary and is not counted as a pass. The final complete browser and sequential presentation results follow after execution.
+
+The new browser regression checks absent hypothetical inputs, unavailable rubric, no score meters, and exported content without invented probabilities/readiness/solver guarantees. Existing checks retain exact household save retries, partial records, privacy, source status, scenario arithmetic, officer escalation and human final-decision separation. Canonical types/tokens/fixtures/dependencies and all 54 published parent migrations remain unchanged. All 138 parent API operations remain (148 combined). No unrelated local checkout modifications are staged.
+
+Impeccable context/clarification and manual visual inspection follow canonical design.md; its mechanical detector returns `[]`. Existing tool-sidecar drift is left unchanged. `graphify update .` completes with **5,466 nodes / 16,912 edges**, with the existing unavailable SQL parser and partial contracts-index extraction limitations. No SQL indexing completeness or institutional/representative acceptance is claimed.
+
+
+### Final ordinary browser result
+
+The complete final ordinary suite exits **0: 145 Chromium cases pass**, with four presentation-only skips (2.9 minutes with three workers). A detached runner records the actual exit status after two earlier attached attempts ended with signal 143 before summaries; neither incomplete attempt is counted as a pass. No test assertion or timeout is weakened. The final suite includes both lending modes and the new absent-scenario/unsupported-score/export/phone-heading assertions.
+
+Fresh [phone analysis](screenshots/pr40-recheck/analysis-320.png) and [desktop analysis](screenshots/pr40-recheck/analysis-1366.png) captures were visually inspected; [capture hashes](screenshots/pr40-recheck/capture.json) identify the files. The summary badge now wraps within the text group instead of compressing the heading. Inherited historical screenshots/manifests are preserved from the merged index. These are fictional Chromium lab examples, not physical-device or representative-user acceptance. Final presentation and publication follow separately.
+
+
+### Final presentation and publication gate
+
+All **four presentation-mode cases pass** separately (exit 0, 20.2 seconds), after the ordinary suite shuts down. Whitespace, resolved index and **263 local documentation targets** pass. The verified combination retains latest parent `23c93e3` and prior fork `c116987`. Full checks use isolated PostgreSQL ports 55483/55484; browser checks use 55485/55486, with web/API ports 5207/4143/4144. No developer database is reset. Normal non-force source-branch publication follows these results; no parent PR merge or institutional release is authorized by this task.

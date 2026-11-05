@@ -66,4 +66,16 @@ describe('entered-application demonstration analysis',()=>{
   expect(r.recommended?.stressChecks).toMatchObject([{id:'cash-timing',minimumCentavos:50000,actualCentavos:40000,passed:false},{id:'remaining:2026-01',minimumCentavos:50000,passed:false}]);
   expect(r.priority).toBe('urgent');expect(canConsider(r.recommended,a)).toBe(false);
  });
+ it('models no emergency, probability, score or new offer without supplied inputs',()=>{
+  const view=fixture(),before=JSON.stringify(view),r=buildReview(view,assumptions);
+  expect(r.options.every(o=>o.stressed===null&&o.stressChecks===null)).toBe(true);
+  expect(r).not.toHaveProperty('autoRisk');expect(r).not.toHaveProperty('fiveC');expect(r).not.toHaveProperty('overallScore');
+  expect(r.options.map(o=>o.offerId)).toEqual(['offer']);expect(JSON.stringify(view)).toBe(before);
+ });
+ it('keeps missing financial evidence unavailable without a favorable fallback',()=>{
+  const view=fixture();view.facts=[];
+  const r=buildReview(view,assumptions);
+  expect(r).toMatchObject({recommended:null,lowest:null,priority:'clarification',options:[]});
+  expect(r).not.toHaveProperty('autoRisk');expect(r).not.toHaveProperty('overallScore');
+ });
 });

@@ -1,3 +1,16 @@
+.topRow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.backLink{display:inline-flex;align-items:center;gap:6px;min-height:44px;color:var(--muted);text-decoration:none;font-size:14px;font-weight:700}
+.backLink:hover{color:var(--primary)}
+.headerMeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+.purposePill{font-size:15px;font-weight:600;color:var(--ink)}
+.amountPill{font-size:14px;color:var(--muted)}
+.inputSectionDetails{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:16px 20px}
+.detailsSummary{display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;list-style:none}
+.detailsSummary::-webkit-details-marker{display:none}
+.summaryTitle{display:flex;align-items:center;gap:12px}
+.summaryTitle strong{font-size:15px;color:var(--ink)}
+.summaryTitle p{margin:2px 0 0}
+.expandLabel{font-size:13px;font-weight:600;color:var(--primary);white-space:nowrap}
 .heading,.saved{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-4,16px);flex-wrap:wrap}
 .heading h1,.heading h2,.heading h3,.saved h2{margin:0}
 .heading p,.saved p{margin:8px 0 0;max-width:65ch;color:var(--muted)}
@@ -10,13 +23,111 @@
 .sources{display:grid;gap:12px}.sources article{display:flex;align-items:center;gap:12px;padding-block:16px;border-top:1px solid var(--line);flex-wrap:wrap}.sources article>div{flex:1;min-width:150px}.sources h3{margin:0;font-size:16px;overflow-wrap:anywhere}.sources p{margin:6px 0 0;color:var(--muted);font-size:13px}
 .shock{padding:20px;background:var(--surface-variant);border-radius:var(--control-radius);display:grid;gap:16px}
 .processing{min-height:300px}.progress{padding:0;margin:8px 0;list-style:none;display:grid;gap:4px}.progress li{display:flex;align-items:center;gap:12px;padding:12px;color:var(--muted);border-radius:var(--control-radius)}.progress li[aria-current]{background:var(--primary-container);color:var(--on-primary-container)}.progress li[data-complete=true]{color:var(--ink)}.progress li>span{width:32px;height:32px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;flex:0 0 auto}.progress small{margin-left:auto;white-space:nowrap}
-.resultHeading{outline:none;scroll-margin-top:24px}.result{background:var(--surface)}.lead{font-size:20px;line-height:1.5;max-width:65ch;margin:0}
+.resultHeading{outline:none;scroll-margin-top:24px}.result{background:var(--surface)}.lead{font-size:18px;line-height:1.5;max-width:65ch;margin:0;font-weight:500;color:var(--ink)}
+
+/* Executive Scorecard Hero */
+.heroHeader{display:flex;align-items:center;gap:var(--space-4,16px);margin-bottom:var(--space-4,16px)}
+.heroMascot{width:64px;height:64px;object-fit:contain;flex-shrink:0}
+.heroText{flex:1;min-width:0}
+.heroTopLine{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.heroTopLine h2{margin:0;font-size:24px}
+.heroSubtitle{margin:4px 0 0;font-size:14px;color:var(--muted);line-height:1.4}
+
+.scorecardGrid{display:grid;grid-template-columns:minmax(300px, 1.25fr) minmax(260px, 1fr);gap:16px;margin:8px 0}
+.overallScoreCard{background:linear-gradient(135deg, var(--surface) 0%, var(--primary-soft) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:20px;display:flex;gap:20px;align-items:center}
+.gaugeContainer{flex-shrink:0}
+.circularGauge{width:96px;height:96px;border-radius:50%;background:conic-gradient(var(--primary) calc(var(--score-pct, 80%)), var(--line) 0deg);display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.gaugeInner{width:78px;height:78px;border-radius:50%;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.gaugeNumber{font-size:24px;font-weight:700;color:var(--ink);line-height:1}
+.gaugeLabel{font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);font-weight:600;margin-top:2px}
+.overallDetails{flex:1;display:grid;gap:8px;min-width:0}
+.overallBadgeRow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.confidenceText{font-size:13px;color:var(--muted);font-weight:500}
+
+.vitalsGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.vitalCard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:4px}
+.vitalLabel{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px}
+.vitalValue{font-size:20px;font-weight:700;color:var(--ink);overflow-wrap:anywhere}
+.vitalNegative{color:var(--danger)}
+.vitalDanger{color:var(--danger)}
+.vitalHint{font-size:12px;color:var(--muted);line-height:1.3}
+
+/* Red Flags and Model Recommendations */
+.flagGrid{display:grid;gap:16px;margin-top:8px}
+.flagCard{border-radius:var(--radius);padding:20px;border:1px solid var(--line);background:var(--surface);display:grid;gap:12px}
+.flag_danger{border-inline-start:5px solid var(--danger);background:linear-gradient(to right, #fff8f8 0%, var(--surface) 100%)}
+.flag_warning{border-inline-start:5px solid #d97706;background:linear-gradient(to right, #fffbf0 0%, var(--surface) 100%)}
+.flag_info{border-inline-start:5px solid var(--primary);background:linear-gradient(to right, #f4f8ff 0%, var(--surface) 100%)}
+.flagHeader{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.flagTitleRow{display:flex;align-items:flex-start;gap:12px}
+.flagIcon{font-size:22px;line-height:1}
+.flagTitleRow h3{font-size:17px;margin:0}
+.flagCategory{font-size:11px;font-weight:700;letter-spacing:0.6px;color:var(--muted);text-transform:uppercase}
+.flagDescription{font-size:14px;line-height:1.5;margin:0;color:var(--ink)}
+.solverCard{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:16px;display:grid;gap:8px;margin-top:4px}
+.solverHeader{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink)}
+.solverHeader strong{font-weight:600}
+.solverIcon{font-size:18px}
+.solverCard p{margin:0;font-size:13px;line-height:1.5;color:var(--muted)}
+.solverImpact{font-size:12px;padding:8px 12px;background:var(--success-bg, #e6f4ea);color:var(--success, #146c2e);border-radius:6px;line-height:1.4}
+
+/* Automated Risk Scenario Comparison Cards */
+.scenarioComparisonGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:12px 0}
+.scenarioCard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;display:grid;gap:16px}
+.scenarioCardHeader{display:grid;gap:4px}
+.scenarioTag{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--primary);background:var(--primary-soft);padding:3px 8px;border-radius:4px;width:fit-content}
+.scenarioTagEmergency{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;color:#b45309;background:#fef3c7;padding:3px 8px;border-radius:4px;width:fit-content}
+.scenarioCardHeader h3{margin:4px 0 0;font-size:18px}
+.scenarioCardHeader p{margin:0}
+.stressedNegative{border:1px solid #fca5a5;background:#fffdfd}
+.stressedPositive{border:1px solid #86efac;background:#fafdfb}
+.scenarioMetrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0;padding:0}
+.scenarioMetrics dt{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px}
+.scenarioMetrics dd{font-size:18px;font-weight:600;margin:4px 0 0;color:var(--ink);overflow-wrap:anywhere}
+.metricShortfall{color:var(--danger);font-weight:700}
+.scenarioStatus{display:flex;align-items:center;gap:8px;font-size:13px;padding:10px 14px;border-radius:8px;background:var(--surface-variant);line-height:1.4}
+.checkIcon{color:var(--success, #146c2e);font-weight:700}
+.alertIcon{color:var(--danger, #b3261e);font-weight:700}
+
+/* 5C Review Cards */
 .options{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px;border:0;padding:0;margin:0}.option{display:flex;align-items:flex-start;gap:12px;padding:20px;border:1px solid var(--input-line);border-radius:var(--radius);cursor:pointer}.option input{margin-top:5px}.option>span{display:grid;gap:8px}.selected{background:var(--primary-container);border-color:var(--primary)}
 .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin:8px 0}.metrics dt{font-size:13px;color:var(--muted)}.metrics dd{margin:8px 0 0;font-size:24px;font-weight:500;overflow-wrap:anywhere}.months{display:flex;flex-wrap:wrap;gap:12px 24px}.months p{margin:0}
-.cSection{padding-block:24px;border-top:1px solid var(--line)}.cSection p{max-width:70ch;line-height:1.65}.cSection h3{font-size:20px;margin:0}.cSection details{margin-top:16px}.citation{padding-block:16px;border-bottom:1px solid var(--line);min-width:0}.citation h3{font-size:16px}.citation blockquote{margin:8px 0;padding:16px;background:var(--surface-variant);border-radius:var(--control-radius);white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.6}.citation p{margin:6px 0;font-size:13px;color:var(--muted)}
+
+.cSection{padding-block:24px;border-top:1px solid var(--line)}
+.cSection h3{font-size:20px;margin:0}
+.scoreRow{display:flex;align-items:center;gap:12px;margin-top:8px}
+.meterTrack{width:140px;height:10px;background:var(--line);border-radius:999px;overflow:hidden}
+.meterFill{height:100%;border-radius:999px;transition:width 0.4s ease}
+.meter_success{background:var(--success, #146c2e)}
+.meter_warning{background:#d97706}
+.meter_danger{background:var(--danger, #b3261e)}
+.scoreText{font-size:14px;font-weight:700;color:var(--ink)}
+.factorChips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 8px}
+.factorChip{font-size:12px;font-weight:500;padding:4px 10px;border-radius:999px;background:var(--surface-variant);color:var(--ink);display:inline-flex;align-items:center;gap:4px}
+.factor_passed{background:var(--success-bg, #e6f4ea);color:var(--success, #146c2e)}
+.factor_warning{background:var(--warning-bg, #fff4d2);color:var(--warning, #7a4f00)}
+.factor_info{background:var(--primary-soft, #e9f0fe);color:var(--primary, #0b57d0)}
+.sectionNarrative{max-width:70ch;line-height:1.65;font-size:14px;color:var(--ink);margin:8px 0}
+.cSection details{margin-top:16px}
+.citation{padding-block:16px;border-bottom:1px solid var(--line);min-width:0}.citation h3{font-size:16px}.citation blockquote{margin:8px 0;padding:16px;background:var(--surface-variant);border-radius:var(--control-radius);white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.6}.citation p{margin:6px 0;font-size:13px;color:var(--muted)}
 .queueSummary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;padding-block:16px}.queueSummary div{display:grid;gap:8px}.queueSummary strong{font-size:28px;font-weight:500}.queueSummary span{font-size:13px;color:var(--muted)}.queue td,.queue th{vertical-align:top}.queue p{max-width:42ch}.queue th{min-width:200px}.queue td{min-width:180px}.queue td:nth-child(3){min-width:280px}.position{font-variant-numeric:tabular-nums;color:var(--primary);margin-right:8px}.queueLink{display:inline-flex;align-items:center;gap:8px;min-height:44px}
-@media(max-width:767px){.two{grid-template-columns:1fr}.metrics,.queueSummary{grid-template-columns:repeat(2,minmax(0,1fr))}.metrics dd{font-size:21px}.progress li{flex-wrap:wrap}.progress small{margin-left:44px}.request{align-items:flex-start}.shock{padding:16px}.sources article>div{min-width:120px}}
-@media(prefers-reduced-motion:reduce){.processing *{animation:none;transition:none}}
+
+@media(max-width:767px){
+  .two{grid-template-columns:1fr}
+  .metrics,.queueSummary{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .metrics dd{font-size:21px}
+  .progress li{flex-wrap:wrap}
+  .progress small{margin-left:44px}
+  .request{align-items:flex-start}
+  .shock{padding:16px}
+  .sources article>div{min-width:120px}
+  .scorecardGrid{grid-template-columns:1fr}
+  .overallScoreCard{flex-direction:column;text-align:center;align-items:center}
+  .vitalsGrid{grid-template-columns:repeat(2,1fr)}
+  .scenarioMetrics{grid-template-columns:repeat(2,1fr)}
+  .meterTrack{width:100px}
+}
+@media(prefers-reduced-motion:reduce){.processing *{animation:none;transition:none}.meterFill{transition:none}}
 @media print{.disclosure{display:block}.cSection{break-inside:avoid}.queueLink{display:none}}
 
 .householdForm{display:grid;gap:var(--space-5)}
