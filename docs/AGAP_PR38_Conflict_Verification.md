@@ -28,9 +28,12 @@ Fresh combined candidate captures: [staff phone](screenshots/pr38-conflicts/staf
 
 Verification uses isolated PostgreSQL 18 containers: ports 55443/55444 for full checks and 55445/55446 for browser checks, web 5193, APIs 4123/4124. Existing development data and worker checkouts remain untouched. The host's automatic Docker network pool was exhausted; a dedicated test network uses an explicit private subnet.
 
-`graphify update .` updates the graph. Its SQL parser is unavailable (`tree_sitter_sql`); the TypeScript parser also reports partial extraction of the export-only `packages/contracts/src/index.ts`, whose TypeScript build passes. No complete SQL indexing is claimed. Changed authored Markdown local targets and whitespace pass. Remote CI remains separate from these local results and cannot run on the unpublished repair yet.
+`graphify update .` updates the graph. Its SQL parser is unavailable (`tree_sitter_sql`); the TypeScript parser also reports partial extraction of the export-only `packages/contracts/src/index.ts`, whose TypeScript build passes. No complete SQL indexing is claimed. Changed authored Markdown local targets and whitespace pass. Remote CI remains separate from these local results; the publication follow-up below records its actual state.
 
 
 ## Latest parent documentation and publication
 
-After verification, parent main advanced to `7decaa0c6ed6891f3aa39d0b557254df879868bf` with the pitch assessment and exact source copies only. The checked code resolution is merge commit `df8293d`; the follow-up merge retains all six documentation changes without runtime changes. Both the assessment/source files and their original bytes are preserved. Source-branch publication updates this existing PR only; no parent PR merge or production release is performed. Remote CI has not yet run on this repair and is not represented by the local check results.
+After verification, parent main advanced to `7decaa0c6ed6891f3aa39d0b557254df879868bf` with the pitch assessment and exact source copies only. The checked code resolution is merge commit `df8293d`; the follow-up merge retains all six documentation changes without runtime changes. Both the assessment/source files and their original bytes are preserved. Source-branch publication updates this existing PR only; no parent PR merge or production release is performed. At this pre-publication checkpoint remote CI had not run on the repair; publication evidence follows below.
+
+
+Normal non-force fork `main` publication of `c036d1878cbc675189816558ed125d19a7ca1f4d` succeeded. GitHub reports PR #38 **open, unmerged, MERGEABLE / CLEAN** against parent `7decaa0`; [fork CI](https://github.com/joohhhnnnny/AGAP/actions/runs/42034346814) is in progress, not yet a passing remote result. This evidence follow-up changes documentation only. The four task-only PostgreSQL containers and dedicated network were removed. The original checkout's unrelated edits/artifacts remain untouched.
