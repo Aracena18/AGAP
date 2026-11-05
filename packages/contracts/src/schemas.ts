@@ -203,6 +203,20 @@ export const MemberLoanSchema = z.strictObject({
 });
 export const SupportCheckInSchema = z.strictObject({canMeetEssentials:z.enum(['yes','no','declined','unavailable']),borrowedToRepay:z.enum(['yes','no','declined','unavailable']),financialStrain:z.enum(['reported','not_reported','declined','unavailable'])});
 export const MemberSupportCreateSchema = z.strictObject({loanId:Id.nullable(),message:Text,contactPreference:z.enum(['portal','phone']),sharingConfirmed:z.literal(true),noticeVersion:Text,checkIn:SupportCheckInSchema.optional()});
+export const AssistedCheckInContentSchema=MemberSupportCreateSchema.pick({message:true,contactPreference:true}).extend({checkIn:SupportCheckInSchema});
+export const AssistedCheckInStateSchema=z.enum(['pending','withdrawn','declined','confirmed']);
+export const AssistedCheckInSchema=z.strictObject({
+  id:Id,sourceRequestId:Id,version:Version,state:AssistedCheckInStateSchema,fictional:z.literal(true),
+  preparedAt:Instant,updatedAt:Instant,preparedByName:Text,
+  content:AssistedCheckInContentSchema.extend({loanId:Id.nullable()}),noticeVersion:Text,payloadSha256:z.string().regex(/^[a-f0-9]{64}$/),
+  confirmationAllowed:z.boolean(),reviewMessage:Text.nullable(),resultingRequestId:Id.nullable(),
+}).superRefine((draft,ctx)=>{if((draft.state==='confirmed')!==(draft.resultingRequestId!==null)||draft.confirmationAllowed&&draft.state!=='pending')ctx.addIssue({code:'custom',message:'Draft state and confirmation evidence disagree.'});});
+export const AssistedCheckInPageSchema=z.strictObject({items:z.array(AssistedCheckInSchema).max(25),nextCursor:Id.nullable()});
+export const AssistedCheckInQuerySchema=z.strictObject({cursor:Id.optional(),limit:z.coerce.number().int().min(1).max(25).default(25)});
+export const AssistedCheckInReceiptSchema=z.strictObject({id:Id,version:Version,state:AssistedCheckInStateSchema,resultingRequestId:Id.nullable()});
+export const AssistedCheckInConfirmSchema=z.strictObject({sharingConfirmed:z.literal(true),noticeVersion:Text,payloadSha256:z.string().regex(/^[a-f0-9]{64}$/)});
+export const AssistedCheckInWithdrawSchema=z.strictObject({reason:Text});
+export const AssistedCheckInDeclineSchema=z.strictObject({});
 export const SupportCorrectionCreateSchema=MemberSupportCreateSchema.extend({reason:Text});
 export const SupportCorrectionLinkSchema=z.strictObject({requestId:Id,replacesId:Id.nullable(),replacedById:Id.nullable()});
 export const CheckInSummaryQuerySchema=z.strictObject({fromDate:CalendarDay,throughDate:CalendarDay}).refine(v=>v.throughDate>=v.fromDate&&(Date.parse(v.throughDate)-Date.parse(v.fromDate))/86400000<366,{message:'Choose up to 366 inclusive days.'});
@@ -258,6 +272,7 @@ export const schemas = {
   SupportFollowUpFilter:SupportFollowUpFilterSchema,SupportFollowUp:SupportFollowUpSchema,SupportFollowUpEvent:SupportFollowUpEventSchema,SupportFollowUpPage:SupportFollowUpPageSchema,SupportFollowUpEventPage:SupportFollowUpEventPageSchema,SupportFollowUpDetail:SupportFollowUpDetailSchema,SupportFollowUpCompletion:SupportFollowUpCompletionSchema,SupportFollowUpReschedule:SupportFollowUpRescheduleSchema,
   MemberSupportPage:MemberSupportPageSchema,MemberSupportPageView:MemberSupportPageViewSchema,MemberSupportHistoryQuery:MemberSupportHistoryQuerySchema,
   SupportCorrectionCreate:SupportCorrectionCreateSchema,SupportCorrectionLink:SupportCorrectionLinkSchema,CheckInSummaryQuery:CheckInSummaryQuerySchema,CheckInSummary:CheckInSummarySchema,
+  AssistedCheckInContent:AssistedCheckInContentSchema,AssistedCheckIn:AssistedCheckInSchema,AssistedCheckInPage:AssistedCheckInPageSchema,AssistedCheckInQuery:AssistedCheckInQuerySchema,AssistedCheckInReceipt:AssistedCheckInReceiptSchema,AssistedCheckInConfirm:AssistedCheckInConfirmSchema,AssistedCheckInWithdraw:AssistedCheckInWithdrawSchema,AssistedCheckInDecline:AssistedCheckInDeclineSchema,
   SupportPositionView:SupportPositionViewSchema,
 } as const;
 export type SchemaName = keyof typeof schemas;

@@ -60,6 +60,10 @@ export class MemberController {
   @Get('applications/:id/decision') decision(@Req() r:MemberRequest,@Param('id') id:string){return this.services.portal.decision(actor(r),id);}
   @Post('applications/:id/acceptances') accept(@Req() r:MemberRequest,@Param('id') id:string,@Body() body:unknown){return this.services.portal.accept(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
   @Get('loans') loans(@Req() r:MemberRequest){return this.services.portal.loans(actor(r));}
+  @Get('assisted-check-ins') assistedCheckIns(@Req() r:MemberRequest,@Query() q:unknown){return this.services.portal.assistedCheckIns(actor(r),q);}
+  @Get('assisted-check-ins/:id') assistedCheckIn(@Req() r:MemberRequest,@Param('id') id:string){return this.services.portal.assistedCheckIn(actor(r),id);}
+  @Post('assisted-check-ins/:id/confirmations') confirmAssistedCheckIn(@Req() r:MemberRequest,@Param('id') id:string,@Body() body:unknown){return this.services.portal.confirmAssistedCheckIn(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
+  @Post('assisted-check-ins/:id/declines') declineAssistedCheckIn(@Req() r:MemberRequest,@Param('id') id:string,@Body() body:unknown){return this.services.portal.declineAssistedCheckIn(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
   @Get('support-requests') support(@Req() r:MemberRequest){return this.services.portal.support(actor(r));}
   @Get('support-history') supportHistory(@Req() r:MemberRequest,@Query() query:unknown){return this.services.portal.supportHistory(actor(r),query);}
   @Post('support-requests') requestSupport(@Req() r:MemberRequest,@Body() body:unknown){return this.services.portal.requestSupport(actor(r),body,r.headers['idempotency-key']);}

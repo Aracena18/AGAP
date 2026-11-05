@@ -6934,6 +6934,640 @@
           }
         }
       }
+    },
+    "/api/v1/support-requests/{id}/assisted-check-ins": {
+      "post": {
+        "operationId": "createAssistedCheckIn",
+        "tags": [
+          "Earl"
+        ],
+        "x-agap-state": "implemented",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]*\"$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistedCheckInContent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Checked response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistedCheckInReceipt"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured validation, authorization, precondition or availability error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "listAssistedCheckIns",
+        "tags": [
+          "Earl"
+        ],
+        "x-agap-state": "implemented",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "default": 25,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 25
+            }
+          }
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Checked response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistedCheckInPage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured validation, authorization, precondition or availability error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/support-assisted-check-ins/{id}": {
+      "get": {
+        "operationId": "getAssistedCheckIn",
+        "tags": [
+          "Earl"
+        ],
+        "x-agap-state": "implemented",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Checked response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistedCheckIn"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured validation, authorization, precondition or availability error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/support-assisted-check-ins/{id}/revisions": {
+      "post": {
+        "operationId": "reviseAssistedCheckIn",
+        "tags": [
+          "Earl"
+        ],
+        "x-agap-state": "implemented",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]*\"$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistedCheckInContent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Checked response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistedCheckInReceipt"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured validation, authorization, precondition or availability error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/support-assisted-check-ins/{id}/withdrawals": {
+      "post": {
+        "operationId": "withdrawAssistedCheckIn",
+        "tags": [
+          "Earl"
+        ],
+        "x-agap-state": "implemented",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]*\"$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistedCheckInWithdraw"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Checked response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistedCheckInReceipt"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured validation, authorization, precondition or availability error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/member/assisted-check-ins": {
+      "get": {
+        "operationId": "listMemberAssistedCheckIns",
+        "tags": [
+          "Earl"
+        ],
+        "x-agap-state": "implemented",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "default": 25,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 25
+            }
+          }
+        ],
+        "security": [
+          {
+            "memberSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Checked response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistedCheckInPage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured validation, authorization, precondition or availability error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/member/assisted-check-ins/{id}": {
+      "get": {
+        "operationId": "getMemberAssistedCheckIn",
+        "tags": [
+          "Earl"
+        ],
+        "x-agap-state": "implemented",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "security": [
+          {
+            "memberSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Checked response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistedCheckIn"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured validation, authorization, precondition or availability error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/member/assisted-check-ins/{id}/confirmations": {
+      "post": {
+        "operationId": "confirmMemberAssistedCheckIn",
+        "tags": [
+          "Earl"
+        ],
+        "x-agap-state": "implemented",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]*\"$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "memberSession": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistedCheckInConfirm"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Checked response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistedCheckInReceipt"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured validation, authorization, precondition or availability error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/member/assisted-check-ins/{id}/declines": {
+      "post": {
+        "operationId": "declineMemberAssistedCheckIn",
+        "tags": [
+          "Earl"
+        ],
+        "x-agap-state": "implemented",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]*\"$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "memberSession": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistedCheckInDecline"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Checked response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistedCheckInReceipt"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured validation, authorization, precondition or availability error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -22215,6 +22849,549 @@
           "submissionCount",
           "answers"
         ],
+        "additionalProperties": false
+      },
+      "AssistedCheckInContent": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "contactPreference": {
+            "type": "string",
+            "enum": [
+              "portal",
+              "phone"
+            ]
+          },
+          "checkIn": {
+            "type": "object",
+            "properties": {
+              "canMeetEssentials": {
+                "type": "string",
+                "enum": [
+                  "yes",
+                  "no",
+                  "declined",
+                  "unavailable"
+                ]
+              },
+              "borrowedToRepay": {
+                "type": "string",
+                "enum": [
+                  "yes",
+                  "no",
+                  "declined",
+                  "unavailable"
+                ]
+              },
+              "financialStrain": {
+                "type": "string",
+                "enum": [
+                  "reported",
+                  "not_reported",
+                  "declined",
+                  "unavailable"
+                ]
+              }
+            },
+            "required": [
+              "canMeetEssentials",
+              "borrowedToRepay",
+              "financialStrain"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "message",
+          "contactPreference",
+          "checkIn"
+        ],
+        "additionalProperties": false
+      },
+      "AssistedCheckIn": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "sourceRequestId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "version": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "withdrawn",
+              "declined",
+              "confirmed"
+            ]
+          },
+          "fictional": {
+            "type": "boolean",
+            "const": true
+          },
+          "preparedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          "preparedByName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "content": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "contactPreference": {
+                "type": "string",
+                "enum": [
+                  "portal",
+                  "phone"
+                ]
+              },
+              "checkIn": {
+                "type": "object",
+                "properties": {
+                  "canMeetEssentials": {
+                    "type": "string",
+                    "enum": [
+                      "yes",
+                      "no",
+                      "declined",
+                      "unavailable"
+                    ]
+                  },
+                  "borrowedToRepay": {
+                    "type": "string",
+                    "enum": [
+                      "yes",
+                      "no",
+                      "declined",
+                      "unavailable"
+                    ]
+                  },
+                  "financialStrain": {
+                    "type": "string",
+                    "enum": [
+                      "reported",
+                      "not_reported",
+                      "declined",
+                      "unavailable"
+                    ]
+                  }
+                },
+                "required": [
+                  "canMeetEssentials",
+                  "borrowedToRepay",
+                  "financialStrain"
+                ],
+                "additionalProperties": false
+              },
+              "loanId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "contactPreference",
+              "checkIn",
+              "loanId"
+            ],
+            "additionalProperties": false
+          },
+          "noticeVersion": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "payloadSha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "confirmationAllowed": {
+            "type": "boolean"
+          },
+          "reviewMessage": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "resultingRequestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "sourceRequestId",
+          "version",
+          "state",
+          "fictional",
+          "preparedAt",
+          "updatedAt",
+          "preparedByName",
+          "content",
+          "noticeVersion",
+          "payloadSha256",
+          "confirmationAllowed",
+          "reviewMessage",
+          "resultingRequestId"
+        ],
+        "additionalProperties": false
+      },
+      "AssistedCheckInPage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "maxItems": 25,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "sourceRequestId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "version": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "state": {
+                  "type": "string",
+                  "enum": [
+                    "pending",
+                    "withdrawn",
+                    "declined",
+                    "confirmed"
+                  ]
+                },
+                "fictional": {
+                  "type": "boolean",
+                  "const": true
+                },
+                "preparedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                },
+                "preparedByName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000
+                },
+                "content": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    },
+                    "contactPreference": {
+                      "type": "string",
+                      "enum": [
+                        "portal",
+                        "phone"
+                      ]
+                    },
+                    "checkIn": {
+                      "type": "object",
+                      "properties": {
+                        "canMeetEssentials": {
+                          "type": "string",
+                          "enum": [
+                            "yes",
+                            "no",
+                            "declined",
+                            "unavailable"
+                          ]
+                        },
+                        "borrowedToRepay": {
+                          "type": "string",
+                          "enum": [
+                            "yes",
+                            "no",
+                            "declined",
+                            "unavailable"
+                          ]
+                        },
+                        "financialStrain": {
+                          "type": "string",
+                          "enum": [
+                            "reported",
+                            "not_reported",
+                            "declined",
+                            "unavailable"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "canMeetEssentials",
+                        "borrowedToRepay",
+                        "financialStrain"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "loanId": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "contactPreference",
+                    "checkIn",
+                    "loanId"
+                  ],
+                  "additionalProperties": false
+                },
+                "noticeVersion": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000
+                },
+                "payloadSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "confirmationAllowed": {
+                  "type": "boolean"
+                },
+                "reviewMessage": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "resultingRequestId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "sourceRequestId",
+                "version",
+                "state",
+                "fictional",
+                "preparedAt",
+                "updatedAt",
+                "preparedByName",
+                "content",
+                "noticeVersion",
+                "payloadSha256",
+                "confirmationAllowed",
+                "reviewMessage",
+                "resultingRequestId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "nextCursor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ],
+        "additionalProperties": false
+      },
+      "AssistedCheckInQuery": {
+        "type": "object",
+        "properties": {
+          "cursor": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "limit": {
+            "default": 25,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25
+          }
+        },
+        "required": [
+          "limit"
+        ],
+        "additionalProperties": false
+      },
+      "AssistedCheckInReceipt": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "version": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "withdrawn",
+              "declined",
+              "confirmed"
+            ]
+          },
+          "resultingRequestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "state",
+          "resultingRequestId"
+        ],
+        "additionalProperties": false
+      },
+      "AssistedCheckInConfirm": {
+        "type": "object",
+        "properties": {
+          "sharingConfirmed": {
+            "type": "boolean",
+            "const": true
+          },
+          "noticeVersion": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "payloadSha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "sharingConfirmed",
+          "noticeVersion",
+          "payloadSha256"
+        ],
+        "additionalProperties": false
+      },
+      "AssistedCheckInWithdraw": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "AssistedCheckInDecline": {
+        "type": "object",
+        "properties": {},
         "additionalProperties": false
       },
       "SupportPositionView": {

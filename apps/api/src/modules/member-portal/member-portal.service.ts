@@ -1,7 +1,7 @@
 import type { z } from 'zod';
 import { createHash } from 'node:crypto';
 import type { MemberActorContext,MemberDomainPorts,MemberUnitOfWork } from '../../../../../packages/contracts/src/ports.js';
-import { schemas } from '../../../../../packages/contracts/src/schemas.js';
+import { schemas,Id,Version } from '../../../../../packages/contracts/src/schemas.js';
 import { MemberApplicationsService } from '../applications/member-applications.service.js';
 import { memberCommand,memberEvent,memberKey } from '../../platform/member-commands.js';
 import { ApiError } from '../../platform/errors.js';
@@ -15,7 +15,23 @@ export const unavailableMemberDomains:MemberDomainPorts={
   upload:async()=>pending(),download:async()=>pending(),confirm:async()=>pending(),accept:async()=>pending(),requestSupport:async()=>pending(),
 };
 export class MemberPortalService {
-  constructor(private readonly uow:MemberUnitOfWork,readonly applications:MemberApplicationsService,private readonly noticeVersion:string,private readonly domains:MemberDomainPorts=unavailableMemberDomains){}
+  constructor(private readonly uow:MemberUnitOfWork,readonly applications:MemberApplicationsService,private readonly noticeVersion:string,private readonly domains:MemberDomainPorts=unavailableMemberDomains,private readonly fictionalAssistance=false){}
+  assistedCheckIns(actor:MemberActorContext,input:unknown){
+    if(!this.fictionalAssistance||!this.domains.assistedCheckIns)return pending();const query=schemas.AssistedCheckInQuery.parse(input);
+    return this.uow.run(actor,async tx=>checked(schemas.AssistedCheckInPage,await this.domains.assistedCheckIns!(tx,query)));
+  }
+  assistedCheckIn(actor:MemberActorContext,id:unknown){
+    if(!this.fictionalAssistance||!this.domains.assistedCheckIn)return pending();const draft=Id.parse(id);
+    return this.uow.run(actor,async tx=>checked(schemas.AssistedCheckIn,await this.domains.assistedCheckIn!(tx,draft)));
+  }
+  confirmAssistedCheckIn(actor:MemberActorContext,id:unknown,input:unknown,version:number,key:unknown){
+    if(!this.fictionalAssistance||!this.domains.confirmAssistedCheckIn)return pending();const draft=Id.parse(id),data=schemas.AssistedCheckInConfirm.parse(input),stable=memberKey(key);Version.parse(version);
+    return this.uow.run(actor,async tx=>checked(schemas.AssistedCheckInReceipt,await this.domains.confirmAssistedCheckIn!(tx,draft,data,version,stable)));
+  }
+  declineAssistedCheckIn(actor:MemberActorContext,id:unknown,input:unknown,version:number,key:unknown){
+    if(!this.fictionalAssistance||!this.domains.declineAssistedCheckIn)return pending();const draft=Id.parse(id),data=schemas.AssistedCheckInDecline.parse(input),stable=memberKey(key);Version.parse(version);
+    return this.uow.run(actor,async tx=>checked(schemas.AssistedCheckInReceipt,await this.domains.declineAssistedCheckIn!(tx,draft,data,version,stable)));
+  }
   preferences(actor:MemberActorContext){return this.uow.run(actor,async tx=>{
     const row=(await tx.query('SELECT notices_enabled,version FROM portal.preferences WHERE organization_id=$1 AND member_id=$2',[actor.organizationId,actor.memberId])).rows[0];
     if(!row)throw new ApiError(503,'preferences_unavailable','Your reminder preferences are unavailable. Contact the cooperative.');
