@@ -4,9 +4,9 @@ import AxeBuilder from '@axe-core/playwright';
 import { signInStaff } from './staff-session';
 
 async function capture(page:Page,name:string){if(process.env.AGAP_UI_SCREENSHOTS){await mkdir('docs/screenshots/ui-review-cleanup',{recursive:true});await page.screenshot({path:`docs/screenshots/ui-review-cleanup/${name}.png`,fullPage:true});}}
-test('signed-out member welcome is concise and workspace navigation lives in the header',async({page})=>{
+test('signed-out member welcome is concise and keeps a member-only header',async({page})=>{
   await page.setViewportSize({width:1101,height:900});await page.goto('/#/member/help');await expect(page.getByRole('heading',{name:'Welcome to AGAP'})).toBeVisible();await expect(page.getByRole('link',{name:'Sign in',exact:true})).toBeVisible();await expect(page.getByText('Your cooperative, on your phone')).toHaveCount(0);await expect(page.getByText('Open the fictional review demo')).toHaveCount(0);await expect(page.getByText('Ask your cooperative to activate your account.')).toBeHidden();await page.getByText('Need access?',{exact:true}).click();await expect(page.getByText('Ask your cooperative to activate your account.')).toBeVisible();await page.getByText('Need access?',{exact:true}).click();
-  await page.getByRole('button',{name:/Switch workspace/}).click();await expect(page.getByRole('menuitem',{name:'Review demo'})).toBeVisible();await page.keyboard.press('Escape');await expect(page.getByRole('button',{name:/Switch workspace/})).toBeFocused();await page.getByRole('heading',{name:'Welcome to AGAP'}).click();await capture(page,'member-welcome-1101');
+  await expect(page.getByRole('button',{name:/Switch workspace/})).toHaveCount(0);await expect(page.getByRole('button',{name:'Install AGAP',exact:true})).toBeVisible();await page.getByRole('heading',{name:'Welcome to AGAP'}).click();await capture(page,'member-welcome-1101');
   await page.setViewportSize({width:320,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);expect((await new AxeBuilder({page}).analyze()).violations).toEqual([]);await capture(page,'member-welcome-320');
 });
 test('review pages require a server staff session and retain a safe return route',async({page})=>{

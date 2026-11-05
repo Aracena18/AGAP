@@ -4,7 +4,7 @@
   "short_name": "AGAP",
   "description": "Loan reviews with everyday needs in view. Fictional demonstration; an internet connection is required.",
   "lang": "en",
-  "start_url": "./#/",
+  "start_url": "./#/member",
   "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
