@@ -155,7 +155,7 @@ test('manifest and install icons resolve without a service worker', async ({ pag
   const response = await request.get('/manifest.webmanifest');
   expect(response.ok()).toBe(true);
   const manifest = await response.json();
-  expect(manifest.start_url).toBe('./#/');
+  expect(manifest.start_url).toBe('./#/member');
   expect(manifest.display).toBe('standalone');
   for (const icon of manifest.icons) expect((await request.get(`/${icon.src}`)).ok()).toBe(true);
   await page.goto('/#/');

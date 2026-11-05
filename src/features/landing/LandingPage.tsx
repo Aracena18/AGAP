@@ -6,7 +6,7 @@ import GabayReveal from './GabayReveal';
 import { BrandMark } from './BrandMark';
 import { story } from './story';
 import WorkflowGallery from './WorkflowGallery';
-import { useInstall } from './useInstall';
+import { InstallDialog } from '../../shared/installation/InstallDialog';
 import styles from './LandingPage.module.css';
 
 const examples = [
@@ -17,17 +17,6 @@ const examples = [
 ];
 const base = import.meta.env.BASE_URL;
 
-function Installation({ dialog, close, installation }: { dialog: React.RefObject<HTMLDialogElement | null>; close: () => void; installation: ReturnType<typeof useInstall> }) {
-  const { installed, available, state, install } = installation;
-  const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  return <dialog ref={dialog} className={styles.dialog} aria-labelledby="install-heading" aria-describedby="install-description" onClose={close}>
-    <h2 id="install-heading">{installed ? 'AGAP is installed' : 'Keep AGAP close.'}</h2>
-    <p id="install-description">Add AGAP to your device for direct access. An internet connection and the appropriate sign-in are still required.</p>
-    {installed ? <p>You can continue to the fictional demonstration or your account.</p> : available ? <p>Your browser can add AGAP to your device. You choose whether to continue in its installation prompt.</p> : <div className={styles.installInstructions}><h3>{ios ? 'On iPhone or iPad' : 'Use your browser’s install menu'}</h3><p>{ios ? 'Open this page in Safari. Open the Share menu, choose Add to Home Screen, then Add.' : 'In Chrome or Edge, open the browser menu and look for Install AGAP or Install this page as an app. In Safari on Mac, choose File, then Add to Dock.'}</p><p>If your browser does not offer installation, you can keep using AGAP in this tab.</p></div>}
-    <p className={styles.installStatus} role="status">{state === 'pending' ? 'Waiting for your choice in the browser…' : state === 'accepted' ? 'Your browser accepted the installation request. Follow any remaining device instructions.' : state === 'dismissed' ? 'Installation was dismissed. You can keep using AGAP in your browser.' : state === 'error' ? 'The installation prompt could not open. Use your browser’s install menu or continue in this tab.' : ''}</p>
-    <div className={styles.dialogActions}><Button variant="quiet" onClick={() => dialog.current?.close()} autoFocus>Close</Button>{available && !installed && <Button className={styles.installButton} disabled={state === 'pending'} onClick={() => void install()}>{state === 'pending' ? 'Opening…' : 'Install AGAP'}</Button>}{installed && <Link to="/applications" className={styles.actionLink}>Open review demo<ArrowForward size={18}/></Link>}</div>
-  </dialog>;
-}
 export default function LandingPage() {
   const location = useLocation();
   const [active, setActive] = useState(0);
@@ -35,7 +24,6 @@ export default function LandingPage() {
   const dialog = useRef<HTMLDialogElement>(null);
   const triggerId = useRef('');
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
-  const installation = useInstall();
   const example = examples[active];
   useEffect(() => {
     document.title = 'AGAP | Loan reviews with everyday needs in view';
@@ -99,6 +87,6 @@ export default function LandingPage() {
       </div></section>
     </main>
     <footer className={styles.footer}><Link className={styles.brand} to="/"><BrandMark/>AGAP</Link><p>Everyday needs in view.</p><div><Link to="/member">Member access</Link><Link to="/staff">Staff access</Link></div></footer>
-    <Installation dialog={dialog} close={() => document.getElementById(triggerId.current)?.focus()} installation={installation}/>
+    <InstallDialog dialog={dialog} close={() => document.getElementById(triggerId.current)?.focus()} classes={styles} installedAction={<Link to="/applications" className={styles.actionLink}>Open review demo<ArrowForward size={18}/></Link>}/>
   </div>;
 }

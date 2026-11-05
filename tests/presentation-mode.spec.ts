@@ -11,8 +11,8 @@ test('member, staff and review open automatically and retain real private-sessio
   await expect(page.getByRole('link',{name:'Sign in',exact:true})).toHaveCount(0);
   await expect(page.getByRole('button',{name:/Account menu/})).toHaveCount(0);
   await page.reload();await expect(page.getByRole('navigation',{name:'Member account'})).toBeVisible();
-  await page.getByRole('button',{name:/Switch workspace/}).click();
-  await page.getByRole('menuitem',{name:'Staff workspace',exact:true}).click();
+  await expect(page.getByRole('button',{name:/Switch workspace/})).toHaveCount(0);
+  await page.goto('/#/staff/applications');
   await expect(page.getByRole('navigation',{name:'Staff workspace'})).toBeVisible();
   await page.getByRole('button',{name:/Switch workspace/}).click();
   await page.getByRole('menuitem',{name:'Review demo',exact:true}).click();

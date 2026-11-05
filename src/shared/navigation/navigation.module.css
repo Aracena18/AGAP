@@ -31,4 +31,8 @@
 }
 
 .presentation { color: var(--muted); font-size: 13px; line-height: 20px; white-space: nowrap; }
+.memberHeader .inner { flex-wrap: wrap; }
+@media (max-width: 767px) {
+  .memberHeader .inner { padding-top: max(12px, env(safe-area-inset-top)); padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+}
 @media (max-width: 360px) { .presentation { max-width: 64px; white-space: normal; font-size: 12px; line-height: 18px; } }
