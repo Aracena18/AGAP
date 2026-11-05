@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
 import {
-  CalendarDay, CONTRACT_VERSION, FactValueSchema, Id, ModelArtifactSchema,
+  CalendarDay, FactValueSchema, Id, ModelArtifactSchema,
   SourceReferenceSchema, Version,
 } from '../../../packages/contracts/src/schemas.js';
 
@@ -30,8 +30,11 @@ const CaseSchema = z.strictObject({
   expected: z.array(FindingSchema).min(1).max(50),
   rationale: Nonempty,
 });
+// This immutable extraction corpus predates the additive qualitative-review API.
+// Its identity must not change when the application's API contract advances.
+export const EVAL_EXTRACTION_CONTRACT_VERSION = '0.3.0' as const;
 export const CorpusSchema = z.strictObject({
-  schemaVersion: z.literal('eval-01-corpus/v1'), contractVersion: z.literal(CONTRACT_VERSION),
+  schemaVersion: z.literal('eval-01-corpus/v1'), contractVersion: z.literal(EVAL_EXTRACTION_CONTRACT_VERSION),
   id: Key, version: Key, purpose: z.enum(['development', 'reserved_holdout']),
   provenance: z.strictObject({
     method: z.enum(['public_development_recipe', 'private_authored']),

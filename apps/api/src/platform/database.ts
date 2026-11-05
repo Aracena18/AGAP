@@ -1,12 +1,13 @@
 import { Pool, type PoolConfig } from 'pg';
 import type { ActorContext, TransactionContext, UnitOfWork } from '../../../../packages/contracts/src/ports.js';
 import { ApiError } from './errors.js';
+import { lockPilotMaterial } from './material-guard.js';
 
 export function createPool(connectionString: string, options: PoolConfig = {}) {
   return new Pool({ connectionString, max: 10, connectionTimeoutMillis: 5000, idleTimeoutMillis: 30_000, ...options });
 }
 export class PostgresUnitOfWork implements UnitOfWork {
-  constructor(private readonly pool: Pool, private readonly options: { isolation?: 'repeatable read' } = {}) {}
+  constructor(private readonly pool: Pool, private readonly options: { isolation?: 'repeatable read'; materialGuard?: boolean } = {}) {}
   async run<T>(actor: ActorContext, work: (tx: TransactionContext) => Promise<T>): Promise<T> {
     const attempts = this.options.isolation === 'repeatable read' ? 3 : 1;
     for (let attempt = 0; ; attempt++) {
@@ -28,6 +29,7 @@ export class PostgresUnitOfWork implements UnitOfWork {
       const current = await client.query<{ authorized: boolean }>('SELECT identity.assert_actor($1,$2,$3,$4,$5) AS authorized',[actor.sessionId,actor.userId,actor.organizationId,[...actor.branchIds],[...actor.roles]]);
       if (!current.rows[0].authorized) throw new ApiError(401,'access_changed','Your staff access changed. Reload and sign in again.');
       const tx: TransactionContext = { actor, query: async (sql, values) => client.query(sql, values ? [...values] : undefined) };
+      if (this.options.materialGuard) await lockPilotMaterial(tx);
       const result = await work(tx);
       await client.query('COMMIT');
       return result;

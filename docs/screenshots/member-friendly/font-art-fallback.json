@@ -1,0 +1,35 @@
+{
+  "fontconfigGlyphCoverage": {
+    "\u20b1": true,
+    "\u2212": true,
+    "\u00f1": true,
+    "0": true,
+    "1": true,
+    "I": true,
+    "l": true
+  },
+  "browserChecks": [
+    {
+      "fallback": false,
+      "member": {
+        "family": "Nunito, \"Google Sans Variable\", \"Google Sans\", sans-serif",
+        "fontLoaded": true,
+        "overflow": false,
+        "animations": "none"
+      },
+      "staff": "\"Google Sans Variable\", \"Google Sans\", Arial, sans-serif",
+      "pageErrors": []
+    },
+    {
+      "fallback": true,
+      "member": {
+        "family": "Nunito, \"Google Sans Variable\", \"Google Sans\", sans-serif",
+        "fontLoaded": false,
+        "overflow": false,
+        "animations": "none"
+      },
+      "staff": "\"Google Sans Variable\", \"Google Sans\", Arial, sans-serif",
+      "pageErrors": []
+    }
+  ]
+}

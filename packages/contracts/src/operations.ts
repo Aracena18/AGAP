@@ -1,17 +1,29 @@
 import type { SchemaName } from './schemas.js';
+import { lifecycleOperations } from './lifecycle.js';
 
 export interface Operation {
   id: string; method: 'GET' | 'POST' | 'PATCH'; path: string; response: SchemaName;
   request?: SchemaName; owner: 'Robert' | 'Aaron' | 'Benedict' | 'Earl'; implemented: boolean;
   versioned?: boolean; idempotent?: boolean; public?: boolean; principal?:'member'; binary?:boolean; binaryResponse?:boolean;
-  pathParameters?: Record<string,SchemaName>;
-  querySchema?:SchemaName;
-  pageLimit?:number;
+  pathParameters?: Record<string,SchemaName>; querySchema?: SchemaName; queryArgument?:boolean; pageLimit?:number;
 }
 export const operations = [
   {id:'createTrialBalance',method:'POST',path:'/accounting/trial-balances',request:'TrialBalanceCreate',response:'TrialBalanceRun',owner:'Earl',implemented:true,idempotent:true},
   {id:'listTrialBalances',method:'GET',path:'/accounting/trial-balances',response:'TrialBalancePage',owner:'Earl',implemented:true,pageLimit:20},
   {id:'getTrialBalance',method:'GET',path:'/accounting/trial-balances/{id}',response:'TrialBalanceRun',owner:'Earl',implemented:true},
+  ...lifecycleOperations,
+  {id:'getPriorityReviewQueue',method:'GET',path:'/review-queue',response:'PriorityReviewPage',querySchema:'PriorityReviewQueueQuery',owner:'Robert',implemented:true},
+  {id:'getPriorityReviewSummary',method:'GET',path:'/applications/{id}/review-summary',response:'PriorityReviewSummary',owner:'Robert',implemented:true},
+  {id:'getPriorityReviewHistory',method:'GET',path:'/applications/{id}/review-history',response:'PriorityReviewHistory',owner:'Aaron',implemented:true},
+  {id:'getPriorityReviewers',method:'GET',path:'/applications/{id}/eligible-reviewers',response:'PriorityReviewers',owner:'Benedict',implemented:true},
+  {id:'createPrioritySourceReview',method:'POST',path:'/applications/{id}/source-reviews',request:'PrioritySourceReview',response:'PriorityReviewReceipt',owner:'Aaron',implemented:true,idempotent:true,versioned:true},
+  {id:'recoverPrioritySourceReview',method:'POST',path:'/applications/{id}/source-review-recoveries',request:'PriorityReviewRecover',response:'PriorityReviewReceipt',owner:'Aaron',implemented:true,idempotent:true,versioned:true},
+  {id:'createPriorityRuleConcern',method:'POST',path:'/applications/{id}/rule-concerns',request:'PriorityRuleConcern',response:'PriorityReviewReceipt',owner:'Aaron',implemented:true,idempotent:true,versioned:true},
+  {id:'checkPriorityConcern',method:'POST',path:'/applications/{id}/concern-checks',request:'PriorityConcernCheck',response:'PriorityReviewReceipt',owner:'Aaron',implemented:true,idempotent:true,versioned:true},
+  {id:'assignPriorityEscalation',method:'POST',path:'/applications/{id}/escalations',request:'PriorityEscalationAssign',response:'PriorityReviewReceipt',owner:'Benedict',implemented:true,idempotent:true,versioned:true},
+  {id:'recordPriorityEscalationDisposition',method:'POST',path:'/applications/{id}/escalation-dispositions',request:'PriorityEscalationDisposition',response:'PriorityReviewReceipt',owner:'Benedict',implemented:true,idempotent:true,versioned:true},
+  {id:'getPriorityReviewNotices',method:'GET',path:'/review-notices',response:'PriorityReviewNotices',owner:'Robert',implemented:true},
+  {id:'acknowledgePriorityReviewNotice',method:'POST',path:'/review-notices/{id}/acknowledgments',request:'PriorityNoticeAck',response:'PriorityReviewReceipt',owner:'Robert',implemented:true,idempotent:true,versioned:true},
   {id:'listSupportRequests',method:'GET',path:'/support-requests',response:'SupportPage',owner:'Earl',implemented:true},
   {id:'getSupportRequest',method:'GET',path:'/support-requests/{id}',response:'SupportDetail',owner:'Earl',implemented:true},
   {id:'assignSupportRequest',method:'POST',path:'/support-requests/{id}/assignments',request:'SupportAssignment',response:'SupportSummary',owner:'Earl',implemented:true,idempotent:true,versioned:true},
@@ -56,7 +68,7 @@ export const operations = [
   {id:'createMemberSupport',method:'POST',path:'/member/support-requests',request:'MemberSupportCreate',response:'MemberSupport',owner:'Robert',implemented:true,idempotent:true,principal:'member'},
   {id:'correctMemberSupport',method:'POST',path:'/member/support-requests/{id}/corrections',request:'SupportCorrectionCreate',response:'MemberSupport',owner:'Earl',implemented:true,idempotent:true,principal:'member'},
   {id:'getMemberSupportCorrectionLink',method:'GET',path:'/member/support-requests/{id}/correction-link',response:'SupportCorrectionLink',owner:'Earl',implemented:true,principal:'member'},
-  {id:'getCheckInSummary',method:'GET',path:'/check-in-summary',querySchema:'CheckInSummaryQuery',response:'CheckInSummary',owner:'Earl',implemented:true},
+  {id:'getCheckInSummary',method:'GET',path:'/check-in-summary',querySchema:'CheckInSummaryQuery',queryArgument:true,response:'CheckInSummary',owner:'Earl',implemented:true},
   { id: 'getSession', method: 'GET', path: '/session', response: 'Session', owner: 'Robert', implemented: true },
   { id: 'getCapabilities', method: 'GET', path: '/capabilities', response: 'Capabilities', owner: 'Robert', implemented: true, public: true },
   { id: 'listStaff', method: 'GET', path: '/staff', response: 'StaffPage', owner: 'Robert', implemented: true },

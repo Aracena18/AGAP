@@ -1,0 +1,181 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "sshPublicKey": {
+      "type": "string"
+    },
+    "operatorCidr": {
+      "type": "string"
+    },
+    "imageReference": {
+      "type": "object"
+    },
+    "shutdownTimeUtc": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 4
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2024-05-01",
+      "name": "agap-pilot-nsg",
+      "location": "koreacentral",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "operator-ssh-only",
+            "properties": {
+              "priority": 1000,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourceAddressPrefix": "[parameters('operatorCidr')]",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "22"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2024-05-01",
+      "name": "agap-pilot-vnet",
+      "location": "koreacentral",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.88.0.0/16"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "pilot",
+            "properties": {
+              "addressPrefix": "10.88.1.0/24"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2024-05-01",
+      "name": "agap-pilot-ip",
+      "location": "koreacentral",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2024-05-01",
+      "name": "agap-pilot-nic",
+      "location": "koreacentral",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups','agap-pilot-nsg')]",
+        "[resourceId('Microsoft.Network/virtualNetworks','agap-pilot-vnet')]",
+        "[resourceId('Microsoft.Network/publicIPAddresses','agap-pilot-ip')]"
+      ],
+      "properties": {
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups','agap-pilot-nsg')]"
+        },
+        "ipConfigurations": [
+          {
+            "name": "primary",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets','agap-pilot-vnet','pilot')]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses','agap-pilot-ip')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-07-01",
+      "name": "agap-pilot",
+      "location": "koreacentral",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces','agap-pilot-nic')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_B4as_v2"
+        },
+        "osProfile": {
+          "computerName": "agap-pilot",
+          "adminUsername": "agappilot",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "/home/agappilot/.ssh/authorized_keys",
+                  "keyData": "[parameters('sshPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "storageProfile": {
+          "imageReference": "[parameters('imageReference')]",
+          "osDisk": {
+            "createOption": "FromImage",
+            "diskSizeGB": 128,
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            },
+            "deleteOption": "Delete"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces','agap-pilot-nic')]",
+              "properties": {
+                "primary": true,
+                "deleteOption": "Delete"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.DevTestLab/schedules",
+      "apiVersion": "2018-09-15",
+      "name": "shutdown-computevm-agap-pilot",
+      "location": "koreacentral",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines','agap-pilot')]"
+      ],
+      "properties": {
+        "status": "Enabled",
+        "taskType": "ComputeVmShutdownTask",
+        "dailyRecurrence": {
+          "time": "[parameters('shutdownTimeUtc')]"
+        },
+        "timeZoneId": "UTC",
+        "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines','agap-pilot')]",
+        "notificationSettings": {
+          "status": "Disabled",
+          "timeInMinutes": 30
+        }
+      }
+    }
+  ]
+}

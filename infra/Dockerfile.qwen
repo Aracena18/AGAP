@@ -1,0 +1,19 @@
+# Reviewed CUDA BF16 recipe for the temporary A100 pilot. This is not a claim
+# that the image or model has already run successfully on Azure.
+FROM nvidia/cuda:13.0.2-cudnn-runtime-ubuntu24.04@sha256:4d242f206abc4b9588a6506cce2d88932cc879849395aae3785075179718cc49
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv python3-dev build-essential ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN python3 -m venv /opt/venv
+ENV PATH=/opt/venv/bin:$PATH
+COPY models/qwen/service/requirements.lock /opt/requirements.lock
+RUN pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cu130 -r /opt/requirements.lock && pip check && pip freeze --all > /opt/runtime-freeze.txt
+WORKDIR /app
+COPY models/qwen/handoff/__init__.py models/qwen/handoff/files.py models/qwen/handoff/schema.py ./models/qwen/handoff/
+COPY models/qwen/service/server.py models/qwen/service/review.py models/qwen/service/compare.py models/qwen/service/smoke.py models/qwen/service/prompt.txt models/qwen/service/finding.schema.json models/qwen/service/review.schema.json models/qwen/service/review-input.schema.json ./models/qwen/service/
+COPY models/qwen/experiment_f/identity.json models/qwen/experiment_f/prompt.txt models/qwen/experiment_f/development-smoke.inputs.json ./models/qwen/experiment_f/
+COPY models/qwen/model_manifest.json models/qwen/environment_versions.json ./models/qwen/
+RUN useradd --uid 10001 --create-home inference && chown -R inference:inference /app
+USER inference
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HOME=/tmp/huggingface TRITON_CACHE_DIR=/tmp/triton TORCH_HOME=/tmp/torch UNSLOTH_COMPILE_LOCATION=/tmp/unsloth_compiled_cache QWEN_BIND=127.0.0.1 QWEN_PORT=8080
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=8s --start-period=600s --retries=3 CMD python3 -c "import os,urllib.request; r=urllib.request.Request('http://127.0.0.1:8080/readyz',headers={'Authorization':'Bearer '+os.environ['QWEN_SERVICE_TOKEN']}); urllib.request.urlopen(r,timeout=5).read()"
+CMD ["python3", "-m", "models.qwen.service.server"]

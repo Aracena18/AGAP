@@ -1,0 +1,9 @@
+# Direct runtime versions from the existing recorded export. The image build
+# records every resolved dependency in /opt/runtime-freeze.txt. No F environment
+# attestation is implied; actual GPU compatibility/parity must pass before use.
+torch==2.11.0+cu130
+transformers==5.17.0
+peft==0.21.2
+unsloth==2026.10.11
+huggingface_hub==1.33.0
+safetensors==0.8.0

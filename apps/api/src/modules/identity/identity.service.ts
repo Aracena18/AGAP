@@ -40,7 +40,7 @@ export class IdentityService {
   async beginLogin(audience:'staff'|'member'='staff',input:unknown={}): Promise<{ cookie: string; url: string }> {
     const options=z.strictObject({assurance:z.literal('mfa').optional(),returnTo:z.string().max(240).optional()}).parse(input);
     const returnTo=audience==='member'?'/member':options.returnTo??'/staff';
-    if(audience==='staff'&&!/^\/(?:staff(?:\/(?:members|applications(?:\/[0-9a-f-]{36}\/evidence)?|access))?|applications(?:\/[A-Za-z0-9_-]{1,80}\/(?:evidence|comparison|decision))?)(?:#source-[A-Za-z0-9_-]{1,80})?$/.test(returnTo))throw new ApiError(422,'invalid_return_path','Choose a staff or review page.');
+    if(audience==='staff'&&!/^\/(?:staff(?:\/(?:members|applications(?:\/[0-9a-f-]{36}\/(?:evidence|review|lifecycle))?|review-queue|review-notices|money|support-requests|reconciliations|access))?|applications(?:\/[A-Za-z0-9_-]{1,80}\/(?:evidence|comparison|decision))?)(?:#source-[A-Za-z0-9_-]{1,80})?$/.test(returnTo))throw new ApiError(422,'invalid_return_path','Choose a staff or review page.');
     const requiredAcr=audience==='staff'?(this.config.LOCAL_PREVIEW_PASSWORD_ONLY&&options.assurance!=='mfa'?'1':'2'):null;
     let client:oidc.Configuration;
     try{client=await this.configuration(audience);}catch{throw new ApiError(503,'identity_unavailable','Sign-in is temporarily unavailable. Try again shortly.');}

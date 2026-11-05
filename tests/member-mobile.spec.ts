@@ -36,9 +36,10 @@ async function displayFixtures(page: Page) {
 }
 async function capture(page: Page, name: string) {
   if (!process.env.AGAP_MOBILE_SCREENSHOTS) return;
-  await mkdir('docs/screenshots/member-mobile', { recursive: true });
+  const captureDirectory = process.env.AGAP_MEMBER_CAPTURE_DIR ?? 'docs/screenshots/member-mobile';
+  await mkdir(captureDirectory, { recursive: true });
   await page.evaluate(async () => { await document.fonts.ready; });
-  await page.screenshot({ path: `docs/screenshots/member-mobile/${name}.jpg`, fullPage: true });
+  await page.screenshot({ path: `${captureDirectory}/${name}.jpg`, fullPage: true });
 }
 
 test.describe('Mobile member presentation', () => {
@@ -65,6 +66,7 @@ test.describe('Mobile member presentation', () => {
         expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
       }
       if (path.includes('/apply') || path.includes('/applications')) await expect(nav.getByRole('link', { name: 'Applications', exact: true })).toHaveAttribute('aria-current', 'page');
+      if (name === 'applications') await expect(page.getByRole('link', { name: 'Continue your draft', exact: true })).toHaveAttribute('href', `#/member/applications/${application.id}`);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth && document.querySelector('main')!.scrollWidth <= document.querySelector('main')!.clientWidth)).toBe(true);
       if (width < 768) expect((await page.getByRole('main').boundingBox())!.y + (await page.getByRole('main').boundingBox())!.height).toBeLessThanOrEqual((await nav.boundingBox())!.y + 1);
       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
@@ -135,7 +137,7 @@ test.describe('Mobile member presentation', () => {
     const fields = page.locator('fieldset input, fieldset textarea, fieldset select');
     await expect(fields.first()).toHaveAttribute('id', 'help-message');
     await page.getByLabel('What changed, and what help do you need?').fill('SIMULATED: please contact me.');
-    await page.getByLabel('Related loan (optional)').selectOption(fixtureId(302));
+    await page.getByText('Add a loan or check-in (optional)', { exact: true }).click();await page.getByLabel('Related loan (optional)').selectOption(fixtureId(302));
     const review = page.getByRole('button', { name: 'Review request' });
     await review.focus();
     expect((await review.boundingBox())!.y + (await review.boundingBox())!.height).toBeLessThanOrEqual((await page.getByRole('navigation', { name: 'Member account' }).boundingBox())!.y);

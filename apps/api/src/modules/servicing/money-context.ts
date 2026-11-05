@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { CalendarDay, Currency, FinancialCommandCreateSchema, FinancialCommandSchema, Id, Instant, MoneyAmount, PositiveMoneyAmount, Version } from '../../../../../packages/contracts/src/schemas.js';
+import { PilotPostedResult, PilotMoneyCommand, PilotLoanView, PilotLoanWorkspace } from '../../../../../packages/contracts/src/lifecycle.js';
+import { CalendarDay, FinancialCommandCreateSchema, FinancialCommandSchema, Id, Instant, Version } from '../../../../../packages/contracts/src/schemas.js';
 import { Hash } from '../decisions/context.js';
 import { AuthorizationSchema, ObservationSchema, SubmissionSchema } from './context.js';
 
@@ -9,9 +10,7 @@ export const PrincipalPolicySchema = z.strictObject({ format: z.literal('princip
   interestCentavos: z.literal(0), feesCentavos: z.literal(0), graceDays: z.literal(0), allocation: z.literal('scheduled-exact'),
   cashAccountId: Id, principalAccountId: Id, releaseRuleId: Id, repaymentRuleId: Id,
 }).refine(p => p.effectiveFrom <= p.effectiveThrough && p.cashAccountId !== p.principalAccountId, 'Invalid principal-only policy.');
-export const PostedResultSchema = z.strictObject({ eventId: Id, commandId: Id, loanId: Id, kind: z.enum(['disbursement', 'repayment']),
-  amountCentavos: PositiveMoneyAmount, currency: Currency, effectiveDate: CalendarDay, postedAt: Instant,
-  journalId: Id, receiptId: Id.nullable(), principalAfterCentavos: MoneyAmount, postingRuleVersionId: Id });
+export const PostedResultSchema = PilotPostedResult;
 export const MoneyCommandSchema = z.strictObject({ format: z.literal('servicing-command-v2'), id: Id,
   organizationId: Id, branchId: Id, applicationId: Id, loanId: Id, kind: z.enum(['disbursement', 'repayment']),
   eventId: Id, providerKey: Id, payload: FinancialCommandCreateSchema, payloadHash: Hash, policy: PrincipalPolicySchema,
@@ -19,15 +18,9 @@ export const MoneyCommandSchema = z.strictObject({ format: z.literal('servicing-
   version: Version, state: FinancialCommandSchema.shape.state, authorization: AuthorizationSchema.nullable(), submission: SubmissionSchema.nullable(),
   observations: z.array(ObservationSchema), conflicts: z.array(z.string()), posting: PostedResultSchema.nullable(), mode: z.literal('simulation'),
 });
-export const SafeMoneyCommandSchema = z.strictObject({ id: Id, kind: z.enum(['disbursement', 'repayment']), version: Version,
-  state: FinancialCommandSchema.shape.state, amountCentavos: PositiveMoneyAmount, effectiveDate: CalendarDay, legacy: z.boolean() });
-export const LoanViewSchema = z.strictObject({ loanId: Id, applicationId: Id, memberLabel: z.string(), state: z.enum(['active', 'settled']),
-  asOfDate: CalendarDay, principalCentavos: MoneyAmount, interestDueCentavos: z.literal(0), feesDueCentavos: z.literal(0),
-  overdueCentavos: MoneyAmount, postedThrough: Instant, pendingMovementCount: z.number().int().nonnegative(),
-  schedule: z.array(z.strictObject({ date: CalendarDay, amountCentavos: PositiveMoneyAmount })),
-  receipts: z.array(PostedResultSchema), commands: z.array(SafeMoneyCommandSchema) });
-export const LoanWorkspaceSchema = z.strictObject({ loanId: Id, organizationId: Id, branchId: Id, memberLabel: z.string(), position: LoanViewSchema.nullable(),
-  commands: z.array(SafeMoneyCommandSchema), message: z.string(), nextPayment: z.strictObject({ date: CalendarDay, amountCentavos: PositiveMoneyAmount }).nullable() });
+export const SafeMoneyCommandSchema = PilotMoneyCommand;
+export const LoanViewSchema = PilotLoanView;
+export const LoanWorkspaceSchema = PilotLoanWorkspace;
 export type PrincipalPolicy = z.infer<typeof PrincipalPolicySchema>;
 export type MoneyCommand = z.infer<typeof MoneyCommandSchema>;
 export type PostedResult = z.infer<typeof PostedResultSchema>;

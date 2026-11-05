@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { WorkflowAssessment, WorkflowFact, WorkflowSource } from '../../../../../packages/contracts/src/workflow.js';
 import {
   ApplicationSchema, AssessmentSchema, CalendarDay, DecisionCreateSchema, FactValueSchema,
   Id, Instant, MemberAcceptanceSchema, MoneyAmount, OfferSchema,
@@ -47,6 +48,10 @@ export const ReviewContextSchema = z.strictObject({
     userId: Id, status: z.enum(['clear', 'restricted', 'unavailable']), reference: Text,
   })),
   recommendation: RecommendationSchema.nullable(),
+  // Additive v4 basis: preserve every dated fact/segment; legacy fields remain untouched.
+  datedAssessment: WorkflowAssessment.optional(), datedFacts: z.array(WorkflowFact).optional(),
+  datedSources: z.array(WorkflowSource).optional(), pilotConfigurationVersion: Id.optional(),
+  conflictVersions: z.record(Id, Version).optional(),
 });
 export const DocumentSchema = z.strictObject({ id: Id, sha256: Hash });
 export const ExplanationSchema = z.strictObject({

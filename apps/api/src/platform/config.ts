@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { RecordMode } from '../../../../packages/contracts/src/common.js';
 
 const Env = z.object({
+  FICTIONAL_PILOT_ENABLED:z.enum(['true','false']).default('false').transform(v=>v==='true'),
   EVIDENCE_RECORD_MODE:RecordMode.default('fictional'),
   EVIDENCE_WORKFLOW_ENABLED:z.enum(['true','false']).default('false').transform(v=>v==='true'),
   API_HOST:z.string().default('127.0.0.1'),
@@ -21,12 +22,16 @@ export function assertLocalPresentation(config:Config){
   const localIssuer=['http://127.0.0.1:58080/realms/agap','http://127.0.0.1:18080/realms/agap'].includes(config.OIDC_ISSUER);
   if(config.NODE_ENV!=='development'||!loopback(config.API_HOST)||!loopback(new URL(config.PUBLIC_ORIGIN).hostname)||!localIssuer||config.EVIDENCE_RECORD_MODE!=='fictional'||!config.PRIVACY_NOTICE_VERSION.startsWith('fictional')||![config.DATABASE_URL,config.IDENTITY_DATABASE_URL].every(value=>{const url=new URL(value);return loopback(url.hostname)&&['/agap','/agap_test'].includes(url.pathname);}))throw new Error('Presentation mode requires fictional loopback development, the seeded local realm and a loopback API bind.');
 }
+export function assertFictionalPilot(config:Config){
+  if(config.FICTIONAL_PILOT_ENABLED&&(config.NODE_ENV==='production'||config.EVIDENCE_RECORD_MODE!=='fictional'||!config.EVIDENCE_WORKFLOW_ENABLED||config.LOCAL_PRESENTATION_MODE||config.LOCAL_PREVIEW_PASSWORD_ONLY))throw new Error('The pilot requires fictional development/test, enabled evidence, normal sign-in and no presentation/password-only shortcuts.');
+}
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   const config = Env.parse(env);
   const origin = new URL(config.PUBLIC_ORIGIN);
   const issuer = new URL(config.OIDC_ISSUER);
   if (origin.origin !== config.PUBLIC_ORIGIN || origin.username || origin.password) throw new Error('PUBLIC_ORIGIN must be an exact origin without a path or credentials.');
   assertLocalPresentation(config);
+  assertFictionalPilot(config);
   const loopback=(url:URL)=>['127.0.0.1','localhost','[::1]'].includes(url.hostname);
   if(config.LOCAL_PREVIEW_PASSWORD_ONLY&&(config.NODE_ENV!=='development'||!loopback(origin)||!loopback(issuer)||![config.DATABASE_URL,config.IDENTITY_DATABASE_URL].every(value=>loopback(new URL(value))&&['/agap','/agap_test'].includes(new URL(value).pathname))))throw new Error('Password-only preview requires the fictional loopback development environment.');
   if(config.OIDC_CLIENT_ID==='agap-local-preview')throw new Error('The preview client is selected only by the guarded local preview setting.');

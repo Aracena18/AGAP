@@ -1,0 +1,16 @@
+[
+  {
+    "source": "design-library/assets/gabay/expressions/gabay-reassuring.webp",
+    "sourceSha256": "d0a11725f45631e1009c0ecadddb15783fdaa53d40960a70b09b9a1713d0a15c",
+    "output": "public/workspace/gabay-reassuring.webp",
+    "outputSha256": "fff08556560e20d71dad87eb0880a84e2a2b8e43314f2d807ec6cd72af246919",
+    "transform": "ffmpeg, fit within 320x320, libwebp quality 82; original alpha preserved"
+  },
+  {
+    "source": "design-library/assets/gabay/signature-poses/gabay-guiding-steps.webp",
+    "sourceSha256": "0d0133fce54f888722c260742bd3d424a1af7b16a62db20151bd8e56ff7b7db9",
+    "output": "public/workspace/gabay-guiding.webp",
+    "outputSha256": "62997796fbf4a54b2d1222654b63787ee09d925f829a21d7272b831817cf8699",
+    "transform": "ffmpeg, fit within 320x320, libwebp quality 82; original alpha preserved"
+  }
+]

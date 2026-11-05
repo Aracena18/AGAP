@@ -646,7 +646,31 @@ The user-approved mobile member redesign supersedes the member top-navigation/la
 
 Installation is optional and online-only. Keep one prompt owner before lazy routes; native prompt acceptance is distinct from confirmed installation. The existing manifest identity/icons remain, with installed launch at `./#/member`; the normal member session determines Home versus sign-in. Use Safari Add to Home Screen guidance including Open as Web App where offered. No service worker, offline private store, background queue or push delivery is introduced. Technical/visual verification and device limitations belong in the existing UI verification record; representative acceptance is separate.
 
-## 21. Posted trial balance and check-in counts — 5 November 2026
+## 21. Experiment F fictional pilot workspaces — 5 November 2026
+
+Apply section 19's priority-review behavior to the connected staff workspace, using existing scoped Gabay tokens, shared controls and navigation. The queue displays a reason, original waiting-time basis, next action and responsible person; priority is not a risk score. Keep all blockers visible when one controls the route. Concern wording, source checking, independent verification, escalation and final approval remain separate tasks. A notice acknowledgment is never concern resolution.
+
+Source review can include 1–12 exact cleared excerpts, with visible coverage and removable selections; ask about both sources for a discrepancy. Oversized bundles fail without truncation. An interrupted generation has an explicit manual reconciliation action, preserving source/history. Static unavailable AI keeps manual work editable; ambiguous writes retain their original request/key/version. Mark model, simulated and checked-rule origins accurately.
+
+The lifecycle page separates own conflict declaration, officer recommendation, exact template preview/reviewed recording and immutable history. Member acceptance shows the exact saved document and full schedule/costs. With the pilot enabled, staff entry opens the review queue for lending reviewers or financial operations for financial staff. Financial staff use a purpose-limited queue and views; sensitive actions require fresh MFA and separate people. Label every movement as simulated. Show an unavailable position before posted release, then only server-supplied posted amounts/receipts. Keep monthly segments distinct from horizon totals. No new motion library, decorative animation, token system, score or landing change is introduced.
+
+All new surfaces preserve keyboard focus, readable narrow-phone forms, 320px reflow, local table/document scrolling, error/empty/loading states and stable uncertain retries. Desktop/mobile captures and actual checks are recorded in the [delivery evidence](docs/AGAP_Experiment_F_Pilot_Delivery.md); implementation does not imply representative-user or institutional acceptance.
+
+## 22. Friendly member guidance — UI-09, 5 November 2026
+
+The user requests a warmer, more approachable member experience based on the archived [member concepts](design-library/concepts/member-experience/agap_member_experience_refined.webp). This member-only amendment extends UI-08's navigation and supersedes the earlier member Google Sans requirement. Keep staff/review/landing typography and behavior intact.
+
+Use self-hosted **Nunito** for member text and controls, including readable tabular financial numerals and PHP glyphs, with Google Sans as fallback. The member font role belongs in the canonical tokens; do not introduce another palette or component system. Keep the adopted green/white/yellow identity, light mint background, white working surfaces, existing Material symbols, and restrained petal shapes derived from the accepted mark. Backgrounds remain behind text; yellow is brand emphasis, never an approval indicator.
+
+Make Gabay a visible, optional guide with the supplied artwork and real HTML prompts. Home pairs a short greeting with the returned payment/application information; actions use concise labels without a description on every tile. Page headings stand alone when their meaning is clear. Keep one short contextual prompt only where it explains an action, an unavailable state, or a consequence. Friendly language must not imply a chatbot, live conversation, guaranteed response, approval or financial advice. No decorative perpetual animation.
+
+The existing application journey gets a three-part **Details → Review → Send** guide. Details is current on new/edit forms, Review on a saved draft and Sent only after the server returns a submitted/later application. The guide describes intake only; it does not certify evidence completeness, approval or loan release. Saving and submitting remain separate actions. Preserve explicit sharing consent and requested-versus-approved terms.
+
+Application lists use clear amounts, status and a draft-specific continuation. Successfully empty lists and no-loan records can use supplied decorative art; failed/unavailable reads must never look empty. Loans retain dated posted positions, schedules, receipts and reminder consequences. Payment help starts with a reassuring Gabay prompt, retains the message-first flow and sharing preview, and puts optional check-in details in a descriptive disclosure. Keep its payment/interest/fee qualification visible.
+
+All current guards, same-key uncertain retries, retained drafts, focus and sharing acknowledgements remain authoritative. Verify 320/390/768/1366px, doubled text, keyboard, image/font failure, reduced motion, inaccessible/private state and the financial workflows with the required checks. Record actual evidence in the existing UI verification record; technical publication does not establish representative acceptance.
+
+## 23. Posted trial balance and check-in counts — 5 November 2026
 
 The staff trial-balance screen uses existing panels, fields, buttons, notices, badges and Money. Lead with the report purpose and limitation, then dates/create action, saved history and the selected immutable report. Show opening/movement/closing debit and credit columns, inactive-account labels, totals and source freshness. Label actual empty and unavailable separately. A balanced badge describes ledger arithmetic only. The two-dimensional account table has contained scrolling and a keyboard-focusable named region; dates and metadata stack at 320px. Focus saved results/errors, retain exact uncertain requests, disable conflicting actions and clear results on access denial.
 
