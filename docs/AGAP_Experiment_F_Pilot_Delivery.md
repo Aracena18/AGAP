@@ -2,7 +2,7 @@
 
 5 November 2026, Asia/Manila. **Checked application candidate; actual GPU/Azure pilot blocked.**
 This records the user-authorized plan on `codex/model-lifecycle-pilot`, based on
-main `6a8eccb`, synchronized with published `59351ce` before final checks. The [compatibility proposal](AGAP_Experiment_F_Pilot_Contract_Proposal.md)
+main `6a8eccb`, synchronized with published `61497fd` before final checks, preserving its mobile portal and PRV-01 work. The [compatibility proposal](AGAP_Experiment_F_Pilot_Contract_Proposal.md)
 preceded shared edits. Existing task owners, unrelated local work and earlier
 snapshots/manifests are preserved. Independent/receiving-owner acceptance is not
 inferred from implementation or repository publication.
@@ -80,7 +80,7 @@ UMindanao account is excluded from this pilot at the user's instruction because
 its credits are exhausted. The selected new subscription is Enabled, has
 `quotaId: AzureForStudents_2018-01-01` and `spendingLimit: On`.
 
-Compute provider registration was initiated without provisioning resources.
+Compute provider registration completed without provisioning resources.
 Actual Australia East quota returned **0 used / 0 limit** for
 `StandardNCADSA100v4Family` and **0 used / 6 limit** for total regional cores.
 The selected `Standard_NC24ads_A100_v4` needs 24 vCPUs. The exact SKU also reports
@@ -99,11 +99,14 @@ exists, this remains an incomplete pilot rather than completed live AGAP.
 
 ## Final verification/publication record
 
-The merged candidate passed `npm run check` (232 app/domain, 645 platform/backend,
+The merged candidate passed `npm run check` (232 app/domain, 651 platform/backend,
 91 evaluation tests), including generated contract/schema/client checks and
 frontend/API builds. The 19 Python importer/service tests and five Azure guard/
-template tests passed. Final repeated browser publication check is recorded after
-completion below. Backend test environment explicitly selects the local fictional
+template tests passed. The six activation-boundary checks deny production, real
+records, disabled evidence and presentation/password-only shortcuts. The full browser suite passed **112 tests**, with four existing presentation-only
+skips, using `npm run test:e2e -- --workers=1 --trace off`. The populated 320px
+server queue also passed its overflow assertion and automated accessibility check.
+The final entry-route/phone refinement passed lint and a fresh frontend build. Backend test environment explicitly selects the local fictional
 `agap_test` database; its absence in the first run caused six existing test URL
 errors, resolved by supplying that environment rather than weakening assertions.
 
@@ -120,6 +123,21 @@ external semantic service was enabled.
 
 Screenshots: [financial desktop](screenshots/experiment-f-pilot/financial-desktop.png),
 [review queue at 320px](screenshots/experiment-f-pilot/queue-320.png).
+The combined browser run initially hit a landing-animation timing limit under
+concurrent laptop load and then filesystem ENOSPC while writing traces. The
+final command uses one worker and `--trace off`, preserving all test cases and
+assertions. Only task-generated Playwright output and the redundant task-worktree
+model import were removed; original Downloads and the verified main-folder model
+were preserved. An unused task test database was stopped to reduce memory use.
+
 These are local real API/database journeys with test sessions, not live GPU or
 normal identity-provider acceptance. Task status remains in
 [Assignment.md](../Assignment.md).
+
+Publication: the checked candidate is published by normal direct push under the
+user's standing authorization, with latest main `61497fd` incorporated. This
+publishes the implementation/evidence and keeps the pilot default off; it does
+not approve a model release, certify production controls or complete the blocked
+Azure/GPU pilot. The main-folder ignored artifact import was reverified after
+removing the redundant task-worktree import: 32 files and the same pinned
+manifest/candidate hashes. Unrelated local files and original downloads remain.
