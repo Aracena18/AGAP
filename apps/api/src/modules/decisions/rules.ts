@@ -9,6 +9,7 @@ import {
   type AcceptancePreparation, type DecisionCandidate, type DecisionPreparation,
   type DeepReadonly, type RecommendationPreparation, type ReviewContext,
 } from './context.js';
+import { datedScenario } from './workflow-basis.js';
 
 /** A pure rule failure, not an HTTP error or proof of authenticated authority. */
 export class DecisionRuleError extends Error {
@@ -64,7 +65,25 @@ function context(input: DeepReadonly<ReviewContext>): ReviewContext {
     }
   }
   if (c.recommendation) requireRule(c.recommendation.applicationId === c.application.id, 'recommendation_scope', 'The recommendation belongs to another application.');
+  if (c.workflowBasis) {
+    requireRule(!c.datedAssessment && !c.datedFacts && !c.datedSources, 'mixed_basis', 'A review must use one complete dated evidence representation.');
+    const b = c.workflowBasis, a = b.assessment;
+    requireRule(!c.facts.length && !c.sources.length, 'mixed_basis', 'A workflow basis cannot be mixed with legacy evidence projections.');
+    requireRule(a.applicationId === c.application.id && a.periodStart === c.periodStart && a.periodEnd === c.periodEnd,
+      'workflow_basis_scope', 'The complete workflow horizon and application must be preserved.');
+    const projected = a.status === 'complete' ? { id:a.id, applicationId:a.applicationId, inputVersion:a.inputVersion,
+      engineVersion:a.engineVersion, policyVersionId:a.policyVersionId, createdAt:a.createdAt, status:'complete',
+      scenarios:a.scenarios.map(datedScenario), warnings:[] } : { id:a.id,applicationId:a.applicationId,inputVersion:a.inputVersion,
+      engineVersion:a.engineVersion,policyVersionId:a.policyVersionId,createdAt:a.createdAt,status:'incomplete',issues:a.issues.map(message => ({factId:null,message})) };
+    requireRule(hash(projected) === hash(c.assessment), 'workflow_assessment_changed', 'Use the exact saved dated assessment, without legacy monthly approximations.');
+    requireRule(hash(c.offers) === hash(b.policy.offers.map(({separateFees, ...o}) => { void separateFees; return o; })),
+      'workflow_offer_changed', 'Use the exact saved policy offers and their separate fee dates.');
+  } else requireRule(!c.assessment || c.assessment.status !== 'complete' || c.assessment.scenarios.every(s => !('workflow' in s)),
+    'workflow_basis_unavailable', 'A dated scenario requires its complete immutable workflow basis.');
   return c;
+}
+export function reviewSourceIds(c: ReviewContext): string[] {
+  return c.workflowBasis ? c.workflowBasis.sources.map(s => s.sourceId) : c.sources.map(s => s.sourceId);
 }
 function clearance(c: ReviewContext, userId: string): void {
   const conflict = c.conflicts.find(f => f.userId === userId);
@@ -84,12 +103,26 @@ export function reviewScenarios(c: DeepReadonly<ReviewContext>) {
   if(c.datedAssessment) return c.datedAssessment.scenarios.map(s=>({offerVersionId:s.offerId,policyChecks:s.checks.map(p=>({policyId:p.id,passed:p.passed,detail:p.detail,overridable:false})),dated:s}));
   return c.assessment?.status==='complete'?c.assessment.scenarios.map(s=>({offerVersionId:s.offerVersionId,policyChecks:s.policyChecks,legacy:s})):[];
 }
-function ready(c: ReviewContext, at: string) {
+function ready(c: ReviewContext, at: string, evidenceOnly=false) {
   const a = currentAssessment(c);
   requireRule(a?.status === 'complete', 'assessment_incomplete', 'A complete checked assessment is required; clarification remains available.');
   requireRule(a.inputVersion === c.application.assessmentInputVersion && a.policyVersionId === c.currentAssessmentPolicyVersionId, 'stale_assessment', 'The assessment input or financial policy version has changed.');
   requireRule(new Date(a.createdAt).getTime() <= new Date(at).getTime(), 'future_assessment', 'The assessment cannot be recorded after this action.');
-  requireRule(c.sources.length > 0 && (c.datedFacts?.length ?? c.facts.length) > 0, 'evidence_basis_unavailable', 'The checked assessment needs its authorized evidence basis.');
+  if (c.workflowBasis) {
+    const b = c.workflowBasis;
+    requireRule(!b.assessment.stale, 'stale_assessment', 'The saved workflow assessment is stale.');
+    requireRule(b.facts.length > 0 && b.sources.length > 0, 'evidence_basis_unavailable', 'The checked assessment needs its authorized evidence basis.');
+    if(c.integration?.format==='connected-review/v2')
+      requireRule(b.sources.every(s=>s.state==='cleared'&&s.verification!=='mismatch'),
+        'source_inventory_unavailable','Every supplied source in this fictional review must remain available for inspection without a recorded mismatch.');
+    for (const f of b.facts.filter(f => f.input.relevance === 'included')) {
+      requireRule(f.input.value.availability === 'recorded', 'critical_evidence_gap', 'Missing confirmed amounts cannot be overridden.');
+      requireRule(b.sources.some(s => s.sourceId === f.sourceId && s.sourceVersion === f.sourceVersion && s.state === 'cleared'
+        && s.verification !== 'mismatch'
+        && (c.integration?.sourceReview !== 'independent_support_required' || s.verification === 'supported')),
+      'source_unavailable', 'Each included fact needs its current cleared source and the configured verification standard.');
+    }
+  } else requireRule(c.sources.length > 0 && (c.datedFacts?.length ?? c.facts.length) > 0, 'evidence_basis_unavailable', 'The checked assessment needs its authorized evidence basis.');
   for (const fact of c.facts) {
     if (fact.critical) requireRule(fact.confirmation === 'accepted' && fact.value.availability === 'recorded', 'critical_evidence_gap', 'Missing or unresolved critical evidence cannot be overridden.');
     if (fact.confirmation === 'accepted' && fact.value.availability === 'recorded') requireRule(fact.sourceId !== null, 'source_reference', 'Accepted recorded facts need an exact source reference.');
@@ -98,8 +131,18 @@ function ready(c: ReviewContext, at: string) {
     requireRule(!c.datedAssessment.stale,'stale_assessment','The dated assessment needs renewed review.');
     for(const fact of c.datedFacts??[]) if(fact.input.relevance==='included') requireRule(fact.input.value.availability==='recorded' && c.datedSources?.some(source=>source.id===fact.sourceId&&source.version===fact.sourceVersion&&source.state==='cleared'),'critical_evidence_gap','Included dated facts need current confirmed values and cleared sources.');
   }
+  if (!evidenceOnly && c.integration?.format==='connected-review/v2') {
+    const proof=c.reviewReadiness;
+    requireRule(proof?.state==='current' && proof.evidenceBasisHash===hash(evidenceMaterial(c))
+      && proof.confirmedBy===c.application.assignedOfficerId && Date.parse(proof.confirmedAt)<=Date.parse(at),
+    'review_readiness_required','The assigned officer must confirm the complete current evidence and assessment after every required concern review.');
+    unique(proof.reviewParticipantIds,'duplicate_review_participant');
+    for(const participant of proof.reviewParticipantIds)clearance(c,participant);
+  }
   return a;
 }
+/** Check supplied authoritative evidence, without claiming a human review occurred. */
+export function validateReviewEvidence(input:DeepReadonly<ReviewContext>,at:string) {return ready(context(input),at,true);}
 function offer(c: ReviewContext, offerId: string) {
   const selected = c.offers.find(o => o.id === offerId);
   requireRule(selected?.available, 'offer_unavailable', 'Select an explicitly available offer version.');
@@ -126,9 +169,16 @@ function material(c: ReviewContext) {
     assessment: c.assessment, offers: [...c.offers].sort((a, b) => a.id.localeCompare(b.id)),
     sources: [...c.sources].sort((a, b) => a.sourceId.localeCompare(b.sourceId)),
     facts: [...c.facts].sort((a, b) => a.factId.localeCompare(b.factId)), authority: c.authority,
+    ...(c.workflowBasis ? { workflowBasis:c.workflowBasis } : {}),
+    ...(c.integration ? {integration:c.integration} : {}),
+    ...(c.reviewReadiness ? {reviewReadiness:c.reviewReadiness} : {}),
     ...(c.datedAssessment?{datedAssessment:c.datedAssessment,datedFacts:c.datedFacts,datedSources:c.datedSources,pilotConfigurationVersion:c.pilotConfigurationVersion,conflictVersions:c.conflictVersions}:{}),
   };
 }
+function evidenceMaterial(c:ReviewContext) {
+  const {reviewReadiness,...basis}=material(c);void reviewReadiness;return basis;
+}
+export function reviewEvidenceHash(input:DeepReadonly<ReviewContext>):string {return hash(evidenceMaterial(context(input)));}
 export function reviewBasisHash(input: DeepReadonly<ReviewContext>): string { return hash(material(context(input))); }
 
 export function prepareRecommendation(actor: ActorContext, input: DeepReadonly<ReviewContext>, preparation: RecommendationPreparation) {
@@ -152,7 +202,7 @@ export function prepareDecision(actor: ActorContext, input: DeepReadonly<ReviewC
   const basisHash = hash(material(c));
   requireRule(p.explanation.basisHash === basisHash && p.explanation.reviewedBy === actor.userId, 'explanation_review', 'Review the explanation against this exact basis before recording.');
   unique(p.explanation.sourceIds, 'duplicate_explanation_source');
-  requireRule(p.explanation.sourceIds.every(id => c.sources.some(s => s.sourceId === id)), 'explanation_source', 'Explanation references must resolve to the saved sources.');
+  requireRule(p.explanation.sourceIds.every(id => reviewSourceIds(c).includes(id)), 'explanation_source', 'Explanation references must resolve to the saved sources.');
   requireRule(request.assessmentId === null || request.assessmentId === currentAssessment(c)?.id, 'decision_assessment', 'The requested assessment reference is not current.');
   requireRule(request.recommendationId === null || request.recommendationId === c.recommendation?.id, 'decision_recommendation', 'The requested recommendation reference is not current.');
   const recommendation = c.recommendation;
@@ -189,7 +239,7 @@ export function prepareDecision(actor: ActorContext, input: DeepReadonly<ReviewC
     } else requireRule(request.exceptions.length === 0 && p.document === null, 'decline_terms', 'Decline cannot carry approval exceptions or an acceptance document.');
   }
   if (currentRecommendation && (request.outcome !== 'approve' || request.offerVersionId !== recommendation.offerVersionId)) requireRule(request.departureReason.trim(), 'departure_reason', 'Explain the departure from the current officer recommendation.');
-  const snapshot = { id: p.id, recordedAt: new Date(p.at).toISOString(), reviewerId: actor.userId, reviewerRoles: [...actor.roles],
+  const snapshot = { ...(c.workflowBasis ? {format:'decision-snapshot/v2' as const} : {}), id: p.id, recordedAt: new Date(p.at).toISOString(), reviewerId: actor.userId, reviewerRoles: [...actor.roles],
     input: request, basis: c, document: p.document, explanation: p.explanation };
   return freeze({ snapshot, snapshotHash: hash(snapshot) });
 }

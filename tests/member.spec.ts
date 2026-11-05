@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { mkdir,readFile } from 'node:fs/promises';
 import { expect,test,type BrowserContext,type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
@@ -61,6 +62,8 @@ test.describe('Member account with real own-record API',()=>{
     await signIn(context);const data=await fixture(),option=simulatedOption(),decisionId=fixtureId(7),documentVersionId=fixtureId(8),loanId=fixtureId(9);let accepted=false;
     await page.route('**/api/v1/member/applications/*/options',route=>route.fulfill({json:{state:'available',data:[option]}}));
     await page.route('**/api/v1/member/applications/*/decision',route=>route.fulfill({json:{state:'available',data:{id:decisionId,outcome:'approve',explanation:'Simulated human decision for rendering tests; no loan has been approved by this fixture.',recordedAt:'2026-10-26T00:00:00Z',documentVersionId,terms:option,accepted}}}));
+    const simulatedText='SIMULATED saved terms for the browser rendering fixture; no actual approval or funds.';
+    await page.route('**/api/v1/member/applications/*/decision-documents/*',route=>route.fulfill({json:{id:documentVersionId,text:simulatedText,mediaType:'text/plain; charset=utf-8',sha256:createHash('sha256').update(simulatedText,'utf8').digest('hex')}}));
     await page.route('**/api/v1/member/applications/*/acceptances',async route=>{expect(route.request().postDataJSON()).toEqual({decisionId,documentVersionId,acknowledgment:true});expect(route.request().headers()['if-match']).toBeTruthy();accepted=true;await route.fulfill({status:201,json:{id:fixtureId(10),version:3}});});
     await page.goto(`/#/member/applications/${data.submittedApplicationId}`);const decision=page.getByRole('region',{name:'Recorded decision',exact:true});await expect(decision.getByText('₱36,000',{exact:true})).toBeVisible();await decision.getByLabel('I reviewed and accept these recorded terms').check();await decision.getByRole('button',{name:'Accept these terms'}).click();await expect(decision.getByText('Your acceptance is recorded.',{exact:true})).toBeVisible();await screenshot(page,'member-simulated-decision');
     await page.route('**/api/v1/member/loans',route=>route.fulfill({json:{state:'available',data:[{id:loanId,label:'Simulated posted loan',status:'active',position:{loanId,asOfDate:'2026-11-01',principalCentavos:100000,interestDueCentavos:0,feesDueCentavos:0,overdueCentavos:0,postedThrough:'2026-11-01T00:00:00Z',pendingMovementCount:1},nextPayment:{date:'2026-11-15',amountCentavos:10000},schedule:[{date:'2026-11-15',amountCentavos:10000}],receipts:[{id:fixtureId(11),loanId,paidOn:'2026-10-31',amountCentavos:10000,reference:'SIMULATED-RECEIPT'}]}]}}));

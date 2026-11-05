@@ -53,6 +53,15 @@ export class MemberPortalService {
   });}
   options(actor:MemberActorContext,id:string){return this.uow.run(actor,async tx=>{await this.applications.own(tx,id);const view=checked(schemas.MemberOptionsView,await this.domains.options(tx,id));if(view.state==='available'&&view.data.some(option=>!validOption(option)))throw new ApiError(503,'options_unavailable','These repayment options are unavailable until their terms and calculations match.');return view;});}
   decision(actor:MemberActorContext,id:string){return this.uow.run(actor,async tx=>{await this.applications.own(tx,id);const view=checked(schemas.MemberDecisionView,await this.domains.decision(tx,id));if(view.state==='available'&&view.data?.terms&&!validOption(view.data.terms))throw new ApiError(503,'decision_unavailable','The recorded terms are unavailable until their basis is checked.');return view;});}
+  decisionDocument(actor:MemberActorContext,id:string,documentId:string){
+    Id.parse(id);Id.parse(documentId);
+    return this.uow.run(actor,async tx=>{
+      await this.applications.own(tx,id);if(!this.domains.decisionDocument)return pending();
+      const doc=checked(schemas.MemberDecisionDocument,await this.domains.decisionDocument(tx,id,documentId));
+      if(doc.id!==documentId||Buffer.byteLength(doc.text,'utf8')>65536||createHash('sha256').update(doc.text,'utf8').digest('hex')!==doc.sha256)throw new ApiError(503,'document_integrity','The exact saved terms cannot be verified.');
+      return doc;
+    });
+  }
   loans(actor:MemberActorContext){return this.uow.run(actor,async tx=>{const view=checked(schemas.MemberLoansView,await this.domains.loans(tx));if(view.state==='available'&&view.data.some(loan=>loan.id!==loan.position.loanId||loan.receipts.some(receipt=>receipt.loanId!==loan.id)))throw new ApiError(503,'loans_unavailable','Your loan information cannot be displayed safely yet.');return view;});}
   support(actor:MemberActorContext){return this.uow.run(actor,async tx=>checked(schemas.MemberSupportView,await this.domains.support(tx)));}
   supportHistory(actor:MemberActorContext,input:unknown){
@@ -66,9 +75,10 @@ export class MemberPortalService {
   accept(actor:MemberActorContext,id:string,input:unknown,version:number,key:unknown){
     const data=schemas.MemberAcceptance.parse(input),stable=memberKey(key);
     return this.uow.run(actor,async tx=>{
-      await this.applications.own(tx,id);const view=checked(schemas.MemberDecisionView,await this.domains.decision(tx,id));
-      if(view.state==='unavailable')return pending();
-      if(!view.data||view.data.outcome!=='approve'||!view.data.terms||!validOption(view.data.terms)||view.data.id!==data.decisionId||view.data.documentVersionId!==data.documentVersionId)throw new ApiError(409,'approved_terms_required','Review the current complete approved terms before accepting.');
+      await this.applications.own(tx,id);
+      // The authoritative command checks current resource access before replay,
+      // then validates current approved terms for NEW attempts. A preflight read
+      // here would incorrectly reject a receipt for an already committed attempt.
       return checked(schemas.CommandReceipt,await this.domains.accept(tx,id,data,version,stable));
     });
   }

@@ -10,7 +10,7 @@ import { MemberGuardSchema, PreviewRequestSchema, PreviewViewSchema, unavailable
 import { DecisionsRepository } from './decisions.repository.js';
 import { decisionOperation } from './decision-errors.js';
 import { decisionDocument, termsChecksum } from './decision-documents.js';
-import { prepareDecision, prepareRecommendation, reviewBasisHash, reviewChangeEffect } from './rules.js';
+import { prepareDecision, prepareRecommendation, reviewBasisHash, reviewSourceIds, reviewChangeEffect } from './rules.js';
 
 export class DecisionsService {
   constructor(private readonly uow: UnitOfWork, private readonly ports: DecisionBackendPorts = unavailableDecisionPorts,
@@ -52,7 +52,7 @@ export class DecisionsService {
           const { c } = await this.basis(tx, app), at = this.now(), id = randomUUID(), decisionId = randomUUID();
           if(data.outcome!=='return')await this.ports.assertReady?.(tx,app,'decision');
           const { explanation, terms } = decisionDocument(c, data), documentId = terms === null ? null : randomUUID();
-          const explanationData = { origin: 'template' as const, text: explanation, basisHash: reviewBasisHash(c), sourceIds: c.sources.map(s => s.sourceId), reviewedBy: actor.userId };
+          const explanationData = { origin: 'template' as const, text: explanation, basisHash: reviewBasisHash(c), sourceIds: reviewSourceIds(c), reviewedBy: actor.userId };
           const anticipated = { ...data, explanationReviewed: true as const };
           // Validate a provisional candidate only. The preview is not a recorded decision or acknowledgment.
           prepareDecision(actor, c, { id: decisionId, at: at.toISOString(), expectedVersion: version, request: anticipated,
@@ -77,8 +77,10 @@ export class DecisionsService {
         return command(tx, `decisions.record:${app}`, key, { app, data, version, proof }, async () => {
           const { c, stream } = await this.basis(tx, app), preview = await this.repository.preview(tx, app, proof), at = this.now();
           if(data.outcome!=='return')await this.ports.assertReady?.(tx,app,'decision');
-          if (preview.application_version !== version || preview.expires_at.getTime() < at.getTime()
-            || canonical(preview.request) !== canonical(data) || preview.basis_hash !== reviewBasisHash(c)) {
+          const currentDocument = decisionDocument(c, data);
+          if (preview.application_version !== version || preview.expires_at.getTime() <= at.getTime()
+            || canonical(preview.request) !== canonical(data) || preview.basis_hash !== reviewBasisHash(c)
+            || currentDocument.explanation !== preview.explanation.text || currentDocument.terms !== preview.terms_text) {
             throw new ApiError(409, 'review_preview_changed', 'Prepare and review a new preview for this exact request and current basis.');
           }
           const d = prepareDecision(actor, c, { id: preview.decision_id, at: at.toISOString(), expectedVersion: version, request: data,
@@ -159,6 +161,7 @@ export class DecisionsService {
   }
 }
 /** Export only the owned subset; Robert chooses actual facade registration/order. */
-export function decisionMemberPorts(service: DecisionsService): Pick<MemberDomainPorts, 'decision' | 'accept'> {
-  return { decision: (tx, id) => service.memberDecision(tx, id), accept: (tx, id, input, version, key) => service.memberAccept(tx, id, input, version, key) };
+export function decisionMemberPorts(service: DecisionsService): Pick<MemberDomainPorts, 'decision' | 'accept' | 'decisionDocument'> {
+  return { decision: (tx, id) => service.memberDecision(tx, id), accept: (tx, id, input, version, key) => service.memberAccept(tx, id, input, version, key),
+    decisionDocument:async(tx,id,documentId)=>{const doc=await service.memberDocument(tx,id,documentId);return {id:doc.id,sha256:doc.sha256,mediaType:doc.mediaType,text:doc.bytes.toString('utf8')};} };
 }

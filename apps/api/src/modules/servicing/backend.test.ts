@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { UnitOfWork } from '../../../../../packages/contracts/src/ports.js';
-import { owner, uow, prepareDatabase, resetFixtures, closePools } from '../../../test/database.js';
+import { owner, ownerUrl, uow, prepareDatabase, resetFixtures, closePools } from '../../../test/database.js';
 import { migrationDirectories } from '../../platform/migrate.js';
 import { PostgresUnitOfWork, createPool } from '../../platform/database.js';
 import { canonical } from '../../platform/commands.js';
@@ -149,7 +149,7 @@ describe('Phase 4 durable simulation with real runtime-role database and fiction
     const command = await submitted(); at = times.observe;
     const observation = new FictionalManualDriver().submit(command, { observationId: key(), movementId: key(), at, outcome: 'unknown' });
     await service.observe(f.cashier, command.id, observation, 3, key());
-    const url = new URL(process.env.AGAP_TEST_DATABASE_URL!); url.username = 'agap_runtime'; url.password = 'development-runtime';
+    const url = new URL(ownerUrl); url.username = 'agap_runtime'; url.password = 'development-runtime';
     const pool = createPool(url.href);
     try {
       const fresh = new ServicingService(new PostgresUnitOfWork(pool), ports, undefined, clock);

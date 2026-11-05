@@ -41,6 +41,20 @@ This file defines UI/UX requirements. Descriptions labeled **Baseline** refer to
 
 Use the executable definitions rather than copying tokens or fixtures into another configuration. If code differs from a design requirement, identify the difference in the task or pull request. Change the relevant authority and implementation together when the team changes an agreed rule.
 
+## Connected server review — CL2, 5 November 2026
+
+The authenticated staff Applications record links to Decision review. Place Evidence check and concerns before the checked financial basis and separate recommendation/decision forms. Label manual confirmation explicitly and distinguish “Evidence check current” from approval. Source inventory and immutable event history may expand with native details; exact quotations remain attached to their original source/version/page. Use the shared panels, tokens, notices, controls and existing responsive figure layout.
+
+Only the current assigned cleared officer can prepare concern checks and assignments; the separately assigned eligible reviewer records the disposition. An own-recipient Review notices inbox links directly to the case. Explain that acknowledgment records receipt and does not resolve an escalation. Show unavailable reviewers and unresolved concerns without inventing clearance or treating dismissal as source verification. A recorded restriction requires a different eligible participant; independent conflict-resolution policy is not supplied by this interface.
+
+Retain opening versions and evidence hashes in review editors and decision drafts. Refresh preserves text, invalidates previews and visibly blocks a stale draft; explicit cancellation/clearing starts a new action. While a consequential submission is uncertain, retain its exact request/key/version and lock competing writes. Evidence-review and lending-decision editors cannot run competing writes. After recording, show only the preserved saved brief/terms, checksum-verified bytes and separately labeled history. Keep phone actions wrapped, long identifiers/quotes reflowed and keyboard focus recoverable. This is a fictional, default-off integration candidate; representative and institutional acceptance are separate.
+
+## Exact member terms — CL3, 5 November 2026
+
+Within the existing member application, show the recorded decision and complete checked costs/schedule, then the exact saved UTF-8 terms with document version and verified checksum before acknowledgment. Use existing tokens, panels and controls. The original verified bytes are downloadable. Wrap long identifiers/checksums and preserve line breaks in term text at phone, tablet and desktop widths. No staff authority, conflicts or notes appear in the member projection.
+
+The acknowledgment checkbox binds to the displayed document and application version. A refresh clears it; unavailable or changed terms disable a new acceptance without zero placeholders. Unknown submissions display a dedicated retry of the original acceptance even when a later read is unavailable. Successful acceptance is labeled separately from release or proof of funds. Preserve existing focus/navigation and unsaved-change recovery. Technical browser checks do not represent physical-device or member acceptance.
+
 ## 1. Design principles
 
 - **Give each element a job.** Include information or controls that help staff understand the case, check a fact, compare an option, or complete the next action.
@@ -636,6 +650,16 @@ For escalation show concern, assigner, eligible reviewer, assignment reason and 
 Use the four named paths **Needs clarification**, **Awaiting concern check**, **Escalated review**, and **Ready for approval**, each with text and next action. Readiness explicitly awaits a separate human decision; no green treatment promises repayment or automatic approval. Material changes show **Needs renewed review** with access to earlier saved history. Fictional demo-role and simulated AI labels remain visible; they grant no server permissions.
 
 At 320px stack queue rows into labeled records retaining reason, owner and action; allow contained keyboard-accessible scrolling only for genuinely two-dimensional financial detail. Verify tablet/desktop and 200% zoom. Focus the summary heading when opened and the affected concern/error after a saved/failed action; use existing status announcements and accessible source links. Retain input and original request/key on uncertain saves, block conflicting navigation, ignore obsolete reads and clear private content on denied access. Working labels require the implemented Ana/Ben/Cora/simulated-concern walkthrough, required feature checks and inspected screenshots. Representative acceptance remains separate.
+
+
+## Connected lending safety continuation — 5 November 2026
+
+Within the existing evidence form and shared controls, keep an open financial editor tied to the saved basis it originally displayed. A background/explicit refresh that finds a newer version announces a nonmodal warning without replacing the draft or stealing typing focus. Disable a new save and explain the recovery: cancel, inspect current saved facts and reopen. Preserve the editor across transient failed refreshes and announce that current information cannot yet be checked. Clear private evidence/drafts after a later access denial, and never carry an editor into a different application. Disable competing fact/review entry controls while that editor is open. Keep uncertain-result retry available with its original immutable submission, even when surrounding evidence has refreshed. These behaviors add no palette, layout, model or financial-policy changes; the canonical responsive, keyboard and sharing rules still apply.
+
+
+## Connected dated-assessment presentation — CL1 candidate, 5 November 2026
+
+For an authoritative multi-month assessment, present **Full-horizon remaining** and every supplied **reviewed calendar-month segment remaining** beside the existing dated balance and complete costs. Never label a horizon sum or inferred average as monthly remaining. Keep the original monthly label/value for historical single-month records. Use the existing shared financial definition-list styling and responsive stacking; add no new palette, layout system or decorative motion. Exact saved terms include supplied separate-fee dates. These are supplied checked projections, not an assurance of affordability. [Implementation and verification](docs/tasks/production/connected-lending-cl1/IMPLEMENTATION.md) distinguish the contract candidate from later public connected-workflow availability and representative acceptance.
 
 ## 20. Mobile-first member portal — UI-08, 5 November 2026
 

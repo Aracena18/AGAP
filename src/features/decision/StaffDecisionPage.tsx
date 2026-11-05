@@ -1,3 +1,6 @@
+import type { AgapClient } from '../../../packages/api-client/src';
+import DecisionReadiness from './DecisionReadiness';
+import { CheckedRemaining } from '../../shared/ui/CheckedRemaining';
 import { useEffect, useRef, useState } from 'react';
 import { CommandReceiptSchema, DecisionCreateSchema, DecisionSchema, RecommendationCreateSchema } from '../../../packages/contracts/src/schemas';
 import { ApiClientError } from '../../../packages/api-client/src/transport';
@@ -17,19 +20,21 @@ type Common = { app: string; version: number; csrf: string };
 type Attempt = Common & ({ kind: 'recommend'; body: Parameters<StaffDecisionGateway['recommend']>[1] } | { kind: 'preview'; body: Omit<DecisionInput, 'explanationReviewed'> } | { kind: 'record'; body: DecisionInput; proof: string });
 type Result = { attempt: Attempt } & ({ kind: 'preview'; value: Preview } | { kind: 'recommend'; value: Awaited<ReturnType<StaffDecisionGateway['recommend']>> } | { kind: 'record'; value: Awaited<ReturnType<StaffDecisionGateway['record']>> });
 /** Explicit injection point until Robert publishes a canonical client/route adapter. */
-export default function StaffDecisionPage({ applicationId, gateway = unavailableStaffDecisions }: { applicationId: string; gateway?: StaffDecisionGateway }) {
+export default function StaffDecisionPage({ applicationId, gateway = unavailableStaffDecisions, reviewClient }: { applicationId: string; gateway?: StaffDecisionGateway; reviewClient?:AgapClient }) {
   const { session } = useStaff();
   if (!session) return <Notice>Sign in to the staff workspace to inspect a decision.</Notice>;
-  return <StaffDecisionWorkspace key={`${session.user.id}:${session.csrfToken}:${applicationId}`} applicationId={applicationId} session={session} gateway={gateway}/>;
+  return <StaffDecisionWorkspace key={`${session.user.id}:${session.csrfToken}:${applicationId}`} applicationId={applicationId} session={session} gateway={gateway} reviewClient={reviewClient}/>;
 }
 /** Testable feature controller, not a staff session/authentication replacement. */
-type WorkspaceProps = { applicationId: string; session: StaffSession; gateway?: StaffDecisionGateway };
+type WorkspaceProps = { applicationId: string; session: StaffSession; gateway?: StaffDecisionGateway; reviewClient?:AgapClient };
 export function StaffDecisionWorkspace(props: WorkspaceProps) {
   if (!props.session.user.roles.some(role => ['officer', 'reviewer', 'auditor'].includes(role))) return <div className="no-print"><Notice>This account has no staff decision role.</Notice></div>;
   return <DecisionController key={`${props.applicationId}:${props.session.user.id}:${props.session.csrfToken}`} {...props}/>;
 }
-function DecisionController({ applicationId: app, session, gateway = unavailableStaffDecisions }: WorkspaceProps) {
+function DecisionController({ applicationId: app, session, gateway = unavailableStaffDecisions, reviewClient }: WorkspaceProps) {
   const [revision, setRevision] = useState(0);
+  const [reviewEditing,setReviewEditing]=useState(false);
+  const [draftBasis,setDraftBasis]=useState<{version:number;hash:string}>();
   const [resource, setResource] = useState<{ revision: number; gateway: StaffDecisionGateway; view?: WorkspaceView; history?: HistoryPage; error?: string }>();
   const [selected, setSelected] = useState<string | null>(null);
   const [brief, setBrief] = useState<{ id: string; revision: number; gateway: StaffDecisionGateway; value?: SavedBrief; error?: string }>();
@@ -47,7 +52,9 @@ function DecisionController({ applicationId: app, session, gateway = unavailable
   const command = useCommand<Attempt, Result>();
   const current = resource?.revision === revision && resource.gateway === gateway;
   const view = current ? resource.view : undefined, history = current ? resource.history : undefined;
-  const loading = !current, locked = command.saving || command.uncertain;
+  const loading = !current, locked = command.saving || command.uncertain || reviewEditing;
+  const draftStale=Boolean(view&&draftBasis&&(draftBasis.version!==view.application.version||draftBasis.hash!==view.basisHash));
+  function captureDraft(){if(view)setDraftBasis(old=>old??{version:view.application.version,hash:view.basisHash});}
   const chosen = view?.offers.find(o => o.offer.id === draft.offerId);
   const dirty = Boolean(draft.rationale || draft.departureReason || draft.outcome || draft.reviewDate || recommendReason || recommendOffer || preview);
   useUnsavedChanges(dirty || locked, command.uncertain);
@@ -91,7 +98,7 @@ function DecisionController({ applicationId: app, session, gateway = unavailable
   }, [preview]);
   useEffect(() => () => documentRequest.current?.abort(), [selected, revision, gateway, denied]);
   useEffect(() => { if (problem) errorRef.current?.focus(); }, [problem]);
-  function update(patch: Partial<DecisionDraft>) { if (locked) return; setDraft(d => ({ ...d, ...patch })); setPreview(undefined); setReviewed(false); setLocalError(''); setFieldErrors({}); command.reset(); }
+  function update(patch: Partial<DecisionDraft>) { if (locked) return; captureDraft(); setDraft(d => ({ ...d, ...patch })); setPreview(undefined); setReviewed(false); setLocalError(''); setFieldErrors({}); command.reset(); }
   function refresh() { if (locked) return; setRevision(r => r + 1); setPreview(undefined); setReviewed(false); setDocument(undefined); setDocumentError(''); }
   async function send(attempt: Attempt, key: string): Promise<Result> {
     const options = { version: attempt.version, csrfToken: attempt.csrf, idempotencyKey: key };
@@ -122,14 +129,14 @@ function DecisionController({ applicationId: app, session, gateway = unavailable
       }
       setPreview(result.value); setClock(Date.now()); setReviewed(false); setNotice('Exact preview prepared. Review it before recording a decision.');
     } else {
-      setPreview(undefined); setReviewed(false); setDraft({ ...emptyDecisionDraft, exceptions: {} }); setRecommendOffer(''); setRecommendReason('');
+      setPreview(undefined); setReviewed(false); setDraft({ ...emptyDecisionDraft, exceptions: {} }); setRecommendOffer(''); setRecommendReason(''); setDraftBasis(undefined);
       if (result.kind === 'record') { setSelected(result.value.id); setNotice(`Decision recorded: ${result.value.outcome === 'return' ? 'returned for clarification' : result.value.outcome}. Loading the saved brief. Approval does not release funds.`); }
       else setNotice('Officer recommendation recorded. A separate authorized reviewer must make the decision.');
       setRevision(r => r + 1);
     }
   }
   function prepare() {
-    if (!view || locked) return;
+    if (!view || locked || draftStale) return;
     const departs = view.recommendation && (draft.outcome !== 'approve' || draft.offerId !== view.recommendation.offerVersionId);
     const input = { outcome: draft.outcome, assessmentId: view.assessment?.id ?? null, recommendationId: view.recommendation?.id ?? null,
       offerVersionId: draft.outcome === 'return' ? null : draft.offerId || null, rationale: draft.rationale, departureReason: departs ? draft.departureReason : '',
@@ -149,7 +156,7 @@ function DecisionController({ applicationId: app, session, gateway = unavailable
     void execute({ kind: 'record', app, version: preview.applicationVersion, csrf: session.csrfToken, proof: preview.id, body: { ...last.current.body, explanationReviewed: true } });
   }
   function recommend() {
-    if (!view || !view.assessment || locked) return;
+    if (!view || !view.assessment || locked || draftStale) return;
     const parsed = RecommendationCreateSchema.safeParse({ assessmentId: view.assessment.id, offerVersionId: recommendOffer, inputVersion: view.assessment.inputVersion, reason: recommendReason });
     if (!parsed.success) { setLocalError('Choose a checked offer and record a recommendation reason.'); return; }
     void execute({ kind: 'recommend', app, version: view.application.version, csrf: session.csrfToken, body: parsed.data });
@@ -186,6 +193,8 @@ function DecisionController({ applicationId: app, session, gateway = unavailable
       {command.saving && <p role="status">Saving the exact submission…</p>}
       {command.uncertain && <div className={styles.form}><Button onClick={() => { if (last.current) void execute(last.current); }} disabled={command.saving}>Retry the same submission</Button><p>Do not start a different submission. Reloading loses the in-memory retry details; inspect the saved decision history with the review owner before submitting again.</p></div>}
     </div>
+    {reviewClient&&<DecisionReadiness app={app} session={session} client={reviewClient} revision={revision} disabled={command.saving||command.uncertain||dirty} onEditing={setReviewEditing} deny={setDenied} saved={()=>{setPreview(undefined);setReviewed(false);setRevision(r=>r+1);}}/>}
+    {dirty&&!locked&&<div className="no-print">{draftStale&&<Notice tone="warning">The decision draft belongs to an older application or evidence basis. Your text is preserved. Clear the draft and inspect the current basis before a new submission.</Notice>}<Button variant="quiet" onClick={()=>{setDraft({...emptyDecisionDraft,exceptions:{}});setRecommendOffer('');setRecommendReason('');setDraftBasis(undefined);setPreview(undefined);setReviewed(false);setLocalError('');command.reset();}}>Clear decision draft</Button></div>}
     {view && <section className="panel no-print"><div className="panel-header"><h2>Current review basis</h2><Badge>Application version {view.application.version} · Input {view.application.assessmentInputVersion}</Badge></div><div className={`panel-body ${styles.form}`}>
       <h3>{view.application.memberName}</h3><p>Horizon {dateLabel(view.periodStart)}–{dateLabel(view.periodEnd)} · Assessment {view.assessment?.state ?? 'unavailable'}</p>
       {view.assessment?.issues.map((i, n) => <p key={n}>{i}</p>)}
@@ -194,12 +203,12 @@ function DecisionController({ applicationId: app, session, gateway = unavailable
       {view.blockedReason && <Notice tone="warning">{view.blockedReason}</Notice>}
       {view.offers.map(o => <section key={o.offer.id}><h3>{o.offer.label}</h3><dl className={styles.figures}>
         <div><dt>Principal</dt><dd><Money value={o.offer.principalCentavos}/></dd></div><div><dt>Net proceeds</dt><dd><Money value={o.offer.netReceivedCentavos}/></dd></div><div><dt>Separately paid fees</dt><dd><Money value={o.offer.feesPaidSeparatelyCentavos}/></dd></div>
-        <div><dt>Monthly remaining</dt><dd>{o.checked ? <Money value={o.checked.monthlyRemainingCentavos}/> : 'Unavailable'}</dd></div><div><dt>Lowest dated balance</dt><dd>{o.checked ? <Money value={o.checked.lowestBalanceCentavos}/> : 'Unavailable'}</dd></div><div><dt>Total repayment</dt><dd>{o.checked ? <Money value={o.checked.totalRepaymentCentavos}/> : 'Unavailable'}</dd></div><div><dt>Financing cost</dt><dd>{o.checked ? <Money value={o.checked.financingCostCentavos}/> : 'Unavailable'}</dd></div>
+        {o.checked ? <CheckedRemaining scenario={o.checked}/> : <div><dt>Remaining</dt><dd>Unavailable</dd></div>}<div><dt>Lowest dated balance</dt><dd>{o.checked ? <Money value={o.checked.lowestBalanceCentavos}/> : 'Unavailable'}</dd></div><div><dt>Total repayment</dt><dd>{o.checked ? <Money value={o.checked.totalRepaymentCentavos}/> : 'Unavailable'}</dd></div><div><dt>Financing cost</dt><dd>{o.checked ? <Money value={o.checked.financingCostCentavos}/> : 'Unavailable'}</dd></div>
       </dl><p>Term {o.offer.termMonths} months. {o.offer.available ? 'Explicitly available offer.' : 'Offer unavailable.'}</p><div className="table-scroll"><table><caption>Checked payment schedule</caption><thead><tr><th scope="col">Due date</th><th scope="col">Amount</th></tr></thead><tbody>{o.offer.payments.map((p, i) => <tr key={i}><td>{dateLabel(p.date)}</td><td><Money value={p.amountCentavos}/></td></tr>)}</tbody></table></div>
       {o.checked?.shortageDates.length ? <Notice tone="warning">Modeled dated shortages: {o.checked.shortageDates.map(dateLabel).join('; ')}. A monthly surplus does not remove this timing gap.</Notice> : null}</section>)}
     </div></section>}
-    {mayRecommend && <section className="panel no-print"><div className="panel-header"><h2>Officer recommendation</h2></div><fieldset disabled={locked || !view || !view.offers.some(o => o.recommend)} className={`panel-body ${styles.form}`}><legend>Current checked offer and reason</legend><div className="field"><label htmlFor="recommend-offer">Recommended offer</label><select id="recommend-offer" value={recommendOffer} onChange={e => setRecommendOffer(e.target.value)}><option value="">Choose a permitted checked offer</option>{view?.offers.filter(o => o.recommend).map(o => <option key={o.offer.id} value={o.offer.id}>{o.offer.label}</option>)}</select></div><div className="field"><label htmlFor="recommend-reason">Recommendation reason</label><textarea id="recommend-reason" value={recommendReason} maxLength={2000} onChange={e => setRecommendReason(e.target.value)}/></div><Button onClick={recommend}>Record recommendation</Button></fieldset></section>}
-    {mayReview && <DecisionForm errors={fieldErrors} view={view} draft={draft} update={update} preview={preview} reviewed={reviewed} setReviewed={setReviewed} locked={locked} expired={expired} prepare={prepare} record={record}/>}
+    {mayRecommend && <section className="panel no-print"><div className="panel-header"><h2>Officer recommendation</h2></div><fieldset disabled={locked || draftStale || !view || !view.offers.some(o => o.recommend)} className={`panel-body ${styles.form}`}><legend>Current checked offer and reason</legend><div className="field"><label htmlFor="recommend-offer">Recommended offer</label><select id="recommend-offer" value={recommendOffer} onChange={e => {captureDraft();setRecommendOffer(e.target.value);}}><option value="">Choose a permitted checked offer</option>{view?.offers.filter(o => o.recommend).map(o => <option key={o.offer.id} value={o.offer.id}>{o.offer.label}</option>)}</select></div><div className="field"><label htmlFor="recommend-reason">Recommendation reason</label><textarea id="recommend-reason" value={recommendReason} maxLength={2000} onChange={e => {captureDraft();setRecommendReason(e.target.value);}}/></div><Button onClick={recommend}>Record recommendation</Button></fieldset></section>}
+    {mayReview && <DecisionForm errors={fieldErrors} view={view} draft={draft} update={update} preview={preview} reviewed={reviewed} setReviewed={setReviewed} locked={locked||draftStale} expired={expired} prepare={prepare} record={record}/>}
     <section className="panel no-print"><div className="panel-header"><h2>Saved decision history</h2></div><div className={`panel-body ${styles.form}`}>
       {history && history.items.length === 0 && <p>No saved decisions recorded.</p>}
       {history && history.items.length > 0 && <div className="field"><label htmlFor="staff-history">Selected saved decision</label><select id="staff-history" value={selected ?? ''} onChange={e => { setSelected(e.target.value); setDocument(undefined); setDocumentError(''); }} disabled={locked}><option value="">Choose a saved decision</option>{history.items.map(item => <option key={item.id} value={item.id}>{recordedInstant(item.recordedAt)} · {item.outcome} · {item.id} · {item.accepted ? 'Acknowledged' : 'Not acknowledged'}</option>)}</select></div>}

@@ -18,7 +18,7 @@ graphify-out/
 
 .backups/
 
-# model folders that are too big to fit in my cave
+# Large model artifacts are shared separately rather than committed to Git.
 /models/qwen/base_model/
 /models/qwen/adapter/
 /models/qwen/artifacts/
@@ -27,10 +27,33 @@ graphify-out/
 # Local review packets and cooperative source documents are not release inputs.
 /private_blind_key.csv
 /blind_review_packet.csv
-/reviewer_*_ratings*.csv
+/blind_mapping_PRIVATE.jsonl
+/reviewer_*.csv
+/reviewer_*.txt
 /review_rating_conventions.md
 /review_rating_summary.json
 /docs/DCCPEC-Docs/
+
+# Root-only experiment, training-review and independent-evaluation exports.
+# Keep these local or in the separately shared research artifact location.
+# These patterns do not ignore versioned datasets or documentation elsewhere.
+/D_failure_review_*.jsonl
+/D_failure_review_instructions.json
+/Experiment_E_*
+/approval_manifest*.json
+/independent_attestation*.json
+/independent_cases*.jsonl
+/new_grounded_examples*.jsonl
+/phaseF_AI_*.csv
+/phaseF_AI_*.json
+/phaseF_AI_*.jsonl
+/instructions.pdf
+/instrcutions.pdf
+
+# Local cloud credentials and operating-system metadata.
+/.aws/
+.DS_Store
+Thumbs.db
 
 # Raw research exports stay in the separately shared artifact location.
 /models/qwen/datasets/

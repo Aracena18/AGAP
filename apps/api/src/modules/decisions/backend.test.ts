@@ -3,11 +3,14 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { ActorContext } from '../../../../../packages/contracts/src/ports.js';
 import { ApplicationSchema } from '../../../../../packages/contracts/src/schemas.js';
-import { owner, runtimePool, uow, resetFixtures, prepareDatabase, closePools } from '../../../test/database.js';
+import { owner, runtimePool, identityPool, config, uow, resetFixtures, prepareDatabase, closePools } from '../../../test/database.js';
 import { memberFixture } from '../../../test/member-fixtures.js';
 import { PostgresMemberUnitOfWork } from '../../platform/member-database.js';
 import { migrationDirectories } from '../../platform/migrate.js';
-import { DecisionsService } from './decisions.service.js';
+import { DecisionsService, decisionMemberPorts } from './decisions.service.js';
+import { createApp } from '../../app.js';
+import { unavailableMemberDomains } from '../member-portal/member-portal.service.js';
+import { IdentityService } from '../identity/identity.service.js';
 import { fictionalBasis, fictionalPorts } from './backend.test-fixture.js';
 import type { ReviewContext } from './context.js';
 
@@ -144,6 +147,30 @@ describe('Phase 2 real persistence with explicitly fictional owner adapters', ()
     await owner.query('UPDATE applications.applications SET assessment_input_version=assessment_input_version+1,version=version+1 WHERE id=$1', [app]);
     expect(await send()).toEqual(receipts[0]);
     await expect(muow.run(member.actor, tx => service.memberAccept(tx, app, data, v, key()))).rejects.toMatchObject({ code: 'stale_version' });
+  });
+  it('replays committed acceptance through the real HTTP facade after terms become unavailable, while rejecting new attempts and revoked access', async () => {
+    const a = await approved(), v = await version(), stable = key();
+    const data = { decisionId: a.d.id, documentVersionId: a.documentId, acknowledgment: true };
+    // Actual decision persistence and member HTTP boundary; upstream policy is
+    // the explicitly fictional, guarded producer fixture used by this suite.
+    const api = await createApp(config, { ...unavailableMemberDomains, ...decisionMemberPorts(service) });
+    await api.listen(0, '127.0.0.1');
+    try {
+      const base = `${await api.getUrl()}/api/v1/member/applications/${app}`;
+      const headers = { Cookie: `agap_member_session=${member.token}`, Origin: config.PUBLIC_ORIGIN,
+        'X-CSRF-Token': new IdentityService(identityPool, config).csrfToken(member.token), 'Content-Type': 'application/json' };
+      const send = (idempotencyKey: string, expected = v) => fetch(`${base}/acceptances`, { method: 'POST',
+        headers: { ...headers, 'Idempotency-Key': idempotencyKey, 'If-Match': `"${expected}"` }, body: JSON.stringify(data) });
+      const initial = await send(stable); expect(initial.status).toBe(201); const receipt = await initial.json();
+      await changeBasis(c => { c.sources[0].verification = 'supported'; });
+      const current = await fetch(`${base}/decision`, { headers });
+      expect(await current.json()).toMatchObject({ state: 'unavailable' });
+      const retry = await send(stable); expect(retry.status).toBe(201); expect(await retry.json()).toEqual(receipt);
+      expect((await send(key(), await version())).status).toBe(409);
+      expect(await count('decisions.acceptances')).toBe(1); expect(await count('portal.commands')).toBe(1);
+      await owner.query('UPDATE identity.member_links SET active=false WHERE id=$1', [member.actor.linkId]);
+      expect((await send(stable)).status).toBe(401);
+    } finally { await api.close(); }
   });
   it('rolls back a member acknowledgment and portal command/event together', async () => {
     const a = await approved(), v = await version(), broken = new DecisionsService(uow, fictionalPorts({ failTransition: true }));

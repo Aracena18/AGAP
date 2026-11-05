@@ -2,7 +2,7 @@ import { guidanceSchemas } from './guidance.js';
 import { z } from 'zod';
 import { RecordMode, VerificationSchema, CONTRACT_VERSION, Id, MoneyAmount, SignedMoney, PositiveMoneyAmount, CalendarDay, Instant, Version, Text, Currency, Role, FactValueSchema, PolicyCheckSchema, OfferSchema, SourceReferenceSchema, ModelArtifactSchema } from './common.js';
 export * from './common.js';
-import { workflowSchemas } from './workflow.js';
+import { workflowSchemas, WorkflowScenario } from './workflow.js';
 import { modelReviewSchemas } from './model-review.js';
 import { priorityReviewSchemas } from './priority-review.js';
 import { lifecycleSchemas } from './lifecycle.js';
@@ -50,10 +50,23 @@ export const EvidenceCorrectionSchema = z.strictObject({
 });
 
 export const AssessmentCreateSchema = z.strictObject({ inputVersion: Version, offerVersionIds: z.array(Id).min(1).max(20), periodStart: CalendarDay, periodEnd: CalendarDay });
-export const ScenarioSchema = z.strictObject({
+export const LegacyScenarioSchema = z.strictObject({
   offerVersionId: Id, monthlyRemainingCentavos: SignedMoney, lowestBalanceCentavos: SignedMoney, closingBalanceCentavos: SignedMoney,
   totalRepaymentCentavos: MoneyAmount, financingCostCentavos: SignedMoney, shortageDates: z.array(CalendarDay), policyChecks: z.array(PolicyCheckSchema),
 });
+/** A horizon result is never converted into an average or a single monthly value. */
+export const DatedScenarioSchema = LegacyScenarioSchema.omit({ monthlyRemainingCentavos: true }).extend({
+  format: z.literal('dated-scenario/v1'), monthlyRemainingCentavos: z.null(), workflow: WorkflowScenario,
+}).superRefine((s, ctx) => {
+  const w = s.workflow;
+  const reject = () => ctx.addIssue({code:'custom',message:'The dated scenario projection differs from its saved assessment.'});
+  if (s.offerVersionId !== w.offerId || s.lowestBalanceCentavos !== w.lowestBalanceCentavos
+    || s.closingBalanceCentavos !== w.closingBalanceCentavos || s.totalRepaymentCentavos !== w.totalRepaymentCentavos
+    || s.financingCostCentavos !== w.financingCostCentavos || JSON.stringify(s.shortageDates) !== JSON.stringify(w.shortageDates)) reject();
+  if (s.policyChecks.length !== w.checks.length || s.policyChecks.some((p, i) =>
+    p.policyId !== w.checks[i].id || p.passed !== w.checks[i].passed || p.overridable)) reject();
+});
+export const ScenarioSchema = z.union([LegacyScenarioSchema, DatedScenarioSchema]);
 const AssessmentBasis = { id: Id, applicationId: Id, inputVersion: Version, engineVersion: Text, policyVersionId: Id, createdAt: Instant };
 export const AssessmentSchema = z.discriminatedUnion('status', [
   z.strictObject({ ...AssessmentBasis, status: z.literal('complete'), scenarios: z.array(ScenarioSchema).min(1), warnings: z.array(z.string()) }),
@@ -67,6 +80,62 @@ export const DecisionCreateSchema = z.strictObject({
 });
 export const PilotDecisionPreviewSchema=DecisionCreateSchema.omit({explanationReviewed:true});
 export const DecisionSchema = z.strictObject({ id: Id, applicationId: Id, inputVersion: Version, outcome: z.enum(['approve', 'decline', 'return']), recordedAt: Instant, reviewerId: Id, snapshotHash: z.string().regex(/^[a-f0-9]{64}$/) });
+const Sha256=z.string().regex(/^[a-f0-9]{64}$/);
+const DecisionAction=z.enum(['approve','decline','return']);
+export const DecisionPreviewCreateSchema=DecisionCreateSchema.omit({explanationReviewed:true});
+export const DecisionPreviewSchema=z.strictObject({id:Id,decisionId:Id,applicationVersion:Version,basisHash:Sha256,expiresAt:Instant,explanation:Text,terms:z.string().nullable()});
+export const DecisionRecordCreateSchema=z.strictObject({previewId:Id,decision:DecisionCreateSchema});
+export const StaffDecisionWorkspaceSchema=z.strictObject({
+  application:ApplicationSchema,basisHash:Sha256,periodStart:CalendarDay,periodEnd:CalendarDay,
+  assessment:z.strictObject({id:Id,inputVersion:Version,state:z.enum(['complete','incomplete','unavailable','stale']),issues:z.array(Text)}).nullable(),
+  offers:z.array(z.strictObject({offer:OfferSchema,checked:ScenarioSchema.nullable(),recommend:z.boolean(),outcomes:z.array(DecisionAction)})),
+  recommendation:z.strictObject({id:Id,offerVersionId:Id,preparedBy:Id,preparedAt:Instant,reason:Text}).nullable(),
+  canReturn:z.boolean(),blockedReason:Text.nullable(),currentDecisionId:Id.nullable(),
+});
+export const StaffDecisionHistoryPageSchema=z.strictObject({items:z.array(DecisionSchema.extend({accepted:z.boolean()})).max(50),nextCursor:Id.nullable()});
+export const StaffDecisionBriefSchema=z.strictObject({
+  id:Id,applicationId:Id,memberName:z.string(),inputVersion:Version,recordedAt:Instant,reviewerId:Id,outcome:DecisionAction,
+  explanation:Text,origin:z.enum(['template','manual']),reviewDate:CalendarDay,periodStart:CalendarDay,periodEnd:CalendarDay,
+  considered:z.strictObject({offer:OfferSchema,checked:ScenarioSchema}).nullable(),snapshotHash:Sha256,
+  document:z.strictObject({id:Id,sha256:Sha256}).nullable(),
+  sources:z.array(z.strictObject({sourceId:Id,sourceVersion:Version,verification:z.enum(['not_checked','supported','mismatch','unavailable']),effectiveDates:z.array(CalendarDay)})),
+});
+export const DecisionConflictCreateSchema=z.strictObject({status:z.enum(['clear','restricted']),reference:Text});
+const ReviewBasis={evidenceBasisHash:Sha256};
+export const DecisionReviewConfirmSchema=z.strictObject({...ReviewBasis,mode:z.literal('manual'),reviewedSources:z.literal(true),reviewedScenarios:z.literal(true),reason:Text});
+export const DecisionConcernCreateSchema=z.strictObject({...ReviewBasis,source:SourceReferenceSchema,description:Text});
+export const DecisionConcernCheckSchema=z.strictObject({...ReviewBasis,outcome:z.enum(['confirmed','corrected','dismissed']),reason:Text,correctedText:z.string().trim().max(2000)})
+  .refine(v=>v.outcome==='corrected'?v.correctedText.length>0:v.correctedText==='', 'Supply corrected wording only for a correction.');
+export const DecisionReviewAssignmentSchema=z.strictObject({...ReviewBasis,reviewerId:Id,reason:Text});
+export const DecisionReviewDispositionSchema=z.strictObject({...ReviewBasis,assignmentId:Id,outcome:z.enum(['investigating','clarification','options','resolved']),reason:Text});
+export const DecisionNoticeAcknowledgmentSchema=z.strictObject({acknowledgment:z.literal(true)});
+const ReviewEventActor={id:Id,recordedBy:Id,recordedAt:Instant};
+const ConcernCheck=z.strictObject({...ReviewEventActor,outcome:z.enum(['confirmed','corrected','dismissed']),reason:Text,correctedText:z.string()});
+const ConcernAssignment=z.strictObject({...ReviewEventActor,reviewerId:Id,reviewerName:Text,reason:Text});
+const ConcernDisposition=z.strictObject({...ReviewEventActor,outcome:DecisionReviewDispositionSchema.shape.outcome,reason:Text});
+export const DecisionReviewSchema=z.strictObject({
+  applicationId:Id,version:Version,inputVersion:Version,reviewVersion:Version,evidenceBasisHash:Sha256,
+  state:z.enum(['assessment_unavailable','needs_confirmation','awaiting_concern_check','escalated_review','ready']),message:Text,
+  confirmation:z.strictObject({...ReviewEventActor,mode:z.literal('manual'),reason:Text,current:z.boolean()}).nullable(),
+  ownConflict:z.strictObject({status:z.enum(['clear','restricted','unavailable']),reference:Text.nullable()}),
+  canConfirm:z.boolean(),canRaiseConcern:z.boolean(),canCheckConcerns:z.boolean(),
+  concerns:z.array(z.strictObject({...ReviewEventActor,origin:z.literal('manual'),source:SourceReferenceSchema,description:Text,
+    state:z.enum(['awaiting_check','dismissed','needs_assignment','escalated','resolved']),check:ConcernCheck.nullable(),assignment:ConcernAssignment.nullable(),disposition:ConcernDisposition.nullable()})).max(100),
+  reviewers:z.array(z.strictObject({userId:Id,displayName:Text,available:z.boolean(),reason:Text.nullable()})).max(100),
+  sources:z.array(z.strictObject({sourceId:Id,sourceVersion:Version,label:Text,kind:z.enum(['document','statement']),date:CalendarDay,pageCount:z.number().int().nonnegative(),referenceable:z.boolean(),verification:z.enum(['not_checked','supported','mismatch','unavailable'])})),
+});
+export const DecisionReviewEventPayloadSchema=z.discriminatedUnion('kind',[
+  z.strictObject({kind:z.literal('confirm_current'),data:DecisionReviewConfirmSchema}),
+  z.strictObject({kind:z.literal('raise_concern'),data:DecisionConcernCreateSchema}),
+  z.strictObject({kind:z.literal('check_concern'),concernId:Id,data:DecisionConcernCheckSchema}),
+  z.strictObject({kind:z.literal('assign_review'),concernId:Id,reviewerName:Text,data:DecisionReviewAssignmentSchema}),
+  z.strictObject({kind:z.literal('review_disposition'),concernId:Id,data:DecisionReviewDispositionSchema}),
+  z.strictObject({kind:z.literal('reassign_preparation'),data:AssignmentCreateSchema}),
+]);
+export const DecisionReviewEventSchema=z.strictObject({...ReviewEventActor,version:Version,evidenceBasisHash:Sha256.nullable(),event:DecisionReviewEventPayloadSchema});
+export const DecisionReviewEventPageSchema=z.strictObject({items:z.array(DecisionReviewEventSchema).max(100),nextCursor:Id.nullable()});
+export const DecisionNoticeSchema=z.strictObject({id:Id,applicationId:Id,concernId:Id,assignmentId:Id,createdAt:Instant,acknowledgedAt:Instant.nullable()});
+export const DecisionNoticePageSchema=z.strictObject({items:z.array(DecisionNoticeSchema).max(100),nextCursor:Id.nullable()});
 export const AcceptanceCreateSchema = z.strictObject({ decisionId: Id, documentVersionId: Id, acceptedOn: CalendarDay, acknowledgment: Text });
 export const FinancialCommandCreateSchema = z.strictObject({
   loanId: Id, amountCentavos: PositiveMoneyAmount, currency: Currency, effectiveDate: CalendarDay, method: z.enum(['cash', 'bank', 'provider']),
@@ -196,6 +265,8 @@ export const MemberSourceSchema = z.strictObject({id:Id,fileName:Text,state:z.en
 export const MemberEvidenceSchema = z.strictObject({sources:z.array(MemberSourceSchema),drafts:z.array(AiDraftSchema)});
 export const MemberOptionSchema = z.strictObject({offer:OfferSchema,checked:ScenarioSchema,horizonStart:CalendarDay,horizonEnd:CalendarDay,assumptions:z.array(Text)});
 export const MemberDecisionSchema = z.strictObject({id:Id,outcome:z.enum(['approve','decline','return']),explanation:Text,recordedAt:Instant,documentVersionId:Id.nullable(),terms:MemberOptionSchema.nullable(),accepted:z.boolean()});
+export const MemberDecisionDocumentSchema=z.strictObject({id:Id,sha256:z.string().regex(/^[a-f0-9]{64}$/),mediaType:z.literal('text/plain; charset=utf-8'),text:z.string().min(1).max(65536)});
+export const OriginationCreateSchema=z.strictObject({method:z.enum(['cash','bank'])});
 export const MemberReceiptSchema = z.strictObject({id:Id,loanId:Id,paidOn:CalendarDay,amountCentavos:MoneyAmount,reference:Text});
 export const MemberLoanSchema = z.strictObject({
   id:Id,label:Text,status:z.enum(['active','settled','restructured','written_off']),position:LoanPositionSchema,
@@ -256,6 +327,11 @@ export const SupportPositionViewSchema=serviceView(LoanPositionSchema);
 export const MemberSupportHistoryQuerySchema=z.strictObject({cursor:Id.optional(),limit:z.coerce.number().int().min(1).max(100).default(25)});
 
 export const schemas = {
+  DecisionPreviewCreate:DecisionPreviewCreateSchema,DecisionPreview:DecisionPreviewSchema,DecisionRecordCreate:DecisionRecordCreateSchema,
+  StaffDecisionWorkspace:StaffDecisionWorkspaceSchema,StaffDecisionHistoryPage:StaffDecisionHistoryPageSchema,StaffDecisionBrief:StaffDecisionBriefSchema,
+  DecisionConflictCreate:DecisionConflictCreateSchema,DecisionReviewConfirm:DecisionReviewConfirmSchema,DecisionConcernCreate:DecisionConcernCreateSchema,
+  DecisionConcernCheck:DecisionConcernCheckSchema,DecisionReviewAssignment:DecisionReviewAssignmentSchema,DecisionReviewDisposition:DecisionReviewDispositionSchema,
+  DecisionNoticeAcknowledgment:DecisionNoticeAcknowledgmentSchema,DecisionReview:DecisionReviewSchema,DecisionReviewEventPage:DecisionReviewEventPageSchema,DecisionNoticePage:DecisionNoticePageSchema,
   ...accountingReportSchemas,
   SupportAssignment:SupportAssignmentSchema,SupportResponse:SupportResponseSchema,SupportPage:SupportPageSchema,SupportDetail:SupportDetailSchema,SupportSummary:SupportSummarySchema,SupportAction:SupportActionSchema,SupportActionPage:SupportActionPageSchema,SupportHistory:SupportHistorySchema,
   ReconciliationCreate:ReconciliationCreateSchema,ReconciliationRun:ReconciliationRunSchema,ReconciliationPage:ReconciliationPageSchema,
@@ -263,7 +339,7 @@ export const schemas = {
   MemberSession:MemberSessionSchema,MemberProfile:MemberProfileSchema,MemberApplicationCreate:MemberApplicationCreateSchema,MemberApplication:MemberApplicationSchema,MemberApplicationPage:MemberApplicationPageSchema,MemberSubmit:MemberSubmitSchema,
   ReminderPreferenceUpdate:ReminderPreferenceUpdateSchema,ReminderPreferences:ReminderPreferencesSchema,ModelArtifact:ModelArtifactSchema,AiDraft:AiDraftSchema,DraftConfirmation:DraftConfirmationSchema.or(workflowSchemas.WorkflowDraftReview),IrregularExpense:IrregularExpenseSchema,
   MemberSource:MemberSourceSchema,MemberEvidenceView:MemberEvidenceViewSchema,MemberOptionsView:MemberOptionsViewSchema,MemberDecisionView:MemberDecisionViewSchema,MemberLoansView:MemberLoansViewSchema,MemberSupportView:MemberSupportViewSchema,MemberSupportCreate:MemberSupportCreateSchema,MemberSupport:MemberSupportSchema,MemberAcceptance:MemberAcceptanceSchema,MemberUpload:MemberUploadSchema,
-  MemberOption:MemberOptionSchema,MemberDecision:MemberDecisionSchema,MemberLoan:MemberLoanSchema,MemberReceipt:MemberReceiptSchema,SourceReference:SourceReferenceSchema,
+  MemberOption:MemberOptionSchema,MemberDecision:MemberDecisionSchema,MemberDecisionDocument:MemberDecisionDocumentSchema,OriginationCreate:OriginationCreateSchema,MemberLoan:MemberLoanSchema,MemberReceipt:MemberReceiptSchema,SourceReference:SourceReferenceSchema,
   ApiError: ApiErrorSchema, Session: SessionSchema, Staff: StaffSchema, StaffPage: StaffPageSchema, StaffRevoke: StaffRevokeSchema, MemberCreate: MemberCreateSchema, MemberUpdate: MemberUpdateSchema, Member: MemberSchema, MemberPage: MemberPageSchema,
   ApplicationCreate: ApplicationCreateSchema, ApplicationUpdate: ApplicationUpdateSchema, Application: ApplicationSchema, ApplicationPage: ApplicationPageSchema, AssignmentCreate: AssignmentCreateSchema,
   EvidenceCorrection: EvidenceCorrectionSchema, Verification: VerificationSchema, AssessmentCreate: AssessmentCreateSchema, Assessment: AssessmentSchema, Offer: OfferSchema,

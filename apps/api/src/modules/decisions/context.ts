@@ -5,6 +5,7 @@ import {
   Id, Instant, MemberAcceptanceSchema, MoneyAmount, OfferSchema,
   RecommendationCreateSchema, Role, SourceReferenceSchema, Text, Version,
 } from '../../../../../packages/contracts/src/schemas.js';
+import { WorkflowDecisionBasisSchema } from './workflow-basis.js';
 
 /** Module-local review proposals, not new shared API contracts. */
 export const Hash = z.string().regex(/^[a-f0-9]{64}$/);
@@ -35,6 +36,12 @@ export const FactSchema = z.strictObject({
 export const RecommendationSchema = RecommendationCreateSchema.extend({
   id: Id, applicationId: Id, preparedBy: Id, preparedAt: Instant, basisHash: Hash,
 });
+const IntegrationFields={configurationId:Id,sourceReview:z.enum(['confirmed_statements_permitted','independent_support_required'])};
+export const ReviewReadinessSchema=z.discriminatedUnion('state',[
+  z.strictObject({state:z.literal('pending'),revision:Version,reason:Text}),
+  z.strictObject({state:z.literal('current'),revision:Version,confirmationId:Id,confirmedBy:Id,confirmedAt:Instant,
+    evidenceBasisHash:Hash,mode:z.literal('manual'),reviewParticipantIds:z.array(Id).max(100)}),
+]);
 export const ReviewContextSchema = z.strictObject({
   application: ApplicationSchema,
   periodStart: CalendarDay, periodEnd: CalendarDay,
@@ -48,6 +55,13 @@ export const ReviewContextSchema = z.strictObject({
     userId: Id, status: z.enum(['clear', 'restricted', 'unavailable']), reference: Text,
   })),
   recommendation: RecommendationSchema.nullable(),
+  // Absent for immutable historical v1 records; never default it during decoding.
+  workflowBasis: WorkflowDecisionBasisSchema.optional(),
+  integration: z.discriminatedUnion('format',[
+    z.strictObject({format:z.literal('connected-review/v1'),...IntegrationFields}),
+    z.strictObject({format:z.literal('connected-review/v2'),...IntegrationFields}),
+  ]).optional(),
+  reviewReadiness:ReviewReadinessSchema.optional(),
   // Additive v4 basis: preserve every dated fact/segment; legacy fields remain untouched.
   datedAssessment: WorkflowAssessment.optional(), datedFacts: z.array(WorkflowFact).optional(),
   datedSources: z.array(WorkflowSource).optional(), pilotConfigurationVersion: Id.optional(),
@@ -66,9 +80,13 @@ export const DecisionPreparationSchema = z.strictObject({
   document: DocumentSchema.nullable(), explanation: ExplanationSchema,
 });
 export const DecisionSnapshotSchema = z.strictObject({
+  format: z.literal('decision-snapshot/v2').optional(),
   id: Id, recordedAt: Instant, reviewerId: Id, reviewerRoles: z.array(Role),
   input: DecisionCreateSchema, basis: ReviewContextSchema,
   document: DocumentSchema.nullable(), explanation: ExplanationSchema,
+}).superRefine((s, ctx) => {
+  if ((s.format === 'decision-snapshot/v2') !== !!s.basis.workflowBasis)
+    ctx.addIssue({code:'custom',message:'The decision snapshot format must match its evidence basis.'});
 });
 export const DecisionCandidateSchema = z.strictObject({ snapshot: DecisionSnapshotSchema, snapshotHash: Hash });
 export const AcceptancePreparationSchema = z.strictObject({

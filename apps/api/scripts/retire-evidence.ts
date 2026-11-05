@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { z } from 'zod';
 import { Id,Text,Instant } from '../../../packages/contracts/src/schemas.js';
 import { createPool } from '../src/platform/database.js';
-import { MATERIAL_LOCK_SQL, materialLockKey } from '../src/platform/material-guard.js';
+import { lendingLockSql } from '../src/platform/lending-transaction.js';
 import { documentStore } from '../src/modules/evidence/configure.js';
 const [path,digest,mode='plan']=process.argv.slice(2);
 if(!path||!digest||!['plan','execute'].includes(mode)||!process.env.MIGRATION_DATABASE_URL)throw new Error('Usage: evidence:retire manifest.json sha256 [plan|execute] with separate operator credentials.');
@@ -14,7 +14,7 @@ const pool=createPool(process.env.MIGRATION_DATABASE_URL),store=await documentSt
 try{
  for(const id of [...new Set(input.sourceIds)]){
   const c=await pool.connect();let keys:string[]=[];
-  try{await c.query('BEGIN');await c.query(MATERIAL_LOCK_SQL,[materialLockKey(input.organizationId)]);
+  try{await c.query('BEGIN ISOLATION LEVEL READ COMMITTED');await c.query("SET LOCAL lock_timeout='5s'");await c.query(lendingLockSql,[input.organizationId]);
    const source=(await c.query('SELECT * FROM evidence.sources WHERE id=$1 AND organization_id=$2 FOR UPDATE',[id,input.organizationId])).rows[0];
    if(!source||source.kind!=='document')throw new Error('Manifest contains an unavailable document.');
    if((await c.query('SELECT id FROM evidence.retention_holds WHERE source_id=$1 AND organization_id=$2 AND active FOR UPDATE',[id,input.organizationId])).rowCount)throw new Error('An active retention hold prevents removal.');

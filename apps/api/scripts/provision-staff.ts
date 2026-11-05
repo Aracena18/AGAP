@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { readFile,stat } from 'node:fs/promises';
 import { z } from 'zod';
 import { Id,Role,Text } from '../../../packages/contracts/src/schemas.js';
+import { lendingLockSql } from '../src/platform/lending-transaction.js';
 import { createPool } from '../src/platform/database.js';
 import { loadConfig } from '../src/platform/config.js';
 async function main(){
@@ -13,7 +14,8 @@ const input=z.strictObject({organizationId:Id,issuer:z.url(),subject:Text,displa
 if(input.issuer!==config.OIDC_ISSUER)throw new Error('Identity issuer must match the configured trusted issuer.');
 const pool=createPool(process.env.MIGRATION_DATABASE_URL),client=await pool.connect();
 try{
-  await client.query('BEGIN');
+  await client.query('BEGIN ISOLATION LEVEL READ COMMITTED');
+  await client.query("SET LOCAL lock_timeout='5s'");await client.query(lendingLockSql,[input.organizationId]);
   const branches=await client.query('SELECT id FROM platform.branches WHERE organization_id=$1 AND id=ANY($2::uuid[]) FOR SHARE',[input.organizationId,input.branchIds]);
   if(branches.rowCount!==input.branchIds.length)throw new Error('Every branch must belong to the selected organization.');
   const id=randomUUID();
