@@ -104,12 +104,22 @@ def run(args, model_factory=CpuCompatibilityModel):
             if capability == 'review':
                 model.attach_review(root)
             before = time.monotonic()
-            raw = model.generate(capability, request, before + args.seconds)
-            write_new(output / (name + '.raw.json'), {'request': request, 'text': raw})
             if capability == 'review':
-                value = screen(raw, request['sources'])
+                for attempt in (1, 2):
+                    suffix = '' if attempt == 1 else '-retry'
+                    raw = model.generate(capability, request, before + args.seconds, repair=attempt > 1)
+                    write_new(output / (name + suffix + '.raw.json'), {'request': request, 'text': raw})
+                    value = screen(raw, request['sources'], attempt)
+                    write_new(output / (name + suffix + '.screened.json'), value)
+                    if value['status'] == 'REQUIRES_HUMAN_REVIEW':
+                        break
+                write_new(output / (name + '.metrics.json'), {
+                    'elapsedMs': round((time.monotonic() - before) * 1000), 'attemptsUsed': attempt,
+                    'processPeakRssBytes': resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024})
                 require(value['status'] == 'REQUIRES_HUMAN_REVIEW', 'CPU review failed source/schema checks')
             else:
+                raw = model.generate(capability, request, before + args.seconds)
+                write_new(output / (name + '.raw.json'), {'request': request, 'text': raw})
                 value = loads(raw)
                 require(isinstance(value, list) and len(value) <= 30, 'Invalid CPU extraction output')
                 validate(value, read_json(HERE / 'finding.schema.json'))

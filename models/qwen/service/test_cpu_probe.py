@@ -49,8 +49,10 @@ class CpuProbeGuards(unittest.TestCase):
                 self.attached = False
             def attach_review(self, _):
                 self.attached = True
-            def generate(self, capability, request, _):
+            def generate(self, capability, request, _, repair=False):
                 assert self.attached and capability == 'review'
+                if not repair:
+                    return '{}'
                 payload = {**PAYLOAD, 'evidence': [{**PAYLOAD['evidence'][0],
                     **request['sources'][0]}]}
                 return json.dumps(payload)
@@ -63,6 +65,9 @@ class CpuProbeGuards(unittest.TestCase):
         self.assertIsNone(result['extractionStableAcrossReview'])
         self.assertFalse(result['httpApplicationIntegrationTested'])
         self.assertEqual(list(result['metrics']), ['review-f'])
+        evidence = Path(args.output)
+        self.assertEqual(json.loads((evidence / 'review-f.screened.json').read_text())['status'], 'REJECT_AND_ESCALATE')
+        self.assertEqual(json.loads((evidence / 'review-f-retry.screened.json').read_text())['status'], 'REQUIRES_HUMAN_REVIEW')
 
 
 if __name__ == '__main__':
