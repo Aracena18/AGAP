@@ -116,9 +116,9 @@ describe('Dated safe projections and actual independent principal reconciliation
   it('works under FORCE RLS with a non-superuser member projection owner', async () => {
     await repaid(); const member = await memberActor(), role = 'agap_phase5_reader';
     await owner.query(`DO $$ BEGIN IF NOT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='${role}') THEN CREATE ROLE ${role} NOLOGIN NOSUPERUSER NOBYPASSRLS; END IF; END $$;
-      GRANT USAGE ON SCHEMA servicing,platform,identity TO ${role};
+      GRANT USAGE ON SCHEMA servicing,platform,identity,monitoring TO ${role};
       GRANT SELECT ON servicing.originations,servicing.money_commands,servicing.money_revisions,servicing.postings,identity.member_links TO ${role};
-      GRANT EXECUTE ON FUNCTION platform.current_organization(),platform.current_member(),platform.allowed_branch(uuid),servicing.staff_role(text) TO ${role};
+      GRANT EXECUTE ON FUNCTION platform.current_organization(),platform.current_member(),platform.allowed_branch(uuid),servicing.staff_role(text),monitoring.support_loan_scope(uuid,uuid,uuid) TO ${role};
       ALTER FUNCTION servicing.member_loans(date) OWNER TO ${role};
       ALTER FUNCTION servicing.posted_loan_view(uuid,date) OWNER TO ${role};`);
     try {

@@ -1,3 +1,4 @@
+import { requireReconciliationScope, requireReportingSnapshot } from '../accounting/ledger-reader.js';
 import { z } from 'zod';
 import type { TransactionContext } from '../../../../../packages/contracts/src/ports.js';
 import { ApplicationSchema, Id, Version } from '../../../../../packages/contracts/src/schemas.js';
@@ -5,6 +6,7 @@ import { ApiError, notFound } from '../../platform/errors.js';
 import { requireLendingTransaction } from '../../platform/lending-transaction.js';
 import { DecisionCandidateSchema, DocumentSchema } from '../decisions/context.js';
 import { LendingDecisionProducers } from '../decisions/lending-producers.js';
+import { LendingConfigurationSchema } from '../decisions/lending-configuration.js';
 import { AcceptanceBindingSchema, OperationContextSchema } from './context.js';
 import type { MoneyPorts } from './money.service.js';
 import { ServicingRepository } from './servicing.repository.js';
@@ -52,6 +54,16 @@ export class LendingMoneyProducers implements MoneyPorts {
     return this.financialConfiguration(tx,applicationId,await this.decisions.configuration(tx,loan.branchId,loan.offer.productVersionId));
   }
   async observationAuthority(tx:TransactionContext,applicationId:string) {return (await this.financial(tx,applicationId)).authority;}
+  /** Read-only pinned mapping for an independent reporting snapshot; never a lending guard. */
+  async reportPolicy(tx:TransactionContext,loanId:string,componentVersion:string){
+    await requireReconciliationScope(tx);await requireReportingSnapshot(tx);
+    const loan=await this.origins.origin(tx,Id.parse(loanId));Id.parse(componentVersion);
+    const row=(await tx.query(`SELECT body FROM decisions.lending_configurations WHERE organization_id=$1 AND branch_id=$2
+      AND product_version_id=$3 AND body#>>'{principalPolicy,versionId}'=$4 ORDER BY published_at DESC,id DESC LIMIT 1`,[tx.actor.organizationId,loan.branchId,loan.offer.productVersionId,componentVersion])).rows[0];
+    if(!row)throw new ApiError(501,'module_not_available','The original component mapping is unavailable for this report.');
+    const c=LendingConfigurationSchema.parse(row.body);
+    return c.principalPolicy;
+  }
   async policy(tx:TransactionContext,loanId:string) {
     requireLendingTransaction(tx);
     const loan=await this.origins.origin(tx,Id.parse(loanId));await this.authorize(tx,loan.applicationId);

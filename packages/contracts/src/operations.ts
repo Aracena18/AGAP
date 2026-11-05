@@ -5,9 +5,20 @@ export interface Operation {
   id: string; method: 'GET' | 'POST' | 'PATCH'; path: string; response: SchemaName;
   request?: SchemaName; owner: 'Robert' | 'Aaron' | 'Benedict' | 'Earl'; implemented: boolean;
   versioned?: boolean; idempotent?: boolean; public?: boolean; principal?:'member'; binary?:boolean; binaryResponse?:boolean;
-  pathParameters?: Record<string,SchemaName>; querySchema?: SchemaName; queryArgument?:boolean; pageLimit?:number;
+  pathParameters?: Partial<Record<string,SchemaName>>; querySchema?: SchemaName; queryArgument?:boolean; pageLimit?:number;
 }
 export const operations = [
+  {id:'getSupportLoanPosition',method:'GET',path:'/support-requests/{id}/loan-position',response:'SupportFreshPositionView',owner:'Earl',implemented:true},
+  {id:'prepareScheduledRepayment',method:'POST',path:'/loans/{id}/repayment-preparations',request:'FinancialCommandCreate',response:'CommandReceipt',owner:'Benedict',implemented:true,idempotent:true},
+  {id:'listLendingApplications',method:'GET',path:'/lending-applications',response:'LendingApplicationPage',owner:'Benedict',implemented:true},
+  {id:'getStaffLoanWorkspace',method:'GET',path:'/loans/{id}/workspaces/{asOfDate}',pathParameters:{asOfDate:'CalendarDay'},response:'StaffLoanWorkspace',owner:'Benedict',implemented:true},
+  {id:'prepareLoanRelease',method:'POST',path:'/loans/{id}/release-preparations',request:'FinancialCommandCreate',response:'CommandReceipt',owner:'Benedict',implemented:true,idempotent:true},
+  {id:'authorizeLoanCommand',method:'POST',path:'/loans/{id}/commands/{commandId}/authorizations',request:'FinancialActionReason',response:'CommandReceipt',owner:'Benedict',implemented:true,idempotent:true,versioned:true},
+  {id:'submitLoanCommand',method:'POST',path:'/loans/{id}/commands/{commandId}/submission-intents',request:'FinancialActionReason',response:'CommandReceipt',owner:'Benedict',implemented:true,idempotent:true,versioned:true},
+  {id:'recordFictionalSettlement',method:'POST',path:'/loans/{id}/commands/{commandId}/simulated-settlements',request:'FinancialActionReason',response:'CommandReceipt',owner:'Benedict',implemented:true,idempotent:true,versioned:true},
+  {id:'checkFictionalSettlement',method:'POST',path:'/loans/{id}/commands/{commandId}/simulation-status-checks',request:'FinancialActionReason',response:'CommandReceipt',owner:'Benedict',implemented:true,idempotent:true,versioned:true},
+  {id:'finalizeLoanCommand',method:'POST',path:'/loans/{id}/commands/{commandId}/finalizations',request:'FinancialActionReason',response:'PostedResult',owner:'Benedict',implemented:true,idempotent:true,versioned:true},
+
   {id:'getMemberDecisionDocument',method:'GET',path:'/member/applications/{id}/decision-documents/{documentId}',response:'MemberDecisionDocument',owner:'Robert',implemented:true,principal:'member'},
   {id:'createPendingOrigination',method:'POST',path:'/applications/{id}/originations',request:'OriginationCreate',response:'CommandReceipt',owner:'Benedict',implemented:true,idempotent:true},
   {id:'getStaffDecisionWorkspace',method:'GET',path:'/applications/{id}/decision-workspace',response:'StaffDecisionWorkspace',owner:'Benedict',implemented:true},

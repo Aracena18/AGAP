@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PilotPostedResult, PilotMoneyCommand, PilotLoanView, PilotLoanWorkspace } from '../../../../../packages/contracts/src/lifecycle.js';
+import { PilotPostedResult, PilotMoneyCommand, PilotLoanView } from '../../../../../packages/contracts/src/lifecycle.js';
 import { CalendarDay, FinancialCommandCreateSchema, FinancialCommandSchema, Id, Instant, Version } from '../../../../../packages/contracts/src/schemas.js';
 import { Hash } from '../decisions/context.js';
 import { AuthorizationSchema, ObservationSchema, SubmissionSchema } from './context.js';
@@ -20,7 +20,7 @@ export const MoneyCommandSchema = z.strictObject({ format: z.literal('servicing-
 });
 export const SafeMoneyCommandSchema = PilotMoneyCommand;
 export const LoanViewSchema = PilotLoanView;
-export const LoanWorkspaceSchema = PilotLoanWorkspace;
+export { LoanWorkspaceSchema } from '../../../../../packages/contracts/src/schemas.js';
 export type PrincipalPolicy = z.infer<typeof PrincipalPolicySchema>;
 export type MoneyCommand = z.infer<typeof MoneyCommandSchema>;
 export type PostedResult = z.infer<typeof PostedResultSchema>;

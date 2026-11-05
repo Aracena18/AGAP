@@ -3,8 +3,8 @@ import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 const origin=`http://127.0.0.1:${process.env.AGAP_E2E_WEB_PORT??5174}`;
 test('actual separate staff review, unresolved notice, exact approval and reload through normal navigation',async({page,context,browser})=>{
-  test.setTimeout(90000);
-  const {connectedLending:f}=JSON.parse(await readFile('.platform-test/browser.json','utf8')) as {connectedLending:{appId:string;officer:string;reviewer:string;member:string;cashier:string}};
+  test.setTimeout(200000);
+  const {connectedLending:f}=JSON.parse(await readFile('.platform-test/browser.json','utf8')) as {connectedLending:{appId:string;officer:string;reviewer:string;member:string;cashier:string;authorizer:string;auditor:string;administrator:string}};
   await context.addCookies([{name:'agap_session',value:f.officer,url:origin,httpOnly:true,sameSite:'Lax'}]);
   const reviewerContext=await browser.newContext({baseURL:origin});
   try{
@@ -103,6 +103,117 @@ test('actual separate staff review, unresolved notice, exact approval and reload
       const download=member.waitForEvent('download');await decision.getByRole('button',{name:'Download exact saved terms',exact:true}).click();expect((await download).suggestedFilename()).toMatch(/^agap-terms-.*\.txt$/);
       await mkdir('docs/tasks/production/connected-lending-cl3/screenshots',{recursive:true});
       for(const width of [320,820,683,1366]){await member.setViewportSize({width,height:900});expect(await member.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);expect((await new AxeBuilder({page:member}).analyze()).violations).toEqual([]);await member.screenshot({path:`docs/tasks/production/connected-lending-cl3/screenshots/member-accepted-${width}.png`,fullPage:true});}
+      const cashierContext=await browser.newContext({baseURL:origin}), authorizerContext=await browser.newContext({baseURL:origin});
+      try {
+        await cashierContext.addCookies([{name:'agap_session',value:f.cashier,url:origin,httpOnly:true,sameSite:'Lax'}]);
+        await authorizerContext.addCookies([{name:'agap_session',value:f.authorizer,url:origin,httpOnly:true,sameSite:'Lax'}]);
+        const cashier=await cashierContext.newPage(), authorizer=await authorizerContext.newPage();
+        await cashier.goto('/#/staff/members');
+        await cashier.getByRole('link',{name:'Lending and payments',exact:true}).click();
+        const record=cashier.getByRole('article').filter({hasText:'Fictional connected lending journey'});
+        await expect(record.getByText('Member acceptance recorded',{exact:true})).toBeVisible();
+        await record.getByRole('button',{name:'Create pending fictional loan',exact:true}).click();
+        await record.getByRole('link',{name:'Open loan and payments',exact:true}).click();
+        await expect(cashier.getByText(/No posted balance is available/)).toBeVisible();
+        await cashier.getByLabel('Action reason',{exact:true}).fill('Prepare exact accepted fictional principal for separate authorization.');
+        await cashier.getByLabel('Fictional instrument reference',{exact:true}).fill('FIC-BROWSER-RELEASE-01');
+        const releaseCalls:{body:string|null;key:string|undefined}[]=[];let lostRelease=true;
+        await cashier.route('**/api/v1/loans/*/release-preparations',async route=>{releaseCalls.push({body:route.request().postData(),key:route.request().headers()['idempotency-key']});if(lostRelease){lostRelease=false;await route.fetch();await route.abort('failed');}else await route.continue();});
+        await cashier.getByRole('button',{name:'Prepare fictional release',exact:true}).click();
+        await cashier.getByRole('button',{name:'Retry same submission',exact:true}).click();
+        await expect(cashier.getByText('prepared',{exact:true})).toBeVisible();
+        expect(releaseCalls).toHaveLength(2);expect(releaseCalls[1]).toEqual(releaseCalls[0]);
+        const loanUrl=cashier.url();await authorizer.goto(loanUrl);
+        await authorizer.getByLabel('Action reason',{exact:true}).fill('Independent authorization of exact accepted fictional principal.');
+        await authorizer.getByRole('button',{name:'Authorize release',exact:true}).click();
+        await expect(authorizer.getByText('authorized',{exact:true})).toBeVisible();
+        await cashier.getByRole('button',{name:'Refresh saved position',exact:true}).click();
+        await cashier.getByLabel('Action reason',{exact:true}).fill('Record fictional release submission intent.');
+        await cashier.getByRole('button',{name:'Record submission intent',exact:true}).click();
+        await expect(cashier.getByText('submitted',{exact:true})).toBeVisible();
+        await cashier.getByLabel('Action reason',{exact:true}).fill('Record server-created fictional settlement, with no real funds.');
+        await cashier.getByRole('button',{name:'Record simulated settlement',exact:true}).click();
+        await expect(cashier.getByText('confirmed unposted',{exact:true})).toBeVisible();
+        await authorizer.getByRole('button',{name:'Refresh saved position',exact:true}).click();
+        await authorizer.getByLabel('Action reason',{exact:true}).fill('Post independently verified fictional settlement to the real ledger.');
+        await authorizer.getByRole('button',{name:'Post recorded movement',exact:true}).click();
+        await expect(authorizer.getByText('active',{exact:true})).toBeVisible();
+        await authorizer.reload();await expect(authorizer.getByText('active',{exact:true})).toBeVisible();
+        await member.goto('/#/member/loans');await expect(member.getByText('Outstanding principal',{exact:true}).first()).toBeVisible();
+        const linkedLoanId=loanUrl.split('/loans/')[1];
+        await member.goto('/#/member/help');
+        await member.getByText('Add a loan or check-in (optional)',{exact:true}).click();
+        await expect(member.getByLabel('Related loan (optional)',{exact:true}).locator(`option[value="${linkedLoanId}"]`)).toBeAttached();
+        await member.getByLabel('Related loan (optional)',{exact:true}).selectOption(linkedLoanId);
+        await member.getByLabel('What changed, and what help do you need?',{exact:true}).fill('Fictional household needs changed; please arrange a support conversation without changing the accepted loan terms.');
+        await member.getByLabel('Can you currently meet essential expenses?',{exact:true}).selectOption('no');
+        await member.getByRole('button',{name:'Review request',exact:true}).click();
+        await member.getByLabel('I agree to send this message for staff review.',{exact:true}).check();
+        const [supportResponse]=await Promise.all([member.waitForResponse(r=>r.request().method()==='POST'&&r.url().endsWith('/api/v1/member/support-requests')),member.getByRole('button',{name:'Send request',exact:true}).click()]);
+        expect(supportResponse.status()).toBe(201);const supportId=(await supportResponse.json()).id as string;
+        await expect(member.getByText('Your payment-help request was sent for staff review. Your current payment terms remain unchanged.',{exact:true})).toBeVisible();
+        await cashier.getByRole('button',{name:'Refresh saved position',exact:true}).click();
+        await cashier.getByLabel('Action reason',{exact:true}).fill('Prepare the exact due fictional scheduled principal payment.');
+        await cashier.getByLabel('Fictional instrument reference',{exact:true}).fill('FIC-BROWSER-REPAY-01');
+        await cashier.getByRole('button',{name:'Prepare scheduled repayment',exact:true}).click();
+        await expect(cashier.getByText('prepared',{exact:true})).toBeVisible();
+        await authorizer.getByRole('button',{name:'Refresh saved position',exact:true}).click();
+        await authorizer.getByLabel('Action reason',{exact:true}).fill('Separate authorization of the exact due fictional repayment.');
+        await authorizer.getByRole('button',{name:'Authorize repayment',exact:true}).click();
+        await expect(authorizer.getByText('authorized',{exact:true})).toBeVisible();
+        await cashier.getByRole('button',{name:'Refresh saved position',exact:true}).click();
+        await cashier.getByLabel('Action reason',{exact:true}).fill('Record the original fictional repayment submission intent.');
+        await cashier.getByRole('button',{name:'Record submission intent',exact:true}).click();
+        await expect(cashier.getByText('submitted',{exact:true})).toBeVisible();
+        await cashier.getByLabel('Action reason',{exact:true}).fill('Record fictional repayment settlement using the server simulation.');
+        await cashier.getByRole('button',{name:'Record simulated settlement',exact:true}).click();
+        await expect(cashier.getByText('confirmed unposted',{exact:true})).toBeVisible();
+        await authorizer.getByRole('button',{name:'Refresh saved position',exact:true}).click();
+        await authorizer.getByLabel('Action reason',{exact:true}).fill('Post the independently authorized exact fictional repayment.');
+        await authorizer.getByRole('button',{name:'Post recorded movement',exact:true}).click();
+        await expect(authorizer.getByLabel('Selected saved receipt',{exact:true})).toBeVisible();
+        const receiptId=await authorizer.getByLabel('Selected saved receipt',{exact:true}).locator('option').nth(1).getAttribute('value');
+        expect(receiptId).toBeTruthy();await authorizer.getByLabel('Selected saved receipt',{exact:true}).selectOption(receiptId!);
+        const savedReceipt=authorizer.getByRole('article',{name:'Saved repayment receipt',exact:true});
+        await expect(savedReceipt).toBeVisible();await expect(savedReceipt.getByText('₱500',{exact:true})).toHaveCount(2);
+        await member.goto('/#/member/loans');await expect(member.getByText('Outstanding principal',{exact:true})).toBeVisible();
+        await member.getByText('View payment receipts',{exact:true}).click();await expect(member.getByText(`Receipt ${receiptId}`,{exact:true})).toBeVisible();
+        await mkdir('docs/tasks/production/connected-lending-cl4/screenshots',{recursive:true});
+        for(const width of [320,820,683,1366]) {await authorizer.setViewportSize({width,height:900});expect(await authorizer.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);expect((await new AxeBuilder({page:authorizer}).analyze()).violations).toEqual([]);await authorizer.screenshot({path:`docs/tasks/production/connected-lending-cl4/screenshots/posted-release-${width}.png`,fullPage:true});}
+        const adminContext=await browser.newContext({baseURL:origin});
+        try {
+          await adminContext.addCookies([{name:'agap_session',value:f.administrator,url:origin,httpOnly:true,sameSite:'Lax'}]);
+          const admin=await adminContext.newPage();await admin.goto('/#/staff/support-requests');
+          await admin.getByRole('button',{name:`Open support request ${supportId}`,exact:true}).click();
+          await admin.getByLabel('Responsible officer',{exact:true}).selectOption({label:'Fictional connected officer'});
+          await admin.getByLabel('Assignment reason',{exact:true}).fill('Assign a separate actual support responsibility for the fictional linked loan.');
+          await admin.getByRole('button',{name:'Assign officer',exact:true}).click();
+          await expect(admin.getByText(`${supportId} · Version 2`,{exact:true})).toBeVisible();
+          await page.goto('/#/staff/support-requests');
+          await page.getByRole('button',{name:`Open support request ${supportId}`,exact:true}).click();
+          const captured=page.getByRole('heading',{name:'Dated loan position',exact:true}).locator('..');
+          await expect(captured.getByText('₱1,000',{exact:true})).toBeVisible();
+          await page.getByRole('button',{name:'Refresh current position',exact:true}).click();
+          const fresh=page.getByRole('region',{name:'Current posted loan position',exact:true});
+          await expect(fresh.getByText('₱500',{exact:true})).toBeVisible();
+          await expect(captured.getByText('₱1,000',{exact:true})).toBeVisible();
+          await page.getByLabel('Response shared with member',{exact:true}).fill('We received your concern and will discuss options. Your accepted loan terms remain unchanged.');
+          await page.getByLabel('Internal staff action / note',{exact:true}).fill('Fictional separate support follow-up; original captured principal and fresh posted principal inspected.');
+          await page.getByRole('button',{name:'Publish response',exact:true}).click();
+          await expect(page.getByText(`${supportId} · Version 3`,{exact:true})).toBeVisible();
+          await member.goto('/#/member/help');await expect(member.getByText('We received your concern and will discuss options. Your accepted loan terms remain unchanged.',{exact:true})).toBeVisible();
+          await expect(member.getByText('Fictional separate support follow-up; original captured principal and fresh posted principal inspected.',{exact:true})).toHaveCount(0);
+        } finally {await adminContext.close();}
+        const auditorContext=await browser.newContext({baseURL:origin});
+        try {
+          await auditorContext.addCookies([{name:'agap_session',value:f.auditor,url:origin,httpOnly:true,sameSite:'Lax'}]);
+          const auditor=await auditorContext.newPage();await auditor.goto('/#/staff/reconciliations');
+          await auditor.getByRole('button',{name:'Run reconciliation',exact:true}).click();
+          await expect(auditor.getByRole('heading',{name:'Saved reconciliation result',exact:true})).toBeVisible();
+          await expect(auditor.getByText('2 event records',{exact:true})).toBeVisible();
+          await expect(auditor.getByText('Matched',{exact:true}).first()).toBeVisible();
+        } finally {await auditorContext.close();}
+      } finally {await cashierContext.close();await authorizerContext.close();}
     }finally{await memberContext.close();}
   }finally{await reviewerContext.close();}
 });

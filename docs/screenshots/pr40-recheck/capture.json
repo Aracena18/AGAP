@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-06",
+  "source": "Final passing 145-case ordinary browser suite",
+  "captures": [
+    {
+      "file": "analysis-320.png",
+      "width": 320,
+      "sha256": "fd464caa42d2c76965d206c62ce78e2b8b1c2e36c6cfefca4c81521d527ef756",
+      "scope": "Fictional combined candidate; narrative 5C and explicit scenario, full-page Chromium capture"
+    },
+    {
+      "file": "analysis-1366.png",
+      "width": 1366,
+      "sha256": "69dbcb7864c221abfabe3708cb76713ad6f2f6c1def9da68a1914d31e62b31b1",
+      "scope": "Fictional combined candidate; narrative 5C and explicit scenario, full-page Chromium capture"
+    }
+  ]
+}

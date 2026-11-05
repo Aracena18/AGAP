@@ -9,7 +9,7 @@ import {z} from 'zod';
 
 /** Source-owned bounded reader; the coordinator retains the same transaction across all stages. */
 export class ServicingReportingReader {
- constructor(private readonly ports:MoneyPorts,private readonly pageSize=INVENTORY_PAGE_SIZE){z.number().int().min(1).max(INVENTORY_PAGE_SIZE).parse(pageSize);}
+ constructor(private readonly ports:MoneyPorts,private readonly pageSize=INVENTORY_PAGE_SIZE,private readonly reportPolicy?:{policy(tx:TransactionContext,loanId:string,componentVersion:string):Promise<import('./money-context.js').PrincipalPolicy>}){z.number().int().min(1).max(INVENTORY_PAGE_SIZE).parse(pageSize);}
  async inventoryPage(tx:TransactionContext,scope:InventoryScope,value:InventoryCursor|null){
   requireRoles(tx.actor,['auditor']);Id.parse(scope.organizationId);CalendarDay.parse(scope.fromDate);CalendarDay.parse(scope.throughDate);
   insist(tx.actor.organizationId===scope.organizationId,'actor_scope','Reporting scope belongs to another organization.');
@@ -40,7 +40,7 @@ export class ServicingReportingReader {
    AND NOT EXISTS(SELECT 1 FROM servicing.staff_postings p WHERE p.organization_id=$1 AND p.event_id=(r.body->>'businessEventId')::uuid AND p.effective_date BETWEEN $2::date AND $3::date AND p.recorded_at<=$4::timestamptz)
    AND NOT EXISTS(SELECT 1 FROM (SELECT DISTINCT ON(command_id) body FROM servicing.staff_money_revisions WHERE organization_id=$1 AND recorded_at<=$4::timestamptz ORDER BY command_id,version DESC) m WHERE m.body->>'eventId'=r.body->>'businessEventId' AND m.body->>'state'<>'confirmed' AND (m.body#>>'{payload,effectiveDate}')::date BETWEEN $2::date AND $3::date)
    ORDER BY command_id LIMIT $6`,args),rows=result.rows.slice(0,size),events=[];
-  for(const row of rows){if(row.recorded_at===null)return{state:'unavailable' as const,reason:'Historical command recording times are unavailable for this cutoff.'};const c=inspectCommand(row.body),policy=await this.ports.policy(tx,c.loanId);events.push({organizationId:c.organizationId,currency:'PHP' as const,id:c.businessEventId,loanId:c.loanId,kind:'disbursement',effectiveDate:c.payload.effectiveDate,recordedAt:(row.recorded_at as Date).toISOString(),amountCentavos:c.amountCentavos,state:c.observations.some(o=>o.input.state==='confirmed')?'confirmed_unposted':c.state,postingRuleVersionId:policy.releaseRuleId,receiptId:null,journalId:null});}
+  for(const row of rows){if(row.recorded_at===null)return{state:'unavailable' as const,reason:'Historical command recording times are unavailable for this cutoff.'};const c=inspectCommand(row.body),policy=this.reportPolicy?await this.reportPolicy.policy(tx,c.loanId,c.componentRuleVersionId):await this.ports.policy(tx,c.loanId);events.push({organizationId:c.organizationId,currency:'PHP' as const,id:c.businessEventId,loanId:c.loanId,kind:'disbursement',effectiveDate:c.payload.effectiveDate,recordedAt:(row.recorded_at as Date).toISOString(),amountCentavos:c.amountCentavos,state:c.observations.some(o=>o.input.state==='confirmed')?'confirmed_unposted':c.state,postingRuleVersionId:policy.releaseRuleId,receiptId:null,journalId:null});}
   return ServicingInventoryPageSchema.parse({...empty,events,nextCursor:result.rows.length>size?{stage:'legacy',after:rows.at(-1)!.command_id}:null});
  }
 }

@@ -66,34 +66,16 @@ describe('entered-application demonstration analysis',()=>{
   expect(r.recommended?.stressChecks).toMatchObject([{id:'cash-timing',minimumCentavos:50000,actualCentavos:40000,passed:false},{id:'remaining:2026-01',minimumCentavos:50000,passed:false}]);
   expect(r.priority).toBe('urgent');expect(canConsider(r.recommended,a)).toBe(false);
  });
- it('automatically models emergency risk, outputs 5C percentages, and generates actionable solvers for red flags',()=>{
-  const view=fixture();
-  const r=buildReview(view,assumptions,'Farm renovation');
-  // Automated risk
-  expect(r.autoRisk).toMatchObject({probabilityPercent:26,category:'medical'});
-  expect(r.autoRisk.modeledAmountCentavos).toBeGreaterThan(0);
-  // 5C percentages
-  expect(r.fiveC.Character.scorePercent).toBe(85);
-  expect(r.fiveC.Character.statusBadge).toContain('%');
-  expect(r.fiveC.Capacity.scorePercent).toBeGreaterThanOrEqual(50);
-  expect(r.fiveC.Capital.scorePercent).toBeGreaterThanOrEqual(50);
-  expect(r.fiveC.Collateral.scorePercent).toBe(80);
-  expect(r.fiveC.Conditions.scorePercent).toBe(86);
-  expect(r.overallScore).toBeGreaterThanOrEqual(70);
-
-  // Stressed shortfall scenario triggers Red Flag with suggested term extension solver
-  const stressed=buildReview(view,{...assumptions,expense:{label:'Emergency hospital bill',amount:60000,date:'2026-01-12'}});
-  const shortfallFlag=stressed.redFlags.find(f=>f.id==='cash-shortfall');
-  expect(shortfallFlag).toBeDefined();
-  expect(shortfallFlag?.severity).toBe('danger');
-  expect(shortfallFlag?.suggestedSolution.title).toBe('Extend Repayment Term');
-  expect(shortfallFlag?.suggestedSolution.actionType).toBe('term');
-  expect(shortfallFlag?.suggestedSolution.impact).toContain('amortization');
-
-  // Timing mismatch flag when payment due date precedes take-home income
-  const timingFlag=r.redFlags.find(f=>f.id==='timing-mismatch');
-  expect(timingFlag).toBeDefined();
-  expect(timingFlag?.suggestedSolution.title).toBe('Align Repayment Schedule with Payday');
-  expect(timingFlag?.suggestedSolution.actionType).toBe('schedule');
+ it('models no emergency, probability, score or new offer without supplied inputs',()=>{
+  const view=fixture(),before=JSON.stringify(view),r=buildReview(view,assumptions);
+  expect(r.options.every(o=>o.stressed===null&&o.stressChecks===null)).toBe(true);
+  expect(r).not.toHaveProperty('autoRisk');expect(r).not.toHaveProperty('fiveC');expect(r).not.toHaveProperty('overallScore');
+  expect(r.options.map(o=>o.offerId)).toEqual(['offer']);expect(JSON.stringify(view)).toBe(before);
+ });
+ it('keeps missing financial evidence unavailable without a favorable fallback',()=>{
+  const view=fixture();view.facts=[];
+  const r=buildReview(view,assumptions);
+  expect(r).toMatchObject({recommended:null,lowest:null,priority:'clarification',options:[]});
+  expect(r).not.toHaveProperty('autoRisk');expect(r).not.toHaveProperty('overallScore');
  });
 });

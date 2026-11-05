@@ -191,9 +191,9 @@ describe('Phase 5 actual servicing/AccountingService with fictional upstream pro
   it('posts under non-superuser non-BYPASSRLS servicing function ownership', async () => {
     const role = 'agap_phase5_money_definer';
     await owner.query(`DO $$ BEGIN IF NOT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='${role}') THEN CREATE ROLE ${role} NOLOGIN NOSUPERUSER NOBYPASSRLS; END IF; END $$;
-      GRANT USAGE ON SCHEMA servicing,platform,identity,accounting TO ${role};
+      GRANT USAGE ON SCHEMA servicing,platform,identity,accounting,monitoring TO ${role};
       GRANT SELECT ON ALL TABLES IN SCHEMA servicing,accounting TO ${role};
-      GRANT EXECUTE ON FUNCTION platform.current_organization(),platform.allowed_branch(uuid),platform.current_member(),servicing.staff_role(text) TO ${role};`);
+      GRANT EXECUTE ON FUNCTION platform.current_organization(),platform.allowed_branch(uuid),platform.current_member(),servicing.staff_role(text),monitoring.support_loan_scope(uuid,uuid,uuid) TO ${role};`);
     const functions = ['validate_money_revision()', 'require_posted_effects()', 'require_money_movement()', 'require_money_command()'];
     try {
       for (const fn of functions) await owner.query(`ALTER FUNCTION servicing.${fn} OWNER TO ${role}`);

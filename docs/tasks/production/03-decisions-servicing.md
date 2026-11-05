@@ -127,3 +127,8 @@ The user authorizes sequential connected-lending work. [CL2 implementation/verif
 ## CL3 exact member candidate — 5 November 2026
 
 The [CL3 record](connected-lending-cl3/IMPLEMENTATION.md) connects actual own-member decision/terms/acceptance, verifies exact saved document bytes on server and browser, preserves opening-version acknowledgment and original retry after later currentness changes, and adds safe cashier-only preparation of one pending origination. No posted funds, private authority projection, new institutional product rule or human acceptance is supplied. Targeted actual HTTP/member browser checks pass; full verification/publication is recorded in that record. Existing task ownership and later PAY-01/SRV-01/Qwen scope remain unchanged.
+
+
+## CL4–CL6 resumed code contribution — 5 November 2026
+
+The user requests finishing the remaining code for manual teammate handoff. Actual guarded release/repayment services, server-owned durable fictional settlement, atomic GL, safe staff navigation, immutable receipt/member refresh and independent reporting are connected; the narrow support projection remains Earl's HLT-01 boundary under coordinated authorization. The [handoff](connected-lending-cl6/HANDOFF.md) records observed tests and the approval-service block on final full verification/integration. This is an uncommitted candidate; no live execution, main publication, institutional policy or human receiving-owner acceptance is fabricated. CL7–CL8 external product/runtime/release gates remain separate.

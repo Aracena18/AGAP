@@ -98,4 +98,45 @@ describe('Staff loan workspace with explicit simulated gateway', () => {
     await user.click(screen.getByRole('button', { name: 'Change test session scope' }));
     expect(screen.queryByRole('article')).not.toBeInTheDocument(); expect(await screen.findByRole('alert')).toHaveTextContent('unavailable to the current account');
   });
+  it('captures the exact release payload and preserves it after an uncertain response', async () => {
+    const f = loanUiFixture(), user = userEvent.setup();
+    f.session.user.roles = ['cashier'];
+    f.view.origination = { applicationId: testId(309), principalCentavos: 1_000_000, currency: 'PHP', payments: [{ date: '2026-11-25', amountCentavos: 1_000_000 }] };
+    f.view.canPrepareRelease = true;
+    f.view.commands = [];
+    const send = vi.fn(f.gateway.act).mockRejectedValueOnce(new Error('Lost release response'));
+    mount(f, { ...f.gateway, act: send });
+    await screen.findByRole('button', { name: 'Prepare fictional release' });
+    await user.type(screen.getByLabelText('Action reason'), 'Checked accepted terms and principal.');
+    await user.type(screen.getByLabelText('Fictional instrument reference'), 'FIC-RELEASE-01');
+    await user.click(screen.getByRole('button', { name: 'Prepare fictional release' }));
+    await screen.findByRole('button', { name: 'Retry same submission' });
+    expect(screen.getByLabelText('Fictional instrument reference')).toBeDisabled();
+    expect(send.mock.calls[0][1]).toEqual({ action: 'prepare_release', commandId: null, version: null, reason: 'Checked accepted terms and principal.', payload: { loanId: f.loanId, amountCentavos: 1_000_000, currency: 'PHP', effectiveDate: '2026-11-02', method: 'cash', instrumentReference: 'FIC-RELEASE-01', reason: 'Checked accepted terms and principal.' } });
+    await user.click(screen.getByRole('button', { name: 'Retry same submission' }));
+    await screen.findByText(/Action recorded/);
+    expect(send.mock.calls[1]).toEqual(send.mock.calls[0]);
+  });
+  it('checks an unknown movement using its original command and version', async () => {
+    const f = loanUiFixture(), user = userEvent.setup(), send = vi.fn(f.gateway.act);
+    f.view.commands[0].state = 'unknown'; mount(f, { ...f.gateway, act: send });
+    await screen.findByRole('button', { name: 'Check existing simulated settlement' });
+    await user.type(screen.getByLabelText('Action reason'), 'Recheck the existing fictional movement.');
+    await user.click(screen.getByRole('button', { name: 'Check existing simulated settlement' }));
+    await screen.findByText(/Action recorded/);
+    expect(send.mock.calls[0][1]).toEqual({ action: 'check_simulation', commandId: f.commandId, version: 4, reason: 'Recheck the existing fictional movement.' });
+  });
+
+  it('prepares only the displayed exact scheduled repayment and captures its due date', async () => {
+    const f = loanUiFixture(true), user = userEvent.setup(), send = vi.fn(f.gateway.act);
+    f.session.user.roles = ['cashier']; f.view.nextPayment = { date: '2026-11-02', amountCentavos: 50000 };
+    mount(f, { ...f.gateway, act: send });
+    await screen.findByRole('button', { name: 'Prepare scheduled repayment' });
+    await user.type(screen.getByLabelText('Action reason'), 'Exact scheduled fictional repayment.');
+    await user.type(screen.getByLabelText('Fictional instrument reference'), 'FIC-PAYMENT-01');
+    await user.click(screen.getByRole('button', { name: 'Prepare scheduled repayment' }));
+    await screen.findByText(/Action recorded/);
+    expect(send.mock.calls[0][1].payload).toEqual({ loanId: f.loanId, amountCentavos: 50000, currency: 'PHP', effectiveDate: '2026-11-02', method: 'cash', instrumentReference: 'FIC-PAYMENT-01', reason: 'Exact scheduled fictional repayment.' });
+  });
+
 });
