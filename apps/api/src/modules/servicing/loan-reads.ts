@@ -39,13 +39,13 @@ export class LoanReads {
         const principal = release ? BigInt(release.amountCentavos) - repaid : null;
         const due = loan.offer.payments.filter(p => p.date <= day).reduce((n, p) => n + BigInt(p.amountCentavos), 0n) - repaid;
         const pending = commands.filter(c => !['confirmed', 'failed'].includes(c.state)).length;
-        const paidCount = events.filter(e => e.kind === 'repayment').length;
+        const paidCount = dated.filter(e => e.kind === 'repayment').length;
         return LoanWorkspaceSchema.parse({ loanId: id, organizationId: loan.organizationId, branchId: loan.branchId, memberLabel: `Member identifier: ${loan.memberId}`, commands,
           message: release ? 'Balances reflect posted events. Pending movements do not reduce debt.' : 'No posted release exists for this date. A pending loan is not active.',
           nextPayment: release && loan.offer.payments[paidCount] ? loan.offer.payments[paidCount] : null,
           position: release && principal !== null ? { loanId: id, applicationId: loan.applicationId, memberLabel: `Member identifier: ${loan.memberId}`, state: principal === 0n ? 'settled' : 'active',
             asOfDate: day, principalCentavos: Number(principal), interestDueCentavos: 0, feesDueCentavos: 0, overdueCentavos: Number(due > 0n ? due : 0n),
-            postedThrough: events.reduce((a, e) => Date.parse(a) > Date.parse(e.postedAt) ? a : e.postedAt, release.postedAt),
+            postedThrough: dated.reduce((a, e) => Date.parse(a) > Date.parse(e.postedAt) ? a : e.postedAt, release.postedAt),
             pendingMovementCount: pending, schedule: loan.offer.payments, receipts: dated.filter(e => e.receiptId !== null), commands } : null });
       });
     });

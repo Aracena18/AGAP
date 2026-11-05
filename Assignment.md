@@ -14,6 +14,12 @@ The [product solution](docs/AGAP_Product_Solution.md) governs scope; the [archit
 
 The user explicitly approves coordinated implementation across Robert's shared/platform/member paths and Aaron's EVD-01/CRD-01/AI-01 paths in this chat, on `codex/evidence-affordability` over `312c6f8`. This is a task-specific authorization, not a permanent ownership transfer or independent acceptance. The [0.3.0 proposal](docs/AGAP_Evidence_Assessment_Contract_Proposal.md), [implementation/evidence and release blockers](docs/AGAP_Evidence_Workflow_Delivery.md) and [cost proposal](docs/AGAP_Hosting_Cost_Proposal.md) govern this supplied slice. The current milestone includes AI extraction code now; actual inference/evaluation, Azure quotas/eligibility, budget and institutional release remain required external inputs. No paid provisioning, DNS changes or real records are enabled.
 
+## Connected lending implementation continuation — 5 November 2026
+
+The user requests implementation of the [connected-lending plan](docs/AGAP_Connected_Lending_Implementation_Plan.md). Work starts on `feat/connected-lending-cl0`, baseline `59351ce`, in an isolated worktree. This is coordinated authorization for the planned shared/platform/member, evidence and decision/servicing safety corrections; named domain ownership remains unchanged and no receiving-owner or institutional acceptance is fabricated.
+
+The [implementation record](docs/tasks/production/connected-lending-cl0/IMPLEMENTATION.md) records actual changes/checks. CL0 supplies financial-editor concurrency/draft protection, historical staff-position correction, dependency/build/credential safeguards and bounded capability reporting. The acceptance replay correction is supplied ahead of CL3 and verified against actual decision persistence through HTTP. The [CL1 field-level proposal](docs/AGAP_Connected_Lending_Contract_Proposal.md) is supplied for actual consuming-owner review; canonical version 0.3.0 and unavailable decision/payment defaults remain unchanged. Full connected lending, real model/runtime activation, operational financial breadth and institutional release remain unfinished. Existing task statuses, owner budgets and stage-two scope are preserved; this is progress within FND-03/MOB-01/SHOW-01/OPS-01, EVD-01/CRD-01 and DEC-01/PAY-01, not completion of those packages.
+
 ## Team ownership
 
 | Person | Role | Exclusive responsibility | Current task brief |

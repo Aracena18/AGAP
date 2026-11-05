@@ -39,7 +39,9 @@
     "member:provision": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/scripts/provision-member.ts",
     "policy:publish": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/scripts/publish-credit-policy.ts",
     "worker:build": "tsc -p tsconfig.platform.json --noEmit && esbuild --tsconfig=tsconfig.platform.json apps/worker/src/main.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-worker/main.js",
-    "evidence:retire": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/scripts/retire-evidence.ts"
+    "evidence:retire": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/scripts/retire-evidence.ts",
+    "security:check": "npm audit --omit=dev --audit-level=high",
+    "test:build-context": "node infra/scripts/verify-build-context.mjs"
   },
   "dependencies": {
     "@azure/identity": "4.14.1",
@@ -83,5 +85,13 @@
     "typescript-eslint": "^8.72.0",
     "vite": "^8.3.4",
     "vitest": "^5.0.5"
+  },
+  "overrides": {
+    "@nestjs/platform-express": {
+      "multer": "2.5.0"
+    },
+    "express": {
+      "body-parser": "2.4.0"
+    }
   }
 }

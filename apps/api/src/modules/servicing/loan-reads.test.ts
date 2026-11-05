@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { ActorContext, MemberActorContext, QueryResult, TransactionContext } from '../../../../../packages/contracts/src/ports.js';
-import { owner, runtimePool, uow, resetFixtures, prepareDatabase, closePools } from '../../../test/database.js';
+import { owner, ownerUrl, runtimePool, uow, resetFixtures, prepareDatabase, closePools } from '../../../test/database.js';
 import { createPool, PostgresUnitOfWork } from '../../platform/database.js';
 import { PostgresMemberUnitOfWork } from '../../platform/member-database.js';
 import { migrationDirectories } from '../../platform/migrate.js';
@@ -40,7 +40,7 @@ async function auditor(): Promise<ActorContext> {
   return { ...f.officer, roles: ['auditor'] };
 }
 async function report(afterServicing?: () => Promise<void>) {
-  const actor = await auditor(), url = new URL(process.env.AGAP_TEST_DATABASE_URL!); url.username = 'agap_runtime'; url.password = 'development-runtime';
+  const actor = await auditor(), url = new URL(ownerUrl); url.username = 'agap_runtime'; url.password = 'development-runtime';
   const pool = createPool(url.href, { options: '-c default_transaction_isolation=serializable' });
   try {
     return await new PostgresUnitOfWork(pool).run(actor, async tx => {
@@ -69,6 +69,27 @@ describe('Dated safe projections and actual independent principal reconciliation
     expect(v.position?.receipts[0]).toEqual(r.receipt); expect(v.position?.schedule).toEqual(r.loan.offer.payments);
     expect(v.commands.every(c => c.state === 'confirmed')).toBe(true);
     expect((await reads.workspace(f.cashier, r.loan.id, '2026-11-01')).position).toBeNull();
+  });
+  it('retains the historical next payment before a later effective repayment without including that receipt or freshness', async () => {
+    f = await seedMoneyFixture(false, '2026-11-03');
+    reads = new LoanReads(uow, moneyPorts, undefined, undefined, f.clock);
+    const r = await released();
+    const at = '2026-11-03T01:00:00Z';
+    f.setTime(at);
+    const cashier = { ...f.cashier, authenticatedAt: new Date(at) }, authorizer = { ...f.authorizer, authenticatedAt: new Date(at) };
+    for (const actor of [cashier, authorizer]) {
+      await owner.query('UPDATE identity.sessions SET authenticated_at=$2 WHERE id=$1', [actor.sessionId, at]);
+    }
+    const c = await f.money.prepareRepayment(cashier, r.loan.id, { ...r.request, effectiveDate: '2026-11-03' }, key());
+    await f.money.authorize(authorizer, c.id, 1, key());
+    const intent = await f.money.submitIntent(cashier, c.id, 2, key());
+    await f.money.observe(cashier, c.id, await f.paymentEvidence(intent), 3, key());
+    await f.money.finalize(authorizer, c.id, 4, key());
+    const historical = await reads.workspace(cashier, r.loan.id, '2026-11-02');
+    expect(historical.nextPayment).toEqual({ date: '2026-11-03', amountCentavos: 1_000_000 });
+    expect(historical.position).toMatchObject({ principalCentavos: 1_000_000, receipts: [], postedThrough: r.posted.postedAt });
+    const current = await reads.workspace(cashier, r.loan.id, '2026-11-03');
+    expect(current.position?.principalCentavos).toBe(0); expect(current.nextPayment).toBeNull();
   });
   it('keeps submitted and unknown payments out of debt reduction and receipt lists', async () => {
     const r = await released(), c = await f.money.prepareRepayment(f.cashier, r.loan.id, r.request, key());

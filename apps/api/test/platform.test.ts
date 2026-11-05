@@ -1,5 +1,6 @@
 import { afterAll,beforeAll,beforeEach,describe,expect,it } from 'vitest';
 import { randomUUID } from 'node:crypto';
+import { gzipSync } from 'node:zlib';
 import type { INestApplication } from '@nestjs/common';
 import { createApp } from '../src/app.js';
 import { command,recordEvent } from '../src/platform/commands.js';
@@ -25,6 +26,15 @@ async function request(path:string,{method='GET',body,version,idempotencyKey,tok
 async function createMember(){const response=await request('/members',{method:'POST',body:memberInput(),idempotencyKey:key()});expect(response.status).toBe(201);return response.body;}
 
 describe('actual staff API and runtime database roles',()=>{
+  it('rejects malformed or trailing compressed JSON without terminating the API before authentication', async () => {
+    for (const body of [Buffer.from('not-gzip'), Buffer.concat([gzipSync(Buffer.from('{}')), Buffer.from('trailing-bytes')])]) {
+      const response = await fetch(`${base}/api/v1/members`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Encoding': 'gzip' }, body });
+      expect([400, 401]).toContain(response.status);
+      await response.arrayBuffer();
+      expect((await fetch(`${base}/api/v1/health`)).status).toBe(200);
+    }
+  });
+
   it('reassigns intake with fresh admin MFA and history without changing assessment inputs',async()=>{
     const member=await createMember();
     const application=(await request('/applications',{method:'POST',body:{memberId:member.id,purpose:'Fictional reassignment test',requestedPrincipalCentavos:10000,requestedTermMonths:12,currency:'PHP'},idempotencyKey:key()})).body;
@@ -136,6 +146,12 @@ describe('actual staff API and runtime database roles',()=>{
     expect(result.status).toBe(501);expect(result.body).toMatchObject({error:{code:'module_not_available'}});
     const capabilities=await request('/capabilities');
     expect(capabilities.body.modules).toContainEqual({name:'accounting',owner:'Earl',state:'contract_only'});
+    expect(capabilities.body.modules).toEqual(expect.arrayContaining([
+      {name:'servicing.member_loan_reads',owner:'Benedict',state:'available'},
+      {name:'accounting.principal_reconciliation',owner:'Earl',state:'available'},
+      {name:'monitoring.payment_help',owner:'Earl',state:'available'},
+      {name:'monitoring.follow_ups',owner:'Earl',state:'available'},
+    ]));
   });
   it('removes the server session on logout and does not echo sensitive input in errors',async()=>{
     const result=await request('/auth/logout',{method:'POST'});expect(result.status).toBe(200);

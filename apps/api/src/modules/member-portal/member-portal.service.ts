@@ -50,9 +50,10 @@ export class MemberPortalService {
   accept(actor:MemberActorContext,id:string,input:unknown,version:number,key:unknown){
     const data=schemas.MemberAcceptance.parse(input),stable=memberKey(key);
     return this.uow.run(actor,async tx=>{
-      await this.applications.own(tx,id);const view=checked(schemas.MemberDecisionView,await this.domains.decision(tx,id));
-      if(view.state==='unavailable')return pending();
-      if(!view.data||view.data.outcome!=='approve'||!view.data.terms||!validOption(view.data.terms)||view.data.id!==data.decisionId||view.data.documentVersionId!==data.documentVersionId)throw new ApiError(409,'approved_terms_required','Review the current complete approved terms before accepting.');
+      await this.applications.own(tx,id);
+      // The authoritative command checks current resource access before replay,
+      // then validates current approved terms for NEW attempts. A preflight read
+      // here would incorrectly reject a receipt for an already committed attempt.
       return checked(schemas.CommandReceipt,await this.domains.accept(tx,id,data,version,stable));
     });
   }
