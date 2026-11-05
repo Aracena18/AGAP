@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "agap-experiment-f-identity/v1",
+  "packageName": "AGAP_F_Integration_Adapter_v1",
+  "packageSha256": "14aa558ffe0691a5864d097dd32d313a5162782b74d6df4c6d462a849f2f7316",
+  "baseModel": "unsloth/Qwen3.5-2B",
+  "baseRevision": "fffbc0d8711cf87df6d1f97938c5e50ef94aadc7",
+  "artifactSha256": "d545e956fc4bfde80ae78eac592de1bc7355a8e767c20facdc39c536db157f00",
+  "files": {
+    "README_INTEGRATION.md": {
+      "bytes": 5239,
+      "sha256": "daba68ae012a4db4e6ddb3bc13d218d6b4ea621ec2b7cb8817eaf45cde0133b7"
+    },
+    "__pycache__/agap_runtime.cpython-313.pyc": {
+      "bytes": 7044,
+      "sha256": "1ee6ebe09bf1a56f2a30e0e0990243a7f8daa73bf3f0705830a37f4aedc60958"
+    },
+    "adapter/README.md": {
+      "bytes": 5200,
+      "sha256": "4839c3850d0e52cafa33d37fa7a11983f5bbf5a4a689df90a3aa57a39f6cffe1"
+    },
+    "adapter/adapter_config.json": {
+      "bytes": 1741,
+      "sha256": "5a34a80778b131bf43d3f5add383337eb0002d27230abf0466028a23ee0e11bb"
+    },
+    "adapter/adapter_model.safetensors": {
+      "bytes": 67332688,
+      "sha256": "d545e956fc4bfde80ae78eac592de1bc7355a8e767c20facdc39c536db157f00"
+    },
+    "adapter/chat_template.jinja": {
+      "bytes": 7991,
+      "sha256": "ea210e5b4997b7b1d3af5ee3ad34e7677ffe38df7469e8d88089789b5a27fae5"
+    },
+    "adapter/processor_config.json": {
+      "bytes": 1325,
+      "sha256": "3814737f2d4bfdd153a82364b3850f1be5dbc6f074a55c8d5fbf4d40127c3e87"
+    },
+    "adapter/tokenizer.json": {
+      "bytes": 19989325,
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523"
+    },
+    "adapter/tokenizer_config.json": {
+      "bytes": 7187,
+      "sha256": "5e254401a680224721ee0508f7d90db877c4a9d53830f6b1bc549c0ca5211d1c"
+    },
+    "agap_api_example.py": {
+      "bytes": 1415,
+      "sha256": "8f16123acb81b4d99cfcd56d16c63b847864f946058769be506dd9a7a1617694"
+    },
+    "agap_guard.py": {
+      "bytes": 4036,
+      "sha256": "886e5cff6fe642576d37a280350bc8d326e1ab8079dff60b1a53c6f39ece1de8"
+    },
+    "agap_model_config.json": {
+      "bytes": 1903,
+      "sha256": "5ef114f4107003f579c5903c47491e49fb007834f1084d24b1b49efd5c561c34"
+    },
+    "agap_runtime.py": {
+      "bytes": 4717,
+      "sha256": "df4fc5af0026e970cf1ec6fe7d70efbe4488c690e32eb4cfba498c770a0e344f"
+    },
+    "requirements_runtime.txt": {
+      "bytes": 85,
+      "sha256": "587abe0bbfa4ab7455aa563c9066b142b0249bf691a6c51f2ec6a0b0db39d652"
+    }
+  },
+  "independentEvaluationCompleted": false,
+  "realRecordsApproved": false,
+  "scope": "fictional_human_review_pilot",
+  "reportedStressPasses": 7,
+  "reportedStressCases": 20,
+  "reportedCleanBaseStressPasses": 9
+}
