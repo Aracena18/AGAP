@@ -8,6 +8,10 @@ export interface Operation {
   pathParameters?: Record<string,SchemaName>; querySchema?: SchemaName; queryArgument?:boolean; pageLimit?:number;
 }
 export const operations = [
+  {id:'getStaffGuidance',method:'GET',path:'/applications/{id}/guidance',response:'GuidanceResponse',owner:'Aaron',implemented:true},
+  {id:'respondStaffGuidance',method:'POST',path:'/applications/{id}/guidance/responses',request:'GuidanceResponseCreate',response:'CommandReceipt',owner:'Aaron',implemented:true,idempotent:true,versioned:true},
+  {id:'getMemberGuidance',method:'GET',path:'/member/applications/{id}/guidance',response:'GuidanceResponse',owner:'Robert',implemented:true,principal:'member'},
+  {id:'respondMemberGuidance',method:'POST',path:'/member/applications/{id}/guidance/responses',request:'GuidanceResponseCreate',response:'CommandReceipt',owner:'Robert',implemented:true,idempotent:true,versioned:true,principal:'member'},
   {id:'createTrialBalance',method:'POST',path:'/accounting/trial-balances',request:'TrialBalanceCreate',response:'TrialBalanceRun',owner:'Earl',implemented:true,idempotent:true},
   {id:'listTrialBalances',method:'GET',path:'/accounting/trial-balances',response:'TrialBalancePage',owner:'Earl',implemented:true,pageLimit:20},
   {id:'getTrialBalance',method:'GET',path:'/accounting/trial-balances/{id}',response:'TrialBalanceRun',owner:'Earl',implemented:true},

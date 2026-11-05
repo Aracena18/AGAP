@@ -1,3 +1,4 @@
+import { GuidanceService } from './guidance.service.js';
 import { Controller,Get,Post,Param,Body,Req,Res,Inject } from '@nestjs/common';
 import type { Request,Response } from 'express';
 import type { ActorContext,MemberActorContext } from '../../../../../packages/contracts/src/ports.js';
@@ -15,6 +16,8 @@ export function sendDocument(response:Response,file:{bytes:Uint8Array;mediaType:
 export class WorkflowController {
  constructor(@Inject(WORKFLOW) private readonly services:WorkflowServices|null){}
  private get enabled(){if(!this.services)throw new ApiError(501,'module_not_available','The evidence workflow is not enabled in this environment.');return this.services;}
+ @Get(['applications/:id/guidance','member/applications/:id/guidance']) guidance(@Req() r:AuthRequest,@Param('id') id:string){return new GuidanceService(this.enabled.workflow).read(workflowActor(r),id);}
+ @Post(['applications/:id/guidance/responses','member/applications/:id/guidance/responses']) respond(@Req() r:AuthRequest,@Param('id') id:string,@Body() body:unknown){return new GuidanceService(this.enabled.workflow).respond(workflowActor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
  @Get(['applications/:id/evidence','member/applications/:id/workflow']) view(@Req() r:AuthRequest,@Param('id') id:string){return this.enabled.workflow.view(workflowActor(r),id);}
  @Get('applications/:id/evidence/history') history(@Req() r:AuthRequest,@Param('id') id:string){return this.enabled.workflow.history(r.staff!.actor,id);}
  @Post(['applications/:id/facts','member/applications/:id/facts']) fact(@Req() r:AuthRequest,@Param('id') id:string,@Body() body:unknown){return this.enabled.workflow.saveFact(workflowActor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}

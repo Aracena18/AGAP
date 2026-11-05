@@ -1,3 +1,6 @@
+import { guidanceFixture } from './guidance-fixture.js';
+import { ApplicationsService } from '../src/modules/applications/applications.service.js';
+import { MembersService } from '../src/modules/members/members.service.js';
 import { mkdir,writeFile,mkdtemp,rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -32,6 +35,11 @@ const memberApplications=new MemberApplicationsService(new PostgresMemberUnitOfW
 const sample={purpose:'Fictional request awaiting staff assignment',requestedPrincipalCentavos:150_000,requestedTermMonths:6,currency:'PHP',noticeVersion:config.PRIVACY_NOTICE_VERSION,noticeAcknowledged:true};
 const submitted=await memberApplications.create(member.actor,sample,randomUUID());
 await memberApplications.submit(member.actor,submitted.id,{noticeVersion:config.PRIVACY_NOTICE_VERSION,acknowledgment:true},submitted.version,randomUUID());
+const guidanceMember=await memberFixture(fixture.officer.actor);
+const guidanceApplication=await new ApplicationsService(uow,new MembersService(uow,config.PRIVACY_NOTICE_VERSION)).create(fixture.officer.actor,{memberId:guidanceMember.record.id,purpose:'Fictional guided school expense',requestedPrincipalCentavos:100000,requestedTermMonths:1,currency:'PHP'},randomUUID());
+const guidanceDraft=await guidanceFixture(fixture.org,guidanceApplication.id);
+const guidanceKeyboardApplication=await new ApplicationsService(uow,new MembersService(uow,config.PRIVACY_NOTICE_VERSION)).create(fixture.officer.actor,{memberId:guidanceMember.record.id,purpose:'Fictional keyboard clarification',requestedPrincipalCentavos:100000,requestedTermMonths:1,currency:'PHP'},randomUUID());
+await guidanceFixture(fixture.org,guidanceKeyboardApplication.id);
 const otherApplication=await memberApplications.create(otherMember.actor,{...sample,purpose:'Other member private request'},randomUUID());
 config.PUBLIC_ORIGIN=`http://127.0.0.1:${process.env.AGAP_E2E_WEB_PORT??5174}`;
 const uiLogout=randomBytes(32).toString('base64url');
@@ -55,7 +63,7 @@ if(process.env.AGAP_E2E_PRESENTATION==='1'){
 const app=await createApp(config);
 await app.listen(Number(process.env.AGAP_E2E_API_PORT??4101),'127.0.0.1');
 await mkdir('.platform-test',{recursive:true});
-await writeFile('.platform-test/browser.json',JSON.stringify({supportPosition,memberSupportHistory,supportFollowUps,supportHistory,supportMember:supportMember.token,reconciliationAuditor:reconciliation.token,uiAuditMember:uiAuditMember.token,uiLogout,officer:fixture.officer.token,auditor:fixture.auditor.token,administrator:fixture.administrator.token,target:fixture.revocationTarget.token,organizationId:fixture.org,branchId:fixture.branch,member:member.token,memberId:member.record.id,otherMember:otherMember.token,otherMemberId:otherMember.record.id,otherApplicationId:otherApplication.id,submittedApplicationId:submitted.id}),{mode:0o600});
+await writeFile('.platform-test/browser.json',JSON.stringify({guidanceKeyboardApplicationId:guidanceKeyboardApplication.id,guidanceMember:guidanceMember.token,guidanceApplicationId:guidanceApplication.id,guidanceSourceId:guidanceDraft.source.sourceId,supportPosition,memberSupportHistory,supportFollowUps,supportHistory,supportMember:supportMember.token,reconciliationAuditor:reconciliation.token,uiAuditMember:uiAuditMember.token,uiLogout,officer:fixture.officer.token,auditor:fixture.auditor.token,administrator:fixture.administrator.token,target:fixture.revocationTarget.token,organizationId:fixture.org,branchId:fixture.branch,member:member.token,memberId:member.record.id,otherMember:otherMember.token,otherMemberId:otherMember.record.id,otherApplicationId:otherApplication.id,submittedApplicationId:submitted.id}),{mode:0o600});
 console.log('Fictional browser-test API ready.');
 const stop=async()=>{await app.close();await closePools();await rm(documentDirectory,{recursive:true,force:true});process.exit(0);};
 process.on('SIGTERM',()=>void stop());process.on('SIGINT',()=>void stop());

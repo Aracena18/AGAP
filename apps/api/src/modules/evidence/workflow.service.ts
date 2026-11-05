@@ -60,7 +60,7 @@ export class WorkflowService {
       aiAvailable: this.aiAvailable,
     });
   }
-  async memberEvidence(actor:MemberActorContext,id:string){const view=await this.view(actor,id);return {state:'available' as const,data:{sources:view.sources.map(s=>({id:s.id,fileName:s.label,version:s.version,state:s.state,verification:s.verification})),drafts:view.drafts.filter(d=>d.state==='suggested'&&view.sources.some(s=>s.id===d.source.sourceId&&s.state==='cleared')).map(d=>({id:d.id,origin:d.origin,provenance:d.provenance,source:d.source,value:d.suggestion.value,question:`Review ${d.suggestion.label}: confirm dates, amount basis and limitations.`,state:'suggested' as const}))}};}
+  async memberEvidence(actor:MemberActorContext,id:string){const view=await this.view(actor,id);return {state:'available' as const,data:{sources:view.sources.map(s=>({id:s.id,fileName:s.label,version:s.version,state:s.state,verification:s.verification})),drafts:view.drafts.filter(d=>d.state==='suggested'&&view.sources.some(s=>s.id===d.source.sourceId&&s.state==='cleared')).map(d=>({id:d.id,origin:d.origin,provenance:d.provenance,source:d.source,value:d.suggestion.value,question:d.suggestion.category==='income'?`Does this amount describe your take-home income for ${d.suggestion.label}?`:`Does ${d.suggestion.label} apply to your household?`,state:'suggested' as const}))}};}
   saveFact(actor: WorkflowActor, id: string, input: unknown, version: number, key: unknown) {
     const data = WorkflowFactInput.parse(input);
     return this.run(actor, async tx => {
@@ -93,6 +93,9 @@ export class WorkflowService {
     return this.run(actor, async tx => {
       await this.access(tx, id);
       return this.cache(tx, `workflow.review:${id}`, key, { data, version }, async () => {
+        await tx.query('SELECT id FROM applications.applications WHERE id=$1 FOR UPDATE',[id]);
+        const clarification=(await tx.query<{version:string;bound:boolean}>('SELECT COALESCE(max(revision),1)::text AS version,COALESCE(bool_or(draft_id=$2),false) AS bound FROM evidence.clarifications WHERE application_id=$1',[id,data.draftId])).rows[0];
+        if((data.guidanceVersion!==undefined||clarification.bound)&&Number(clarification.version)!==data.guidanceVersion)throw new ApiError(412,'guidance_changed','The clarification answers changed. Refresh questions and review the current answers before confirming.');
         const next = await this.advance(tx, id, version, 'fact');
         const draft = (await tx.query('SELECT d.*,r.state AS review_state,s.version AS source_version,p.text_sha256 AS current_text_sha256,p.state AS source_state FROM evidence.drafts d JOIN evidence.processing p ON p.source_id=d.source_id JOIN evidence.sources s ON s.id=d.source_id LEFT JOIN evidence.draft_reviews r ON r.draft_id=d.id WHERE d.id=$1 AND d.application_id=$2', [data.draftId, id])).rows[0];
         if (!draft || draft.review_state || draft.source_state !== 'cleared' || draft.text_sha256 !== draft.current_text_sha256) throw new ApiError(409, 'draft_unavailable', 'Reload the current suggestion and source.');

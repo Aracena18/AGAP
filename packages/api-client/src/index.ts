@@ -3,6 +3,10 @@ import type { z } from 'zod';
 import { schemas } from '../../contracts/src/schemas.js';
 import { ClientTransport, type RequestOptions } from './transport.js';
 export class AgapClient extends ClientTransport {
+  getStaffGuidance(id: string, options: RequestOptions = {}) { return this.request('GET', `/applications/${encodeURIComponent(id)}/guidance`, undefined, schemas.GuidanceResponse, options); }
+  respondStaffGuidance(id: string, body: z.input<typeof schemas.GuidanceResponseCreate>, options: RequestOptions = {}) { return this.request('POST', `/applications/${encodeURIComponent(id)}/guidance/responses`, body, schemas.CommandReceipt, options); }
+  getMemberGuidance(id: string, options: RequestOptions = {}) { return this.request('GET', `/member/applications/${encodeURIComponent(id)}/guidance`, undefined, schemas.GuidanceResponse, options); }
+  respondMemberGuidance(id: string, body: z.input<typeof schemas.GuidanceResponseCreate>, options: RequestOptions = {}) { return this.request('POST', `/member/applications/${encodeURIComponent(id)}/guidance/responses`, body, schemas.CommandReceipt, options); }
   createTrialBalance(body: z.input<typeof schemas.TrialBalanceCreate>, options: RequestOptions = {}) { return this.request('POST', `/accounting/trial-balances`, body, schemas.TrialBalanceRun, options); }
   listTrialBalances(options: RequestOptions = {}) { return this.request('GET', `/accounting/trial-balances`, undefined, schemas.TrialBalancePage, options); }
   getTrialBalance(id: string, options: RequestOptions = {}) { return this.request('GET', `/accounting/trial-balances/${encodeURIComponent(id)}`, undefined, schemas.TrialBalanceRun, options); }
