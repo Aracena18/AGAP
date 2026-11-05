@@ -21,7 +21,7 @@ test.describe('Member account with real own-record API',()=>{
   });
   test('uses phone layout and marks missing loan data unavailable rather than zero',async({page,context})=>{
     await page.route('**/api/v1/member/loans',route=>route.fulfill({json:{state:'unavailable',message:'Loan information is temporarily unavailable.'}}));
-    await signIn(context);await page.setViewportSize({width:320,height:800});await page.goto('/#/member');await expect(page.getByRole('heading',{name:'Your member account'})).toBeVisible();
+    await signIn(context);await page.setViewportSize({width:320,height:800});await page.goto('/#/member');await expect(page.getByRole('heading',{name:'Hi, Fictional!'})).toBeVisible();
     for(const name of ['Apply for a loan','Track my application','View my loan','Get payment help'])await expect(page.getByRole('link',{name:new RegExp(name)})).toBeVisible();
     await expect(page.getByRole('region',{name:'Upcoming payments'})).toContainText('temporarily unavailable');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);expect((await new AxeBuilder({page}).analyze()).violations).toEqual([]);expect(await page.evaluate(()=>Object.keys(localStorage))).toEqual([]);await screenshot(page,'member-home-320');
   });

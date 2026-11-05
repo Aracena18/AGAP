@@ -16,6 +16,7 @@ test.describe('HLT-01 actual confirmed support journey',()=>{
   });
   await page.goto('/#/member/help');
   await page.getByLabel('What changed, and what help do you need?').fill('Fictional member is paying on time but cannot cover essentials. Please arrange a conversation.');
+  await page.getByText('Add a loan or check-in (optional)', { exact: true }).click();
   await page.getByLabel('Can you currently meet essential expenses?').selectOption('no');
   await page.getByLabel('Have you borrowed to make repayments?').selectOption('declined');
   await page.getByLabel('Would you like to report financial strain?').selectOption('reported');

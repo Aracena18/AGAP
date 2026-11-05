@@ -36,3 +36,13 @@ Native installation outcomes are mocked in Chromium; browser-confirmed installat
 Implementation checklist: resolved P2 recaptured and compared; all route-size samples inspected; full checks pass; device limits recorded. No remaining blocking visual fix.
 
 Supplemental post-integration evidence: `docs/screenshots/member-mobile/source-vs-live-apply-390.jpg` compares the original and integrated live blank application in the same fictional presentation mode at 390×844/density 1. Live Home and installation-dialog captures are saved alongside it. The live browser log contains no error entries. Implementation commit `d5b7f47` is published to main after explicit user approval; this follow-up is documentation/evidence only.
+
+## UI-09 friendly member refinement — 5 November 2026
+
+The user confirms the five archived member concepts as references. This code-led extension follows design.md section 22: member-only Nunito, existing Gabay art, mint/petal backgrounds, shorter copy, intake steps and optional help details. It does not reproduce the concepts' illustrative budget numbers or introduce chat/goal capabilities. Earlier UI-08 evidence above remains historical.
+
+The first fresh review inspects all 28 route/width captures, special help/doubled-text states and both additional Home states. It identifies two material corrections: the two-column Home action grid splits words under doubled text, and draft-list links remain generic. One correction batch uses a phone action list and Continue your draft while preserving destinations. The recaptured [doubled-text Home](docs/screenshots/member-friendly/text-200-320.jpg), [320px Home](docs/screenshots/member-friendly/home-320.jpg) and [draft list](docs/screenshots/member-friendly/applications-320.jpg) resolve both findings. The reviewer returns **ship, fix-list scope only**.
+
+Original [UI-08 Apply](docs/screenshots/member-mobile/apply-390.jpg) and final [UI-09 Apply](docs/screenshots/member-friendly/apply-390.jpg) retain the same 390×844 viewport and task, showing the type/guidance changes. All new captures use fictional records. Six final recapture tests cover seven routes at all four sizes, empty Home and 200% text; no page/main overflow or axe findings occur. Required checks pass: 237 app, 667 platform, 100 evaluation, 116 normal browser, six post-review recapture and four separately enabled presentation cases. Additional font/art-failure probes preserve form access and staff typography.
+
+No representative member evaluation or physical-device acceptance is asserted. Full evidence and limitations remain in the existing [UI verification record](docs/AGAP_UI_Review_Verification.md#ui-09--friendly-member-guidance--5-november-2026).
