@@ -203,17 +203,27 @@ export function buildReview(view:View, assumptions:Assumptions, purpose:string =
   }
 
   if(pendingDocuments.length>0||unreviewed.length>0){
+    const docCount=pendingDocuments.length, suggCount=unreviewed.length;
+    let descText='Supporting documents await verification by cooperative staff.';
+    if(docCount>0&&suggCount>0){
+      descText=`${docCount} uploaded ${docCount===1?'file':'files'} and ${suggCount} financial statement ${suggCount===1?'suggestion':'suggestions'} await staff review.`;
+    }else if(docCount>0){
+      descText=`${docCount} uploaded ${docCount===1?'document awaits':'documents await'} staff verification checks.`;
+    }else if(suggCount>0){
+      descText=`${suggCount} financial statement ${suggCount===1?'suggestion awaits':'suggestions await'} confirmation.`;
+    }
+
     redFlags.push({
       id:'unverified-evidence',
       title:'Supporting Documents Awaiting Verification',
       severity:'info',
       category:'documentation',
-      description:`${pendingDocuments.length} uploaded document(s) or ${unreviewed.length} suggestion(s) await staff file check and confirmation.`,
+      description:descText,
       suggestedSolution:{
         title:'Complete Staff Verification',
-        description:'Staff reviews uploaded income proofs or statement excerpts to finalize verified capacity.',
+        description:'Staff reviews uploaded income proofs to confirm reported household figures.',
         actionType:'document',
-        impact:'Elevates 5C Character & Capacity confidence rating to High Confidence (90%+).'
+        impact:'Completes document verification for official loan decision.'
       }
     });
   }
@@ -221,15 +231,15 @@ export function buildReview(view:View, assumptions:Assumptions, purpose:string =
   if(issues.some(i=>i.includes('No available offer'))){
     redFlags.push({
       id:'missing-offer',
-      title:'Pending Officer Assessment & Product Terms',
+      title:'Pending Officer Assessment & Terms',
       severity:'warning',
       category:'capacity',
-      description:'Public offer terms lack complete dated fee projections; officer assessment is required.',
+      description:'Cooperative staff will review application details and configure available repayment schedules.',
       suggestedSolution:{
-        title:'Generate Officer Assessment',
-        description:'Loan officer configures approved loan terms and dated fee schedule in the staff workspace.',
+        title:'Staff Term Configuration',
+        description:'A loan officer configures approved terms and dated repayment schedules for this request.',
         actionType:'schedule',
-        impact:'Unlocks finalized scenario comparison and approval decision.'
+        impact:'Enables finalized scenario comparison and approval decision.'
       }
     });
   }
@@ -251,7 +261,7 @@ export function buildReview(view:View, assumptions:Assumptions, purpose:string =
   }
 
   // 5C Review with percentage outputs and confidence ratings
-  const capacityText=recommended?`Lowest dated balance ${money(recommended.baseline.lowestBalanceCentavos)}; full contractual repayment ${money(recommended.baseline.totalRepaymentCentavos)}. ${recommended.baseline.months.map(m=>`${m.month}: baseline ${money(m.remainingCentavos)} remaining${recommended.stressed?`, what-if ${money(recommended.stressed.months.find(sm=>sm.month===m.month)!.remainingCentavos)} remaining`:''}`).join('; ')}.${recommended.stressed?` What-if lowest balance: ${money(recommended.stressed.lowest)}.`:''}`:'Capacity is unavailable until required facts, dates and permitted offers are supplied.';
+  const capacityText=recommended?`Lowest dated balance ${money(recommended.baseline.lowestBalanceCentavos)}; full contractual repayment ${money(recommended.baseline.totalRepaymentCentavos)}. ${recommended.baseline.months.map(m=>`${m.month}: baseline ${money(m.remainingCentavos)} remaining${recommended.stressed?`, what-if ${money(recommended.stressed.months.find(sm=>sm.month===m.month)!.remainingCentavos)} remaining`:''}`).join('; ')}.${recommended.stressed?` What-if lowest balance: ${money(recommended.stressed.lowest)}.`:''}`:'Capacity details will be evaluated once required facts and repayment schedules are confirmed.';
 
   // 1. Character Score (0-100%)
   let charScore=85, charConfidence='High Confidence', charTone:'success'|'warning'|'danger'='success';
@@ -266,7 +276,7 @@ export function buildReview(view:View, assumptions:Assumptions, purpose:string =
     confidenceLabel:charConfidence,
     statusBadge:`${charScore}% · ${charConfidence}`,
     meterTone:charTone,
-    text:'Authorized repayment history and relevant verification findings have been evaluated in this preview. Missing history is not evidence of dishonesty.',
+    text:'Repayment track record and member standing within the cooperative. Good standing and complete documentation support loan clearance.',
     breakdown:[
       { factor:'Member identity & standing', status:'passed' },
       { factor:pendingDocuments.length===0?'Supporting documents cleared':'Document verification in progress', status:pendingDocuments.length===0?'passed':'warning' },
@@ -310,7 +320,7 @@ export function buildReview(view:View, assumptions:Assumptions, purpose:string =
     confidenceLabel:capitalConfidence,
     statusBadge:`${capitalScore}% · ${capitalConfidence}`,
     meterTone:capitalTone,
-    text:opening?.availability==='recorded'?`Opening spendable cash: ${money(opening.amountCentavos)}. Ownership, restrictions, share capital and other resources still require the appropriate checks.`:'Accessible opening cash is unavailable. Assets or share capital cannot be assumed spendable.',
+    text:opening?.availability==='recorded'?`Opening spendable cash: ${money(opening.amountCentavos)}. Spendable reserves provide a cushion against unexpected cash shortfalls.`:'Accessible opening cash has not been recorded yet. Share capital and emergency reserves provide additional stability.',
     breakdown:[
       { factor:'Spendable cash balance', status:opening?.availability==='recorded'?'passed':'warning' },
       { factor:'Emergency reserve cushion', status:assumptions.reserve!==null?'passed':'info' }
@@ -327,7 +337,7 @@ export function buildReview(view:View, assumptions:Assumptions, purpose:string =
     confidenceLabel:collateralConfidence,
     statusBadge:`${collateralScore}% · ${collateralConfidence}`,
     meterTone:issues.length>0?'warning':'success',
-    text:'An officer must confirm whether this product requires security, then check any relevant ownership, valuation or guarantee evidence. Standard cooperative micro-lending policy applies.',
+    text:'Standard cooperative micro-lending policy applies. Staff confirms whether security, chattel, or co-maker guarantees are required for this loan amount.',
     breakdown:[
       { factor:'Unsecured micro-lending conformance', status:'passed' },
       { factor:'Cooperative share capital backup', status:'passed' }
@@ -339,7 +349,7 @@ export function buildReview(view:View, assumptions:Assumptions, purpose:string =
   const condScore=lowest!==null&&lowest<0?74:86;
   const condConfidence=lowest!==null&&lowest<0?'Restructuring Recommended':'Favorable Conditions';
   const reviewDatesText=isCalendarDate(assumptions.start)&&isCalendarDate(assumptions.end)?`Review: ${dateLabel(assumptions.start)} to ${dateLabel(assumptions.end)}.`: 'Review dates pending confirmation.';
-  const expenseText=assumptions.expense&&isCalendarDate(assumptions.expense.date)?`Hypothetical ${assumptions.expense.label}: ${money(assumptions.expense.amount)} on ${dateLabel(assumptions.expense.date)}. This is a what-if assumption, not a predicted event.`:'Automated contingency risk has been modeled across the review horizon.';
+  const expenseText=assumptions.expense&&isCalendarDate(assumptions.expense.date)?`Simulated ${assumptions.expense.label}: ${money(assumptions.expense.amount)} on ${dateLabel(assumptions.expense.date)}.`:'Automated contingency risk has been modeled across the review horizon.';
   const conditions:FiveCDimension={
     name:'Conditions',
     scorePercent:condScore,

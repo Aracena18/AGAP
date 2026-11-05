@@ -20,12 +20,31 @@ import styles from './preview.module.css';
 const steps=['Gathering saved information','Checking sources and missing details','Comparing repayment scenarios','Preparing the 5C review'];
 export function MemberPreviewPage(){const {id}=useParams(),{session,client}=useMember();if(!session||session.recordMode==='real')return <Notice>Demonstration analysis is available only in the fictional environment.</Notice>;return <PreviewWorkspace key={`${id}:${session.principal.memberId}`} id={id!} member client={client} csrf={session.csrfToken}/>;}
 export function StaffPreviewPage(){const {id}=useParams(),{session,client}=useStaff();if(!session||session.recordMode==='real'||!session.user.roles.some(r=>['officer','reviewer','auditor'].includes(r)))return <Notice>Demonstration analysis requires authorized lending-review access in the fictional environment.</Notice>;return <PreviewWorkspace key={`${id}:${session.user.id}`} id={id!} member={false} client={client} csrf={session.csrfToken} actor={{id:session.user.id,name:session.user.displayName,roles:session.user.roles}}/>;}
-function Disclosure(){return <p className={styles.disclosure}><Badge>Demonstration analysis</Badge><span>Scripted review presentation · actual entered data and calculated scenarios · no live model inference</span></p>;}
+function Disclosure(){return <p className={styles.disclosure}><Badge tone="neutral">Demonstration preview</Badge><span>Calculated using your saved household cash flow and loan terms.</span></p>;}
 function PreviewWorkspace({id,member,client,csrf,actor}:{id:string;member:boolean;client:AgapClient;csrf:string;actor?:{id:string;name:string;roles:string[]}}){
  const load=useCallback(async(signal:AbortSignal)=>{const [application,view]=await Promise.all([member?client.getMemberApplication(id,{signal}):client.getApplication(id,{signal}),member?client.getMemberWorkflow(id,{signal}):client.getStaffWorkflow(id,{signal})]);return {application,view};},[client,id,member]);
  const read=useResource(load),[blocked,setBlocked]=useState(false);
  const base=member?`/member/applications/${id}`:`/staff/applications/${id}/evidence`;
- return <div className="stack"><Link to={base}>{member?'Back to my application':'Back to evidence'}</Link><header className={styles.heading}><div><h1>{member?'Your repayment review':'Application analysis'}</h1><p>{read.data?.application.purpose??'Household needs, repayment options and a 5C handoff.'}</p></div><Button variant="secondary" disabled={read.loading||blocked} onClick={read.refresh}>Refresh saved information</Button></header><Disclosure/>{read.loading&&<p role="status">Opening authorized application information…</p>}{read.error&&<Notice tone="warning" role="alert">{read.error}</Notice>}{read.data&&<WorkspaceData key={materialBasis(read.data.view)} view={read.data.view} purpose={read.data.application.purpose} requested={read.data.application.requestedPrincipalCentavos} term={read.data.application.requestedTermMonths} member={member} client={client} csrf={csrf} refresh={read.refresh} onBlocked={setBlocked} officer={actor&&(actor.roles.includes('reviewer')||actor.roles.includes('officer')&&'assignedOfficerId' in read.data.application&&read.data.application.assignedOfficerId===actor.id)?actor.name:undefined}/>}</div>;
+ return <div className="stack">
+  <div className={styles.topRow}>
+   <Link to={base} className={styles.backLink}>← {member?'Back to my application':'Back to evidence'}</Link>
+   <Button variant="secondary" disabled={read.loading||blocked} onClick={read.refresh}>Refresh saved information</Button>
+  </div>
+  <header className={styles.heading}>
+   <div>
+    <h1>{member?'Your repayment review':'Application analysis'}</h1>
+    <div className={styles.headerMeta}>
+     <span className={styles.purposePill}>{read.data?.application.purpose??'Household needs, repayment options and a 5C handoff.'}</span>
+     {read.data?.application&&<span className={styles.amountPill}><Money value={read.data.application.requestedPrincipalCentavos}/> · {read.data.application.requestedTermMonths} {read.data.application.requestedTermMonths===1?'month':'months'}</span>}
+    </div>
+   </div>
+   <Badge tone="neutral">{member?'Your application':'Authorized staff view'}</Badge>
+  </header>
+  <Disclosure/>
+  {read.loading&&<p role="status">Opening authorized application information…</p>}
+  {read.error&&<Notice tone="warning" role="alert">{read.error}</Notice>}
+  {read.data&&<WorkspaceData key={materialBasis(read.data.view)} view={read.data.view} purpose={read.data.application.purpose} requested={read.data.application.requestedPrincipalCentavos} term={read.data.application.requestedTermMonths} member={member} client={client} csrf={csrf} refresh={read.refresh} onBlocked={setBlocked} officer={actor&&(actor.roles.includes('reviewer')||actor.roles.includes('officer')&&'assignedOfficerId' in read.data.application&&read.data.application.assignedOfficerId===actor.id)?actor.name:undefined}/>}
+ </div>;
 }
 function WorkspaceData({view,purpose,requested,term,member,client,csrf,refresh,officer,onBlocked}:{view:View;purpose:string;requested:number;term:number;member:boolean;client:AgapClient;csrf:string;refresh:()=>void;officer?:string;onBlocked:(value:boolean)=>void}){
  const context=usePreview(),basis=materialBasis(view),initial=context.get(view.applicationId,basis)??defaultAssumptions(view);
@@ -38,12 +57,42 @@ function WorkspaceData({view,purpose,requested,term,member,client,csrf,refresh,o
  useEffect(()=>{if(!active||active.stage>=steps.length)return;const delay=window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:650;timer.current=setTimeout(()=>setRun(old=>old?.basis===basis?{...old,stage:old.stage+1}:old),delay);return()=>{if(timer.current)clearTimeout(timer.current);};},[active,basis]);
  useEffect(()=>{if(active?.stage===steps.length){result.current?.scrollIntoView({block:'start'});result.current?.focus({preventScroll:true});}},[active?.stage]);
  function start(assumptions:Assumptions,share:boolean){if(householdBusy||uploadBusy)return;context.share(view.applicationId,share?{basis,assumptions}:null);setLast(assumptions);setEditing(false);setRun({basis,assumptions,stage:0});}
- return <><section className={`panel panel-body ${styles.request}`}><Description size={24}/><div><h2>{purpose}</h2><p><Money value={requested}/> requested · {term} {term===1?'month':'months'}</p></div><Badge>{member?'Your application':'Authorized staff view'}</Badge></section>
- {member&&<section className="panel panel-body"><HouseholdForm key={view.applicationId} view={view} client={client} csrf={csrf} member saved={refresh} onBusy={setHouseholdBusy} disabled={uploadBusy}/></section>}
- <section className="panel panel-body stack"><div className={styles.heading}><div><h2>Supporting documents</h2><p>Files and statements remain distinct from independently checked claims.</p></div><Badge>{view.sources.filter(s=>s.kind==='document').length} {view.sources.filter(s=>s.kind==='document').length===1?'file':'files'}</Badge></div>{member&&<WorkflowUpload id={view.applicationId} client={client} csrf={csrf} member saved={refresh} onBusy={setUploadBusy} disabled={householdBusy}/>}<div className={styles.sources}>{view.sources.filter(s=>s.kind==='document').map(s=><article key={s.id}><Description/><div><h3>{s.label}</h3><p>{s.state==='cleared'?'File checks passed':s.state==='blocked'?'File unavailable':'Received · awaiting file checks'}</p></div><Badge tone={s.state==='cleared'?'neutral':'warning'}>{s.verification==='supported'?'Verification recorded':'Not independently verified'}</Badge></article>)}</div>{!view.sources.some(s=>s.kind==='document')&&<p className="small subtle">No supporting files have been uploaded for this application yet.</p>}<p className="small subtle">{view.facts.length} saved financial statements · {view.drafts.filter(d=>d.state==='suggested').length} suggestions await confirmation</p><Link to={member?`/member/applications/${view.applicationId}`:`/staff/applications/${view.applicationId}/evidence`}>Inspect original sources and confirmed facts</Link></section>
- {(editing||!active)&&<section className="panel panel-body"><ScenarioForm key={basis} initial={last} run={start} disabled={householdBusy||uploadBusy}/></section>}
- {active&&active.stage<steps.length&&<section className={`panel panel-body stack ${styles.processing}`} aria-label="Demonstration review processing"><div className={styles.heading}><FindInPage size={28}/><h2>Preparing your review</h2><Badge>Demo playback</Badge></div><p role="status">{steps[active.stage]}…</p><ol className={styles.progress}>{steps.map((step,i)=><li key={step} aria-current={i===active.stage?'step':undefined} data-complete={i<active.stage}><span>{i+1}</span>{step}<small>{i<active.stage?'Complete':i===active.stage?'In progress':'Next'}</small></li>)}</ol><div className="actions"><Button onClick={()=>setRun({...active,stage:steps.length})}>Show review now</Button><Button variant="secondary" onClick={()=>{setRun(null);setEditing(true);}}>Cancel review</Button></div></section>}
- {active&&active.stage===steps.length&&<><h2 ref={result} tabIndex={-1} className={styles.resultHeading}>Analysis and next steps</h2><ReviewReport key={JSON.stringify(active.assumptions)} view={view} purpose={purpose} member={member} assumptions={active.assumptions} officer={officer} revise={()=>{setEditing(true);setRun(null);}}/></>}
+
+ const isResultsReady=active&&active.stage===steps.length;
+
+ return <>
+  {!isResultsReady&&<section className={`panel panel-body ${styles.request}`}><Description size={24}/><div><h2>{purpose}</h2><p><Money value={requested}/> requested · {term} {term===1?'month':'months'}</p></div><Badge>{member?'Your application':'Authorized staff view'}</Badge></section>}
+
+  {isResultsReady&&<>
+   <h2 ref={result} tabIndex={-1} className={styles.resultHeading}>Analysis and next steps</h2>
+   <ReviewReport key={JSON.stringify(active.assumptions)} view={view} purpose={purpose} member={member} assumptions={active.assumptions} officer={officer} revise={()=>{setEditing(true);setRun(null);}}/>
+  </>}
+
+  {(editing||!active)&&<>
+   {member&&<section className="panel panel-body"><HouseholdForm key={view.applicationId} view={view} client={client} csrf={csrf} member saved={refresh} onBusy={setHouseholdBusy} disabled={uploadBusy}/></section>}
+   <section className="panel panel-body stack"><div className={styles.heading}><div><h2>Supporting documents</h2><p>Upload proofs of income or bills to support your application.</p></div><Badge>{view.sources.filter(s=>s.kind==='document').length} {view.sources.filter(s=>s.kind==='document').length===1?'file':'files'}</Badge></div>{member&&<WorkflowUpload id={view.applicationId} client={client} csrf={csrf} member saved={refresh} onBusy={setUploadBusy} disabled={householdBusy}/>}<div className={styles.sources}>{view.sources.filter(s=>s.kind==='document').map(s=><article key={s.id}><Description/><div><h3>{s.label}</h3><p>{s.state==='cleared'?'File checks passed':s.state==='blocked'?'File unavailable':'Received · awaiting file checks'}</p></div><Badge tone={s.state==='cleared'?'neutral':'warning'}>{s.verification==='supported'?'Verification recorded':'Not independently verified'}</Badge></article>)}</div>{!view.sources.some(s=>s.kind==='document')&&<p className="small subtle">No supporting files have been uploaded for this application yet.</p>}<p className="small subtle">{view.facts.length} saved financial statement{view.facts.length===1?'':'s'} · {view.drafts.filter(d=>d.state==='suggested').length} suggestion{view.drafts.filter(d=>d.state==='suggested').length===1?' awaits':'s await'} confirmation</p><Link to={member?`/member/applications/${view.applicationId}`:`/staff/applications/${view.applicationId}/evidence`}>Inspect original sources and confirmed facts</Link></section>
+   <section className="panel panel-body"><ScenarioForm key={basis} initial={last} run={start} disabled={householdBusy||uploadBusy}/></section>
+  </>}
+
+  {active&&active.stage<steps.length&&<section className={`panel panel-body stack ${styles.processing}`} aria-label="Demonstration review processing"><div className={styles.heading}><FindInPage size={28}/><h2>Preparing your review</h2><Badge>Demo playback</Badge></div><p role="status">{steps[active.stage]}…</p><ol className={styles.progress}>{steps.map((step,i)=><li key={step} aria-current={i===active.stage?'step':undefined} data-complete={i<active.stage}><span>{i+1}</span>{step}<small>{i<active.stage?'Complete':i===active.stage?'In progress':'Next'}</small></li>)}</ol><div className="actions"><Button onClick={()=>setRun({...active,stage:steps.length})}>Show review now</Button><Button variant="secondary" onClick={()=>{setRun(null);setEditing(true);}}>Cancel review</Button></div></section>}
+
+  {isResultsReady&&<details className={`panel panel-body ${styles.inputSectionDetails}`}>
+   <summary className={styles.detailsSummary}>
+    <div className={styles.summaryTitle}>
+     <Description size={20}/>
+     <div>
+      <strong>Review inputs & supporting files</strong>
+      <p className="small subtle">Household facts ({view.facts.length}) and documents ({view.sources.filter(s=>s.kind==='document').length})</p>
+     </div>
+    </div>
+    <span className={styles.expandLabel}>View or edit</span>
+   </summary>
+   <div className="stack" style={{marginTop:'var(--space-4, 16px)'}}>
+    {member&&<HouseholdForm key={view.applicationId} view={view} client={client} csrf={csrf} member saved={refresh} onBusy={setHouseholdBusy} disabled={uploadBusy}/>}
+    <div className={styles.sources}>{view.sources.filter(s=>s.kind==='document').map(s=><article key={s.id}><Description/><div><h3>{s.label}</h3><p>{s.state==='cleared'?'File checks passed':s.state==='blocked'?'File unavailable':'Received · awaiting file checks'}</p></div><Badge tone={s.state==='cleared'?'neutral':'warning'}>{s.verification==='supported'?'Verification recorded':'Not independently verified'}</Badge></article>)}</div>
+    <Link to={member?`/member/applications/${view.applicationId}`:`/staff/applications/${view.applicationId}/evidence`}>Inspect original sources and confirmed facts</Link>
+   </div>
+  </details>}
  </>;
 }
 

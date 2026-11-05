@@ -48,7 +48,7 @@ export function HouseholdForm({view,client,csrf,member,saved,onBusy,disabled=fal
   });
   if(result){setDirty(false);setOpened(false);saved();}
  }
- if(!opened)return <div className={styles.saved}><div><h2>Household information</h2><p>Saved statements and their exact cash dates form the calculation basis.</p></div><Button variant="secondary" disabled={disabled} onClick={()=>setOpened(true)}>Review household entries</Button></div>;
+ if(!opened)return <div className={styles.saved}><div><h2>Household information</h2><p>Confirmed income and essential living expenses for your household.</p></div><Button variant="secondary" disabled={disabled} onClick={()=>setOpened(true)}>Review household entries</Button></div>;
  return <form onSubmit={event=>void submit(event)} className={styles.householdForm}>
   <header className={styles.householdHeader}>
    <div><h2>Your household cash flow</h2><p>Choose when money comes in and goes out. Add a date for each payment.</p></div>

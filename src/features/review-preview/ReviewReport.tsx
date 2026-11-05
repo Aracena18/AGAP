@@ -48,7 +48,7 @@ export function ReviewReport({view,assumptions,member,purpose,revise,officer}:{v
       <h2>Review prepared</h2>
       <Badge tone={result.priority==='urgent'?'danger':result.priority==='routine'?'brand':'warning'}>{priorityLabel[result.priority]}</Badge>
      </div>
-     <p className={styles.heroSubtitle}>Automated predictive risk modeling, multi-scenario stress analysis, and 5C readiness assessment.</p>
+     <p className={styles.heroSubtitle}>{member?'Repayment readiness and scenario evaluation for your loan request.':'Source-linked 5C assessment with predictive risk modeling.'}</p>
     </div>
    </div>
 
@@ -65,10 +65,9 @@ export function ReviewReport({view,assumptions,member,purpose,revise,officer}:{v
      <div className={styles.overallDetails}>
       <div className={styles.overallBadgeRow}>
        <Badge tone={result.overallScore>=80?'brand':result.overallScore>=65?'warning':'danger'}>{result.overallConfidence}</Badge>
-       <span className={styles.confidenceText}>Weighted Predictive Model</span>
       </div>
       <p className={styles.lead}>{result.reason}</p>
-      <p className="small subtle">{result.priority==='urgent'?'Actionable restructuring recommendations flagged below before final officer approval.':result.priority==='clarification'?'Request the missing information before preparing an approval recommendation.':'Favorable readiness score across baseline and modeled contingency scenarios.'}</p>
+      <p className="small subtle">{result.priority==='urgent'?'Actionable restructuring recommendations flagged below before final officer approval.':result.priority==='clarification'?(member?'Some required information or documentation is still being reviewed by the cooperative.':'Request the missing information before preparing an approval recommendation.'):'Favorable readiness score across baseline and modeled contingency scenarios.'}</p>
      </div>
     </div>
 
@@ -81,7 +80,7 @@ export function ReviewReport({view,assumptions,member,purpose,revise,officer}:{v
      <div className={styles.vitalCard}>
       <span className={styles.vitalLabel}>Lowest Cash Buffer</span>
       <strong className={`${styles.vitalValue} ${result.lowest!==null&&result.lowest<0?styles.vitalNegative:''}`}>{result.lowest!==null?<Money value={result.lowest}/>:<>Unavailable</>}</strong>
-      <span className={styles.vitalHint}>{option?.stressed?'Under modeled emergency':'In baseline review'}</span>
+      <span className={styles.vitalHint}>{option?.stressed?'With emergency expense':'In baseline review'}</span>
      </div>
      <div className={styles.vitalCard}>
       <span className={styles.vitalLabel}>Debt-to-Income</span>
@@ -89,15 +88,14 @@ export function ReviewReport({view,assumptions,member,purpose,revise,officer}:{v
       <span className={styles.vitalHint}>{dtiPercent<=35?'Healthy debt ratio':'Elevated debt pressure'}</span>
      </div>
      <div className={styles.vitalCard}>
-      <span className={styles.vitalLabel}>Risk Flags Flagged</span>
+      <span className={styles.vitalLabel}>Identified Risks</span>
       <strong className={`${styles.vitalValue} ${result.redFlags.some(f=>f.severity==='danger')?styles.vitalDanger:''}`}>{result.redFlags.filter(f=>f.severity!=='info').length}</strong>
-      <span className={styles.vitalHint}>Active alerts with solvers</span>
+      <span className={styles.vitalHint}>{result.redFlags.filter(f=>f.severity!=='info').length===0?'No active risks flagged':'Alerts with solutions'}</span>
      </div>
     </div>
    </div>
 
    {result.issues.length>0&&<Notice tone="warning"><ul>{result.issues.map(i=><li key={i}>{i}</li>)}</ul></Notice>}
-   <p className="small subtle">{result.authoritative?'Uses the current saved server assessment.':'Demonstration analysis based on confirmed household cash flows and automated contingency risk modeling.'} Rubric-based model evaluation produced across the 5C framework.</p>
    {downloadError&&<Notice tone="warning" role="alert">{downloadError}</Notice>}
    <div className="actions">
     <Button variant="secondary" onClick={revise}>Change scenario</Button>
@@ -110,8 +108,8 @@ export function ReviewReport({view,assumptions,member,purpose,revise,officer}:{v
   <section className="panel panel-body stack" aria-label="Risk assessment and model recommendations">
    <div className={styles.heading}>
     <div>
-     <h2>Risk assessment & model recommendations</h2>
-     <p>The predictive engine identifies repayment vulnerabilities and suggests concrete corrective solutions.</p>
+     <h2>Identified risks & suggested solutions</h2>
+     <p>Potential repayment challenges and suggested ways to keep your loan on track.</p>
     </div>
     <Badge tone={result.redFlags.some(f=>f.severity==='danger')?'danger':result.redFlags.some(f=>f.severity==='warning')?'warning':'brand'}>
      {result.redFlags.filter(f=>f.severity!=='info').length} {result.redFlags.filter(f=>f.severity!=='info').length===1?'alert':'alerts'} flagged
@@ -149,10 +147,10 @@ export function ReviewReport({view,assumptions,member,purpose,revise,officer}:{v
   {option&&<section className="panel panel-body stack">
    <div className={styles.heading}>
     <div>
-     <h2>Automated risk scenarios & stress test</h2>
-     <p>Unexpected events are modeled automatically so the applicant is not required to anticipate emergencies alone.</p>
+     <h2>Scenario comparison</h2>
+     <p>Comparing baseline repayment against unexpected emergency expenses.</p>
     </div>
-    <Badge tone="neutral">Predictive Stress Modeling</Badge>
+    <Badge tone="neutral">Stress test</Badge>
    </div>
 
    <div className={styles.scenarioComparisonGrid}>
@@ -230,7 +228,7 @@ export function ReviewReport({view,assumptions,member,purpose,revise,officer}:{v
    <div className={styles.heading}>
     <div>
      <h2>5C review</h2>
-     <p>A source-linked draft for the officer’s judgment with percentage ratings and confidence levels.</p>
+     <p>{member?'Evaluation across standard cooperative lending dimensions.':'Source-linked 5C assessment with percentage ratings and confidence scores.'}</p>
     </div>
     <Badge>Demonstration draft</Badge>
    </div>
@@ -264,8 +262,8 @@ export function ReviewReport({view,assumptions,member,purpose,revise,officer}:{v
   <OfficerFollowUp key={option?.offerId} view={view} assumptions={assumptions} option={option} member={member} officer={officer}/>
   <section className="panel panel-body stack">
    <h2>Evidence and questions</h2>
-   {result.pendingDocuments.length>0&&<Notice tone="warning">{result.pendingDocuments.length} uploaded document(s) await successful file checks. Their contents have not been used as verified evidence.</Notice>}
-   {result.unreviewed.length>0&&<Notice tone="warning">{result.unreviewed.length} source suggestion(s) still need human checking.</Notice>}
+   {result.pendingDocuments.length>0&&<Notice tone="warning">{result.pendingDocuments.length===1?'1 uploaded document awaits file verification checks.':`${result.pendingDocuments.length} uploaded documents await file verification checks.`} Verification is conducted by staff.</Notice>}
+   {result.unreviewed.length>0&&<Notice tone="warning">{result.unreviewed.length===1?'1 financial statement suggestion awaits confirmation.':`${result.unreviewed.length} financial statement suggestions await confirmation.`}</Notice>}
    <ul>
     <li>Are there upcoming school costs, repairs, health expenses or income changes missing from the recorded period?</li>
     <li>Does the entered reserve cover the member’s needs under the cooperative’s agreed rules?</li>
@@ -286,7 +284,7 @@ export function ScenarioForm({initial,run,disabled=false}:{initial:Assumptions;r
    <img src={`${import.meta.env.BASE_URL}workspace/gabay-guiding.webp`} alt="" width={56} height={56} className={styles.heroMascot} decoding="async"/>
    <div className={styles.heroText}>
     <h2>Review everyday repayment impact</h2>
-    <p className={styles.heroSubtitle}>AGAP automatically models typical emergency contingencies in your assessment. You can also explore an additional specific life event below.</p>
+    <p className={styles.heroSubtitle}>We automatically model potential emergency contingencies. You can also simulate a specific expense below.</p>
    </div>
   </div>
   {error&&<div ref={errors} tabIndex={-1}><Notice tone="warning" role="alert">{error}</Notice></div>}
@@ -296,7 +294,7 @@ export function ScenarioForm({initial,run,disabled=false}:{initial:Assumptions;r
   {expense&&<div className={styles.shock}>
    <div className="field"><label htmlFor="preview-expense">What expense would you like to explore?</label><input id="preview-expense" required maxLength={200} value={label} onChange={e=>setLabel(e.target.value)}/></div>
    <div className={styles.two}><div className="field"><label htmlFor="preview-expense-amount">Hypothetical amount (PHP)</label><input id="preview-expense-amount" inputMode="decimal" required value={amount} onChange={e=>setAmount(e.target.value)}/></div><div className="field"><label htmlFor="preview-expense-date">Hypothetical expense date</label><input id="preview-expense-date" type="date" required value={date} onChange={e=>setDate(e.target.value)}/></div></div>
-   <p className="small subtle">A what-if assumption, not an event predicted by AGAP.</p>
+   <p className="small subtle">Explore how a specific unexpected expense affects your monthly cash buffer.</p>
   </div>}
   <label className={styles.check}><input type="checkbox" checked={share} onChange={e=>setShare(e.target.checked)}/> Share these scenario assumptions with authorized staff during this browser session.</label>
   <div><Button type="submit" disabled={disabled}>Prepare review preview</Button></div>

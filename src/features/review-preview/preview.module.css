@@ -1,3 +1,16 @@
+.topRow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.backLink{display:inline-flex;align-items:center;gap:6px;min-height:44px;color:var(--muted);text-decoration:none;font-size:14px;font-weight:700}
+.backLink:hover{color:var(--primary)}
+.headerMeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+.purposePill{font-size:15px;font-weight:600;color:var(--ink)}
+.amountPill{font-size:14px;color:var(--muted)}
+.inputSectionDetails{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:16px 20px}
+.detailsSummary{display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;list-style:none}
+.detailsSummary::-webkit-details-marker{display:none}
+.summaryTitle{display:flex;align-items:center;gap:12px}
+.summaryTitle strong{font-size:15px;color:var(--ink)}
+.summaryTitle p{margin:2px 0 0}
+.expandLabel{font-size:13px;font-weight:600;color:var(--primary);white-space:nowrap}
 .heading,.saved{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-4,16px);flex-wrap:wrap}
 .heading h1,.heading h2,.heading h3,.saved h2{margin:0}
 .heading p,.saved p{margin:8px 0 0;max-width:65ch;color:var(--muted)}
