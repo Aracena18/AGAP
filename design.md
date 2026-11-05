@@ -35,6 +35,14 @@ This file defines UI/UX requirements. Descriptions labeled **Baseline** refer to
 
 Use the executable definitions rather than copying tokens or fixtures into another configuration. If code differs from a design requirement, identify the difference in the task or pull request. Change the relevant authority and implementation together when the team changes an agreed rule.
 
+## Connected server review — CL2, 5 November 2026
+
+The authenticated staff Applications record links to Decision review. Place Evidence check and concerns before the checked financial basis and separate recommendation/decision forms. Label manual confirmation explicitly and distinguish “Evidence check current” from approval. Source inventory and immutable event history may expand with native details; exact quotations remain attached to their original source/version/page. Use the shared panels, tokens, notices, controls and existing responsive figure layout.
+
+Only the current assigned cleared officer can prepare concern checks and assignments; the separately assigned eligible reviewer records the disposition. An own-recipient Review notices inbox links directly to the case. Explain that acknowledgment records receipt and does not resolve an escalation. Show unavailable reviewers and unresolved concerns without inventing clearance or treating dismissal as source verification. A recorded restriction requires a different eligible participant; independent conflict-resolution policy is not supplied by this interface.
+
+Retain opening versions and evidence hashes in review editors and decision drafts. Refresh preserves text, invalidates previews and visibly blocks a stale draft; explicit cancellation/clearing starts a new action. While a consequential submission is uncertain, retain its exact request/key/version and lock competing writes. Evidence-review and lending-decision editors cannot run competing writes. After recording, show only the preserved saved brief/terms, checksum-verified bytes and separately labeled history. Keep phone actions wrapped, long identifiers/quotes reflowed and keyboard focus recoverable. This is a fictional, default-off integration candidate; representative and institutional acceptance are separate.
+
 ## 1. Design principles
 
 - **Give each element a job.** Include information or controls that help staff understand the case, check a fact, compare an option, or complete the next action.

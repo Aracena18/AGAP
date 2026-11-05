@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
 import type { TransactionContext } from '../../../../../packages/contracts/src/ports.js';
-import { AssessmentSchema } from '../../../../../packages/contracts/src/schemas.js';
+import { AssessmentSchema, SourceReferenceSchema } from '../../../../../packages/contracts/src/schemas.js';
 import { WorkflowAssessment, WorkflowFact, WorkflowPolicy, WorkflowSource } from '../../../../../packages/contracts/src/workflow.js';
 import { requireLendingTransaction } from '../../platform/lending-transaction.js';
 import { ApiError } from '../../platform/errors.js';
@@ -16,6 +16,20 @@ const SavedInput = z.strictObject({facts:z.array(WorkflowFact),sources:z.array(W
  */
 export class WorkflowDecisionProducer {
   constructor(private readonly workflow: WorkflowService) {}
+  async citation(tx:TransactionContext,applicationId:string,input:unknown) {
+    requireLendingTransaction(tx);
+    const reference=SourceReferenceSchema.parse(input),view=await this.workflow.viewIn(tx,applicationId);
+    const source=view.sources.find(s=>s.id===reference.sourceId&&s.version===reference.sourceVersion&&s.state==='cleared');
+    const page=reference.page??(source?.kind==='statement'?1:undefined);
+    if(!source||!page||!source.pages.some(p=>p.page===page&&p.text.includes(reference.excerpt)))
+      throw new ApiError(422,'concern_source_reference','Quote the exact supporting text and page from a current cleared source.');
+    return SourceReferenceSchema.parse({...reference,page});
+  }
+  async sourceMetadata(tx:TransactionContext,applicationId:string) {
+    requireLendingTransaction(tx);
+    return (await this.workflow.viewIn(tx,applicationId)).sources.map(s=>({sourceId:s.id,sourceVersion:s.version,label:s.label,kind:s.kind,
+      date:s.date,pageCount:s.pages.length,referenceable:s.state==='cleared'&&s.pages.some(p=>p.text.trim().length>0),verification:s.verification}));
+  }
   async load(tx: TransactionContext, applicationId: string) {
     requireLendingTransaction(tx);
     await this.workflow.access(tx,applicationId);
@@ -38,7 +52,7 @@ export class WorkflowDecisionProducer {
       originalSha256:s.sha256,statementSha256:s.kind==='statement' ? createHash('sha256').update(String(s.statement),'utf8').digest('hex') : null,
       textVersionId:s.text_version_id??null,textSha256:s.text_sha256??null,
       state:s.retired ? 'blocked' : s.kind==='statement' ? 'cleared' : s.state,verification:s.verification??'not_checked'}));
-    const sourceChanged=saved.input.sources.some(old => !current.sources.some(s => s.id===old.id && s.version===old.version
+    const sourceChanged=current.sources.length!==saved.input.sources.length || saved.input.sources.some(old => !current.sources.some(s => s.id===old.id && s.version===old.version
       && s.date===old.date && s.textVersionId===old.textVersionId && s.state===old.state && s.verification===old.verification));
     const stale=current.latestAssessment?.id!==saved.assessment.id || current.latestAssessment.stale || sourceChanged
       || workflowDigest(saved.input.facts)!==workflowDigest(current.facts) || workflowDigest(saved.input.policy)!==workflowDigest(applicablePolicy);

@@ -97,7 +97,7 @@ function scope(actor: ActorContext, c: ReviewContext, role: 'officer' | 'reviewe
 function version(c: ReviewContext, expected: number): void {
   requireRule(expected === c.application.version, 'stale_version', 'Reload the current application version before submitting.');
 }
-function ready(c: ReviewContext, at: string) {
+function ready(c: ReviewContext, at: string, evidenceOnly=false) {
   const a = c.assessment;
   requireRule(a?.status === 'complete', 'assessment_incomplete', 'A complete checked assessment is required; clarification remains available.');
   requireRule(a.inputVersion === c.application.assessmentInputVersion && a.policyVersionId === c.currentAssessmentPolicyVersionId, 'stale_assessment', 'The assessment input or financial policy version has changed.');
@@ -106,6 +106,9 @@ function ready(c: ReviewContext, at: string) {
     const b = c.workflowBasis;
     requireRule(!b.assessment.stale, 'stale_assessment', 'The saved workflow assessment is stale.');
     requireRule(b.facts.length > 0 && b.sources.length > 0, 'evidence_basis_unavailable', 'The checked assessment needs its authorized evidence basis.');
+    if(c.integration?.format==='connected-review/v2')
+      requireRule(b.sources.every(s=>s.state==='cleared'&&s.verification!=='mismatch'),
+        'source_inventory_unavailable','Every supplied source in this fictional review must remain available for inspection without a recorded mismatch.');
     for (const f of b.facts.filter(f => f.input.relevance === 'included')) {
       requireRule(f.input.value.availability === 'recorded', 'critical_evidence_gap', 'Missing confirmed amounts cannot be overridden.');
       requireRule(b.sources.some(s => s.sourceId === f.sourceId && s.sourceVersion === f.sourceVersion && s.state === 'cleared'
@@ -118,8 +121,18 @@ function ready(c: ReviewContext, at: string) {
     if (fact.critical) requireRule(fact.confirmation === 'accepted' && fact.value.availability === 'recorded', 'critical_evidence_gap', 'Missing or unresolved critical evidence cannot be overridden.');
     if (fact.confirmation === 'accepted' && fact.value.availability === 'recorded') requireRule(fact.sourceId !== null, 'source_reference', 'Accepted recorded facts need an exact source reference.');
   }
+  if (!evidenceOnly && c.integration?.format==='connected-review/v2') {
+    const proof=c.reviewReadiness;
+    requireRule(proof?.state==='current' && proof.evidenceBasisHash===hash(evidenceMaterial(c))
+      && proof.confirmedBy===c.application.assignedOfficerId && Date.parse(proof.confirmedAt)<=Date.parse(at),
+    'review_readiness_required','The assigned officer must confirm the complete current evidence and assessment after every required concern review.');
+    unique(proof.reviewParticipantIds,'duplicate_review_participant');
+    for(const participant of proof.reviewParticipantIds)clearance(c,participant);
+  }
   return a;
 }
+/** Check supplied authoritative evidence, without claiming a human review occurred. */
+export function validateReviewEvidence(input:DeepReadonly<ReviewContext>,at:string) {return ready(context(input),at,true);}
 function offer(c: ReviewContext, offerId: string) {
   const selected = c.offers.find(o => o.id === offerId);
   requireRule(selected?.available, 'offer_unavailable', 'Select an explicitly available offer version.');
@@ -148,8 +161,13 @@ function material(c: ReviewContext) {
     facts: [...c.facts].sort((a, b) => a.factId.localeCompare(b.factId)), authority: c.authority,
     ...(c.workflowBasis ? { workflowBasis:c.workflowBasis } : {}),
     ...(c.integration ? {integration:c.integration} : {}),
+    ...(c.reviewReadiness ? {reviewReadiness:c.reviewReadiness} : {}),
   };
 }
+function evidenceMaterial(c:ReviewContext) {
+  const {reviewReadiness,...basis}=material(c);void reviewReadiness;return basis;
+}
+export function reviewEvidenceHash(input:DeepReadonly<ReviewContext>):string {return hash(evidenceMaterial(context(input)));}
 export function reviewBasisHash(input: DeepReadonly<ReviewContext>): string { return hash(material(context(input))); }
 
 export function prepareRecommendation(actor: ActorContext, input: DeepReadonly<ReviewContext>, preparation: RecommendationPreparation) {

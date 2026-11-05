@@ -52,14 +52,14 @@ export class DecisionStaffReads {
         return WorkspaceViewSchema.parse({ application: c.application, basisHash: reviewBasisHash(c), periodStart: c.periodStart, periodEnd: c.periodEnd,
           assessment: a ? { id: a.id, inputVersion: a.inputVersion, state: c.workflowBasis?.assessment.stale || a.inputVersion !== c.application.assessmentInputVersion || a.policyVersionId !== c.currentAssessmentPolicyVersionId ? 'stale' : a.status, issues: a.status === 'incomplete' ? a.issues.map(i => i.message) : a.warnings } : null,
           ...hints, recommendation: r ? { id: r.id, offerVersionId: r.offerVersionId, preparedBy: r.preparedBy, preparedAt: r.preparedAt, reason: r.reason } : null,
-          blockedReason: hints.canReturn || hints.offers.some(o => o.recommend || o.outcomes.length) ? null : 'No decision action is currently permitted. Current evidence, assignment, authority or conflict review may be required. Contact the authorized review owner.',
+          blockedReason: c.application.status==='decision_recorded' ? 'A decision is already recorded. Inspect the saved history and exact terms below. Member acceptance and release are separate steps.' : hints.canReturn || hints.offers.some(o => o.recommend || o.outcomes.length) ? null : 'No decision action is currently permitted. Current evidence, assignment, authority or conflict review may be required. Contact the authorized review owner.',
           currentDecisionId: pointer?.decisionId ?? null });
       });
     });
   }
   history(actor: ActorContext, applicationId: string, input: unknown = {}) {
     return decisionOperation(async () => {
-      this.authorize(actor); const app = Id.parse(applicationId), query = z.strictObject({ cursor: Id.optional(), limit: z.number().int().min(1).max(50).default(20) }).parse(input);
+      this.authorize(actor); const app = Id.parse(applicationId), query = z.strictObject({ cursor: Id.optional(), limit: z.coerce.number().int().min(1).max(50).default(20) }).parse(input);
       return this.uow.run(actor, async tx => {
         await this.ports.authorizeStaff(tx, app);
         let cursor: { recorded_at: Date; id: string } | undefined;

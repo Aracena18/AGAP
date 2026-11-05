@@ -8,6 +8,7 @@ import { WorkflowDecisionProducer } from '../evidence/decision-basis.producer.js
 import { MemberGuardSchema, type DecisionBackendPorts } from './backend-contracts.js';
 import { LendingConfigurationSchema } from './lending-configuration.js';
 import { ReviewContextSchema } from './context.js';
+import { loadReviewReadiness } from './review-readiness.js';
 
 export const ParticipantSchema=z.strictObject({userId:Id,active:z.boolean(),organizationId:Id,branchIds:z.array(Id),roles:z.array(Role)});
 /** Authoritative owner adapters. No test context tables and no browser authority. */
@@ -38,7 +39,7 @@ export class LendingDecisionProducers implements DecisionBackendPorts {
     const inScope=(userId:string,role:string)=>participants.some(p=>p.userId===userId&&p.active&&p.organizationId===application.organizationId&&p.branchIds.includes(application.branchId)&&p.roles.includes(role as z.output<typeof Role>));
     const authority=configuration.authority;
     const declarations=(await tx.query(`SELECT DISTINCT ON(user_id) user_id,status,reference FROM decisions.conflict_declarations
-      WHERE organization_id=$1 AND application_id=$2 AND input_version=$3 ORDER BY user_id,recorded_at DESC,id DESC`,[tx.actor.organizationId,app,application.assessmentInputVersion])).rows;
+      WHERE organization_id=$1 AND application_id=$2 AND (input_version=$3 OR status='restricted') ORDER BY user_id,(status='restricted') DESC,recorded_at DESC,id DESC`,[tx.actor.organizationId,app,application.assessmentInputVersion])).rows;
     const conflicts=participants.map(p=>{
       const d=declarations.find(d=>d.user_id===p.userId);
       return {userId:p.userId,status:inScope(p.userId,p.userId===application.assignedOfficerId?'officer':'reviewer')&&d ? d.status : 'unavailable',reference:d?.reference??'No current conflict declaration is recorded.'};
@@ -47,9 +48,17 @@ export class LendingDecisionProducers implements DecisionBackendPorts {
       const declaration=conflicts.find(c=>c.userId===application.assignedOfficerId);
       if(declaration)declaration.status='unavailable';
     }
-    const {recommendation:_recommendation,...basis}=ReviewContextSchema.parse({application,...evidence,authority,conflicts,recommendation:null,
-      integration:{format:'connected-review/v1',configurationId:configuration.id,sourceReview:configuration.sourceReview}});
-    void _recommendation;return basis;
+    const context=ReviewContextSchema.parse({application,...evidence,authority,conflicts,recommendation:null,
+      integration:{format:'connected-review/v2',configurationId:configuration.id,sourceReview:configuration.sourceReview}});
+    context.reviewReadiness=(await loadReviewReadiness(tx,context,participants)).proof;
+    const {recommendation:_recommendation,...basis}=context;void _recommendation;return basis;
+  }
+  async citation(tx:TransactionContext,app:string,input:unknown) {await this.authorizeStaff(tx,app);return this.credit.citation(tx,app,input);}
+  async sourceMetadata(tx:TransactionContext,app:string) {await this.authorizeStaff(tx,app);return this.credit.sourceMetadata(tx,app);}
+  async candidateNames(tx:TransactionContext,app:string,userIds:string[]) {
+    await this.authorizeStaff(tx,app);
+    return z.array(z.strictObject({userId:Id,displayName:z.string().trim().min(1).max(2000)})).parse(
+      (await tx.query('SELECT decisions.review_candidate_names($1,$2) AS data',[app,userIds])).rows[0]?.data);
   }
   async configuration(tx:TransactionContext,branchId:string,productVersionId:string) {
     requireLendingTransaction(tx);

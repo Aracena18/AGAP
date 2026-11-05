@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { MemberTransactionContext, TransactionContext } from '../../../../../packages/contracts/src/ports.js';
-import { ApplicationSchema, DecisionCreateSchema, Id, Text, Version } from '../../../../../packages/contracts/src/schemas.js';
+import { ApplicationSchema, DecisionPreviewCreateSchema, DecisionPreviewSchema, Id, Version } from '../../../../../packages/contracts/src/schemas.js';
 import { ApiError } from '../../platform/errors.js';
 import { Hash, type ReviewContext } from './context.js';
 
@@ -20,13 +20,10 @@ export const unavailableDecisionPorts: DecisionBackendPorts = {
   authorizeStaff: unavailable, loadStaffBasis: unavailable, transitionStaff: unavailable,
   authorizeMember: unavailable, loadMemberGuard: unavailable, transitionMember: unavailable,
 };
-export const PreviewRequestSchema = DecisionCreateSchema.omit({ explanationReviewed: true });
+export const PreviewRequestSchema = DecisionPreviewCreateSchema;
 export const MemberGuardSchema = z.strictObject({
   applicationId: Id, organizationId: Id, memberId: Id, applicationVersion: Version, inputVersion: Version,
   applicationStatus: ApplicationSchema.shape.status,
   basisHash: Hash, recommendationId: Id.nullable(), participantsClear: z.boolean(),
 });
-export const PreviewViewSchema = z.strictObject({
-  id: Id, decisionId: Id, applicationVersion: Version, basisHash: Hash,
-  expiresAt: z.iso.datetime({ offset: true }), explanation: Text, terms: z.string().nullable(),
-});
+export const PreviewViewSchema = DecisionPreviewSchema;

@@ -23,15 +23,17 @@ import { FictionalManualDriver } from '../servicing/testing/manual-simulation.js
 import { DecisionStaffReads } from './staff-read.service.js';
 import { workflowDigest } from './workflow-digest.js';
 import { StaffService } from '../identity/staff.service.js';
+import { DecisionReviewService } from './decision-review.service.js';
 
 const uow=new PostgresUnitOfWork(runtimePool,{lendingGuard:true}),muow=new PostgresMemberUnitOfWork(runtimePool,{lendingGuard:true});
 const workflow=new WorkflowService(uow,muow,false,true),ports=new LendingDecisionProducers(new WorkflowDecisionProducer(workflow),true);
 const decisions=new DecisionsService(uow,ports),moneyPorts=new LendingMoneyProducers(ports,true);
+const reviews=new DecisionReviewService(uow,ports);
 let f:Awaited<ReturnType<typeof resetFixtures>>,member:Awaited<ReturnType<typeof memberFixture>>,reviewer:ActorContext,cashier:ActorContext,authorizer:ActorContext;
 let app:string,policy:ReturnType<typeof WorkflowPolicy.parse>,configuration:ReturnType<typeof LendingConfigurationSchema.parse>;
 const key=()=>randomUUID();
 async function version(){return Number((await owner.query('SELECT version FROM applications.applications WHERE id=$1',[app])).rows[0].version);}
-async function staff(role:'cashier'|'financial_authorizer'):Promise<ActorContext>{
+async function staff(role:'cashier'|'financial_authorizer'|'officer'):Promise<ActorContext>{
   const userId=key(),sessionId=key();
   await owner.query('INSERT INTO identity.staff_users(id,organization_id,issuer,subject,display_name,branch_ids,roles) VALUES($1,$2,$3,$1::uuid::text,$4,$5,$6)',
     [userId,f.org,'fictional-connected-lending',`Fictional ${role}`,[f.branch],[role]]);
@@ -46,13 +48,12 @@ async function publishConfig(body=configuration){
   }catch(error){await client.query('ROLLBACK');throw error;}finally{client.release();}
 }
 async function declarations(){
-  for(const actor of [f.officer.actor,reviewer])await uow.run(actor,async tx=>{
-    await tx.query(`INSERT INTO decisions.conflict_declarations(id,organization_id,application_id,branch_id,user_id,input_version,status,reference)
-      SELECT $1,$2,id,branch_id,$3,assessment_input_version,'clear','Explicit fictional self-declaration for producer testing.' FROM applications.applications WHERE id=$4`,[key(),f.org,actor.userId,app]);
-  });
+  for(const actor of [f.officer.actor,reviewer])await reviews.declare(actor,app,{status:'clear',reference:'Explicit fictional self-declaration for producer testing.'},await version(),key());
 }
 async function approved(accept=true){
   await declarations();
+  const review=await reviews.get(f.officer.actor,app);
+  await reviews.confirm(f.officer.actor,app,{evidenceBasisHash:review.evidenceBasisHash,mode:'manual',reviewedSources:true,reviewedScenarios:true,reason:'Actual automated service test of explicit fictional manual-review recording; no human validation claimed.'},review.version,key());
   const assessment=(await workflow.view(f.officer.actor,app)).latestAssessment!;
   const r=await decisions.recommend(f.officer.actor,app,{assessmentId:assessment.id,offerVersionId:policy.offers[0].id,inputVersion:assessment.inputVersion,reason:'Reviewed the authoritative fictional dated assessment.'},await version(),key());
   const data={outcome:'approve' as const,assessmentId:assessment.id,recommendationId:r.id,offerVersionId:policy.offers[0].id,rationale:'Separate fictional reviewer inspected the complete dated basis.',departureReason:'',exceptions:[],reviewDate:'2026-12-31'};
@@ -90,6 +91,100 @@ beforeEach(async()=>{
   await publishConfig();
 });
 describe('CL1 real owner producers under PostgreSQL runtime authorization',()=>{
+  it('requires an explicit complete-basis confirmation rather than inferring review from source availability',async()=>{
+    await declarations();const state=await reviews.get(f.officer.actor,app);
+    expect(state).toMatchObject({state:'needs_confirmation',canConfirm:true,confirmation:null});
+    const a=(await workflow.view(f.officer.actor,app)).latestAssessment!;
+    await expect(decisions.recommend(f.officer.actor,app,{assessmentId:a.id,offerVersionId:policy.offers[0].id,inputVersion:a.inputVersion,reason:'Fictional test.'},await version(),key())).rejects.toMatchObject({code:'review_readiness_required'});
+    const request={evidenceBasisHash:state.evidenceBasisHash,mode:'manual' as const,reviewedSources:true as const,reviewedScenarios:true as const,reason:'Recorded by an automated fictional test, not human validation.'};
+    const k=key(),saved=await reviews.confirm(f.officer.actor,app,request,state.version,k);
+    expect(await reviews.confirm(f.officer.actor,app,request,state.version,k)).toEqual(saved);
+    expect(await reviews.get(f.officer.actor,app)).toMatchObject({state:'ready',confirmation:{current:true,recordedBy:f.officer.actor.userId}});
+  });
+  it('requires exact source quotations and keeps acknowledgment separate from assigned resolution',async()=>{
+    await declarations();let state=await reviews.get(f.officer.actor,app);
+    const source=(await workflow.view(f.officer.actor,app)).sources[0];
+    const concern={evidenceBasisHash:state.evidenceBasisHash,source:{sourceId:source.id,sourceVersion:source.version,page:1,excerpt:'Invented supporting quote'},description:'Verify the supplied statement dates.'};
+    await expect(reviews.raise(f.officer.actor,app,concern,state.version,key())).rejects.toMatchObject({code:'concern_source_reference'});
+    concern.source.excerpt=source.pages[0].text;
+    const raised=await reviews.raise(f.officer.actor,app,concern,state.version,key());
+    state=await reviews.get(f.officer.actor,app);expect(state.state).toBe('awaiting_concern_check');
+    const checked={evidenceBasisHash:state.evidenceBasisHash,outcome:'confirmed' as const,reason:'The supplied statement needs a separately recorded date review.',correctedText:''};
+    await reviews.check(f.officer.actor,app,raised.id,checked,state.version,key());state=await reviews.get(f.officer.actor,app);
+    const assignment=await reviews.assign(f.officer.actor,app,raised.id,{evidenceBasisHash:state.evidenceBasisHash,reviewerId:reviewer.userId,reason:'Separate fictional review of the statement.'},state.version,key());
+    state=await reviews.get(f.officer.actor,app);expect(state.state).toBe('escalated_review');
+    const notices=await reviews.notices(reviewer);expect(notices.items).toHaveLength(1);expect(notices.items[0].assignmentId).toBe(assignment.id);
+    const acknowledged=await reviews.acknowledge(reviewer,notices.items[0].id,{acknowledgment:true},key());
+    expect(await reviews.acknowledge(reviewer,notices.items[0].id,{acknowledgment:true},key())).toEqual(acknowledged);
+    expect((await reviews.get(f.officer.actor,app)).reviewVersion).toBe(state.reviewVersion);
+    const confirm={evidenceBasisHash:state.evidenceBasisHash,mode:'manual' as const,reviewedSources:true as const,reviewedScenarios:true as const,reason:'Actual fictional test confirmation.'};
+    await expect(reviews.confirm(f.officer.actor,app,confirm,state.version,key())).rejects.toMatchObject({code:'concern_review_required'});
+    await reviews.dispose(reviewer,app,raised.id,{evidenceBasisHash:state.evidenceBasisHash,assignmentId:assignment.id,outcome:'resolved',reason:'Statement cash dates inspected in the fictional evidence; no source fact or policy was changed.'},state.version,key());
+    state=await reviews.get(f.officer.actor,app);expect(state.concerns[0].state).toBe('resolved');
+    await reviews.confirm(f.officer.actor,app,confirm,state.version,key());expect((await reviews.get(f.officer.actor,app)).state).toBe('ready');
+    // A new check invalidates the old assignment and disposition, even on identical evidence.
+    await reviews.check(f.officer.actor,app,raised.id,checked,await version(),key());
+    state=await reviews.get(f.officer.actor,app);expect(state.concerns[0].state).toBe('needs_assignment');expect(state.confirmation?.current).toBe(false);
+    const history=await reviews.history(reviewer,app,{limit:2});expect(history.items).toHaveLength(2);expect(history.nextCursor).not.toBeNull();
+    expect((await reviews.history(reviewer,app,{cursor:history.nextCursor!,limit:100})).items.length).toBeGreaterThan(2);
+    expect(()=>reviews.notices(f.officer.actor)).toThrow('Your current role');
+    await expect(uow.run(reviewer,tx=>tx.query('UPDATE decisions.review_events SET payload_text=$1',['{}']))).rejects.toMatchObject({code:'42501'});
+  });
+  it('does not let a participant self-clear a previously recorded restriction',async()=>{
+    await reviews.declare(f.officer.actor,app,{status:'restricted',reference:'Fictional recorded conflict requiring a different officer.'},await version(),key());
+    await expect(reviews.declare(f.officer.actor,app,{status:'clear',reference:'Attempt to erase the restriction.'},await version(),key())).rejects.toMatchObject({code:'decision_conflict'});
+    expect(await reviews.get(f.officer.actor,app)).toMatchObject({ownConflict:{status:'restricted'},canConfirm:false,canRaiseConcern:false});
+  });
+  it('invalidates exact preview bytes when the displayed member name changes and rejects the expiry boundary',async()=>{
+    await approved(false);
+    // Use a fresh application-state candidate; an existing approval cannot be re-recorded.
+    await owner.query("UPDATE applications.applications SET status='recommended' WHERE id=$1",[app]);
+    const a=(await workflow.view(f.officer.actor,app)).latestAssessment!,r=(await owner.query('SELECT id FROM decisions.recommendations WHERE application_id=$1',[app])).rows[0];
+    const data={outcome:'approve' as const,assessmentId:a.id,recommendationId:r.id,offerVersionId:policy.offers[0].id,rationale:'Exact content regression.',departureReason:'',exceptions:[],reviewDate:'2026-12-31'};
+    const proof=await decisions.preview(reviewer,app,data,await version(),key());
+    await owner.query("UPDATE members.members SET full_name='Fictional changed display name' WHERE id=$1",[member.record.id]);
+    await expect(decisions.record(reviewer,app,{...data,explanationReviewed:true},await version(),key(),proof.id)).rejects.toMatchObject({code:'review_preview_changed'});
+    const fresh=await decisions.preview(reviewer,app,data,await version(),key());
+    const boundary=new DecisionsService(uow,ports,undefined,()=>new Date(fresh.expiresAt));
+    await expect(boundary.record(reviewer,app,{...data,explanationReviewed:true},await version(),key(),fresh.id)).rejects.toMatchObject({code:'review_preview_changed'});
+  });
+  it('holds an existing approval after a new material review event without altering its saved bytes',async()=>{
+    const result=await approved(),before=(await owner.query('SELECT snapshot_text,snapshot_hash FROM decisions.records WHERE id=$1',[result.d.id])).rows[0];
+    const state=await reviews.get(f.officer.actor,app),source=(await workflow.view(f.officer.actor,app)).sources[0];
+    await reviews.raise(f.officer.actor,app,{evidenceBasisHash:state.evidenceBasisHash,source:{sourceId:source.id,sourceVersion:source.version,page:1,excerpt:source.pages[0].text},description:'New material question after approval.'},state.version,key());
+    expect(await muow.run(member.actor,tx=>decisions.memberDecision(tx,app))).toMatchObject({state:'unavailable'});
+    await expect(new ServicingService(uow,moneyPorts).originate(cashier,app,{method:'cash'},key())).rejects.toMatchObject({code:'renewed_review_required'});
+    expect((await owner.query('SELECT snapshot_text,snapshot_hash FROM decisions.records WHERE id=$1',[result.d.id])).rows[0]).toEqual(before);
+    expect(await muow.run(member.actor,tx=>decisions.memberAccept(tx,app,result.input,result.v,result.acceptKey))).toEqual(result.accepted);
+  });
+  it('returns a genuinely incomplete saved assessment for clarification without inventing approved terms',async()=>{
+    const before=await workflow.view(f.officer.actor,app),income=before.facts.find(f=>f.input.category==='income')!;
+    await workflow.saveFact(f.officer.actor,app,{...income.input,factId:income.id,value:{availability:'unavailable',reason:'Fictional missing amount pending member clarification.'}},before.version,key());
+    const updated=await workflow.view(f.officer.actor,app);
+    await workflow.assess(f.officer.actor,app,{inputVersion:updated.inputVersion,offerVersionIds:[policy.offers[0].id],periodStart:'2026-11-01',periodEnd:'2026-12-31'},updated.version,key());
+    await declarations();const state=await reviews.get(f.officer.actor,app);expect(state.state).toBe('assessment_unavailable');expect(state.canConfirm).toBe(false);
+    const w=await new DecisionStaffReads(uow,ports).workspace(reviewer,app);expect(w.assessment?.state).toBe('incomplete');expect(w.canReturn).toBe(true);expect(w.offers[0].checked).toBeNull();
+    const body={outcome:'return' as const,assessmentId:w.assessment!.id,recommendationId:null,offerVersionId:null,rationale:'Please confirm the missing income amount with source and dated coverage.',departureReason:'',exceptions:[],reviewDate:'2026-12-31'};
+    const proof=await decisions.preview(reviewer,app,body,await version(),key());expect(proof.terms).toBeNull();
+    expect(await decisions.record(reviewer,app,{...body,explanationReviewed:true},await version(),key(),proof.id)).toMatchObject({outcome:'return'});
+    expect((await owner.query('SELECT count(*) FROM decisions.documents')).rows[0].count).toBe('0');
+  });
+  it('requires fresh administrative MFA for preparation reassignment and invalidates the former confirmation',async()=>{
+    await declarations();const state=await reviews.get(f.officer.actor,app);
+    await reviews.confirm(f.officer.actor,app,{evidenceBasisHash:state.evidenceBasisHash,mode:'manual',reviewedSources:true,reviewedScenarios:true,reason:'Fictional preparation currentness before reassignment.'},state.version,key());
+    const replacement=await staff('officer'),request={officerId:replacement.userId,reason:'Fictional independent preparation reassignment.'};
+    expect(()=>reviews.reassignPreparation({...f.administrator.actor,authenticatedAt:new Date(Date.now()-3600000)},app,request,1,key())).toThrow('multi-factor');
+    const before=await version(),input=(await workflow.view(f.officer.actor,app)).inputVersion;
+    await reviews.reassignPreparation(f.administrator.actor,app,request,before,key());
+    const current=await reviews.get(replacement,app);expect(current).toMatchObject({state:'needs_confirmation',canConfirm:false,inputVersion:input});
+    expect(current.confirmation?.current).toBe(false);expect((await version())).toBe(before+1);
+    const last=(await reviews.history(reviewer,app)).items[0];expect(last).toMatchObject({evidenceBasisHash:null,event:{kind:'reassign_preparation'},recordedBy:f.administrator.actor.userId});
+  });
+  it('stales the saved assessment when a completed source arrives without an input counter change',async()=>{
+    const reads=new DecisionStaffReads(uow,ports),before=await reads.workspace(reviewer,app);
+    await uow.run(f.officer.actor,tx=>tx.query("INSERT INTO evidence.sources(id,organization_id,application_id,kind,label,source_date,statement) VALUES($1,$2,$3,'statement','New fictional supporting statement','2026-11-01','A later fictional source requiring renewed inspection.')",[key(),f.org,app]));
+    const after=await reads.workspace(reviewer,app);expect(after.application.assessmentInputVersion).toBe(before.application.assessmentInputVersion);expect(after.assessment?.state).toBe('stale');expect(after.offers[0].checked).toBeNull();
+  });
   it('reads the immutable full workflow input and actual confirmation identities without legacy flattening',async()=>{
     const c=await uow.run(f.officer.actor,tx=>ports.loadStaffBasis(tx,app));
     expect(c.workflowBasis!.assessment.scenarios[0]).toMatchObject({horizonNetCentavos:980000,closingBalanceCentavos:1180000,months:[{month:'2026-11',remainingCentavos:430000},{month:'2026-12',remainingCentavos:550000}]});

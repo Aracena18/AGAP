@@ -35,6 +35,12 @@ export const FactSchema = z.strictObject({
 export const RecommendationSchema = RecommendationCreateSchema.extend({
   id: Id, applicationId: Id, preparedBy: Id, preparedAt: Instant, basisHash: Hash,
 });
+const IntegrationFields={configurationId:Id,sourceReview:z.enum(['confirmed_statements_permitted','independent_support_required'])};
+export const ReviewReadinessSchema=z.discriminatedUnion('state',[
+  z.strictObject({state:z.literal('pending'),revision:Version,reason:Text}),
+  z.strictObject({state:z.literal('current'),revision:Version,confirmationId:Id,confirmedBy:Id,confirmedAt:Instant,
+    evidenceBasisHash:Hash,mode:z.literal('manual'),reviewParticipantIds:z.array(Id).max(100)}),
+]);
 export const ReviewContextSchema = z.strictObject({
   application: ApplicationSchema,
   periodStart: CalendarDay, periodEnd: CalendarDay,
@@ -50,8 +56,11 @@ export const ReviewContextSchema = z.strictObject({
   recommendation: RecommendationSchema.nullable(),
   // Absent for immutable historical v1 records; never default it during decoding.
   workflowBasis: WorkflowDecisionBasisSchema.optional(),
-  integration: z.strictObject({format:z.literal('connected-review/v1'),configurationId:Id,
-    sourceReview:z.enum(['confirmed_statements_permitted','independent_support_required'])}).optional(),
+  integration: z.discriminatedUnion('format',[
+    z.strictObject({format:z.literal('connected-review/v1'),...IntegrationFields}),
+    z.strictObject({format:z.literal('connected-review/v2'),...IntegrationFields}),
+  ]).optional(),
+  reviewReadiness:ReviewReadinessSchema.optional(),
 });
 export const DocumentSchema = z.strictObject({ id: Id, sha256: Hash });
 export const ExplanationSchema = z.strictObject({

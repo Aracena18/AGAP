@@ -92,6 +92,16 @@ describe('Phase 3 staff UI with explicitly fictional proposed gateway', () => {
     expect(screen.queryByLabelText('I reviewed this exact explanation and terms.')).not.toBeInTheDocument();
     await act(async () => pending.resolve(f.view)); await screen.findByRole('heading', { name: 'Current review basis' });
   });
+  it('preserves a decision draft but prevents rebinding it to a changed application during refresh',async()=>{
+    const user=userEvent.setup(),f=staffUiFixture();mount(f);await prepare(user);
+    f.view.application.version+=1;
+    await user.click(screen.getByRole('button',{name:'Refresh current basis'}));await screen.findByRole('heading',{name:'Current review basis'});
+    expect(await screen.findByText(/decision draft belongs to an older application/)).toBeVisible();
+    expect(screen.getByLabelText('Decision rationale')).toHaveValue('Reviewed the exact checked cost and source limitations.');
+    expect(screen.getByRole('button',{name:'Prepare exact preview'})).toBeDisabled();
+    await user.click(screen.getByRole('button',{name:'Clear decision draft'}));
+    expect(screen.getByLabelText('Decision rationale')).toHaveValue('');
+  });
   it('does not fall back to latest or print a denied selected historical brief', async () => {
     const user = userEvent.setup(), f = staffUiFixture(); mount(f); await record(user);
     f.history.items.push({ ...f.history.items[0], id: testId(40) });

@@ -70,6 +70,62 @@ export const DecisionCreateSchema = z.strictObject({
   reviewDate: CalendarDay, explanationReviewed: z.literal(true),
 });
 export const DecisionSchema = z.strictObject({ id: Id, applicationId: Id, inputVersion: Version, outcome: z.enum(['approve', 'decline', 'return']), recordedAt: Instant, reviewerId: Id, snapshotHash: z.string().regex(/^[a-f0-9]{64}$/) });
+const Sha256=z.string().regex(/^[a-f0-9]{64}$/);
+const DecisionAction=z.enum(['approve','decline','return']);
+export const DecisionPreviewCreateSchema=DecisionCreateSchema.omit({explanationReviewed:true});
+export const DecisionPreviewSchema=z.strictObject({id:Id,decisionId:Id,applicationVersion:Version,basisHash:Sha256,expiresAt:Instant,explanation:Text,terms:z.string().nullable()});
+export const DecisionRecordCreateSchema=z.strictObject({previewId:Id,decision:DecisionCreateSchema});
+export const StaffDecisionWorkspaceSchema=z.strictObject({
+  application:ApplicationSchema,basisHash:Sha256,periodStart:CalendarDay,periodEnd:CalendarDay,
+  assessment:z.strictObject({id:Id,inputVersion:Version,state:z.enum(['complete','incomplete','unavailable','stale']),issues:z.array(Text)}).nullable(),
+  offers:z.array(z.strictObject({offer:OfferSchema,checked:ScenarioSchema.nullable(),recommend:z.boolean(),outcomes:z.array(DecisionAction)})),
+  recommendation:z.strictObject({id:Id,offerVersionId:Id,preparedBy:Id,preparedAt:Instant,reason:Text}).nullable(),
+  canReturn:z.boolean(),blockedReason:Text.nullable(),currentDecisionId:Id.nullable(),
+});
+export const StaffDecisionHistoryPageSchema=z.strictObject({items:z.array(DecisionSchema.extend({accepted:z.boolean()})).max(50),nextCursor:Id.nullable()});
+export const StaffDecisionBriefSchema=z.strictObject({
+  id:Id,applicationId:Id,memberName:z.string(),inputVersion:Version,recordedAt:Instant,reviewerId:Id,outcome:DecisionAction,
+  explanation:Text,origin:z.enum(['template','manual']),reviewDate:CalendarDay,periodStart:CalendarDay,periodEnd:CalendarDay,
+  considered:z.strictObject({offer:OfferSchema,checked:ScenarioSchema}).nullable(),snapshotHash:Sha256,
+  document:z.strictObject({id:Id,sha256:Sha256}).nullable(),
+  sources:z.array(z.strictObject({sourceId:Id,sourceVersion:Version,verification:z.enum(['not_checked','supported','mismatch','unavailable']),effectiveDates:z.array(CalendarDay)})),
+});
+export const DecisionConflictCreateSchema=z.strictObject({status:z.enum(['clear','restricted']),reference:Text});
+const ReviewBasis={evidenceBasisHash:Sha256};
+export const DecisionReviewConfirmSchema=z.strictObject({...ReviewBasis,mode:z.literal('manual'),reviewedSources:z.literal(true),reviewedScenarios:z.literal(true),reason:Text});
+export const DecisionConcernCreateSchema=z.strictObject({...ReviewBasis,source:SourceReferenceSchema,description:Text});
+export const DecisionConcernCheckSchema=z.strictObject({...ReviewBasis,outcome:z.enum(['confirmed','corrected','dismissed']),reason:Text,correctedText:z.string().trim().max(2000)})
+  .refine(v=>v.outcome==='corrected'?v.correctedText.length>0:v.correctedText==='', 'Supply corrected wording only for a correction.');
+export const DecisionReviewAssignmentSchema=z.strictObject({...ReviewBasis,reviewerId:Id,reason:Text});
+export const DecisionReviewDispositionSchema=z.strictObject({...ReviewBasis,assignmentId:Id,outcome:z.enum(['investigating','clarification','options','resolved']),reason:Text});
+export const DecisionNoticeAcknowledgmentSchema=z.strictObject({acknowledgment:z.literal(true)});
+const ReviewEventActor={id:Id,recordedBy:Id,recordedAt:Instant};
+const ConcernCheck=z.strictObject({...ReviewEventActor,outcome:z.enum(['confirmed','corrected','dismissed']),reason:Text,correctedText:z.string()});
+const ConcernAssignment=z.strictObject({...ReviewEventActor,reviewerId:Id,reviewerName:Text,reason:Text});
+const ConcernDisposition=z.strictObject({...ReviewEventActor,outcome:DecisionReviewDispositionSchema.shape.outcome,reason:Text});
+export const DecisionReviewSchema=z.strictObject({
+  applicationId:Id,version:Version,inputVersion:Version,reviewVersion:Version,evidenceBasisHash:Sha256,
+  state:z.enum(['assessment_unavailable','needs_confirmation','awaiting_concern_check','escalated_review','ready']),message:Text,
+  confirmation:z.strictObject({...ReviewEventActor,mode:z.literal('manual'),reason:Text,current:z.boolean()}).nullable(),
+  ownConflict:z.strictObject({status:z.enum(['clear','restricted','unavailable']),reference:Text.nullable()}),
+  canConfirm:z.boolean(),canRaiseConcern:z.boolean(),canCheckConcerns:z.boolean(),
+  concerns:z.array(z.strictObject({...ReviewEventActor,origin:z.literal('manual'),source:SourceReferenceSchema,description:Text,
+    state:z.enum(['awaiting_check','dismissed','needs_assignment','escalated','resolved']),check:ConcernCheck.nullable(),assignment:ConcernAssignment.nullable(),disposition:ConcernDisposition.nullable()})).max(100),
+  reviewers:z.array(z.strictObject({userId:Id,displayName:Text,available:z.boolean(),reason:Text.nullable()})).max(100),
+  sources:z.array(z.strictObject({sourceId:Id,sourceVersion:Version,label:Text,kind:z.enum(['document','statement']),date:CalendarDay,pageCount:z.number().int().nonnegative(),referenceable:z.boolean(),verification:z.enum(['not_checked','supported','mismatch','unavailable'])})),
+});
+export const DecisionReviewEventPayloadSchema=z.discriminatedUnion('kind',[
+  z.strictObject({kind:z.literal('confirm_current'),data:DecisionReviewConfirmSchema}),
+  z.strictObject({kind:z.literal('raise_concern'),data:DecisionConcernCreateSchema}),
+  z.strictObject({kind:z.literal('check_concern'),concernId:Id,data:DecisionConcernCheckSchema}),
+  z.strictObject({kind:z.literal('assign_review'),concernId:Id,reviewerName:Text,data:DecisionReviewAssignmentSchema}),
+  z.strictObject({kind:z.literal('review_disposition'),concernId:Id,data:DecisionReviewDispositionSchema}),
+  z.strictObject({kind:z.literal('reassign_preparation'),data:AssignmentCreateSchema}),
+]);
+export const DecisionReviewEventSchema=z.strictObject({...ReviewEventActor,version:Version,evidenceBasisHash:Sha256.nullable(),event:DecisionReviewEventPayloadSchema});
+export const DecisionReviewEventPageSchema=z.strictObject({items:z.array(DecisionReviewEventSchema).max(100),nextCursor:Id.nullable()});
+export const DecisionNoticeSchema=z.strictObject({id:Id,applicationId:Id,concernId:Id,assignmentId:Id,createdAt:Instant,acknowledgedAt:Instant.nullable()});
+export const DecisionNoticePageSchema=z.strictObject({items:z.array(DecisionNoticeSchema).max(100),nextCursor:Id.nullable()});
 export const AcceptanceCreateSchema = z.strictObject({ decisionId: Id, documentVersionId: Id, acceptedOn: CalendarDay, acknowledgment: Text });
 export const FinancialCommandCreateSchema = z.strictObject({
   loanId: Id, amountCentavos: PositiveMoneyAmount, currency: Currency, effectiveDate: CalendarDay, method: z.enum(['cash', 'bank', 'provider']),
@@ -239,6 +295,11 @@ export const MemberSupportPageViewSchema=serviceView(MemberSupportPageSchema);
 export const MemberSupportHistoryQuerySchema=z.strictObject({cursor:Id.optional(),limit:z.coerce.number().int().min(1).max(100).default(25)});
 
 export const schemas = {
+  DecisionPreviewCreate:DecisionPreviewCreateSchema,DecisionPreview:DecisionPreviewSchema,DecisionRecordCreate:DecisionRecordCreateSchema,
+  StaffDecisionWorkspace:StaffDecisionWorkspaceSchema,StaffDecisionHistoryPage:StaffDecisionHistoryPageSchema,StaffDecisionBrief:StaffDecisionBriefSchema,
+  DecisionConflictCreate:DecisionConflictCreateSchema,DecisionReviewConfirm:DecisionReviewConfirmSchema,DecisionConcernCreate:DecisionConcernCreateSchema,
+  DecisionConcernCheck:DecisionConcernCheckSchema,DecisionReviewAssignment:DecisionReviewAssignmentSchema,DecisionReviewDisposition:DecisionReviewDispositionSchema,
+  DecisionNoticeAcknowledgment:DecisionNoticeAcknowledgmentSchema,DecisionReview:DecisionReviewSchema,DecisionReviewEventPage:DecisionReviewEventPageSchema,DecisionNoticePage:DecisionNoticePageSchema,
   SupportAssignment:SupportAssignmentSchema,SupportResponse:SupportResponseSchema,SupportPage:SupportPageSchema,SupportDetail:SupportDetailSchema,SupportSummary:SupportSummarySchema,SupportAction:SupportActionSchema,SupportActionPage:SupportActionPageSchema,SupportHistory:SupportHistorySchema,
   ReconciliationCreate:ReconciliationCreateSchema,ReconciliationRun:ReconciliationRunSchema,ReconciliationPage:ReconciliationPageSchema,
   ...workflowSchemas,

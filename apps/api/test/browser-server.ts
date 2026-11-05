@@ -1,3 +1,4 @@
+import { connectedLendingFixture } from './connected-lending-fixture.js';
 import { mkdir,writeFile,mkdtemp,rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -49,10 +50,12 @@ if(process.env.AGAP_E2E_PRESENTATION==='1'){
  config.OIDC_ISSUER=`http://127.0.0.1:${port}/realms/agap`;
  await presentationFixtures();config.NODE_ENV='development';config.LOCAL_PRESENTATION_MODE=true;
 }
+const connectedLending=await connectedLendingFixture();
+config.CONNECTED_LENDING_ENABLED=true;
 const app=await createApp(config);
 await app.listen(Number(process.env.AGAP_E2E_API_PORT??4101),'127.0.0.1');
 await mkdir('.platform-test',{recursive:true});
-await writeFile('.platform-test/browser.json',JSON.stringify({memberSupportHistory,supportFollowUps,supportHistory,supportMember:supportMember.token,reconciliationAuditor:reconciliation.token,uiAuditMember:uiAuditMember.token,uiLogout,officer:fixture.officer.token,auditor:fixture.auditor.token,administrator:fixture.administrator.token,target:fixture.revocationTarget.token,organizationId:fixture.org,branchId:fixture.branch,member:member.token,memberId:member.record.id,otherMember:otherMember.token,otherMemberId:otherMember.record.id,otherApplicationId:otherApplication.id,submittedApplicationId:submitted.id}),{mode:0o600});
+await writeFile('.platform-test/browser.json',JSON.stringify({connectedLending:{appId:connectedLending.appId,officer:connectedLending.officer.token,reviewer:connectedLending.reviewer.token,member:connectedLending.member.token},memberSupportHistory,supportFollowUps,supportHistory,supportMember:supportMember.token,reconciliationAuditor:reconciliation.token,uiAuditMember:uiAuditMember.token,uiLogout,officer:fixture.officer.token,auditor:fixture.auditor.token,administrator:fixture.administrator.token,target:fixture.revocationTarget.token,organizationId:fixture.org,branchId:fixture.branch,member:member.token,memberId:member.record.id,otherMember:otherMember.token,otherMemberId:otherMember.record.id,otherApplicationId:otherApplication.id,submittedApplicationId:submitted.id}),{mode:0o600});
 console.log('Fictional browser-test API ready.');
 const stop=async()=>{await app.close();await closePools();await rm(documentDirectory,{recursive:true,force:true});process.exit(0);};
 process.on('SIGTERM',()=>void stop());process.on('SIGINT',()=>void stop());

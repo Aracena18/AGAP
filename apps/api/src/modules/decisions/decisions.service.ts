@@ -74,8 +74,10 @@ export class DecisionsService {
         await this.ports.authorizeStaff(tx, app);
         return command(tx, `decisions.record:${app}`, key, { app, data, version, proof }, async () => {
           const { c, stream } = await this.basis(tx, app), preview = await this.repository.preview(tx, app, proof), at = this.now();
-          if (preview.application_version !== version || preview.expires_at.getTime() < at.getTime()
-            || canonical(preview.request) !== canonical(data) || preview.basis_hash !== reviewBasisHash(c)) {
+          const currentDocument = decisionDocument(c, data);
+          if (preview.application_version !== version || preview.expires_at.getTime() <= at.getTime()
+            || canonical(preview.request) !== canonical(data) || preview.basis_hash !== reviewBasisHash(c)
+            || currentDocument.explanation !== preview.explanation.text || currentDocument.terms !== preview.terms_text) {
             throw new ApiError(409, 'review_preview_changed', 'Prepare and review a new preview for this exact request and current basis.');
           }
           const d = prepareDecision(actor, c, { id: preview.decision_id, at: at.toISOString(), expectedVersion: version, request: data,
