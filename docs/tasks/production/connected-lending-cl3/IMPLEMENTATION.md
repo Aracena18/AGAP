@@ -35,3 +35,8 @@ CL4 remains the controlled disbursement workspace, durable fictional movement in
 Required `npm run check` passes on Node 24.12.0 with locked dependencies: **242 app/domain, 675 actual platform/backend/contract and 91 evaluation-tooling tests**, lint, generated parity and builds/typechecks. Required ordinary `npm run test:e2e` passes **99 Chromium cases**, with four presentation-only cases intentionally skipped there. The separate guarded presentation run passes **all four cases**. Exact-source remote CI/publication is recorded after completion. Actual isolated PostgreSQL 18 projects/ports are the same CL1/CL2 test-only databases (55439 full checks, 55441 browser); development data and unrelated root work remain untouched.
 
 Changed-document local links and diff whitespace pass. Existing historical screenshot files overwritten by browser tests were restored; CL3 captures remain separate. `graft`/`graphify` remain unavailable; no graph update is claimed. There is no model/runtime/training change or human/institutional approval in this phase.
+
+
+## Exact-source remote verification and publication
+
+Source **f24851572c092c88986feb99a63787410a90d289** passes [origin-fork CI run 42026948833](https://github.com/joohhhnnnny/AGAP/actions/runs/42026948833), completed **2026-11-05 12:34:43 UTC**. Main was fast-forwarded from `d4b3817` and normally pushed to `origin/main`, preserving all 21 unrelated untracked root files. No PR, model change, real movement, consuming-owner acceptance or institutional release was created. This documentation-only follow-up records the tested source and publication; CL4 continues in its isolated branch.
