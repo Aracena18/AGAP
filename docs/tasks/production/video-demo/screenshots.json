@@ -1,0 +1,49 @@
+{
+  "task": "VID-01",
+  "date": "2026-11-05",
+  "environment": "Isolated fictional PostgreSQL/API; Chromium Playwright; normal account routes with test session cookies",
+  "captures": [
+    {
+      "path": "../../../screenshots/video-demo/member-review-390.png",
+      "sha256": "b5cb4a4d522c529c1c3fc76dea788060a29b527c39eb1b694e0eef86e3fe6456",
+      "width": 390,
+      "height": 844,
+      "viewportCapture": true
+    },
+    {
+      "path": "../../../screenshots/video-demo/processing-1366.png",
+      "sha256": "2ade7e5836b6aa02ba811094039ce2c85703dc97ddc168ec134b4440f3d9904e",
+      "width": 1366,
+      "height": 768,
+      "viewportCapture": true
+    },
+    {
+      "path": "../../../screenshots/video-demo/staff-5c-1366.png",
+      "sha256": "014f74d61fe0da53b520061839338dc74855584852d3ab26f70e4a9c415686a8",
+      "width": 1366,
+      "height": 4332,
+      "viewportCapture": false
+    },
+    {
+      "path": "../../../screenshots/video-demo/staff-5c-320.png",
+      "sha256": "e4edf87d5f3e86fb4337608b15fa5328c4aba1a41729ef08888a306a15232aaf",
+      "width": 320,
+      "height": 6699,
+      "viewportCapture": false
+    },
+    {
+      "path": "../../../screenshots/video-demo/staff-5c-768.png",
+      "sha256": "36f73aef7354b8a6ba374dbe7d343eabd4576cc60ed4f1c220209b35bdde351b",
+      "width": 768,
+      "height": 1024,
+      "viewportCapture": true
+    },
+    {
+      "path": "../../../screenshots/video-demo/staff-queue-1366.png",
+      "sha256": "25a7221caadc1d1b482629f9372734a441306afa2b8fc27f4257144526d52ad2",
+      "width": 1366,
+      "height": 1198,
+      "viewportCapture": false
+    }
+  ]
+}

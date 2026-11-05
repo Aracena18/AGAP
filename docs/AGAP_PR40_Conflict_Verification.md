@@ -39,3 +39,10 @@ Full checks use task-only PostgreSQL containers on ports 55473/55474; ordinary b
 ## Source-branch publication
 
 Normal non-force publication of checked merge `507fe4e267ae43c022c8f3ae9ca8dc368c129787` to `joohhhnnnny/AGAP:main` succeeds. GitHub reports PR #40 **OPEN, MERGEABLE / CLEAN**, unmerged, against parent `61fb0c5`. [Fork CI on the checked source](https://github.com/joohhhnnnny/AGAP/actions/runs/42050667255) is in progress at this checkpoint, not a claimed remote pass. This publication follow-up changes documentation only. The four task-only test database containers are stopped/removed after all checks; developer services and unrelated checkout edits remain untouched.
+
+
+## Renewed review — 6 November 2026
+
+The user requests another GitHub review and repair. Prior source `c116987` and checked merge `507fe4e` both subsequently pass fork CI; those results do not verify a newly combined tree. Parent main has advanced to `1570df8` with VID-01 recording/scenario analysis and UI-11 household calendars. PR #40 now has one new conflict in `src/app/StaffApp.tsx`; GitHub still has no review submissions or inline threads.
+
+Isolated `codex/pr40-recheck` starts at fork `c116987` and merges parent `1570df8`. Proposed resolution retains both staff navigation/route sets: connected lending and loan operations plus the fictional analysis queue/application analysis. Preserve role, record-mode, pilot exclusivity, normal identity, preview-provider and existing authority boundaries. Put navigation and routes on separate lines to reduce repeated conflicts in this shared shell. No new contract, calculation, policy, dependency or UI rule is proposed. Preserve canonical fixtures, historical snapshots, migrations and unrelated local work. Full check/browser results and source publication are recorded only after execution; PR merge remains unrequested.

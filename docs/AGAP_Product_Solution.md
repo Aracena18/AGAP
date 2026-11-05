@@ -1,5 +1,11 @@
 # AGAP product solution and feature priorities
 
+## Signed-in recording preview — VID-01, 5 November 2026
+
+The user requests a complete clickable recording journey through normal member/staff sign-in, an entered application and supporting documents, without preset personas. The [VID-01 implementation record](tasks/production/video-demo/IMPLEMENTATION.md) supplies the bounded frontend preview: server-saved household statements/uploads, explicit hypothetical expense/reserve assumptions, deterministic comparison of configured offers, narrative 5C, a suggested staff attention queue and a session-only officer follow-up. The [recording sequence](tasks/production/video-demo/RECORDING.md) distinguishes these working interactions from actual model execution and final lending authority.
+
+This preview is visibly identified as demonstration analysis and unavailable in real-record mode. It does not promote a model, infer emergency likelihood, invent 5C scores or activate institutional policy. User-entered/confirmed financial facts and hypothetical assumptions remain distinct. Actual recommendation/decision/acceptance continue through their existing separate authority guards. The retained production model, 5C, policy, evaluation and acceptance packages keep their existing scope; implementing this recording slice does not complete them. Design.md section 28 and the frontend specification govern its appearance and behavior; Assignment.md alone records task status.
+
 ## Priority review demo amendment — 5 November 2026
 
 PRV-01 adds a fictional browser priority queue and review summary. One application can need clarification, AI concern checking and escalated review simultaneously. Substantiated material concerns and unresolved material escalations precede other cases; original submission date and application ID break ties. The active offer is the current recommendation, otherwise the requested offer. Other offers remain inspectable in comparison.

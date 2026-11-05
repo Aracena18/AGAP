@@ -1,0 +1,42 @@
+{
+  "task": "UI-11",
+  "date": "2026-11-05",
+  "browser": "Chromium via Playwright, isolated fictional API and PostgreSQL fixtures",
+  "captures": [
+    {
+      "path": "../../../screenshots/household-date-ux/household-1366.png",
+      "sha256": "7a9f295f56211c635e3084d6e38e96b8c33b84d0ab1faf0907127e0e362f8496",
+      "width": 1366,
+      "height": 3332,
+      "scope": "full page"
+    },
+    {
+      "path": "../../../screenshots/household-date-ux/household-1920.png",
+      "sha256": "b7dfcf73ca134a56d2853f37ea1c6d3f60c0a2f895c18e411469762c04d9b71f",
+      "width": 1920,
+      "height": 3332,
+      "scope": "full page"
+    },
+    {
+      "path": "../../../screenshots/household-date-ux/household-320.png",
+      "sha256": "837f043c438cd2d84ad4e7a5ae713be6e33acd4c593643f16f563547c66bb726",
+      "width": 320,
+      "height": 900,
+      "scope": "viewport"
+    },
+    {
+      "path": "../../../screenshots/household-date-ux/household-768.png",
+      "sha256": "093cd5d16f3c26f391d5435ca8d6d4eaddec94421e59348479a600b34b822d23",
+      "width": 768,
+      "height": 3385,
+      "scope": "full page"
+    },
+    {
+      "path": "../../../screenshots/household-date-ux/household-header-320.png",
+      "sha256": "31449798a7ed286e4d94357a259e469190966ea44c3eca05b0a96db23b7656c1",
+      "width": 320,
+      "height": 900,
+      "scope": "viewport"
+    }
+  ]
+}

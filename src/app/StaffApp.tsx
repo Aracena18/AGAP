@@ -21,6 +21,7 @@ import TrialBalancePage from '../features/accounting/TrialBalancePage';
 import { WorkspaceHeader } from '../shared/navigation/WorkspaceHeader';
 import { StaffSignIn } from '../features/access/StaffSignIn';
 import styles from './StaffApp.module.css';
+import { PreviewQueuePage,StaffPreviewPage } from '../features/review-preview/PreviewPages';
 
 function PriorityReviewRoute(){const {id}=useParams(),{client,session}=useStaff();return session?.fictionalPilot?<PriorityReviewPage applicationId={id!} gateway={client}/>:<Notice>Priority review is not enabled.</Notice>;}
 function StaffWorkspace(){
@@ -33,8 +34,46 @@ function StaffWorkspace(){
     <a className={styles.skip} href="#staff-main" onClick={event=>{event.preventDefault();main.current?.focus();main.current?.scrollIntoView({block:'start'});}}>Skip to main content</a>
     <WorkspaceHeader workspace="staff" account={{name:session.user.displayName,kind:'staff',csrfToken:session.csrfToken,signedOut,presentation}}/>
     <main ref={main} id="staff-main" tabIndex={-1} className={styles.main}>
-        <nav className={styles.nav} aria-label="Staff workspace"><NavLink to="/staff/members">Members</NavLink><NavLink to="/staff/applications">Applications</NavLink>{!session.fictionalPilot&&session.user.roles.some(role=>['cashier','financial_authorizer','auditor'].includes(role))&&<NavLink to="/staff/lending">Lending and payments</NavLink>}{session.fictionalPilot&&session.user.roles.some(r=>['officer','reviewer','auditor'].includes(r))&&<><NavLink to="/staff/review-queue">Review queue</NavLink><NavLink to="/staff/review-notices">Review notices</NavLink></>}{session.fictionalPilot&&session.user.roles.some(r=>r==='cashier'||r==='financial_authorizer')&&<NavLink to="/staff/money">Financial operations</NavLink>}{!session.fictionalPilot&&session.user.roles.includes('reviewer')&&<NavLink to="/staff/decision-notices">Review notices</NavLink>}{session.user.roles.includes('auditor')&&<><NavLink to="/staff/reconciliations">Reconciliation</NavLink><NavLink to="/staff/trial-balances">Trial balance</NavLink></>}{session.user.roles.includes('administrator')&&<NavLink to="/staff/access">Staff access</NavLink>}{session.user.roles.some(role=>role==='officer'||role==='administrator')&&<NavLink to="/staff/support-requests">Support requests</NavLink>}{session.user.roles.includes('officer')&&<NavLink to="/staff/check-in-summary">Check-in summary</NavLink>}</nav>
-        <div className={styles.content}><Routes><Route path="/staff/lending" element={session.fictionalPilot?<Notice>Use the configured financial operations workspace.</Notice>:<LendingPage/>}/><Route path="/staff/loans/:id" element={session.fictionalPilot?<Notice>Use the configured financial operations workspace.</Notice>:<ConnectedLoanPage/>}/><Route path="/staff/applications/:id/decision" element={<ConnectedDecisionPage/>}/><Route path="/staff/decision-notices" element={<DecisionNoticesPage/>}/><Route path="/staff/check-in-summary" element={<CheckInSummaryPage/>}/><Route path="/staff/trial-balances" element={<TrialBalancePage/>}/><Route path="/staff" element={<Navigate to={start} replace/>}/><Route path="/staff/members" element={<MembersPage/>}/><Route path="/staff/applications" element={<IntakePage/>}/><Route path="/staff/applications/:id/evidence" element={<StaffWorkflowPage/>}/><Route path="/staff/review-queue" element={session.fictionalPilot?<PriorityQueuePage gateway={client}/>:<Notice>Priority review is not enabled.</Notice>}/><Route path="/staff/review-notices" element={session.fictionalPilot?<ReviewNotices gateway={client}/>:<Notice>Review notices are not enabled.</Notice>}/><Route path="/staff/applications/:id/review" element={<PriorityReviewRoute/>}/><Route path="/staff/applications/:id/lifecycle" element={<PilotStaffPage/>}/><Route path="/staff/money" element={<PilotMoneyQueuePage/>}/><Route path="/staff/access" element={<AccessPage/>}/><Route path="/staff/reconciliations" element={<ReconciliationPage/>}/><Route path="*" element={<section><h1>Page not found</h1><Link to="/staff/members">Return to members</Link></section>}/><Route path="/staff/support-requests" element={<SupportQueuePage/>}/></Routes></div>
+        <nav className={styles.nav} aria-label="Staff workspace">
+          <NavLink to="/staff/members">Members</NavLink>
+          <NavLink to="/staff/applications">Applications</NavLink>
+          {session.recordMode!=='real'&&session.user.roles.some(r=>['officer','reviewer','auditor'].includes(r))&&<NavLink to="/staff/analysis-queue">Analysis queue</NavLink>}
+          {!session.fictionalPilot&&session.user.roles.some(role=>['cashier','financial_authorizer','auditor'].includes(role))&&<NavLink to="/staff/lending">Lending and payments</NavLink>}
+          {session.fictionalPilot&&session.user.roles.some(r=>['officer','reviewer','auditor'].includes(r))&&<><NavLink to="/staff/review-queue">Review queue</NavLink>
+          <NavLink to="/staff/review-notices">Review notices</NavLink></>}
+          {session.fictionalPilot&&session.user.roles.some(r=>r==='cashier'||r==='financial_authorizer')&&<NavLink to="/staff/money">Financial operations</NavLink>}
+          {!session.fictionalPilot&&session.user.roles.includes('reviewer')&&<NavLink to="/staff/decision-notices">Review notices</NavLink>}
+          {session.user.roles.includes('auditor')&&<><NavLink to="/staff/reconciliations">Reconciliation</NavLink>
+          <NavLink to="/staff/trial-balances">Trial balance</NavLink></>}
+          {session.user.roles.includes('administrator')&&<NavLink to="/staff/access">Staff access</NavLink>}
+          {session.user.roles.some(role=>role==='officer'||role==='administrator')&&<NavLink to="/staff/support-requests">Support requests</NavLink>}
+          {session.user.roles.includes('officer')&&<NavLink to="/staff/check-in-summary">Check-in summary</NavLink>}
+        </nav>
+        <div className={styles.content}>
+          <Routes>
+            <Route path="/staff/analysis-queue" element={<PreviewQueuePage/>}/>
+            <Route path="/staff/applications/:id/analysis" element={<StaffPreviewPage/>}/>
+            <Route path="/staff/lending" element={session.fictionalPilot?<Notice>Use the configured financial operations workspace.</Notice>:<LendingPage/>}/>
+            <Route path="/staff/loans/:id" element={session.fictionalPilot?<Notice>Use the configured financial operations workspace.</Notice>:<ConnectedLoanPage/>}/>
+            <Route path="/staff/applications/:id/decision" element={<ConnectedDecisionPage/>}/>
+            <Route path="/staff/decision-notices" element={<DecisionNoticesPage/>}/>
+            <Route path="/staff/check-in-summary" element={<CheckInSummaryPage/>}/>
+            <Route path="/staff/trial-balances" element={<TrialBalancePage/>}/>
+            <Route path="/staff" element={<Navigate to={start} replace/>}/>
+            <Route path="/staff/members" element={<MembersPage/>}/>
+            <Route path="/staff/applications" element={<IntakePage/>}/>
+            <Route path="/staff/applications/:id/evidence" element={<StaffWorkflowPage/>}/>
+            <Route path="/staff/review-queue" element={session.fictionalPilot?<PriorityQueuePage gateway={client}/>:<Notice>Priority review is not enabled.</Notice>}/>
+            <Route path="/staff/review-notices" element={session.fictionalPilot?<ReviewNotices gateway={client}/>:<Notice>Review notices are not enabled.</Notice>}/>
+            <Route path="/staff/applications/:id/review" element={<PriorityReviewRoute/>}/>
+            <Route path="/staff/applications/:id/lifecycle" element={<PilotStaffPage/>}/>
+            <Route path="/staff/money" element={<PilotMoneyQueuePage/>}/>
+            <Route path="/staff/access" element={<AccessPage/>}/>
+            <Route path="/staff/reconciliations" element={<ReconciliationPage/>}/>
+            <Route path="*" element={<section><h1>Page not found</h1><Link to="/staff/members">Return to members</Link></section>}/>
+            <Route path="/staff/support-requests" element={<SupportQueuePage/>}/>
+          </Routes>
+        </div>
     </main>
     <footer className={styles.footer}>{session.recordMode==='real'?'Cooperative workspace':'Fictional environment · Fictional records'}</footer>
   </>;
