@@ -1,5 +1,6 @@
 import type { CaseRecord, DemoActor, EvidenceStatus, FactCorrectionInput } from './types';
 import { isCalendarDate } from './format';
+import { synchronizeReview } from './priorityReview';
 
 export interface EvidenceIssue { factId: string; message: string }
 
@@ -111,12 +112,13 @@ export function applyCorrection(record: CaseRecord, input: FactCorrectionInput, 
   };
   next.version += 1;
   next.facts = next.facts.map(item => item.id === input.factId ? after : item);
+  if (next.review) next.review.evidenceRevision = (next.review.evidenceRevision ?? 0) + 1;
   next.corrections.push({
     id: `${record.id}-correction-v${next.version}`, factId: input.factId,
     before: structuredClone(fact), after: structuredClone(after),
     reason: input.reason.trim(), actor: { ...actor }, at,
   });
-  return next;
+  return synchronizeReview(next, at);
 }
 
 /** Parse decimal PHP without floating-point rounding or silently truncated cents. */

@@ -1,6 +1,7 @@
 import { test, expect, type Locator, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { signInStaff } from './staff-session';
+import { completeAnaReview } from './priority-review-helpers';
 test.beforeEach(async({context})=>{await signInStaff(context);});
 async function openDemoTools(page:Page){if(!await page.getByLabel('Demo role').isVisible())await page.getByText('Demo tools',{exact:true}).click();}
 async function setDemoRole(page:Page,role:'officer'|'reviewer'){await openDemoTools(page);await page.getByLabel('Demo role').selectOption(role);}
@@ -46,12 +47,8 @@ test('the complete Ana review can be performed with the keyboard', async ({ page
   await tabTo(page, page.getByLabel('Recommendation reason')); await page.keyboard.type('Date follows payday and the cost remains the same.');
   await tabTo(page, page.getByRole('button', { name: 'Save recommendation' })); await page.keyboard.press('Enter');
   await expect(page.getByRole('status')).toContainText('Recommendation saved');
-  await tabTo(page, page.getByRole('link', { name: /Continue to decision/ })); await page.keyboard.press('Enter');
+  await completeAnaReview(page, true);
   await page.getByRole('heading', { name: 'Decision and explanation' }).waitFor();
-  await tabTo(page,page.getByText('Demo tools',{exact:true}));await page.keyboard.press('Enter');
-  const demoRole = page.getByLabel('Demo role');
-  await tabTo(page, demoRole); await page.keyboard.press('r');
-  await expect(demoRole).toHaveValue('reviewer');
   await tabTo(page, page.getByLabel('Decision rationale', { exact: true })); await page.keyboard.type('Checked evidence, full costs and household cash timing.');
   await tabTo(page, page.getByText('Read the explanation to be recorded', { exact: true })); await page.keyboard.press('Enter');
   await tabTo(page, page.getByLabel(/I reviewed the template explanation/)); await page.keyboard.press('Space');
@@ -78,8 +75,7 @@ test('Ana: correct evidence, compare timing, hand off and preserve a printed dec
   await page.getByLabel('Recommendation reason').fill('The after-payday schedule keeps the same full cost and avoids the modeled timing gap.');
   await page.getByRole('button', { name: 'Save recommendation' }).click();
   await expect(page.getByRole('status')).toContainText('Recommendation saved');
-  await page.getByRole('link', { name: /Continue to decision/ }).click();
-  await setDemoRole(page,'reviewer');
+  await completeAnaReview(page);
   await page.getByLabel('Decision rationale', { exact: true }).fill('Reviewed current payslip, essentials, full costs and remaining uncertainty with the member.');
   await page.getByLabel('Review date', { exact: true }).fill('2026-12-01');
   await page.getByText('Read the explanation to be recorded', { exact: true }).click();
@@ -166,7 +162,8 @@ test('incompatible storage is preserved until explicit reset', async ({ page }) 
   await openDemoTools(page);await page.getByRole('button', { name: 'Reset demo', exact: true }).first().click();
   await page.getByRole('dialog').getByRole('button', { name: 'Reset demo', exact: true }).click();
   await expect(page.getByRole('status')).toHaveCount(0);
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('agap.demo.v1')!).schemaVersion)).toBe(1);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('agap.demo.v2')!).schemaVersion)).toBe(2);
+  expect(await page.evaluate(() => localStorage.getItem('agap.demo.v1'))).toBe('{incompatible');
 });
 
 test('core screens pass automated accessibility checks and reflow at 320 CSS pixels', async ({ page }) => {

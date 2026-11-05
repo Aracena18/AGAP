@@ -4,6 +4,7 @@ import { useWorkspace } from '../../app/WorkspaceContext';
 import { assessCase } from '../../domain/assessment';
 import { buildExplanation } from '../../domain/explanation';
 import { dateLabel, isCalendarDate } from '../../domain/format';
+import { evaluateReview } from '../../domain/priorityReview';
 import { recordDecision, recordFollowUp, validateDecision } from '../../domain/review';
 import type { CaseRecord, DecisionInput, DecisionSnapshot, ExplanationDraft } from '../../domain/types';
 import { Badge, Button, Money, Notice } from '../../shared/ui';
@@ -28,6 +29,7 @@ function FieldError({ name, errors }: { name: string; errors: Record<string, str
 export default function DecisionPage({ record }: { record: CaseRecord }) {
   const { actor, role, saveCase } = useWorkspace();
   const assessment = assessCase(record);
+  const readiness = evaluateReview(record);
   const currentRecommendation = record.recommendation?.caseVersion === record.version ? record.recommendation : null;
   const [input, setInput] = useState<DecisionInput>({
     outcome: assessment.status === 'complete' && currentRecommendation ? 'approve' : 'return',
@@ -64,9 +66,6 @@ export default function DecisionPage({ record }: { record: CaseRecord }) {
     setInput(current => ({ ...current, ...patch, explanationReviewed: false }));
     setErrors({}); setStatus('');
   }
-  function exceptionReason(policyId: string, reason: string) {
-    updateInput({ exceptions: input.exceptions.map(exception => exception.policyId === policyId ? { policyId, reason } : exception) });
-  }
   async function submitDecision(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setStatus('');
     const decisionInput = previewSnapshot.input;
@@ -98,7 +97,7 @@ export default function DecisionPage({ record }: { record: CaseRecord }) {
       </label>)}
     </div></fieldset>
     {Object.keys(errors).length > 0 && <div ref={errorSummary} tabIndex={-1}><Notice tone="danger" role="alert">The decision was not recorded. Check the messages below.</Notice></div>}
-    {['outcome', 'assessment', 'recommendation', 'form', 'exceptions'].map(name => <FieldError key={name} name={name} errors={errors} />)}
+    {['outcome', 'assessment', 'recommendation', 'currentness', 'concerns', 'clarification', 'escalation', 'form', 'exceptions'].map(name => <FieldError key={name} name={name} errors={errors} />)}
     {input.outcome !== 'return' && <div className="field">
       <label htmlFor="decision-offer">Offer considered</label>
       <select id="decision-offer" value={input.offerId ?? ''} onChange={event => updateInput({ offerId: event.target.value, exceptions: [] })} aria-invalid={Boolean(errors.offerId)} aria-describedby={errors.offerId ? 'error-offerId' : undefined}>
@@ -113,20 +112,7 @@ export default function DecisionPage({ record }: { record: CaseRecord }) {
       <textarea id="departure-reason" value={input.departureReason} onChange={event => updateInput({ departureReason: event.target.value })} required aria-invalid={Boolean(errors.departureReason)} aria-describedby={errors.departureReason ? 'error-departureReason' : undefined} />
       <FieldError name="departureReason" errors={errors} />
     </div>}
-    {input.outcome === 'approve' && failingChecks.length > 0 && <fieldset className={styles.exceptionPanel}><legend>Fictional policy exceptions</legend>
-      <p>Approval requires an explicit exception and reason for each failed check. Missing critical evidence cannot be overridden.</p>
-      {failingChecks.map(check => {
-        const exception = input.exceptions.find(item => item.policyId === check.policyId);
-        return <div key={check.policyId} className={styles.exception}>
-          <p><strong>{check.label}</strong> · {check.detail}</p>
-          <label className={styles.choice}><input type="checkbox" checked={Boolean(exception)} onChange={event => updateInput({ exceptions: event.target.checked ? [...input.exceptions, { policyId: check.policyId, reason: '' }] : input.exceptions.filter(item => item.policyId !== check.policyId) })} />Record an exception for {check.label.toLowerCase()}</label>
-          {exception && <div className="field"><label htmlFor={`exception-${check.policyId}`}>Exception reason — {check.label}</label>
-            <textarea id={`exception-${check.policyId}`} value={exception.reason} onChange={event => exceptionReason(check.policyId, event.target.value)} required aria-invalid={Boolean(errors[`exception.${check.policyId}`])} aria-describedby={`error-exception.${check.policyId}`} />
-          </div>}
-          <FieldError name={`exception.${check.policyId}`} errors={errors} />
-        </div>;
-      })}
-    </fieldset>}
+    {input.outcome === 'approve' && failingChecks.length > 0 && <Notice tone="warning"><p>Material checks block approval. Correct the evidence or recommend a permitted offer, then have Luis verify resolution. Exception reasons cannot bypass these fictional checks.</p>{failingChecks.map(check => <div key={check.policyId}><p>{check.detail}</p><FieldError name={`exception.${check.policyId}`} errors={errors} /></div>)}</Notice>}
     <div className={`field ${styles.dateField}`}><label htmlFor="review-date">Review date</label>
       <input id="review-date" type="date" min={record.periodEnd} value={input.reviewDate} onChange={event => updateInput({ reviewDate: event.target.value })} required aria-invalid={Boolean(errors.reviewDate)} aria-describedby={errors.reviewDate ? 'error-reviewDate' : 'review-date-help'} />
       <p id="review-date-help" className="small subtle">On or after {dateLabel(record.periodEnd)}.</p><FieldError name="reviewDate" errors={errors} />
@@ -139,7 +125,8 @@ export default function DecisionPage({ record }: { record: CaseRecord }) {
     <div className="actions"><Button type="submit" disabled={saving}>Record decision</Button><p className="small subtle">Records the current evidence version {record.version}.</p></div>
   </form>;
   return <div className={styles.page}>
-    <div className="page-heading no-print"><div><p className="eyebrow">Human review · Step 3 of 3</p><h1>Decision and explanation</h1><p>Carry the evidence, costs, and reasoning into a recorded decision.</p></div><Badge>Version {record.version}</Badge></div>
+    <div className="page-heading no-print"><div><p className="eyebrow">Human review · Step 4 of 4</p><h1>Decision and explanation</h1><p>Carry the evidence, costs, and reasoning into a recorded decision.</p></div><Badge>Version {record.version}</Badge></div>
+    {!readiness.completed && readiness.blockers.length > 0 && <Notice tone="warning"><p>Approval readiness is pending. Complete the actions on Review summary. Return for clarification remains available; decline has separate evidence and investigation prerequisites.</p><ul>{readiness.blockers.map((blocker, index) => <li key={index}>{blocker}</li>)}</ul></Notice>}
     <section className="panel no-print" aria-labelledby="assessment-summary"><div className="panel-header"><h2 id="assessment-summary">Ready for human review</h2><Badge tone={assessment.status === 'complete' ? 'brand' : 'warning'}>{assessment.status === 'complete' ? 'Assessment complete' : 'Evidence incomplete'}</Badge></div>
       <div className={`panel-body ${styles.assessment}`}>
         <div><h3>Officer recommendation</h3>{record.recommendation ? <><p>{record.offers.find(offer => offer.id === record.recommendation?.offerId)?.label ?? 'Offer unavailable'}</p><p className="small subtle">{record.recommendation.note}</p><p className="small subtle">{record.recommendation.actor.name} · {dateLabel(record.recommendation.at)} · version {record.recommendation.caseVersion}</p>{!currentRecommendation && <Badge tone="warning">Recommendation needs renewed review</Badge>}</> : <p className="subtle">No officer recommendation recorded.</p>}</div>
@@ -166,6 +153,12 @@ export default function DecisionPage({ record }: { record: CaseRecord }) {
       <details className={`${styles.staffDetails} no-print`}><summary><History size={20} aria-hidden="true" />Staff details and frozen evidence</summary><div className={styles.form}>
         <p className="small subtle">Case version {selectedSnapshot.caseVersion} · Calculation {selectedSnapshot.assessment.calculationVersion} · Recorded {selectedSnapshot.recordedAt}. Browser recordkeeping demonstrates the workflow and is not a secure audit service.</p>
         {selectedSnapshot.recommendation && <p>Officer recommendation: {selectedSnapshot.offers.find(offer => offer.id === selectedSnapshot.recommendation?.offerId)?.label} · {selectedSnapshot.recommendation.note} · {selectedSnapshot.recommendation.actor.name}</p>}
+        {selectedSnapshot.review && <section aria-label="Frozen review history"><h3>Review history preserved with this decision</h3>
+          {selectedSnapshot.review.evidenceConfirmations.map((action, index) => <p key={`confirmation-${index}`}>Evidence confirmation · {action.actor.name} · {action.at} · {action.reason}</p>)}
+          {selectedSnapshot.review.concernReviews.map((action, index) => <p key={`concern-${index}`}>Simulated AI concern {action.outcome} · {action.actor.name} · {action.reason}</p>)}
+          {selectedSnapshot.review.escalation?.actions.map((action, index) => <p key={`action-${index}`}>Escalation {action.kind} · {action.actor.name} · {action.at} · {action.reason}</p>)}
+          {selectedSnapshot.review.escalation?.observations.map((observation, index) => <div key={`finding-${index}`}>Retained material findings:<ul>{observation.checks.map(check => <li key={check.policyId}>{check.detail}</li>)}</ul></div>)}
+        </section>}
         <div className="table-scroll"><table><caption>Evidence preserved with this decision</caption><thead><tr><th scope="col">Recorded fact</th><th scope="col" className="numeric">Amount</th><th scope="col">Status and source</th></tr></thead><tbody>{selectedSnapshot.facts.map(fact => <tr key={fact.id}><th scope="row">{fact.label}</th><td className="numeric">{fact.value === null ? 'Unavailable' : <Money value={fact.value} />}</td><td>{fact.status} · {selectedSnapshot.sources.find(source => source.id === fact.sourceId)?.title ?? 'Source unavailable'} · {dateLabel(fact.effectiveDate)}</td></tr>)}</tbody></table></div>
         {selectedSnapshot.sources.map(source => <section key={source.id}><h3>{source.title} · {dateLabel(source.date)}</h3><p>{source.excerpt}</p></section>)}
       </div></details>

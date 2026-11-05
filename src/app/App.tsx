@@ -8,11 +8,12 @@ import ApplicationsPage from '../features/applications/ApplicationsPage';
 import EvidencePage from '../features/evidence/EvidencePage';
 import ComparisonPage from '../features/comparison/ComparisonPage';
 import DecisionPage from '../features/decision/DecisionPage';
+import ReviewSummary, { ReviewNotices } from '../features/review/ReviewSummary';
 import { WorkspaceHeader } from '../shared/navigation/WorkspaceHeader';
 import { useStaff } from '../features/access/StaffContext';
 import styles from './App.module.css';
 
-function CasePage({ screen }: { screen: 'evidence' | 'comparison' | 'decision' }) {
+function CasePage({ screen }: { screen: 'summary' | 'evidence' | 'comparison' | 'decision' }) {
   const { id } = useParams();
   const { records } = useWorkspace();
   const record = records.find(item => item.id === id);
@@ -26,10 +27,10 @@ function CasePage({ screen }: { screen: 'evidence' | 'comparison' | 'decision' }
         <div className={styles.request}><span className="small subtle">Requested</span><Money value={record.offers[0].principal}/><span className="small subtle">{record.offers[0].termMonths} months</span></div>
       </div>
       <nav className={styles.steps} aria-label="Application review">
-        {[['evidence', 'Evidence'], ['comparison', 'Compare options'], ['decision', 'Decision']].map(([path, label], index) => <NavLink key={path} to={`/applications/${record.id}/${path}`} className={({ isActive }) => `${styles.step} ${isActive ? styles.active : ''}`}><span className={styles.stepNumber} aria-hidden="true">{index + 1}</span>{label}</NavLink>)}
+        {[['summary', 'Review summary'], ['evidence', 'Evidence'], ['comparison', 'Compare options'], ['decision', 'Decision']].map(([path, label], index) => <NavLink key={path} to={`/applications/${record.id}/${path}`} className={({ isActive }) => `${styles.step} ${isActive ? styles.active : ''}`}><span className={styles.stepNumber} aria-hidden="true">{index + 1}</span>{label}</NavLink>)}
       </nav>
     </div>
-    <div key={`${record.id}-${screen}`}>{screen === 'evidence' ? <EvidencePage record={record} /> : screen === 'comparison' ? <ComparisonPage record={record} /> : <DecisionPage record={record} />}</div>
+    <div key={`${record.id}-${screen}`}>{screen === 'summary' ? <ReviewSummary record={record} /> : screen === 'evidence' ? <EvidencePage record={record} /> : screen === 'comparison' ? <ComparisonPage record={record} /> : <DecisionPage record={record} />}</div>
   </>;
 }
 function RouteFocus() {
@@ -41,7 +42,7 @@ function RouteFocus() {
       window.scrollTo({ top: 0 });
       previous.current = pathname;
     }
-    document.title = `${pathname.includes('comparison') ? 'Repayment comparison' : pathname.includes('decision') ? 'Decision' : pathname.includes('evidence') ? 'Evidence' : 'Applications'} · AGAP`;
+    document.title = `${pathname.includes('summary') ? 'Review summary' : pathname.includes('comparison') ? 'Repayment comparison' : pathname.includes('decision') ? 'Decision' : pathname.includes('evidence') ? 'Evidence' : 'Applications'} · AGAP`;
   }, [pathname]);
   return null;
 }
@@ -56,8 +57,10 @@ export default function App() {
       <RouteFocus />
       <details className={`${styles.demoTools} no-print`}><summary>Demo tools</summary><div><label htmlFor="demo-role">Demo role</label><select id="demo-role" value={role} onChange={event=>setRole(event.target.value as 'officer'|'reviewer')}><option value="officer">Loan officer</option><option value="reviewer">Reviewer</option></select><Button variant="quiet" onClick={()=>dialog.current?.showModal()}><RestartAlt size={16}/>Reset demo</Button><span className="small subtle">Simulated roles · Demo data</span></div></details>
       {storageWarning && <div className={`${styles.storage} no-print`}><Notice tone="warning" role="status">{storageWarning} <button className={styles.inlineButton} onClick={() => dialog.current?.showModal()}>Reset demo</button></Notice></div>}
+      {ready && <ReviewNotices />}
       {!ready ? <p role="status">Opening workspace…</p> : <Routes>
         <Route path="/applications" element={<ApplicationsPage />} />
+        <Route path="/applications/:id/summary" element={<CasePage screen="summary" />} />
         <Route path="/applications/:id/evidence" element={<CasePage screen="evidence" />} />
         <Route path="/applications/:id/comparison" element={<CasePage screen="comparison" />} />
         <Route path="/applications/:id/decision" element={<CasePage screen="decision" />} />

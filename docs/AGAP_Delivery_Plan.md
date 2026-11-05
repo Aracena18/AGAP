@@ -1,5 +1,9 @@
 # AGAP delivery and ownership plan
 
+## PRV-01 user-authorized fictional priority review — 5 November 2026
+
+Implement the accepted queue/summary/concern-check/escalation plan using the three canonical cases and two simulated actors. Robert retains shared contract/state/persistence/navigation ownership, Aaron evidence and affordability integration, Benedict decision validation and snapshots; Earl's independent evaluation boundary is unchanged. The internal proposal and implementation evidence live in [PRV-01 verification](AGAP_Priority_Review_Verification.md). This is additional effort with estimate Pending, not an invented allocation inside the core 64 units. No public API or production reviewer/authorization/AI integration is included. The Google constraint document remains unchanged. Feature status stays Planned until browser demonstration and required checks pass.
+
 **5C addendum:** 29 October 2026. Institution-rubric review/explanation packages are additional unestimated stage 2 work, with actual criteria and weights unresolved; existing demo and goal commitments remain intact.
 
 **Goals addendum:** 29 October 2026. New goal/planner/guidance tasks are additional unestimated scope, stage 2 by default. Current first-demo slices, 16 units per owner and existing task statuses remain unchanged. An earlier fictional goal slice requires an explicit capacity re-estimate and its acceptance evidence; it is not an additional commitment inside the 64 units.

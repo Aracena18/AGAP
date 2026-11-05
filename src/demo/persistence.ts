@@ -1,8 +1,10 @@
 import { createDemoCases } from './cases';
 import type { CaseRepository } from '../domain/types';
-import { storedWorkspaceSchema } from './storageSchema';
+import { legacyWorkspaceSchema, storedWorkspaceSchema } from './storageSchema';
+import { evidenceBasis, synchronizeReview } from '../domain/priorityReview';
 
-export const STORAGE_KEY = 'agap.demo.v1';
+export const STORAGE_KEY = 'agap.demo.v2';
+export const LEGACY_STORAGE_KEY = 'agap.demo.v1';
 export function createBrowserRepository(providedStorage?: Storage, onWarning: (message: string) => void = () => {}): CaseRepository {
   let records = createDemoCases();
   let storage: Storage | undefined;
@@ -10,11 +12,13 @@ export function createBrowserRepository(providedStorage?: Storage, onWarning: (m
   const memoryWarning = () => onWarning('Browser storage is unavailable. Changes are kept in memory and will be lost on refresh.');
   try {
     storage = providedStorage ?? window.localStorage;
-    const raw = storage.getItem(STORAGE_KEY);
+    const current = storage.getItem(STORAGE_KEY);
+    const raw = current ?? storage.getItem(LEGACY_STORAGE_KEY);
     if (raw !== null) {
-      const parsed = storedWorkspaceSchema.safeParse(JSON.parse(raw));
+      const parsed = (current === null ? legacyWorkspaceSchema : storedWorkspaceSchema).safeParse(JSON.parse(raw));
       if (!parsed.success) throw new Error('Incompatible workspace');
-      records = parsed.data.records;
+      const seeds = createDemoCases();
+      records = parsed.data.records.map(record => synchronizeReview(record, new Date().toISOString(), record.review ? undefined : seeds.find(seed => seed.id === record.id)?.review?.aiConcerns));
     }
   } catch {
     preserveUnreadableData = !!storage;
@@ -25,7 +29,7 @@ export function createBrowserRepository(providedStorage?: Storage, onWarning: (m
   function persist() {
     if (preserveUnreadableData) return;
     if (!storage) { memoryWarning(); return; }
-    try { storage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 1, records })); }
+    try { storage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 2, records })); }
     catch { memoryWarning(); }
   }
   return {
@@ -33,8 +37,15 @@ export function createBrowserRepository(providedStorage?: Storage, onWarning: (m
     async load(id) { return structuredClone(records.find(record => record.id === id)); },
     async save(record) {
       if (!records.some(item => item.id === record.id)) throw new Error('Application not found');
-      const updated = records.map(item => item.id === record.id ? structuredClone(record) : item);
-      if (!storedWorkspaceSchema.safeParse({ schemaVersion: 1, records: updated }).success) throw new Error('The application contains invalid data. Your previous saved record is unchanged.');
+      const previous = records.find(item => item.id === record.id)!;
+      const candidate = structuredClone(record);
+      if (evidenceBasis(previous) !== evidenceBasis(candidate) && (previous.review?.evidenceRevision ?? 0) === (candidate.review?.evidenceRevision ?? 0)) {
+        candidate.review ??= { aiConcerns: [], evidenceConfirmations: [], concernReviews: [] };
+        candidate.review.evidenceRevision = (previous.review?.evidenceRevision ?? 0) + 1;
+      }
+      if (evidenceBasis(previous) !== evidenceBasis(candidate) && candidate.version <= previous.version) candidate.version = previous.version + 1;
+      const updated = records.map(item => item.id === record.id ? synchronizeReview(candidate, new Date().toISOString()) : item);
+      if (!storedWorkspaceSchema.safeParse({ schemaVersion: 2, records: updated }).success) throw new Error('The application contains invalid data. Your previous saved record is unchanged.');
       records = updated;
       persist();
     },

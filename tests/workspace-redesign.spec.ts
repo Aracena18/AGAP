@@ -41,12 +41,12 @@ test('phone application rows keep every financial field and review link within t
       expect(bounds!.x).toBeGreaterThanOrEqual(0);
       expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(320);
     }
-    for (const label of ['Purpose', 'Requested amount', 'Review status', 'Received']) await expect(row.locator(`[data-label="${label}"]`)).toBeVisible();
+    for (const label of ['Purpose', 'Requested amount', 'Review paths and next actions', 'Received']) await expect(row.locator(`[data-label="${label}"]`)).toBeVisible();
     await expect(row.getByRole('link', { name: /^Review / })).toBeVisible();
   }
   await rows.first().getByRole('link', { name: /^Review / }).focus();
   await page.keyboard.press('Enter');
-  await expect(page).toHaveURL(/\/evidence$/);
+  await expect(page).toHaveURL(/\/summary$/);
   await expect(page.getByRole('navigation', { name: 'Application review' })).toBeVisible();
 });
 
