@@ -22,6 +22,10 @@ export function requireFreshMfa(actor: ActorContext) {
   const age=Date.now()-actor.authenticatedAt.getTime();
   if (!actor.authenticationMethods.includes('mfa') || age< -60_000 || age > 15 * 60_000) throw new ApiError(403,'fresh_mfa_required','Sign in with multi-factor authentication again before authorizing this action.');
 }
+/** Browser recovery metadata comes only from the saved, allowlisted login state. */
+export class LoginRecoveryError extends ApiError {
+  constructor(status:number,code:string,message:string,readonly returnTo='/staff',readonly requireMfa=false){super(status,code,message);}
+}
 export class IdentityService {
   private discoveries=new Map<string,Promise<oidc.Configuration>>();
   constructor(private readonly pool: Pool, private readonly config: Config) {}
@@ -58,9 +62,10 @@ export class IdentityService {
     return { cookie, url: url.href };
   }
   async finishLogin(cookie: string | undefined, callback: URL, previousSession?: string,audience:'staff'|'member'='staff'): Promise<{token:string;returnTo:string}> {
-    if (!cookie) throw new ApiError(401,'invalid_login','Start a new sign-in from this browser.');
+    if (!cookie) throw new LoginRecoveryError(401,'invalid_login','Start a new sign-in from this browser.');
     const saved = await this.pool.query<{ state: string; verifier: string; nonce: string; requested_acr:string|null;return_path:string }>('DELETE FROM identity.oauth_states WHERE token_hash=$1 AND audience=$2 AND expires_at>now() RETURNING state,verifier,nonce,requested_acr,return_path', [tokenHash(cookie),audience]);
-    if (!saved.rows[0]) throw new ApiError(401,'invalid_login','The sign-in has expired or was already used. Start again.');
+    if (!saved.rows[0]) throw new LoginRecoveryError(401,'invalid_login','The sign-in has expired or was already used. Start again.');
+    const failure=(status:number,code:string,message:string)=>new LoginRecoveryError(status,code,message,saved.rows[0].return_path,audience==='staff'&&saved.rows[0].requested_acr==='2');
     let claims: ReturnType<Awaited<ReturnType<typeof oidc.authorizationCodeGrant>>['claims']>;
     try {
       // Request fresh authentication, but allow factor enrollment to finish
@@ -70,10 +75,10 @@ export class IdentityService {
     } catch(error) {
       const reason=error&&typeof error==='object'&&'code' in error&&typeof error.code==='string'&&/^[A-Z_]{1,80}$/.test(error.code)?error.code:'verification_failed';
       process.stderr.write(`${JSON.stringify({level:'warning',code:'identity_response_rejected',reason})}\n`);
-      throw new ApiError(401,'invalid_login','The identity response could not be verified. Start a new sign-in.');
+      throw failure(401,'invalid_login','The identity response could not be verified. Start a new sign-in.');
     }
-    if (!claims || typeof claims.sub !== 'string' || typeof claims.auth_time !== 'number' || !Number.isSafeInteger(claims.auth_time) || claims.auth_time*1000>Date.now()+60_000) throw new ApiError(401,'invalid_login','The identity response is missing required authentication information.');
-    if(saved.rows[0].requested_acr==='2'&&claims.acr!=='2'||saved.rows[0].requested_acr==='1'&&!['1','2'].includes(String(claims.acr)))throw new ApiError(401,'assurance_required','Complete the requested sign-in verification.');
+    if (!claims || typeof claims.sub !== 'string' || typeof claims.auth_time !== 'number' || !Number.isSafeInteger(claims.auth_time) || claims.auth_time*1000>Date.now()+60_000) throw failure(401,'invalid_login','The identity response is missing required authentication information.');
+    if(saved.rows[0].requested_acr==='2'&&claims.acr!=='2'||saved.rows[0].requested_acr==='1'&&!['1','2'].includes(String(claims.acr)))throw failure(401,'assurance_required','Complete the requested sign-in verification.');
     const methods = claims.acr === '2' ? ['mfa'] : ['single_factor'];
     const session = opaque();
     const client = await this.pool.connect();
@@ -81,12 +86,12 @@ export class IdentityService {
       await client.query('BEGIN');
       if(audience==='member'){
         const link=await client.query<{id:string|null}>('SELECT identity.member_link_for_login($1,$2) AS id',[this.config.OIDC_ISSUER,claims.sub]);
-        if(!link.rows[0]?.id)throw new ApiError(403,'member_access_required','This account has no active verified member linkage. Contact the cooperative for enrollment or recovery.');
+        if(!link.rows[0]?.id)throw failure(403,'member_access_required','This account has no active verified member linkage. Contact the cooperative for enrollment or recovery.');
         if(previousSession)await client.query('DELETE FROM identity.member_sessions WHERE token_hash=$1',[tokenHash(previousSession)]);
         await client.query('INSERT INTO identity.member_sessions(id,token_hash,link_id,authenticated_at,expires_at) VALUES($1,$2,$3,$4,$5)',[randomUUID(),tokenHash(session),link.rows[0].id,new Date(claims.auth_time*1000),new Date(Date.now()+this.config.SESSION_TTL_SECONDS*1000)]);
       }else{
         const staff = await client.query<{ id: string }>('SELECT id FROM identity.staff_users WHERE issuer=$1 AND subject=$2 AND active=true FOR SHARE', [this.config.OIDC_ISSUER,claims.sub]);
-        if (!staff.rows[0]) throw new ApiError(403,'staff_access_required','This identity has no active cooperative staff account.');
+        if (!staff.rows[0]) throw failure(403,'staff_access_required','This identity has no active cooperative staff account.');
         if (previousSession) await client.query('DELETE FROM identity.sessions WHERE token_hash=$1', [tokenHash(previousSession)]);
         await client.query('INSERT INTO identity.sessions(id,token_hash,user_id,authenticated_at,methods,expires_at) VALUES($1,$2,$3,$4,$5,$6)', [randomUUID(),tokenHash(session),staff.rows[0].id,new Date(claims.auth_time * 1000),methods,new Date(Date.now()+this.config.SESSION_TTL_SECONDS*1000)]);
       }

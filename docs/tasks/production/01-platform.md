@@ -139,3 +139,7 @@ Deliver the bounded fictional demo first with existing simulated roles, clearly 
 ## RSP-01 response guidance — 5 November 2026
 
 User-authorized isolated integration candidate on codex/ai-response-guidance. Robert supplies additive source-bound guidance schemas/client operations, member/shared response presentation and scoped question tasks with persisted partial answers. Existing fact confirmation and decision snapshots remain authoritative. Read the [proposal](../../AGAP_Response_Guidance_Contract_Proposal.md); actual verification belongs in the central tracker/UI record. Receiving-owner agreement and representative acceptance are not inferred from agent technical review.
+
+## AUTH-01 staff callback recovery — 5 November 2026
+
+Robert owns the user-reported rejected staff callback and its existing sign-in screen. Preserve server state/nonce/PKCE/token/assurance/account checks; map expected rejection to a readable fresh-sign-in action. Use only saved allowlisted routes and required assurance for recovery, never callback-supplied destinations. No member flow, contract schema, financial record or presentation-mode policy change is required. [Design](../../../design.md#staff-callback-recovery--auth-01-5-november-2026), [browser contract](../../AGAP_Frontend_Spec.md#staff-callback-recovery--auth-01-5-november-2026) and [verification](../../AGAP_UI_Review_Verification.md#auth-01--staff-callback-recovery--5-november-2026); Assignment.md remains the status authority.

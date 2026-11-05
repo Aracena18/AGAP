@@ -14,7 +14,7 @@ import { createPool, PostgresUnitOfWork } from './platform/database.js';
 import { ApiError } from './platform/errors.js';
 import { expectedVersion } from './platform/commands.js';
 import { assertLocalPresentation, assertFictionalPilot, type Config } from './platform/config.js';
-import { IdentityService, cookieValue } from './modules/identity/identity.service.js';
+import { IdentityService, LoginRecoveryError, cookieValue } from './modules/identity/identity.service.js';
 import { MembersService } from './modules/members/members.service.js';
 import { ApplicationsService } from './modules/applications/applications.service.js';
 import { StaffService } from './modules/identity/staff.service.js';
@@ -86,7 +86,16 @@ class PlatformController {
     const login = cookieValue(request.headers.cookie,'agap_login');
     const previous = cookieValue(request.headers.cookie,'agap_session',this.services.config.LOCAL_PRESENTATION_MODE);
     response.clearCookie('agap_login',{path:'/api/v1/auth',httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax'});
-    const result = await this.services.identity.finishLogin(login,new URL(request.originalUrl,this.services.config.PUBLIC_ORIGIN),previous);
+    let result:Awaited<ReturnType<IdentityService['finishLogin']>>;
+    try{result=await this.services.identity.finishLogin(login,new URL(request.originalUrl,this.services.config.PUBLIC_ORIGIN),previous);}
+    catch(error){
+      if(!(error instanceof ApiError))throw error;
+      const target=new URL(error instanceof LoginRecoveryError?error.returnTo:'/staff',this.services.config.PUBLIC_ORIGIN);
+      target.searchParams.set('signin',error.code==='staff_access_required'?'access':error.code==='assurance_required'?'verification':'retry');
+      if(error instanceof LoginRecoveryError&&error.requireMfa)target.searchParams.set('assurance','mfa');
+      response.redirect(302,`${this.services.config.PUBLIC_ORIGIN}/#${target.pathname}${target.search}${target.hash}`);
+      return;
+    }
     response.cookie('agap_session',result.token,{httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax',path:'/',maxAge:this.services.config.SESSION_TTL_SECONDS*1000});
     response.redirect(302,`${this.services.config.PUBLIC_ORIGIN}/#${result.returnTo}`);
   }
