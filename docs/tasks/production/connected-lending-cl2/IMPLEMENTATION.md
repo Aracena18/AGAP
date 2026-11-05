@@ -71,3 +71,8 @@ Node 24.12.0 and locked npm 11.9.0 dependencies. Actual isolated PostgreSQL 18 p
 - `graft` and `graphify` are unavailable in PATH and the tool catalog; navigation used `rg`. No graph update is claimed.
 
 The review is AI-assisted engineering verification. No named consuming-owner, financial manager, cooperative, independent human reviewer or production authority has signed off. Broader priority queue, member acceptance connection, disbursement, repayment and support integration remain their sequential CL3–CL6 scope. CL7–CL8 still require actual operating policy, identity/scanner/model/deployment/recovery inputs and institutional release evidence. This candidate does not authorize live funds or real records.
+
+
+## Remote verification and publication checkpoint
+
+Source **35c44d90ef00ae3bd680a0f2342223b1ca2f5b2e** passed [origin-fork CI run 42024419619](https://github.com/joohhhnnnny/AGAP/actions/runs/42024419619), completed **2026-11-05 12:15:44 UTC**. The source was fast-forwarded from main `bd0ebea` and normally pushed to `origin/main` after checking that the main checkout had no tracked changes; all 21 unrelated root research files remained untracked and untouched. No PR was created. The following documentation-only checkpoint records this evidence without changing the tested application tree. CL3 proceeds in its own isolated worktree from this verified source. Technical publication is separate from actual receiving-owner and institutional release acceptance.
