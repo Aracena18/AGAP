@@ -363,6 +363,6 @@ and `run-5-full` (`119,581 ms` clean `/extract`, `69,597 ms` Experiment F
 exported evidence (`92d2b847e40eca743faee63a96d44d414e8d236d6f23e2ab7adb5ea78f31bcba`),
 and the temporary VM and resource group are deallocated and deleted (`[]`
 remaining pilot groups). See [CPU experiment record](infra/azure/pilot/CPU_EXPERIMENT.md)
-and [pilot delivery](docs/AGAP_Experiment_F_Pilot_Delivery.md#actual-cpu-model-execution--5-november-2026).
+and [pilot delivery](docs/AGAP_Experiment_F_Pilot_Delivery.md#student-credit-cpu-model-execution--5-november-2026).
 CUDA/BF16 GPU execution, live HTTP `/extract` within the 90s GPU deadline,
 independent evaluation and release gates remain unchanged.
