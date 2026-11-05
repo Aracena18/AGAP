@@ -4,10 +4,12 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from models.qwen.handoff.files import EvidenceError, sha256
 from models.qwen.import_f import candidate
-from models.qwen.service.cpu_probe import settings
+from models.qwen.service.cpu_probe import PINS, run, settings
+from models.qwen.service.test_service import PAYLOAD
 
 
 class CpuProbeGuards(unittest.TestCase):
@@ -39,6 +41,28 @@ class CpuProbeGuards(unittest.TestCase):
         self.args.candidate_sha256 = sha256(path)
         with self.assertRaises(EvidenceError):
             settings(self.args)
+
+    def test_review_only_cannot_claim_full_extraction_switching(self):
+        class ReviewOnlyModel:
+            base_disabled_parity = True
+            def __init__(self, *_):
+                self.attached = False
+            def attach_review(self, _):
+                self.attached = True
+            def generate(self, capability, request, _):
+                assert self.attached and capability == 'review'
+                payload = {**PAYLOAD, 'evidence': [{**PAYLOAD['evidence'][0],
+                    **request['sources'][0]}]}
+                return json.dumps(payload)
+        args = Namespace(**vars(self.args), review_only=True, artifacts=self.directory.name,
+                         output=str(Path(self.directory.name) / 'evidence'), manifest_sha256='test')
+        with patch('models.qwen.service.cpu_probe.verify', return_value={'verified': True}), \
+             patch('models.qwen.service.cpu_probe.importlib.metadata.version', side_effect=PINS.__getitem__):
+            result = run(args, ReviewOnlyModel)
+        self.assertEqual(result['scope'], 'review_only')
+        self.assertIsNone(result['extractionStableAcrossReview'])
+        self.assertFalse(result['httpApplicationIntegrationTested'])
+        self.assertEqual(list(result['metrics']), ['review-f'])
 
 
 if __name__ == '__main__':

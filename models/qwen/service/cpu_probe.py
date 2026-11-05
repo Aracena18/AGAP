@@ -84,6 +84,8 @@ def run(args, model_factory=CpuCompatibilityModel):
         'approved': False, 'promotion': 'not_promoted', 'runtime': versions, 'device': 'cpu',
         'dtype': 'float32', 'quantized': False, 'threads': args.threads,
         'perGenerationDeadlineSeconds': args.seconds, 'runnerSha256': sha256(__file__),
+        'serviceSha256': sha256(HERE / 'server.py'), 'guardSha256': sha256(HERE / 'review.py'),
+        'reviewOnly': args.review_only,
         'candidateSha256': args.candidate_sha256, 'artifactVerification': verified})
     start = time.monotonic()
     try:
@@ -95,9 +97,10 @@ def run(args, model_factory=CpuCompatibilityModel):
                               {'source_id': 'fictional-2', 'quote': 'FICTIONAL total PHP 3,920.00.'}],
                   'provenance': bindings['review']}
         results, metrics = {}, {}
-        for name, capability, request in [('extract-clean', 'extract', extraction),
-                                          ('review-f', 'review', review),
-                                          ('extract-disabled', 'extract', extraction)]:
+        phases = [('review-f', 'review', review)] if args.review_only else [
+            ('extract-clean', 'extract', extraction), ('review-f', 'review', review),
+            ('extract-disabled', 'extract', extraction)]
+        for name, capability, request in phases:
             if capability == 'review':
                 model.attach_review(root)
             before = time.monotonic()
@@ -109,16 +112,19 @@ def run(args, model_factory=CpuCompatibilityModel):
             else:
                 value = loads(raw)
                 require(isinstance(value, list) and len(value) <= 30, 'Invalid CPU extraction output')
+                validate(value, read_json(HERE / 'finding.schema.json'))
                 for finding in value:
-                    validate(finding, read_json(HERE / 'finding.schema.json'))
                     require(finding['page'] == 1 and finding['excerpt'] in request['text'], 'Unsupported CPU extraction citation')
             results[name] = value
             metrics[name] = {'elapsedMs': round((time.monotonic() - before) * 1000),
                              'processPeakRssBytes': resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024}
             write_new(output / (name + '.checked.json'), value)
-        require(results['extract-clean'] == results['extract-disabled'], 'CPU baseline behavior changed after attachment')
+        if not args.review_only:
+            require(results['extract-clean'] == results['extract-disabled'], 'CPU baseline behavior changed after attachment')
         result = {'modelExecuted': True, 'allChecksPassed': True, 'cleanDisabledParity': model.base_disabled_parity,
-                  'extractionStableAcrossReview': True, 'device': 'cpu', 'dtype': 'float32',
+                  'extractionStableAcrossReview': None if args.review_only else True,
+                  'scope': 'review_only' if args.review_only else 'extraction_review_switching',
+                  'device': 'cpu', 'dtype': 'float32',
                   'elapsedMs': round((time.monotonic() - start) * 1000), 'metrics': metrics,
                   'semanticCorrectness': 'not_independently_evaluated', 'promotion': 'not_promoted',
                   'httpApplicationIntegrationTested': False, 'cudaBf16CompatibilityTested': False}
@@ -126,7 +132,9 @@ def run(args, model_factory=CpuCompatibilityModel):
         return result
     except Exception as error:
         write_new(output / 'failure.json', {'allChecksPassed': False, 'exceptionType': type(error).__name__,
-                  'reason': str(error)[:1000], 'promotion': 'not_promoted'})
+                  'reason': str(error)[:1000], 'promotion': 'not_promoted',
+                  'elapsedMs': round((time.monotonic() - start) * 1000),
+                  'processPeakRssBytes': resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024})
         raise
 
 
@@ -140,6 +148,7 @@ def main():
     parser.add_argument('--threads', type=int, default=4)
     parser.add_argument('--seconds', type=int, default=600)
     parser.add_argument('--allow-unapproved-fictional-cpu', action='store_true')
+    parser.add_argument('--review-only', action='store_true', help='Measure F only; does not establish extraction parity')
     try:
         print(json.dumps(run(parser.parse_args()), indent=2))
     except Exception as error:

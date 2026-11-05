@@ -214,8 +214,8 @@ class InferenceService:
                 else:
                     result = loads(raw)
                     require(isinstance(result, list) and len(result) <= 30, 'Invalid extraction output')
+                    validate(result, self.finding_schema)
                     for finding in result:
-                        validate(finding, self.finding_schema)
                         require(finding['page'] == request['page'] and finding['excerpt'] in request['text'], 'Unsupported extraction citation')
                     return result
             return result

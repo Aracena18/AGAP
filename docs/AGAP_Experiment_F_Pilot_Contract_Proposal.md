@@ -91,3 +91,11 @@ provider, training, merge, quantization or source truncation. Preserve failures
 and measured latency/memory. Connect HTTP only after actual compatibility and
 latency evidence exists. Deployment approval must concern the concrete bounded
 CPU plan, not a paid subscription upgrade or unrestricted fallback.
+
+CPU execution follow-up (before edits): validate extraction arrays against the
+whole generated array schema, then check each citation. The current per-item
+validation incorrectly applies that array schema to an object. Preserve the
+schema, prompt and candidate identity. Add a nonempty financial-suggestion
+regression. Allow a separately selected review-only CPU probe so a slow or
+malformed extraction does not prevent measuring F; this must explicitly record
+that extraction/whole-workflow parity were not tested. Preserve every failed run.

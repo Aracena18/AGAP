@@ -111,6 +111,22 @@ class ServiceTests(unittest.TestCase):
         self.assertEqual(service.execute('extract', request), [])
         self.assertEqual([row[0] for row in model.calls], ['extract', 'review', 'extract'])
 
+    def test_nonempty_extraction_validates_array_schema_and_exact_citation(self):
+        text = 'FICTIONAL net pay PHP 2000.00'
+        finding = {'page': 1, 'excerpt': text, 'fact': {
+            'factId': None, 'relevance': 'included', 'label': 'Stated net pay', 'category': 'income',
+            'value': {'availability': 'recorded', 'amountCentavos': 200000},
+            'sourceId': None, 'sourceVersion': None, 'statement': None, 'effectiveDate': None,
+            'coverageStart': None, 'coverageEnd': None, 'cashDates': [], 'period': 'unknown',
+            'basis': 'net', 'deduction': 'unknown', 'reason': 'Fictional, unverified suggestion.'}}
+        request = {'page': 1, 'text': text, 'provenance': self.bindings['extraction']}
+        service = InferenceService(self.bindings, FakeModel([json.dumps([finding])]))
+        self.assertEqual(service.execute('extract', request), [finding])
+        for change in ({'page': 2}, {'excerpt': 'unsupported source'}, {'unexpected': True},
+                       {'fact': {**finding['fact'], 'value': {'availability': 'recorded', 'amountCentavos': -1}}}):
+            with self.subTest(change=change), self.assertRaises(EvidenceError):
+                InferenceService(self.bindings, FakeModel([json.dumps([{**finding, **change}])])).execute('extract', request)
+
     def test_prompt_preserves_cross_source_bundle_exactly_and_treats_documents_as_data(self):
         prompt = messages('system prompt', self.request['question'], SOURCES)
         for source in SOURCES:
