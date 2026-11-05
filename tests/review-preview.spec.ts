@@ -28,8 +28,39 @@ test('entered member application, exact household retry, upload, scenario, 5C an
  await page.getByLabel('Review ends',{exact:true}).first().fill('2026-01-31');
  for(const [label,amount,date] of [['Opening spendable cash','1000',''],['Take-home income','2400','2026-01-15'],['Housing or rent','0','2026-01-05'],['Other essential expenses','500','2026-01-20'],['Existing repayments','250','2026-01-15']]){
   await page.getByLabel(`${label} (PHP)`,{exact:true}).fill(amount);
-  if(date)await page.getByLabel(`${label} cash dates`,{exact:true}).fill(date);
+  if(date)await page.getByLabel(`${label} cash date 1`,{exact:true}).fill(date);
  }
+
+ const incomeDate=page.getByLabel('Take-home income cash date 1',{exact:true});
+ await expect(incomeDate).toHaveAttribute('type','date');
+ await page.getByRole('button',{name:'Add take-home income date',exact:true}).click();
+ const secondIncome=page.getByLabel('Take-home income cash date 2',{exact:true});await expect(secondIncome).toBeFocused();
+ await secondIncome.fill('2026-01-15');
+ await expect(secondIncome).toHaveAttribute('aria-invalid','true');
+ await secondIncome.fill('2026-02-01');
+ await expect(page.getByText('Choose a date within the review period.',{exact:true})).toBeVisible();
+ await secondIncome.fill('2026-01-25');
+ const acknowledgment=page.getByLabel('I confirm these amounts, exact cash dates and coverage of the review period.');
+ await acknowledgment.check();await page.getByRole('button',{name:'Remove take-home income date 2',exact:true}).click();await expect(acknowledgment).not.toBeChecked();await expect(incomeDate).toBeFocused();
+ await page.getByRole('button',{name:'Add housing or rent date',exact:true}).click();
+ await page.getByLabel('Housing or rent cash date 2',{exact:true}).fill('2026-01-20');
+ const cashForm=page.locator('form').filter({has:page.getByRole('heading',{name:'Your household cash flow',exact:true})});
+ const captureDir='docs/screenshots/household-date-ux';await mkdir(captureDir,{recursive:true});
+ for(const width of [1920,1366,768,320]){
+  await page.setViewportSize({width,height:900});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  expect((await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze()).violations).toEqual([]);
+  await page.getByRole('button',{name:'Refresh saved information',exact:true}).focus();
+  await cashForm.getByRole('heading',{name:'Your household cash flow',exact:true}).scrollIntoViewIfNeeded();
+  if(width===320){
+   await page.screenshot({path:`${captureDir}/household-header-320.png`});
+   await incomeDate.scrollIntoViewIfNeeded();
+  }
+  await page.screenshot({path:`${captureDir}/household-${width}.png`,fullPage:width!==320});
+ }
+ await page.setViewportSize({width:1366,height:768});
+ const amountBox=await page.getByLabel('Take-home income (PHP)',{exact:true}).boundingBox(),dateBox=await incomeDate.boundingBox();
+ expect(Math.abs(amountBox!.y-dateBox!.y)).toBeLessThanOrEqual(2);
  await page.getByLabel('Existing repayments are already deducted from take-home pay.').check();
  await page.getByLabel('I confirm these amounts, exact cash dates and coverage of the review period.').check();
  const attempts:{key:string|undefined;body:string|null}[]=[];let first=true;
@@ -42,7 +73,7 @@ test('entered member application, exact household retry, upload, scenario, 5C an
  await expect(page.getByRole('heading',{name:'Household information',exact:true})).toBeVisible();
  expect(attempts).toHaveLength(6);expect(attempts[0]).toEqual(attempts[1]);
  const facts=(await(await page.request.get(`/api/v1/member/applications/${id}/workflow`)).json()).facts;
- expect(facts).toHaveLength(5);
+ expect(facts).toHaveLength(5);expect(facts.find((fact:{input:{label:string}})=>fact.input.label==='Housing or rent').input.cashDates).toEqual(['2026-01-05','2026-01-20']);
  await page.getByLabel('Supporting document',{exact:true}).setInputFiles({name:'Income-support.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jT0cAAAAASUVORK5CYII=','base64')});
  await page.getByRole('button',{name:'Upload document',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Income-support.png',exact:true})).toBeVisible();

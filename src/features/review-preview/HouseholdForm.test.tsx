@@ -11,7 +11,7 @@ function fill(){
  fireEvent.change(screen.getByLabelText('Review ends',{exact:true}),{target:{value:'2026-01-31'}});
  for(const label of ['Opening spendable cash','Take-home income','Housing or rent','Other essential expenses','Existing repayments']){
   fireEvent.change(screen.getByLabelText(`${label} (PHP)`,{exact:true}),{target:{value:'100.25'}});
-  if(label!=='Opening spendable cash')fireEvent.change(screen.getByLabelText(`${label} cash dates`,{exact:true}),{target:{value:'2026-01-15'}});
+  if(label!=='Opening spendable cash')fireEvent.change(screen.getByLabelText(`${label} cash date 1`,{exact:true}),{target:{value:'2026-01-15'}});
  }
  fireEvent.click(screen.getByLabelText('I confirm these amounts, exact cash dates and coverage of the review period.'));
 }
@@ -42,4 +42,43 @@ it('requires renewed confirmation when a cash amount changes',()=>{
  render(<HouseholdForm view={view} client={{} as AgapClient} csrf="csrf" member saved={vi.fn()}/>);
  fill();const acknowledgment=screen.getByLabelText('I confirm these amounts, exact cash dates and coverage of the review period.');
  expect(acknowledgment).toBeChecked();fireEvent.change(screen.getByLabelText('Take-home income (PHP)',{exact:true}),{target:{value:'200'}});expect(acknowledgment).not.toBeChecked();
+});
+
+it('adds and removes independently selected dates, renews confirmation and keeps focus on the edited group',()=>{
+ render(<HouseholdForm view={view} client={{} as AgapClient} csrf="csrf" member saved={vi.fn()}/>);
+ fill();const acknowledgment=screen.getByLabelText('I confirm these amounts, exact cash dates and coverage of the review period.');
+ fireEvent.click(screen.getByRole('button',{name:'Add take-home income date'}));
+ const added=screen.getByLabelText('Take-home income cash date 2',{exact:true});
+ expect(added).toHaveAttribute('type','date');expect(added).toHaveFocus();expect(acknowledgment).not.toBeChecked();
+ fireEvent.change(added,{target:{value:'2026-01-25'}});fireEvent.click(acknowledgment);
+ fireEvent.click(screen.getByRole('button',{name:'Remove take-home income date 1'}));
+ expect(screen.getByLabelText('Take-home income cash date 1',{exact:true})).toHaveValue('2026-01-25');
+ expect(screen.getByLabelText('Take-home income cash date 1',{exact:true})).toHaveFocus();
+ expect(acknowledgment).not.toBeChecked();expect(screen.queryByLabelText('Take-home income cash date 2',{exact:true})).not.toBeInTheDocument();
+});
+it('keeps duplicate and out-of-period selections visible and invalid until explicitly corrected',()=>{
+ render(<HouseholdForm view={view} client={{} as AgapClient} csrf="csrf" member saved={vi.fn()}/>);fill();
+ fireEvent.click(screen.getByRole('button',{name:'Add take-home income date'}));
+ const second=screen.getByLabelText('Take-home income cash date 2',{exact:true}) as HTMLInputElement;
+ fireEvent.change(second,{target:{value:'2026-01-15'}});
+ expect(second.checkValidity()).toBe(false);expect(second).toHaveAttribute('aria-invalid','true');
+ expect(screen.getAllByText('This date is already selected. Choose another date or remove it.')).toHaveLength(2);
+ fireEvent.change(second,{target:{value:'2026-01-25'}});expect(second.checkValidity()).toBe(true);
+ fireEvent.change(screen.getByLabelText('Review ends',{exact:true}),{target:{value:'2026-01-20'}});
+ expect(second).toHaveValue('2026-01-25');expect(second).toHaveAttribute('max','2026-01-20');expect(second.checkValidity()).toBe(false);
+ expect(screen.getByText('Choose a date within the review period.')).toBeVisible();
+ fireEvent.change(second,{target:{value:'2026-01-18'}});expect(second.checkValidity()).toBe(true);
+});
+it('saves all selected calendar dates in ISO order while preserving exact amounts and per-date meaning',async()=>{
+ let version=1;
+ const getMemberWorkflow=vi.fn(async()=>({...view,version})),saveMemberFact=vi.fn(async()=>({id:view.applicationId,version:++version})),saved=vi.fn();
+ render(<HouseholdForm view={view} client={{getMemberWorkflow,saveMemberFact} as unknown as AgapClient} csrf="csrf" member saved={saved}/>);fill();
+ fireEvent.click(screen.getByRole('button',{name:'Add take-home income date'}));
+ fireEvent.change(screen.getByLabelText('Take-home income cash date 1',{exact:true}),{target:{value:'2026-01-25'}});
+ fireEvent.change(screen.getByLabelText('Take-home income cash date 2',{exact:true}),{target:{value:'2026-01-10'}});
+ fireEvent.click(screen.getByLabelText('I confirm these amounts, exact cash dates and coverage of the review period.'));
+ fireEvent.click(screen.getByRole('button',{name:'Save household information'}));await waitFor(()=>expect(saved).toHaveBeenCalledOnce());
+ const bodies=saveMemberFact.mock.calls as unknown as [string,{label:string;cashDates:string[];statement:string;value:{amountCentavos:number}}][];
+ const income=bodies.find(call=>call[1].label==='Take-home income')![1];
+ expect(income.cashDates).toEqual(['2026-01-10','2026-01-25']);expect(income.value.amountCentavos).toBe(10025);expect(income.statement).toContain('on each listed cash date: 2026-01-10, 2026-01-25');
 });
