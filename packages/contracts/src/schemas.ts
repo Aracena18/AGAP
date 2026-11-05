@@ -255,6 +255,8 @@ export const MemberSourceSchema = z.strictObject({id:Id,fileName:Text,state:z.en
 export const MemberEvidenceSchema = z.strictObject({sources:z.array(MemberSourceSchema),drafts:z.array(AiDraftSchema)});
 export const MemberOptionSchema = z.strictObject({offer:OfferSchema,checked:ScenarioSchema,horizonStart:CalendarDay,horizonEnd:CalendarDay,assumptions:z.array(Text)});
 export const MemberDecisionSchema = z.strictObject({id:Id,outcome:z.enum(['approve','decline','return']),explanation:Text,recordedAt:Instant,documentVersionId:Id.nullable(),terms:MemberOptionSchema.nullable(),accepted:z.boolean()});
+export const MemberDecisionDocumentSchema=z.strictObject({id:Id,sha256:z.string().regex(/^[a-f0-9]{64}$/),mediaType:z.literal('text/plain; charset=utf-8'),text:z.string().min(1).max(65536)});
+export const OriginationCreateSchema=z.strictObject({method:z.enum(['cash','bank'])});
 export const MemberReceiptSchema = z.strictObject({id:Id,loanId:Id,paidOn:CalendarDay,amountCentavos:MoneyAmount,reference:Text});
 export const MemberLoanSchema = z.strictObject({
   id:Id,label:Text,status:z.enum(['active','settled','restructured','written_off']),position:LoanPositionSchema,
@@ -306,7 +308,7 @@ export const schemas = {
   MemberSession:MemberSessionSchema,MemberProfile:MemberProfileSchema,MemberApplicationCreate:MemberApplicationCreateSchema,MemberApplication:MemberApplicationSchema,MemberApplicationPage:MemberApplicationPageSchema,MemberSubmit:MemberSubmitSchema,
   ReminderPreferenceUpdate:ReminderPreferenceUpdateSchema,ReminderPreferences:ReminderPreferencesSchema,ModelArtifact:ModelArtifactSchema,AiDraft:AiDraftSchema,DraftConfirmation:DraftConfirmationSchema.or(workflowSchemas.WorkflowDraftReview),IrregularExpense:IrregularExpenseSchema,
   MemberSource:MemberSourceSchema,MemberEvidenceView:MemberEvidenceViewSchema,MemberOptionsView:MemberOptionsViewSchema,MemberDecisionView:MemberDecisionViewSchema,MemberLoansView:MemberLoansViewSchema,MemberSupportView:MemberSupportViewSchema,MemberSupportCreate:MemberSupportCreateSchema,MemberSupport:MemberSupportSchema,MemberAcceptance:MemberAcceptanceSchema,MemberUpload:MemberUploadSchema,
-  MemberOption:MemberOptionSchema,MemberDecision:MemberDecisionSchema,MemberLoan:MemberLoanSchema,MemberReceipt:MemberReceiptSchema,SourceReference:SourceReferenceSchema,
+  MemberOption:MemberOptionSchema,MemberDecision:MemberDecisionSchema,MemberDecisionDocument:MemberDecisionDocumentSchema,OriginationCreate:OriginationCreateSchema,MemberLoan:MemberLoanSchema,MemberReceipt:MemberReceiptSchema,SourceReference:SourceReferenceSchema,
   ApiError: ApiErrorSchema, Session: SessionSchema, Staff: StaffSchema, StaffPage: StaffPageSchema, StaffRevoke: StaffRevokeSchema, MemberCreate: MemberCreateSchema, MemberUpdate: MemberUpdateSchema, Member: MemberSchema, MemberPage: MemberPageSchema,
   ApplicationCreate: ApplicationCreateSchema, ApplicationUpdate: ApplicationUpdateSchema, Application: ApplicationSchema, ApplicationPage: ApplicationPageSchema, AssignmentCreate: AssignmentCreateSchema,
   EvidenceCorrection: EvidenceCorrectionSchema, Verification: VerificationSchema, AssessmentCreate: AssessmentCreateSchema, Assessment: AssessmentSchema, Offer: OfferSchema,

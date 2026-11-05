@@ -56,6 +56,7 @@ export class MemberController {
   @Post('applications/:id/confirmations') confirm(@Req() r:MemberRequest,@Param('id') id:string,@Body() body:unknown){return this.services.workflow?this.services.workflow.workflow.confirm(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']):this.services.portal.confirm(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
   @Get('applications/:id/options') options(@Req() r:MemberRequest,@Param('id') id:string){return this.services.portal.options(actor(r),id);}
   @Get('applications/:id/decision') decision(@Req() r:MemberRequest,@Param('id') id:string){return this.services.portal.decision(actor(r),id);}
+  @Get('applications/:id/decision-documents/:documentId') decisionDocument(@Req() r:MemberRequest,@Param('id') id:string,@Param('documentId') documentId:string){return this.services.portal.decisionDocument(actor(r),id,documentId);}
   @Post('applications/:id/acceptances') accept(@Req() r:MemberRequest,@Param('id') id:string,@Body() body:unknown){return this.services.portal.accept(actor(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
   @Get('loans') loans(@Req() r:MemberRequest){return this.services.portal.loans(actor(r));}
   @Get('support-requests') support(@Req() r:MemberRequest){return this.services.portal.support(actor(r));}

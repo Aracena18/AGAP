@@ -7,6 +7,8 @@ export interface Operation {
   pathParameters?: Record<string,SchemaName>;
 }
 export const operations = [
+  {id:'getMemberDecisionDocument',method:'GET',path:'/member/applications/{id}/decision-documents/{documentId}',response:'MemberDecisionDocument',owner:'Robert',implemented:true,principal:'member'},
+  {id:'createPendingOrigination',method:'POST',path:'/applications/{id}/originations',request:'OriginationCreate',response:'CommandReceipt',owner:'Benedict',implemented:true,idempotent:true},
   {id:'getStaffDecisionWorkspace',method:'GET',path:'/applications/{id}/decision-workspace',response:'StaffDecisionWorkspace',owner:'Benedict',implemented:true},
   {id:'listStaffDecisions',method:'GET',path:'/applications/{id}/decisions',response:'StaffDecisionHistoryPage',owner:'Benedict',implemented:true},
   {id:'getStaffDecisionBrief',method:'GET',path:'/applications/{id}/decisions/{decisionId}',response:'StaffDecisionBrief',owner:'Benedict',implemented:true},

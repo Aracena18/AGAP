@@ -33,11 +33,14 @@ import { MonitoringService } from './modules/monitoring/monitoring.service.js';
 import { MonitoringController,SupportFollowUpController,MONITORING } from './modules/monitoring/monitoring.controller.js';
 import { unavailableMemberDomains } from './modules/member-portal/member-portal.service.js';
 import { DECISIONS, DecisionsController, type DecisionServices } from './modules/decisions/decisions.controller.js';
-import { DecisionsService } from './modules/decisions/decisions.service.js';
+import { decisionMemberPorts, DecisionsService } from './modules/decisions/decisions.service.js';
 import { DecisionStaffReads } from './modules/decisions/staff-read.service.js';
 import { DecisionReviewService } from './modules/decisions/decision-review.service.js';
 import { LendingDecisionProducers } from './modules/decisions/lending-producers.js';
 import { WorkflowDecisionProducer } from './modules/evidence/decision-basis.producer.js';
+import { ORIGINATION, OriginationController } from './modules/servicing/origination.controller.js';
+import { ServicingService } from './modules/servicing/servicing.service.js';
+import { LendingMoneyProducers } from './modules/servicing/lending-money.producers.js';
 import type { MemberDomainPorts } from '../../../packages/contracts/src/ports.js';
 
 interface StaffRequest extends Request,MemberRequest { staff?: Awaited<ReturnType<IdentityService['authenticate']>> }
@@ -70,7 +73,7 @@ class PlatformController {
   @Get('health') async health() { await Promise.all([this.services.database.query('SELECT 1'),this.services.identityDatabase.query('SELECT 1')]); return {status:'ok',contractVersion:CONTRACT_VERSION}; }
   @Get('openapi.json') async openapi() { return JSON.parse(await readFile('packages/contracts/openapi.json','utf8')) as unknown; }
   @Get('capabilities') capabilities() {
-    return {contractVersion:CONTRACT_VERSION,modules:[{name:'platform',owner:'Robert',state:'available'},{name:'identity',owner:'Robert',state:'available'},{name:'members',owner:'Robert',state:'available'},{name:'applications',owner:'Robert',state:'available'},{name:'member_portal',owner:'Robert',state:'available'},{name:'evidence',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'credit',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'decisions',owner:'Benedict',state:'contract_only'},{name:'decisions.staff_review',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'servicing',owner:'Benedict',state:'contract_only'},{name:'accounting',owner:'Earl',state:'contract_only'},{name:'monitoring',owner:'Earl',state:'contract_only'},{name:'servicing.member_loan_reads',owner:'Benedict',state:'available'},{name:'accounting.principal_reconciliation',owner:'Earl',state:'available'},{name:'monitoring.payment_help',owner:'Earl',state:'available'},{name:'monitoring.follow_ups',owner:'Earl',state:'available'}]};
+    return {contractVersion:CONTRACT_VERSION,modules:[{name:'platform',owner:'Robert',state:'available'},{name:'identity',owner:'Robert',state:'available'},{name:'members',owner:'Robert',state:'available'},{name:'applications',owner:'Robert',state:'available'},{name:'member_portal',owner:'Robert',state:'available'},{name:'evidence',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'credit',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'decisions',owner:'Benedict',state:'contract_only'},{name:'decisions.staff_review',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'decisions.member_acceptance',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'servicing.pending_origination',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'servicing',owner:'Benedict',state:'contract_only'},{name:'accounting',owner:'Earl',state:'contract_only'},{name:'monitoring',owner:'Earl',state:'contract_only'},{name:'servicing.member_loan_reads',owner:'Benedict',state:'available'},{name:'accounting.principal_reconciliation',owner:'Earl',state:'available'},{name:'monitoring.payment_help',owner:'Earl',state:'available'},{name:'monitoring.follow_ups',owner:'Earl',state:'available'}]};
   }
   @Get('auth/login') async login(@Req() request:StaffRequest,@Res() response: Response) {
     await limitLogin(this.services.identityDatabase,this.services.config.SESSION_SECRET,request.socket.remoteAddress??'unknown');
@@ -131,10 +134,11 @@ export async function createApp(config: Config,memberDomains?:MemberDomainPorts)
     const services: PlatformServices = {config,database,identityDatabase,identity,staff:new StaffService(new PostgresUnitOfWork(identityDatabase,guarded)),members,applications:new ApplicationsService(uow,members),async onModuleDestroy(){await Promise.all([database.end(),identityDatabase.end()]);}};
     const producers=config.CONNECTED_LENDING_ENABLED&&workflow?new LendingDecisionProducers(new WorkflowDecisionProducer(workflow.workflow),true):null;
     const decisionServices:DecisionServices|null=producers?{reads:new DecisionStaffReads(uow,producers),commands:new DecisionsService(uow,producers),reviews:new DecisionReviewService(uow,producers)}:null;
+    const origination=producers?new ServicingService(uow,new LendingMoneyProducers(producers,true)):null;
     const loanReads=new LoanReads(uow),monitoring=new MonitoringService(uow,loanReads);
-    const domains:MemberDomainPorts=memberDomains??{...unavailableMemberDomains,loans:tx=>loanReads.memberLoans(tx),support:tx=>monitoring.memberHistory(tx),supportPage:(tx,query)=>monitoring.memberHistoryPage(tx,query),requestSupport:(tx,data,key)=>monitoring.submit(tx,data,key)};
+    const domains:MemberDomainPorts=memberDomains??{...unavailableMemberDomains,...(decisionServices?decisionMemberPorts(decisionServices.commands):{}),loans:tx=>loanReads.memberLoans(tx),support:tx=>monitoring.memberHistory(tx),supportPage:(tx,query)=>monitoring.memberHistoryPage(tx,query),requestSupport:(tx,data,key)=>monitoring.submit(tx,data,key)};
     const portal=new MemberPortalService(memberUow,new MemberApplicationsService(memberUow,config.PRIVACY_NOTICE_VERSION),config.PRIVACY_NOTICE_VERSION,domains);
-    @Module({controllers:[DecisionsController,PlatformController,MemberController,WorkflowController,ReconciliationController,MonitoringController,SupportFollowUpController],providers:[{provide:DECISIONS,useValue:decisionServices},{provide:MONITORING,useValue:monitoring},{provide:RECONCILIATIONS,useValue:reconciliations},{provide:WORKFLOW,useValue:workflow},{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal,workflow}}]})
+    @Module({controllers:[OriginationController,DecisionsController,PlatformController,MemberController,WorkflowController,ReconciliationController,MonitoringController,SupportFollowUpController],providers:[{provide:ORIGINATION,useValue:origination},{provide:DECISIONS,useValue:decisionServices},{provide:MONITORING,useValue:monitoring},{provide:RECONCILIATIONS,useValue:reconciliations},{provide:WORKFLOW,useValue:workflow},{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal,workflow}}]})
     class AppModule {}
     const app = await NestFactory.create<NestExpressApplication>(AppModule,{logger:false,bodyParser:false,abortOnError:false});
     app.set('trust proxy',false);

@@ -4,7 +4,7 @@ import AxeBuilder from '@axe-core/playwright';
 const origin=`http://127.0.0.1:${process.env.AGAP_E2E_WEB_PORT??5174}`;
 test('actual separate staff review, unresolved notice, exact approval and reload through normal navigation',async({page,context,browser})=>{
   test.setTimeout(90000);
-  const {connectedLending:f}=JSON.parse(await readFile('.platform-test/browser.json','utf8')) as {connectedLending:{appId:string;officer:string;reviewer:string}};
+  const {connectedLending:f}=JSON.parse(await readFile('.platform-test/browser.json','utf8')) as {connectedLending:{appId:string;officer:string;reviewer:string;member:string;cashier:string}};
   await context.addCookies([{name:'agap_session',value:f.officer,url:origin,httpOnly:true,sameSite:'Lax'}]);
   const reviewerContext=await browser.newContext({baseURL:origin});
   try{
@@ -85,5 +85,24 @@ test('actual separate staff review, unresolved notice, exact approval and reload
       expect((await new AxeBuilder({page:reviewer}).analyze()).violations).toEqual([]);
       await reviewer.screenshot({path:`docs/tasks/production/connected-lending-cl2/screenshots/saved-decision-${width}.png`,fullPage:true});
     }
+    const memberContext=await browser.newContext({baseURL:origin});
+    try{
+      await memberContext.addCookies([{name:'agap_member_session',value:f.member,url:origin,httpOnly:true,sameSite:'Lax'}]);
+      const member=await memberContext.newPage();await member.goto('/#/member/applications');
+      const application=member.getByRole('article').filter({hasText:'Fictional connected lending journey'});await expect(application).toBeVisible();await application.getByRole('link',{name:'View application',exact:true}).click();
+      const decision=member.getByRole('region',{name:'Recorded decision',exact:true});
+      await expect(decision.getByRole('heading',{name:'Exact saved terms'})).toBeVisible();
+      await expect(decision.getByText(/^SHA256 verified:/)).toBeVisible();
+      const calls:{body:string|null;key:string|undefined;version:string|undefined}[]=[];let lostAcceptance=true;
+      await member.route(`**/api/v1/member/applications/${f.appId}/acceptances`,async route=>{calls.push({body:route.request().postData(),key:route.request().headers()['idempotency-key'],version:route.request().headers()['if-match']});if(lostAcceptance){lostAcceptance=false;await route.fetch();await route.abort('failed');}else await route.continue();});
+      await decision.getByLabel('I reviewed and accept these recorded terms, dates and full costs.',{exact:true}).check();
+      await decision.getByRole('button',{name:'Accept these terms',exact:true}).click();
+      await decision.getByRole('button',{name:'Retry same acceptance',exact:true}).click();
+      await expect(decision.getByText('Your acceptance is recorded.',{exact:true})).toBeVisible();expect(calls).toHaveLength(2);expect(calls[1]).toEqual(calls[0]);
+      await member.reload();await expect(decision.getByText('Your acceptance is recorded.',{exact:true})).toBeVisible();
+      const download=member.waitForEvent('download');await decision.getByRole('button',{name:'Download exact saved terms',exact:true}).click();expect((await download).suggestedFilename()).toMatch(/^agap-terms-.*\.txt$/);
+      await mkdir('docs/tasks/production/connected-lending-cl3/screenshots',{recursive:true});
+      for(const width of [320,820,683,1366]){await member.setViewportSize({width,height:900});expect(await member.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);expect((await new AxeBuilder({page:member}).analyze()).violations).toEqual([]);await member.screenshot({path:`docs/tasks/production/connected-lending-cl3/screenshots/member-accepted-${width}.png`,fullPage:true});}
+    }finally{await memberContext.close();}
   }finally{await reviewerContext.close();}
 });

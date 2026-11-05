@@ -11,6 +11,136 @@
     }
   ],
   "paths": {
+    "/api/v1/member/applications/{id}/decision-documents/{documentId}": {
+      "get": {
+        "operationId": "getMemberDecisionDocument",
+        "tags": [
+          "Robert"
+        ],
+        "x-agap-state": "implemented",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "documentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "security": [
+          {
+            "memberSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Checked response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberDecisionDocument"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured validation, authorization, precondition or availability error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/applications/{id}/originations": {
+      "post": {
+        "operationId": "createPendingOrigination",
+        "tags": [
+          "Benedict"
+        ],
+        "x-agap-state": "implemented",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OriginationCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Checked response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommandReceipt"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured validation, authorization, precondition or availability error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/applications/{id}/decision-workspace": {
       "get": {
         "operationId": "getStaffDecisionWorkspace",
@@ -16330,6 +16460,52 @@
           "documentVersionId",
           "terms",
           "accepted"
+        ],
+        "additionalProperties": false
+      },
+      "MemberDecisionDocument": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "mediaType": {
+            "type": "string",
+            "const": "text/plain; charset=utf-8"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536
+          }
+        },
+        "required": [
+          "id",
+          "sha256",
+          "mediaType",
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "OriginationCreate": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "cash",
+              "bank"
+            ]
+          }
+        },
+        "required": [
+          "method"
         ],
         "additionalProperties": false
       },

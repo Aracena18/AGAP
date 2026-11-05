@@ -3,6 +3,8 @@ import type { z } from 'zod';
 import { schemas } from '../../contracts/src/schemas.js';
 import { ClientTransport, type RequestOptions } from './transport.js';
 export class AgapClient extends ClientTransport {
+  getMemberDecisionDocument(id: string, documentId: string, options: RequestOptions = {}) { return this.request('GET', `/member/applications/${encodeURIComponent(id)}/decision-documents/${encodeURIComponent(documentId)}`, undefined, schemas.MemberDecisionDocument, options); }
+  createPendingOrigination(id: string, body: z.input<typeof schemas.OriginationCreate>, options: RequestOptions = {}) { return this.request('POST', `/applications/${encodeURIComponent(id)}/originations`, body, schemas.CommandReceipt, options); }
   getStaffDecisionWorkspace(id: string, options: RequestOptions = {}) { return this.request('GET', `/applications/${encodeURIComponent(id)}/decision-workspace`, undefined, schemas.StaffDecisionWorkspace, options); }
   listStaffDecisions(id: string, options: RequestOptions = {}) { return this.request('GET', `/applications/${encodeURIComponent(id)}/decisions`, undefined, schemas.StaffDecisionHistoryPage, options); }
   getStaffDecisionBrief(id: string, decisionId: string, options: RequestOptions = {}) { return this.request('GET', `/applications/${encodeURIComponent(id)}/decisions/${encodeURIComponent(decisionId)}`, undefined, schemas.StaffDecisionBrief, options); }

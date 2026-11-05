@@ -43,6 +43,12 @@ Only the current assigned cleared officer can prepare concern checks and assignm
 
 Retain opening versions and evidence hashes in review editors and decision drafts. Refresh preserves text, invalidates previews and visibly blocks a stale draft; explicit cancellation/clearing starts a new action. While a consequential submission is uncertain, retain its exact request/key/version and lock competing writes. Evidence-review and lending-decision editors cannot run competing writes. After recording, show only the preserved saved brief/terms, checksum-verified bytes and separately labeled history. Keep phone actions wrapped, long identifiers/quotes reflowed and keyboard focus recoverable. This is a fictional, default-off integration candidate; representative and institutional acceptance are separate.
 
+## Exact member terms — CL3, 5 November 2026
+
+Within the existing member application, show the recorded decision and complete checked costs/schedule, then the exact saved UTF-8 terms with document version and verified checksum before acknowledgment. Use existing tokens, panels and controls. The original verified bytes are downloadable. Wrap long identifiers/checksums and preserve line breaks in term text at phone, tablet and desktop widths. No staff authority, conflicts or notes appear in the member projection.
+
+The acknowledgment checkbox binds to the displayed document and application version. A refresh clears it; unavailable or changed terms disable a new acceptance without zero placeholders. Unknown submissions display a dedicated retry of the original acceptance even when a later read is unavailable. Successful acceptance is labeled separately from release or proof of funds. Preserve existing focus/navigation and unsaved-change recovery. Technical browser checks do not represent physical-device or member acceptance.
+
 ## 1. Design principles
 
 - **Give each element a job.** Include information or controls that help staff understand the case, check a fact, compare an option, or complete the next action.

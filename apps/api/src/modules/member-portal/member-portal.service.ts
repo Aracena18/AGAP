@@ -1,7 +1,7 @@
 import type { z } from 'zod';
 import { createHash } from 'node:crypto';
 import type { MemberActorContext,MemberDomainPorts,MemberUnitOfWork } from '../../../../../packages/contracts/src/ports.js';
-import { schemas } from '../../../../../packages/contracts/src/schemas.js';
+import { Id, schemas } from '../../../../../packages/contracts/src/schemas.js';
 import { MemberApplicationsService } from '../applications/member-applications.service.js';
 import { memberCommand,memberEvent,memberKey } from '../../platform/member-commands.js';
 import { ApiError } from '../../platform/errors.js';
@@ -37,6 +37,15 @@ export class MemberPortalService {
   });}
   options(actor:MemberActorContext,id:string){return this.uow.run(actor,async tx=>{await this.applications.own(tx,id);const view=checked(schemas.MemberOptionsView,await this.domains.options(tx,id));if(view.state==='available'&&view.data.some(option=>!validOption(option)))throw new ApiError(503,'options_unavailable','These repayment options are unavailable until their terms and calculations match.');return view;});}
   decision(actor:MemberActorContext,id:string){return this.uow.run(actor,async tx=>{await this.applications.own(tx,id);const view=checked(schemas.MemberDecisionView,await this.domains.decision(tx,id));if(view.state==='available'&&view.data?.terms&&!validOption(view.data.terms))throw new ApiError(503,'decision_unavailable','The recorded terms are unavailable until their basis is checked.');return view;});}
+  decisionDocument(actor:MemberActorContext,id:string,documentId:string){
+    Id.parse(id);Id.parse(documentId);
+    return this.uow.run(actor,async tx=>{
+      await this.applications.own(tx,id);if(!this.domains.decisionDocument)return pending();
+      const doc=checked(schemas.MemberDecisionDocument,await this.domains.decisionDocument(tx,id,documentId));
+      if(doc.id!==documentId||Buffer.byteLength(doc.text,'utf8')>65536||createHash('sha256').update(doc.text,'utf8').digest('hex')!==doc.sha256)throw new ApiError(503,'document_integrity','The exact saved terms cannot be verified.');
+      return doc;
+    });
+  }
   loans(actor:MemberActorContext){return this.uow.run(actor,async tx=>{const view=checked(schemas.MemberLoansView,await this.domains.loans(tx));if(view.state==='available'&&view.data.some(loan=>loan.id!==loan.position.loanId||loan.receipts.some(receipt=>receipt.loanId!==loan.id)))throw new ApiError(503,'loans_unavailable','Your loan information cannot be displayed safely yet.');return view;});}
   support(actor:MemberActorContext){return this.uow.run(actor,async tx=>checked(schemas.MemberSupportView,await this.domains.support(tx)));}
   supportHistory(actor:MemberActorContext,input:unknown){

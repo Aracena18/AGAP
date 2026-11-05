@@ -158,6 +158,7 @@ export class DecisionsService {
   }
 }
 /** Export only the owned subset; Robert chooses actual facade registration/order. */
-export function decisionMemberPorts(service: DecisionsService): Pick<MemberDomainPorts, 'decision' | 'accept'> {
-  return { decision: (tx, id) => service.memberDecision(tx, id), accept: (tx, id, input, version, key) => service.memberAccept(tx, id, input, version, key) };
+export function decisionMemberPorts(service: DecisionsService): Pick<MemberDomainPorts, 'decision' | 'accept' | 'decisionDocument'> {
+  return { decision: (tx, id) => service.memberDecision(tx, id), accept: (tx, id, input, version, key) => service.memberAccept(tx, id, input, version, key),
+    decisionDocument:async(tx,id,documentId)=>{const doc=await service.memberDocument(tx,id,documentId);return {id:doc.id,sha256:doc.sha256,mediaType:doc.mediaType,text:doc.bytes.toString('utf8')};} };
 }
