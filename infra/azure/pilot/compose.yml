@@ -1,0 +1,80 @@
+name: agap-fictional-pilot
+services:
+  database:
+    image: postgres:18-alpine
+    network_mode: host
+    env_file: ['${AGAP_PILOT_RUNTIME:?}/postgres.env']
+    command: ['postgres', '-p', '55432', '-c', 'listen_addresses=127.0.0.1']
+    volumes: ['database:/var/lib/postgresql', '${AGAP_PILOT_RUNTIME}/init.sql:/docker-entrypoint-initdb.d/000-roles.sql:ro']
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -h 127.0.0.1 -p 55432 -U agap_owner -d agap']
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  identity:
+    image: quay.io/keycloak/keycloak:26.4.7
+    network_mode: host
+    env_file: ['${AGAP_PILOT_RUNTIME}/keycloak.env']
+    command: ['start', '--import-realm']
+    volumes: ['${AGAP_PILOT_RUNTIME}/realm.json:/opt/keycloak/data/import/agap-realm.json:ro']
+    depends_on:
+      database: {condition: service_healthy}
+  scanner:
+    image: clamav/clamav:stable
+    network_mode: host
+    volumes: ['signatures:/var/lib/clamav', '../../clamav/clamd.conf:/etc/clamav/clamd.conf:ro']
+    mem_limit: 4g
+    cpus: 2
+    healthcheck:
+      test: ['CMD', 'clamdcheck.sh']
+      interval: 10s
+      timeout: 10s
+      retries: 30
+  qwen:
+    restart: 'on-failure:3'
+    build: {context: ../../.., dockerfile: infra/Dockerfile.qwen}
+    network_mode: host
+    gpus: all
+    env_file: ['${AGAP_PILOT_RUNTIME}/qwen.env']
+    volumes: ['${AGAP_PILOT_ARTIFACTS:?}:/artifacts:ro']
+    healthcheck:
+      test: ['CMD', 'python3', '-c', "import json,os,urllib.request; r=urllib.request.Request('http://127.0.0.1:8080/readyz',headers={'Authorization':'Bearer '+os.environ['QWEN_SERVICE_TOKEN']}); assert json.load(urllib.request.urlopen(r,timeout=5))['ready']"]
+      interval: 10s
+      timeout: 7s
+      retries: 30
+      start_period: 120s
+  api:
+    image: agap-pilot-runtime:local
+    build: {context: ../../.., dockerfile: infra/Dockerfile.pilot}
+    network_mode: host
+    env_file: ['${AGAP_PILOT_RUNTIME}/api.env']
+    command: ['node', 'dist-api/main.js']
+    volumes: ['documents:/private-documents', '${AGAP_PILOT_ARTIFACTS}:/artifacts:ro']
+    depends_on:
+      database: {condition: service_healthy}
+      qwen: {condition: service_healthy}
+  worker:
+    image: agap-pilot-runtime:local
+    network_mode: host
+    env_file: ['${AGAP_PILOT_RUNTIME}/worker.env']
+    command: ['node', 'dist-worker/main.js']
+    volumes: ['documents:/private-documents', '${AGAP_PILOT_ARTIFACTS}:/artifacts:ro']
+    depends_on:
+      scanner: {condition: service_healthy}
+      qwen: {condition: service_healthy}
+  web:
+    image: agap-pilot-runtime:local
+    network_mode: host
+    environment: {AGAP_WEB_PORT: '5286', AGAP_API_PORT: '4100'}
+    command: ['node', 'infra/azure/pilot/web.mjs']
+  operator:
+    image: agap-pilot-runtime:local
+    network_mode: host
+    profiles: [tools]
+    env_file: ['${AGAP_PILOT_RUNTIME}/operator.env']
+    volumes: ['${AGAP_PILOT_RUNTIME}/realm.json:/app/infra/keycloak/agap-realm.json:ro', '${AGAP_PILOT_RUNTIME}:/private-pilot', '${AGAP_PILOT_ARTIFACTS}:/artifacts:ro']
+    entrypoint: ['./node_modules/.bin/tsx', '--tsconfig', 'tsconfig.platform.json']
+volumes:
+  database:
+  signatures:
+  documents:

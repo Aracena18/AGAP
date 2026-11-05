@@ -64,3 +64,9 @@ queue/privacy/retry/rollback tests; unchanged financial oracles; actual model an
 scanner/OCR execution where available; baseline/F parity and failure evidence;
 full npm checks/e2e, screenshots, graphify and truthful external blocker records.
 Independent evaluation/receiving-owner acceptance remains pending until supplied.
+
+Compatibility clarification (5 November, before the corresponding edit): EVAL-01
+v1 is the historical 0.3 extraction corpus/reviewer handoff. Pin that corpus's
+contract identity to 0.3.0 rather than inheriting the additive application API
+version. Preserve its exact corpus, hashes, labels and reviewer pack; the 0.4
+qualitative review API is a different task and does not rewrite this evidence.

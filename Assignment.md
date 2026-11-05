@@ -14,6 +14,10 @@ The [product solution](docs/AGAP_Product_Solution.md) governs scope; the [archit
 
 The user explicitly approves coordinated implementation across Robert's shared/platform/member paths and Aaron's EVD-01/CRD-01/AI-01 paths in this chat, on `codex/evidence-affordability` over `312c6f8`. This is a task-specific authorization, not a permanent ownership transfer or independent acceptance. The [0.3.0 proposal](docs/AGAP_Evidence_Assessment_Contract_Proposal.md), [implementation/evidence and release blockers](docs/AGAP_Evidence_Workflow_Delivery.md) and [cost proposal](docs/AGAP_Hosting_Cost_Proposal.md) govern this supplied slice. The current milestone includes AI extraction code now; actual inference/evaluation, Azure quotas/eligibility, budget and institutional release remain required external inputs. No paid provisioning, DNS changes or real records are enabled.
 
+## Experiment F / fictional lifecycle implementation — 5 November 2026
+
+The user authorizes implementation of the complete selected plan: Experiment F import/private inference, PLN-05 server review/queue/escalation, dated decisions/member acceptance, principal-only simulated money/GL/support and a credit-only Azure pilot. Work is isolated on `codex/model-lifecycle-pilot`; [proposal](docs/AGAP_Experiment_F_Pilot_Contract_Proposal.md) precedes shared edits and [delivery evidence](docs/AGAP_Experiment_F_Pilot_Delivery.md) records actual checks/external gates. QWN-01/AI-01/EVD-01/CRD-01/DEC-01/PAY-01/FND-03/SHOW-01 remain **In progress** for this coordinated slice; existing owner/capacity and independent acceptance statuses are not replaced. Actual GPU/scanner/cloud/normal-identity/restore evidence and the final application checks remain required before completion. Direct checked main publication remains authorized; no PR is requested.
+
 ## Team ownership
 
 | Person | Role | Exclusive responsibility | Current task brief |

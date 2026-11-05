@@ -16,6 +16,29 @@ const uow=new PostgresUnitOfWork(runtimePool,{materialGuard:true}),memberUow=new
 let fixture:Awaited<ReturnType<typeof resetFixtures>>,member:Awaited<ReturnType<typeof memberFixture>>,appId:string,reviewer:ActorContext,basis:ReviewDecisionBasis;
 const adapter:ReviewModelAdapter={origin:'simulated',provenance:{baseModel:'fictional-protocol-test-no-real-model',baseRevision:'a'.repeat(40),artifactSha256:null,promptVersion:'fixture-review-v1',schemaVersion:'fictional-test',datasetManifestSha256:null,evaluationReference:'simulated-not-model-evaluation'},async review(input){expect(Number((await owner.query("SELECT count(*) FROM pg_stat_activity WHERE usename='agap_runtime' AND state='idle in transaction'")).rows[0].count)).toBe(0);return {status:'REQUIRES_HUMAN_REVIEW',reasons:[],payload:{issue_code:'DOCUMENT_DISCREPANCY',evidence:[{...input.sources[0],verification_status:'source_asserted_not_independently_verified'}],finding:'The fictional record needs a focused human check.',clarification_question:'Which date is current?',review_status:'requires_human_review',loan_decision:null},source_text_match_verified:true,financial_semantics_verified:false,loan_decision_permitted:false};}};
 const service=configureReviews({uow,workflow,adapter,basis:{load:async()=>basis}});
+it('returns the exact completed source-review receipt after subsequent human checks',async()=>{
+ const source=(await workflow.view(fixture.officer.actor,appId)).sources[0],input={question:'Which fictional date needs clarification?',sources:[{sourceId:source.id,sourceVersion:source.version,textVersionId:source.textVersionId,page:1,start:0,end:source.pages[0].text.length}]},key=randomUUID();
+ const first=await service.request(fixture.officer.actor,appId,input,1,key),s=await service.summary(fixture.officer.actor,appId);
+ await service.check(fixture.officer.actor,appId,{concernId:s.concerns[0].id,action:'dismiss',material:false,text:s.concerns[0].text,reason:'Manually checked the exact retained source.'},s.version,randomUUID());
+ expect(await service.request(fixture.officer.actor,appId,input,1,key)).toEqual(first);
+ expect((await service.summary(fixture.officer.actor,appId)).version).toBeGreaterThan(first.version);
+});
+it('recovers an interrupted generation after reload and fences the late result without duplicate concerns',async()=>{
+ let finish!:()=>void;const waiting=new Promise<void>(resolve=>{finish=resolve;});
+ const held=configureReviews({uow,workflow,adapter:{...adapter,review:async(input,signal)=>{await waiting;return adapter.review(input,signal);}},basis:{load:async()=>basis}});
+ const source=(await workflow.view(fixture.officer.actor,appId)).sources[0],pending=held.request(fixture.officer.actor,appId,{question:'Review the fictional statement.',sources:[{sourceId:source.id,sourceVersion:source.version,textVersionId:source.textVersionId,page:1,start:0,end:source.pages[0].text.length}]},1,randomUUID());
+ try{
+  let s=await held.summary(fixture.officer.actor,appId);
+  for(let n=0;n<50&&!s.pendingReviews?.length;n++){await new Promise(resolve=>setTimeout(resolve,10));s=await held.summary(fixture.officer.actor,appId);}
+  const id=s.pendingReviews![0].id;
+  await expect(held.recover(fixture.officer.actor,appId,{requestId:id,reason:'Too early.'},s.version,randomUUID())).rejects.toMatchObject({code:'review_still_running'});
+  await owner.query("UPDATE reviews.requests SET lease_until=now()-interval '1 second' WHERE id=$1",[id]);
+  s=await held.summary(fixture.officer.actor,appId);expect(s.pendingReviews![0].interrupted).toBe(true);
+  const recovered=await held.recover(fixture.officer.actor,appId,{requestId:id,reason:'Explicitly reconcile the interrupted fictional review.'},s.version,randomUUID());
+  finish();expect(await pending).toEqual(recovered);
+  s=await held.summary(fixture.officer.actor,appId);expect(s.pendingReviews).toHaveLength(0);expect(s.concerns).toHaveLength(1);expect(s.concerns[0].issueCode).toBe('REVIEW_INTERRUPTED');expect(s.readiness.blockers.some(b=>b.code==='concern_unchecked')).toBe(true);
+ }finally{finish();await pending;}
+});
 beforeAll(async()=>{await prepareDatabase();if(!(await owner.query("SELECT 1 FROM pg_namespace WHERE nspname='reviews'")).rowCount)await owner.query(await readFile('apps/api/src/modules/reviews/migrations/001-priority-review.sql','utf8'));});
 beforeEach(async()=>{
  fixture=await resetFixtures();member=await memberFixture(fixture.officer.actor);const app=await new ApplicationsService(uow,new MembersService(uow,config.PRIVACY_NOTICE_VERSION)).create(fixture.officer.actor,{memberId:member.record.id,purpose:'Fictional priority-review exercise',requestedPrincipalCentavos:100000,requestedTermMonths:1,currency:'PHP'},randomUUID());appId=app.id;

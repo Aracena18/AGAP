@@ -13,7 +13,8 @@ for (const item of operations) {
   if (op.idempotent) parameters.push({ name: 'Idempotency-Key', in: 'header', required: true, schema: { type: 'string', pattern: '^[A-Za-z0-9_-]{16,128}$' } });
   if (op.method !== 'GET') parameters.push({ name: 'X-CSRF-Token', in: 'header', required: true, schema: { type: 'string' } });
   if(op.binary)parameters.push({name:'X-File-Name',in:'header',required:true,description:'URI-encoded file name',schema:{type:'string'}},{name:'X-Upload-Size',in:'header',required:true,schema:{type:'integer',minimum:1,maximum:10485760}});
-  if (op.id.startsWith('list')) parameters.push({ name: 'cursor', in: 'query', required: false, schema: { type: 'string', format: 'uuid' } }, { name: 'limit', in: 'query', required: false, schema: { type: 'integer', minimum: 1, maximum: 100, default: 25 } });
+  if(op.querySchema){const query=z.toJSONSchema(schemas[op.querySchema]) as {properties?:Record<string,unknown>;required?:string[]};for(const [name,schema] of Object.entries(query.properties??{}))parameters.push({name,in:'query',required:query.required?.includes(name)??false,schema});}
+  if (!op.querySchema && op.id.startsWith('list')) parameters.push({ name: 'cursor', in: 'query', required: false, schema: { type: 'string', format: 'uuid' } }, { name: 'limit', in: 'query', required: false, schema: { type: 'integer', minimum: 1, maximum: 100, default: 25 } });
   paths[path] ??= {};
   paths[path][op.method.toLowerCase()] = {
     operationId: op.id, tags: [op.owner], 'x-agap-state': op.implemented ? 'implemented' : 'contract-only', parameters,

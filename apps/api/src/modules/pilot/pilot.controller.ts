@@ -13,6 +13,8 @@ export class PilotController{
  private get enabled(){if(!this.service)throw new ApiError(501,'module_not_available','The fictional lifecycle pilot is disabled.');return this.service;}
  private staff(r:PilotRequest){if(!r.staff)throw new ApiError(401,'authentication_required','Sign in to the staff workspace.');return r.staff.actor;}
  private member(r:PilotRequest){if(!r.member)throw new ApiError(401,'member_access_required','Sign in to the member workspace.');return r.member.actor;}
+ @Get('pilot/financial-applications') moneyApplications(@Req()r:PilotRequest,@Query()query:unknown){return this.enabled.moneyApplications(this.staff(r),query);}
+ @Get('applications/:id/pilot-money') moneyApplication(@Req()r:PilotRequest,@Param('id')id:string){return this.enabled.moneyApplication(this.staff(r),id);}
  @Get('applications/:id/pilot-workspace') workspace(@Req()r:PilotRequest,@Param('id')id:string){return this.enabled.workspace(this.staff(r),id);}
  @Post('applications/:id/pilot-conflicts') conflict(@Req()r:PilotRequest,@Param('id')id:string,@Body()body:unknown){return this.enabled.declareConflict(this.staff(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}
  @Post('applications/:id/pilot-recommendations') recommend(@Req()r:PilotRequest,@Param('id')id:string,@Body()body:unknown){return this.enabled.recommend(this.staff(r),id,body,expectedVersion(r.headers['if-match']),r.headers['idempotency-key']);}

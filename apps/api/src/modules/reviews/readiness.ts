@@ -39,7 +39,7 @@ export function deriveReadiness(context:MaterialContext,basis:ReviewDecisionBasi
  else if(assessment.status!=='complete')add('assessment_incomplete','Required financial information is incomplete.');
  else if(assessment.inputVersion!==context.inputVersion||assessment.policyVersionId!==policy?.id)add('assessment_stale','The saved assessment needs renewed review.');
  if(assessment&&policy&&(policy.effectiveFrom>assessment.periodStart||policy.effectiveThrough<assessment.periodEnd))add('policy_expired','The policy does not cover the assessed horizon.');
- const rec=basis.recommendation;
+ const rec=options.requireRecommendation===false?null:basis.recommendation;
  if(options.requireRecommendation!==false){
   if(!rec)add('recommendation_missing','The assigned officer must record a current recommendation.');
   else if(rec.assessmentId!==assessment?.id||rec.inputVersion!==context.inputVersion)add('recommendation_stale','The recommendation does not match the current assessment.');

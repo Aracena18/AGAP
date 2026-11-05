@@ -1,9 +1,12 @@
 import { z } from 'zod';
+import { ModelReviewInput } from './model-review.js';
 import { Id, Version, Text, Instant } from './common.js';
 
 export const PriorityReviewQueueQuery = z.strictObject({ cursor: z.string().max(1000).optional(), limit: z.coerce.number().int().min(1).max(50).default(20), route: z.enum(['all','escalated_review','needs_clarification','awaiting_concern_check','ready_for_approval','preparation','unavailable']).default('all') });
 export const PrioritySourceSpan = z.strictObject({ sourceId: Id, sourceVersion: Version, textVersionId: Id.nullable(), page: z.number().int().min(1).max(20), start: z.number().int().min(0).max(100000), end: z.number().int().min(1).max(100000) }).refine(s => s.end > s.start && s.end - s.start <= 2000, 'Choose an exact excerpt of at most 2,000 characters.');
-export const PrioritySourceReview = z.strictObject({ question: Text, sources: z.array(PrioritySourceSpan).min(1).max(12) });
+export const PrioritySourceReview = z.strictObject({ question: ModelReviewInput.shape.question, sources: z.array(PrioritySourceSpan).min(1).max(12) }).refine(input=>new Set(input.sources.map(s=>JSON.stringify(s))).size===input.sources.length,'Choose each exact source excerpt only once.');
+export const PriorityReviewRecover=z.strictObject({requestId:Id,reason:Text});
+export const PriorityPendingReview=z.strictObject({id:Id,createdAt:Instant,interrupted:z.boolean()});
 export const PriorityRuleConcern = z.strictObject({ assessmentId: Id, offerId: Id, checkId: Text });
 export const PriorityConcernCheck = z.strictObject({ concernId: Id, action: z.enum(['confirm','correct','dismiss']), material: z.boolean(), text: Text, reason: Text });
 export const PriorityEscalationAssign = z.strictObject({ concernIds: z.array(Id).min(1).max(50), reviewerId: Id.nullable(), reason: Text });
@@ -15,13 +18,13 @@ export const PriorityConcern = z.strictObject({ id: Id, requestId: Id.nullable()
 export const PriorityEscalation = z.strictObject({ id: Id, concernIds: z.array(Id), reviewerId: Id.nullable(), assignedBy: Id, assignedAt: Instant, reason: Text, state: z.enum(['open','resolved','needs_clarification','refer_exception']), basisHash: z.string(), stale: z.boolean(), dispositionBy: Id.nullable(), dispositionAt: Instant.nullable(), dispositionReason: z.string().max(2000) });
 export const PriorityNotice = z.strictObject({ id: Id, applicationId: Id, escalationId: Id, createdAt: Instant, acknowledgedAt: Instant.nullable(), version: Version, destination: Text, current: z.boolean() });
 export const PriorityReviewReceipt = z.strictObject({ id: Id, version: Version, status: z.enum(['saved','running','completed','failed']), message: Text });
-export const PriorityReviewSummary = z.strictObject({ applicationId: Id, memberName: Text, applicationStatus: Text, applicationVersion: Version, inputVersion: Version, version: Version, assignedOfficerId: Id.nullable(), queueEnteredAt: Instant, queueEntryBasis: z.enum(['first_submission','recorded_received_date']), asOf: Instant, readiness: PriorityReadiness, concerns: z.array(PriorityConcern), escalations: z.array(PriorityEscalation), canPrepare: z.boolean(), canDisposition: z.boolean() });
-export const PriorityQueueRow = PriorityReviewSummary.omit({ concerns: true, escalations: true, canPrepare: true, canDisposition: true }).extend({ attentionGroup: z.enum(['substantiated_material','other']), positionReason: Text });
+export const PriorityReviewSummary = z.strictObject({ applicationId: Id, memberName: Text, applicationStatus: Text, applicationVersion: Version, inputVersion: Version, version: Version, assignedOfficerId: Id.nullable(), queueEnteredAt: Instant, queueEntryBasis: z.enum(['first_submission','recorded_received_date']), asOf: Instant, readiness: PriorityReadiness, pendingReviews:z.array(PriorityPendingReview).optional(),concerns: z.array(PriorityConcern), escalations: z.array(PriorityEscalation), canPrepare: z.boolean(), canDisposition: z.boolean() });
+export const PriorityQueueRow = PriorityReviewSummary.omit({ pendingReviews:true,concerns: true, escalations: true, canPrepare: true, canDisposition: true }).extend({ attentionGroup: z.enum(['substantiated_material','other']), positionReason: Text });
 export const PriorityReviewPage = z.strictObject({ items: z.array(PriorityQueueRow), nextCursor: z.string().max(1000).nullable(), asOf: Instant });
 export const PriorityReviewers = z.strictObject({ items: z.array(z.strictObject({ id: Id, displayName: Text })) });
 export const PriorityReviewNotices = z.strictObject({ items: z.array(PriorityNotice) });
 export const PriorityReviewHistory = z.strictObject({ events: z.array(z.strictObject({ id: Id, version: Version, type: Text, actorId: Id, at: Instant, reason: z.string().max(2000) })) });
-export const priorityReviewSchemas = { PriorityReviewQueueQuery, PrioritySourceReview, PriorityRuleConcern, PriorityConcernCheck, PriorityEscalationAssign, PriorityEscalationDisposition, PriorityNoticeAck, PriorityReviewReceipt, PriorityReviewSummary, PriorityReviewPage, PriorityReviewers, PriorityReviewNotices, PriorityReviewHistory };
+export const priorityReviewSchemas = { PriorityReviewRecover, PriorityReviewQueueQuery, PrioritySourceReview, PriorityRuleConcern, PriorityConcernCheck, PriorityEscalationAssign, PriorityEscalationDisposition, PriorityNoticeAck, PriorityReviewReceipt, PriorityReviewSummary, PriorityReviewPage, PriorityReviewers, PriorityReviewNotices, PriorityReviewHistory };
 export type SourceSpan = z.infer<typeof PrioritySourceSpan>;
 export type ReviewReadiness = z.infer<typeof PriorityReadiness>;
 export type ReviewSummary = z.infer<typeof PriorityReviewSummary>;

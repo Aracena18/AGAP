@@ -1,6 +1,6 @@
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 /graft/
-node_modules/
+node_modules
 dist/
 dist-api/
 backups/
@@ -38,3 +38,5 @@ graphify-out/
 /03-decisions-servicing.md
 
 dist-worker/
+
+__pycache__/

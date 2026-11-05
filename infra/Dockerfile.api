@@ -12,6 +12,7 @@ COPY --from=build --chown=node:node /app/node_modules ./node_modules
 COPY --from=build --chown=node:node /app/dist-api ./dist-api
 COPY --from=build --chown=node:node /app/packages/contracts/openapi.json ./packages/contracts/openapi.json
 COPY --from=build --chown=node:node /app/models/qwen/model_manifest.json ./models/qwen/model_manifest.json
+COPY --from=build --chown=node:node /app/models/qwen/experiment_f ./models/qwen/experiment_f
 COPY --from=build --chown=node:node /app/package.json ./package.json
 USER node
 EXPOSE 4100

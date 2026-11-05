@@ -2,6 +2,12 @@ import { z } from 'zod';
 import { RecordMode, VerificationSchema, CONTRACT_VERSION, Id, MoneyAmount, SignedMoney, PositiveMoneyAmount, CalendarDay, Instant, Version, Text, Currency, Role, FactValueSchema, PolicyCheckSchema, OfferSchema, SourceReferenceSchema, ModelArtifactSchema } from './common.js';
 export * from './common.js';
 import { workflowSchemas } from './workflow.js';
+import { modelReviewSchemas } from './model-review.js';
+import { priorityReviewSchemas } from './priority-review.js';
+import { lifecycleSchemas } from './lifecycle.js';
+export * from './model-review.js';
+export * from './priority-review.js';
+export * from './lifecycle.js';
 export * from './workflow.js';
 
 export const ApiErrorSchema = z.strictObject({
@@ -9,7 +15,7 @@ export const ApiErrorSchema = z.strictObject({
 });
 export const SessionSchema = z.strictObject({
   user: z.strictObject({ id: Id, displayName: z.string(), organizationId: Id, branchIds: z.array(Id), branches: z.array(z.strictObject({id:Id,name:z.string()})), roles: z.array(Role) }),
-  csrfToken: z.string(), expiresAt: Instant, privacyNoticeVersion: z.string(), contractVersion: z.literal(CONTRACT_VERSION), recordMode:RecordMode.optional(),
+  csrfToken: z.string(), expiresAt: Instant, privacyNoticeVersion: z.string(), contractVersion: z.literal(CONTRACT_VERSION), recordMode:RecordMode.optional(),fictionalPilot:z.boolean().optional(),
 });
 export const StaffSchema = z.strictObject({ id: Id, displayName: z.string(), branchIds: z.array(Id), roles: z.array(Role), active: z.boolean(), version: Version });
 export const StaffPageSchema = z.strictObject({ items: z.array(StaffSchema), nextCursor: Id.nullable() });
@@ -56,6 +62,7 @@ export const DecisionCreateSchema = z.strictObject({
   rationale: Text, departureReason: z.string().max(2000), exceptions: z.array(z.strictObject({ policyId: z.string(), reason: Text })),
   reviewDate: CalendarDay, explanationReviewed: z.literal(true),
 });
+export const PilotDecisionPreviewSchema=DecisionCreateSchema.omit({explanationReviewed:true});
 export const DecisionSchema = z.strictObject({ id: Id, applicationId: Id, inputVersion: Version, outcome: z.enum(['approve', 'decline', 'return']), recordedAt: Instant, reviewerId: Id, snapshotHash: z.string().regex(/^[a-f0-9]{64}$/) });
 export const AcceptanceCreateSchema = z.strictObject({ decisionId: Id, documentVersionId: Id, acceptedOn: CalendarDay, acknowledgment: Text });
 export const FinancialCommandCreateSchema = z.strictObject({
@@ -161,13 +168,13 @@ export const HealthReviewCreateSchema = z.strictObject({
 });
 export const HealthReviewSchema = HealthReviewCreateSchema.extend({ id: Id, recordedBy: Id, recordedAt: Instant });
 export const CommandReceiptSchema = z.strictObject({ id: Id, version: Version });
-export const CapabilitiesSchema = z.strictObject({ contractVersion: z.literal(CONTRACT_VERSION), recordMode:RecordMode.optional(), modules: z.array(z.strictObject({ name: z.string(), owner: z.string(), state: z.enum(['available', 'contract_only']) })) });
+export const CapabilitiesSchema = z.strictObject({ contractVersion: z.literal(CONTRACT_VERSION), recordMode:RecordMode.optional(),fictionalPilot:z.boolean().optional(), modules: z.array(z.strictObject({ name: z.string(), owner: z.string(), state: z.enum(['available', 'contract_only']) })) });
 export const EventEnvelopeSchema = z.strictObject({ id: Id, type: z.string(), schemaVersion: z.literal(1), organizationId: Id, aggregateId: Id, aggregateVersion: Version, occurredAt: Instant, correlationId: z.string(), payload: z.record(z.string(), z.unknown()) });
 
 // Member principals and projections deliberately contain no staff authority.
 export const MemberSessionSchema = z.strictObject({
   principal: z.strictObject({ kind: z.literal('member'), memberId: Id, displayName: Text }),
-  csrfToken: z.string(), expiresAt: Instant, privacyNoticeVersion: Text, contractVersion: z.literal(CONTRACT_VERSION), recordMode:RecordMode.optional(),
+  csrfToken: z.string(), expiresAt: Instant, privacyNoticeVersion: Text, contractVersion: z.literal(CONTRACT_VERSION), recordMode:RecordMode.optional(),fictionalPilot:z.boolean().optional(),
 });
 export const MemberProfileSchema = MemberSchema.pick({id:true,fullName:true,phone:true,externalReference:true});
 export const MemberApplicationCreateSchema = ApplicationCreateSchema.omit({memberId:true}).extend({noticeVersion:Text,noticeAcknowledged:z.literal(true)});
@@ -228,7 +235,7 @@ export const MemberSupportHistoryQuerySchema=z.strictObject({cursor:Id.optional(
 export const schemas = {
   SupportAssignment:SupportAssignmentSchema,SupportResponse:SupportResponseSchema,SupportPage:SupportPageSchema,SupportDetail:SupportDetailSchema,SupportSummary:SupportSummarySchema,SupportAction:SupportActionSchema,SupportActionPage:SupportActionPageSchema,SupportHistory:SupportHistorySchema,
   ReconciliationCreate:ReconciliationCreateSchema,ReconciliationRun:ReconciliationRunSchema,ReconciliationPage:ReconciliationPageSchema,
-  ...workflowSchemas,
+  ...workflowSchemas,...modelReviewSchemas,...priorityReviewSchemas,...lifecycleSchemas,PilotDecisionPreview:PilotDecisionPreviewSchema,
   MemberSession:MemberSessionSchema,MemberProfile:MemberProfileSchema,MemberApplicationCreate:MemberApplicationCreateSchema,MemberApplication:MemberApplicationSchema,MemberApplicationPage:MemberApplicationPageSchema,MemberSubmit:MemberSubmitSchema,
   ReminderPreferenceUpdate:ReminderPreferenceUpdateSchema,ReminderPreferences:ReminderPreferencesSchema,ModelArtifact:ModelArtifactSchema,AiDraft:AiDraftSchema,DraftConfirmation:DraftConfirmationSchema.or(workflowSchemas.WorkflowDraftReview),IrregularExpense:IrregularExpenseSchema,
   MemberSource:MemberSourceSchema,MemberEvidenceView:MemberEvidenceViewSchema,MemberOptionsView:MemberOptionsViewSchema,MemberDecisionView:MemberDecisionViewSchema,MemberLoansView:MemberLoansViewSchema,MemberSupportView:MemberSupportViewSchema,MemberSupportCreate:MemberSupportCreateSchema,MemberSupport:MemberSupportSchema,MemberAcceptance:MemberAcceptanceSchema,MemberUpload:MemberUploadSchema,

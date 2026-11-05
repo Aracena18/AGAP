@@ -13,7 +13,7 @@ import { CONTRACT_VERSION } from '../../../packages/contracts/src/schemas.js';
 import { createPool, PostgresUnitOfWork } from './platform/database.js';
 import { ApiError } from './platform/errors.js';
 import { expectedVersion } from './platform/commands.js';
-import { assertLocalPresentation, type Config } from './platform/config.js';
+import { assertLocalPresentation, assertFictionalPilot, type Config } from './platform/config.js';
 import { IdentityService, cookieValue } from './modules/identity/identity.service.js';
 import { MembersService } from './modules/members/members.service.js';
 import { ApplicationsService } from './modules/applications/applications.service.js';
@@ -32,6 +32,10 @@ import { ReconciliationController,RECONCILIATIONS } from './modules/accounting/r
 import { MonitoringService } from './modules/monitoring/monitoring.service.js';
 import { MonitoringController,SupportFollowUpController,MONITORING } from './modules/monitoring/monitoring.controller.js';
 import { unavailableMemberDomains } from './modules/member-portal/member-portal.service.js';
+import { configurePilot } from './modules/pilot/configure.js';
+import { PilotController, PILOT } from './modules/pilot/pilot.controller.js';
+import { configureReviews, type ReviewService } from './modules/reviews/reviews.service.js';
+import { ReviewsController, REVIEWS } from './modules/reviews/reviews.controller.js';
 import type { MemberDomainPorts } from '../../../packages/contracts/src/ports.js';
 
 interface StaffRequest extends Request,MemberRequest { staff?: Awaited<ReturnType<IdentityService['authenticate']>> }
@@ -64,7 +68,7 @@ class PlatformController {
   @Get('health') async health() { await Promise.all([this.services.database.query('SELECT 1'),this.services.identityDatabase.query('SELECT 1')]); return {status:'ok',contractVersion:CONTRACT_VERSION}; }
   @Get('openapi.json') async openapi() { return JSON.parse(await readFile('packages/contracts/openapi.json','utf8')) as unknown; }
   @Get('capabilities') capabilities() {
-    return {contractVersion:CONTRACT_VERSION,modules:[{name:'platform',owner:'Robert',state:'available'},{name:'identity',owner:'Robert',state:'available'},{name:'members',owner:'Robert',state:'available'},{name:'applications',owner:'Robert',state:'available'},{name:'member_portal',owner:'Robert',state:'available'},{name:'evidence',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'credit',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'decisions',owner:'Benedict',state:'contract_only'},{name:'servicing',owner:'Benedict',state:'contract_only'},{name:'accounting',owner:'Earl',state:'contract_only'},{name:'monitoring',owner:'Earl',state:'contract_only'}]};
+    return {contractVersion:CONTRACT_VERSION,modules:[{name:'platform',owner:'Robert',state:'available'},{name:'identity',owner:'Robert',state:'available'},{name:'members',owner:'Robert',state:'available'},{name:'applications',owner:'Robert',state:'available'},{name:'member_portal',owner:'Robert',state:'available'},{name:'evidence',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'credit',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'decisions',owner:'Benedict',state:this.services.config.FICTIONAL_PILOT_ENABLED?'available':'contract_only'},{name:'servicing',owner:'Benedict',state:this.services.config.FICTIONAL_PILOT_ENABLED?'available':'contract_only'},{name:'accounting',owner:'Earl',state:this.services.config.FICTIONAL_PILOT_ENABLED?'available':'contract_only'},{name:'monitoring',owner:'Earl',state:'available'},{name:'priority_review',owner:'Aaron',state:this.services.config.FICTIONAL_PILOT_ENABLED?'available':'contract_only'}]};
   }
   @Get('auth/login') async login(@Req() request:StaffRequest,@Res() response: Response) {
     await limitLogin(this.services.identityDatabase,this.services.config.SESSION_SECRET,request.socket.remoteAddress??'unknown');
@@ -87,7 +91,7 @@ class PlatformController {
   }
   @Get('session') session(@Req() request: StaffRequest) {
     const current = actor(request);
-    return {user:{id:current.userId,displayName:request.staff!.displayName,organizationId:current.organizationId,branchIds:current.branchIds,branches:request.staff!.branches,roles:current.roles},csrfToken:request.staff!.csrfToken,expiresAt:request.staff!.expiresAt,privacyNoticeVersion:this.services.config.PRIVACY_NOTICE_VERSION,contractVersion:CONTRACT_VERSION,recordMode:this.services.config.EVIDENCE_RECORD_MODE};
+    return {user:{id:current.userId,displayName:request.staff!.displayName,organizationId:current.organizationId,branchIds:current.branchIds,branches:request.staff!.branches,roles:current.roles},csrfToken:request.staff!.csrfToken,expiresAt:request.staff!.expiresAt,privacyNoticeVersion:this.services.config.PRIVACY_NOTICE_VERSION,contractVersion:CONTRACT_VERSION,recordMode:this.services.config.EVIDENCE_RECORD_MODE,...(this.services.config.FICTIONAL_PILOT_ENABLED?{fictionalPilot:true}:{})};
   }
   @Get('members') listMembers(@Req() request: StaffRequest,@Query() query: unknown) { return this.services.members.list(actor(request),query); }
   @Get('staff') listStaff(@Req() request: StaffRequest,@Query() query: unknown) { return this.services.staff.list(actor(request),query); }
@@ -103,7 +107,7 @@ class PlatformController {
 }
 
 export async function createApp(config: Config,memberDomains?:MemberDomainPorts) {
-  assertLocalPresentation(config);
+  assertLocalPresentation(config);assertFictionalPilot(config);
   if(config.EVIDENCE_RECORD_MODE==='real'){if(config.NODE_ENV!=='production')throw new Error('Real records require production and institutional release.');await requireRelease(process.env);}
   const database = createPool(config.DATABASE_URL);
   const identityDatabase = createPool(config.IDENTITY_DATABASE_URL);
@@ -111,20 +115,23 @@ export async function createApp(config: Config,memberDomains?:MemberDomainPorts)
     for (const pool of [database,identityDatabase]) {
       const result = await pool.query<{rolsuper:boolean;rolbypassrls:boolean}>("SELECT rolsuper,rolbypassrls FROM pg_roles WHERE rolname=current_user");
       if (result.rows[0].rolsuper || result.rows[0].rolbypassrls) throw new Error('API database credentials must not be superuser or BYPASSRLS roles.');
-      const owned=await pool.query("SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('platform','identity','members','applications','portal','evidence','credit','accounting','monitoring') AND c.relkind IN ('r','p') AND pg_has_role(current_user,c.relowner,'MEMBER') LIMIT 1");
+      const owned=await pool.query("SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('platform','identity','members','applications','portal','evidence','credit','accounting','monitoring','decisions','servicing','reviews') AND c.relkind IN ('r','p') AND pg_has_role(current_user,c.relowner,'MEMBER') LIMIT 1");
       if(owned.rowCount)throw new Error('API database credentials must not own application tables or inherit their owner role.');
     }
-    const uow = new PostgresUnitOfWork(database);
-    const reconciliations = new ReconciliationService(new PostgresUnitOfWork(database,{isolation:'repeatable read'}),new LoanReads(uow));
-    const workflow=config.EVIDENCE_WORKFLOW_ENABLED?await configureWorkflow(config,uow,new PostgresMemberUnitOfWork(database)):null;
+    const uow = new PostgresUnitOfWork(database,{materialGuard:config.FICTIONAL_PILOT_ENABLED});
+    const memberUow=new PostgresMemberUnitOfWork(database,{materialGuard:config.FICTIONAL_PILOT_ENABLED});
+    const reconciliations = new ReconciliationService(new PostgresUnitOfWork(database,{isolation:'repeatable read',materialGuard:config.FICTIONAL_PILOT_ENABLED}),new LoanReads(uow));
+    const workflow=config.EVIDENCE_WORKFLOW_ENABLED?await configureWorkflow(config,uow,memberUow):null;
     const members = new MembersService(uow,config.PRIVACY_NOTICE_VERSION);
     const identity = new IdentityService(identityDatabase,config);
     const services: PlatformServices = {config,database,identityDatabase,identity,staff:new StaffService(new PostgresUnitOfWork(identityDatabase)),members,applications:new ApplicationsService(uow,members),async onModuleDestroy(){await Promise.all([database.end(),identityDatabase.end()]);}};
-    const memberUow=new PostgresMemberUnitOfWork(database);
+    let reviews:ReviewService|null=null;
+    const pilot=config.FICTIONAL_PILOT_ENABLED?configurePilot({uow,memberUow,workflow:workflow!.workflow,readiness:(tx,id,options)=>reviews!.readyGuard(tx,id,options)}):null;
+    if(pilot)reviews=configureReviews({uow,workflow:workflow!.workflow,adapter:workflow!.ai?.reviewAdapter()??null,basis:pilot.basis});
     const loanReads=new LoanReads(uow),monitoring=new MonitoringService(uow,loanReads);
-    const domains:MemberDomainPorts=memberDomains??{...unavailableMemberDomains,loans:tx=>loanReads.memberLoans(tx),support:tx=>monitoring.memberHistory(tx),supportPage:(tx,query)=>monitoring.memberHistoryPage(tx,query),requestSupport:(tx,data,key)=>monitoring.submit(tx,data,key)};
+    const domains:MemberDomainPorts=memberDomains??{...unavailableMemberDomains,loans:tx=>loanReads.memberLoans(tx),support:tx=>monitoring.memberHistory(tx),supportPage:(tx,query)=>monitoring.memberHistoryPage(tx,query),requestSupport:(tx,data,key)=>monitoring.submit(tx,data,key),...pilot?.memberDomains};
     const portal=new MemberPortalService(memberUow,new MemberApplicationsService(memberUow,config.PRIVACY_NOTICE_VERSION),config.PRIVACY_NOTICE_VERSION,domains);
-    @Module({controllers:[PlatformController,MemberController,WorkflowController,ReconciliationController,MonitoringController,SupportFollowUpController],providers:[{provide:MONITORING,useValue:monitoring},{provide:RECONCILIATIONS,useValue:reconciliations},{provide:WORKFLOW,useValue:workflow},{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal,workflow}}]})
+    @Module({controllers:[PlatformController,MemberController,WorkflowController,PilotController,ReviewsController,ReconciliationController,MonitoringController,SupportFollowUpController],providers:[{provide:PILOT,useValue:pilot?.service??null},{provide:REVIEWS,useValue:reviews},{provide:MONITORING,useValue:monitoring},{provide:RECONCILIATIONS,useValue:reconciliations},{provide:WORKFLOW,useValue:workflow},{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal,workflow}}]})
     class AppModule {}
     const app = await NestFactory.create<NestExpressApplication>(AppModule,{logger:false,bodyParser:false,abortOnError:false});
     app.set('trust proxy',false);

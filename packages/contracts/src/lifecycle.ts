@@ -2,6 +2,9 @@ import { z } from 'zod';
 import { CalendarDay, Currency, Id, Instant, MoneyAmount, OfferSchema, PositiveMoneyAmount, Text, Version } from './common.js';
 import { WorkflowAssessment } from './workflow.js';
 
+export const PilotMoneyApplicationQuery=z.strictObject({cursor:Id.optional(),limit:z.coerce.number().int().min(1).max(100).default(25)});
+export const PilotMoneyApplication=z.strictObject({applicationId:Id,applicationVersion:Version,memberName:Text,status:Text,loanId:Id.nullable(),releaseBasisAvailable:z.boolean(),terms:OfferSchema.nullable(),asOfDate:CalendarDay});
+export const PilotMoneyApplicationPage=z.strictObject({items:z.array(PilotMoneyApplication).max(100),nextCursor:Id.nullable()});
 const Hash=z.string().regex(/^[a-f0-9]{64}$/);
 export const PilotDecisionRecord=z.strictObject({previewId:Id,explanationReviewed:z.literal(true)});
 export const PilotConflictDeclaration=z.strictObject({status:z.enum(['clear','restricted','unavailable']),reason:Text});
@@ -37,14 +40,16 @@ export const PilotLoanWorkspace=z.strictObject({loanId:Id,organizationId:Id,bran
 export const PilotPreview=z.strictObject({id:Id,decisionId:Id,applicationVersion:Version,basisHash:Hash,expiresAt:Instant,explanation:Text,terms:z.string().nullable()});
 export const PilotHistory=z.strictObject({items:z.array(z.strictObject({id:Id,recordedAt:Instant,outcome:z.enum(['approve','decline','return']),accepted:z.boolean()})),nextCursor:Id.nullable()});
 export const PilotSavedBrief=z.strictObject({id:Id,applicationId:Id,inputVersion:Version,recordedAt:Instant,outcome:z.enum(['approve','decline','return']),explanation:Text,snapshotHash:Hash,
- assessment:WorkflowAssessment.nullable(),offer:OfferSchema.nullable(),document:z.strictObject({id:Id,sha256:Hash}).nullable()});
-export const lifecycleSchemas={PilotDecisionRecord,PilotConflictDeclaration,PilotSimulationObservation,PilotAction,PilotOrigination,PilotWorkspace,PilotMemberDecision,PilotPostedResult,PilotMoneyCommand,PilotLoanWorkspace,PilotPreview,PilotHistory,PilotSavedBrief};
+ assessment:WorkflowAssessment.nullable(),offer:OfferSchema.nullable(),document:z.strictObject({id:Id,sha256:Hash,text:z.string().max(65536)}).nullable()});
+export const lifecycleSchemas={PilotMoneyApplicationQuery,PilotMoneyApplication,PilotMoneyApplicationPage,PilotDecisionRecord,PilotConflictDeclaration,PilotSimulationObservation,PilotAction,PilotOrigination,PilotWorkspace,PilotMemberDecision,PilotPostedResult,PilotMoneyCommand,PilotLoanWorkspace,PilotPreview,PilotHistory,PilotSavedBrief};
 /** Central registry consumes these only with lifecycleSchemas registered. */
 export const lifecycleOperations=[
+ {id:'getPilotMoneyApplications',method:'GET',path:'/pilot/financial-applications',response:'PilotMoneyApplicationPage',querySchema:'PilotMoneyApplicationQuery',owner:'Benedict',implemented:true},
+ {id:'getPilotMoneyApplication',method:'GET',path:'/applications/{id}/pilot-money',response:'PilotMoneyApplication',owner:'Benedict',implemented:true},
  {id:'getPilotWorkspace',method:'GET',path:'/applications/{id}/pilot-workspace',response:'PilotWorkspace',owner:'Benedict',implemented:true},
  {id:'declarePilotConflict',method:'POST',path:'/applications/{id}/pilot-conflicts',request:'PilotConflictDeclaration',response:'CommandReceipt',owner:'Benedict',implemented:true,versioned:true,idempotent:true},
  {id:'recommendPilotOffer',method:'POST',path:'/applications/{id}/pilot-recommendations',request:'RecommendationCreate',response:'CommandReceipt',owner:'Benedict',implemented:true,versioned:true,idempotent:true},
- {id:'previewPilotDecision',method:'POST',path:'/applications/{id}/pilot-decision-previews',request:'DecisionCreate',response:'PilotPreview',owner:'Benedict',implemented:true,versioned:true,idempotent:true},
+ {id:'previewPilotDecision',method:'POST',path:'/applications/{id}/pilot-decision-previews',request:'PilotDecisionPreview',response:'PilotPreview',owner:'Benedict',implemented:true,versioned:true,idempotent:true},
  {id:'recordPilotDecision',method:'POST',path:'/applications/{id}/pilot-decisions',request:'PilotDecisionRecord',response:'Decision',owner:'Benedict',implemented:true,versioned:true,idempotent:true},
  {id:'reopenPilotReview',method:'POST',path:'/applications/{id}/pilot-reopen',request:'PilotAction',response:'CommandReceipt',owner:'Benedict',implemented:true,versioned:true,idempotent:true},
  {id:'getPilotDecisionHistory',method:'GET',path:'/applications/{id}/pilot-decisions',response:'PilotHistory',owner:'Benedict',implemented:true},

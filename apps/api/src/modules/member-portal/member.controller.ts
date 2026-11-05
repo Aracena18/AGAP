@@ -32,7 +32,7 @@ export class MemberController {
     await this.services.identity.logoutMember(cookieValue(request.headers.cookie,'agap_member_session',this.services.config.LOCAL_PRESENTATION_MODE)!);
     response.clearCookie('agap_member_session',{path:'/api/v1/member',httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax'});response.status(200).json({signedOut:true});
   }
-  @Get('session') async session(@Req() request:MemberRequest){const profile=await this.services.portal.applications.profile(actor(request));return {principal:{kind:'member',memberId:profile.id,displayName:profile.fullName},csrfToken:request.member!.csrfToken,expiresAt:request.member!.expiresAt,privacyNoticeVersion:this.services.config.PRIVACY_NOTICE_VERSION,contractVersion:CONTRACT_VERSION,recordMode:this.services.config.EVIDENCE_RECORD_MODE};}
+  @Get('session') async session(@Req() request:MemberRequest){const profile=await this.services.portal.applications.profile(actor(request));return {principal:{kind:'member',memberId:profile.id,displayName:profile.fullName},csrfToken:request.member!.csrfToken,expiresAt:request.member!.expiresAt,privacyNoticeVersion:this.services.config.PRIVACY_NOTICE_VERSION,contractVersion:CONTRACT_VERSION,recordMode:this.services.config.EVIDENCE_RECORD_MODE,...(this.services.config.FICTIONAL_PILOT_ENABLED?{fictionalPilot:true}:{})};}
   @Get('me') profile(@Req() r:MemberRequest){return this.services.portal.applications.profile(actor(r));}
   @Get('applications') list(@Req() r:MemberRequest,@Query() q:unknown){return this.services.portal.applications.list(actor(r),q);}
   @Get('applications/:id') get(@Req() r:MemberRequest,@Param('id') id:string){return this.services.portal.applications.get(actor(r),id);}

@@ -1,4 +1,4 @@
-import { CONTRACT_VERSION } from '../../../packages/contracts/src/schemas.js';
+import { EVAL_EXTRACTION_CONTRACT_VERSION as CONTRACT_VERSION } from './model.js';
 import { sha256, stableId, validateCorpus, type Corpus, type CorpusCase, type Finding, type Source } from './model.js';
 
 /** Public development recipes only. Expected amounts below are authored constants, not finance-engine output. */

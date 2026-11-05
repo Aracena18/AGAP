@@ -4,9 +4,10 @@ import type { DocumentStorePort } from '../../../../../packages/contracts/src/po
 import { WorkflowDraft } from '../../../../../packages/contracts/src/workflow.js';
 import type { ExtractionAdapter } from '../ai/qwen-adapter.js';
 import type { Scanner, TextExtractor } from './document-processing.js';
+import { MATERIAL_LOCK_SQL, materialLockKey } from '../../platform/material-guard.js';
 export class EvidenceWorker {
   constructor(private readonly pool:Pool,private readonly org:string,private readonly store:DocumentStorePort,private readonly scanner:Scanner,private readonly extractor:TextExtractor,private readonly ai:ExtractionAdapter|null){}
-  private async tx<T>(work:(client:PoolClient)=>Promise<T>){const c=await this.pool.connect();try{await c.query('BEGIN');await c.query("SELECT set_config('agap.organization_id',$1,true),set_config('statement_timeout','10000',true)",[this.org]);await c.query("SELECT set_config('agap.branch_ids',evidence.worker_branches()::text,true)");const r=await work(c);await c.query('COMMIT');return r;}catch(e){await c.query('ROLLBACK');throw e;}finally{c.release();}}
+  private async tx<T>(work:(client:PoolClient)=>Promise<T>){const c=await this.pool.connect();try{await c.query('BEGIN');await c.query("SELECT set_config('agap.organization_id',$1,true),set_config('statement_timeout','10000',true)",[this.org]);await c.query("SELECT set_config('agap.branch_ids',evidence.worker_branches()::text,true)");await c.query(MATERIAL_LOCK_SQL,[materialLockKey(this.org)]);const r=await work(c);await c.query('COMMIT');return r;}catch(e){await c.query('ROLLBACK');throw e;}finally{c.release();}}
   async tick(){
     const token=randomUUID();
     const job=await this.tx(async c=>{
