@@ -40,6 +40,13 @@ import { LendingDecisionProducers } from './modules/decisions/lending-producers.
 import { WorkflowDecisionProducer } from './modules/evidence/decision-basis.producer.js';
 import { ORIGINATION, OriginationController } from './modules/servicing/origination.controller.js';
 import { ServicingService } from './modules/servicing/servicing.service.js';
+import { SupportLoanPositionProducer } from './modules/servicing/support-position.producer.js';
+import { AccountingService } from './modules/accounting/accounting.service.js';
+import { MoneyService } from './modules/servicing/money.service.js';
+import { FinancialActions } from './modules/servicing/financial-actions.service.js';
+import { FictionalSettlementService } from './modules/servicing/fictional-settlement.service.js';
+import { LendingReads } from './modules/servicing/lending-reads.service.js';
+import { FINANCIAL, FinancialController, type FinancialServices } from './modules/servicing/financial.controller.js';
 import { LendingMoneyProducers } from './modules/servicing/lending-money.producers.js';
 import type { MemberDomainPorts } from '../../../packages/contracts/src/ports.js';
 
@@ -73,7 +80,7 @@ class PlatformController {
   @Get('health') async health() { await Promise.all([this.services.database.query('SELECT 1'),this.services.identityDatabase.query('SELECT 1')]); return {status:'ok',contractVersion:CONTRACT_VERSION}; }
   @Get('openapi.json') async openapi() { return JSON.parse(await readFile('packages/contracts/openapi.json','utf8')) as unknown; }
   @Get('capabilities') capabilities() {
-    return {contractVersion:CONTRACT_VERSION,modules:[{name:'platform',owner:'Robert',state:'available'},{name:'identity',owner:'Robert',state:'available'},{name:'members',owner:'Robert',state:'available'},{name:'applications',owner:'Robert',state:'available'},{name:'member_portal',owner:'Robert',state:'available'},{name:'evidence',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'credit',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'decisions',owner:'Benedict',state:'contract_only'},{name:'decisions.staff_review',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'decisions.member_acceptance',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'servicing.pending_origination',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'servicing',owner:'Benedict',state:'contract_only'},{name:'accounting',owner:'Earl',state:'contract_only'},{name:'monitoring',owner:'Earl',state:'contract_only'},{name:'servicing.member_loan_reads',owner:'Benedict',state:'available'},{name:'accounting.principal_reconciliation',owner:'Earl',state:'available'},{name:'monitoring.payment_help',owner:'Earl',state:'available'},{name:'monitoring.follow_ups',owner:'Earl',state:'available'}]};
+    return {contractVersion:CONTRACT_VERSION,modules:[{name:'platform',owner:'Robert',state:'available'},{name:'identity',owner:'Robert',state:'available'},{name:'members',owner:'Robert',state:'available'},{name:'applications',owner:'Robert',state:'available'},{name:'member_portal',owner:'Robert',state:'available'},{name:'evidence',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'credit',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'decisions',owner:'Benedict',state:'contract_only'},{name:'decisions.staff_review',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'decisions.member_acceptance',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'servicing.pending_origination',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'servicing.fictional_movements',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'servicing.scheduled_repayments',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'monitoring.support_position',owner:'Earl',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'servicing',owner:'Benedict',state:'contract_only'},{name:'accounting',owner:'Earl',state:'contract_only'},{name:'monitoring',owner:'Earl',state:'contract_only'},{name:'servicing.member_loan_reads',owner:'Benedict',state:'available'},{name:'accounting.principal_reconciliation',owner:'Earl',state:'available'},{name:'monitoring.payment_help',owner:'Earl',state:'available'},{name:'monitoring.follow_ups',owner:'Earl',state:'available'}]};
   }
   @Get('auth/login') async login(@Req() request:StaffRequest,@Res() response: Response) {
     await limitLogin(this.services.identityDatabase,this.services.config.SESSION_SECRET,request.socket.remoteAddress??'unknown');
@@ -127,18 +134,26 @@ export async function createApp(config: Config,memberDomains?:MemberDomainPorts)
     const guarded={lendingGuard:config.CONNECTED_LENDING_ENABLED};
     const uow = new PostgresUnitOfWork(database,guarded);
     const memberUow=new PostgresMemberUnitOfWork(database,guarded);
-    const reconciliations = new ReconciliationService(new PostgresUnitOfWork(database,{isolation:'repeatable read'}),new LoanReads(uow));
+
     const workflow=config.EVIDENCE_WORKFLOW_ENABLED?await configureWorkflow(config,uow,memberUow):null;
     const members = new MembersService(uow,config.PRIVACY_NOTICE_VERSION);
     const identity = new IdentityService(identityDatabase,config);
     const services: PlatformServices = {config,database,identityDatabase,identity,staff:new StaffService(new PostgresUnitOfWork(identityDatabase,guarded)),members,applications:new ApplicationsService(uow,members),async onModuleDestroy(){await Promise.all([database.end(),identityDatabase.end()]);}};
     const producers=config.CONNECTED_LENDING_ENABLED&&workflow?new LendingDecisionProducers(new WorkflowDecisionProducer(workflow.workflow),true):null;
     const decisionServices:DecisionServices|null=producers?{reads:new DecisionStaffReads(uow,producers),commands:new DecisionsService(uow,producers),reviews:new DecisionReviewService(uow,producers)}:null;
-    const origination=producers?new ServicingService(uow,new LendingMoneyProducers(producers,true)):null;
-    const loanReads=new LoanReads(uow),monitoring=new MonitoringService(uow,loanReads);
+    const moneyPorts=producers?new LendingMoneyProducers(producers,true):null;
+    const origination=moneyPorts?new ServicingService(uow,moneyPorts):null;
+    let financialServices:FinancialServices|null=null;
+    if(moneyPorts&&origination){
+      const money=new MoneyService(uow,moneyPorts,new AccountingService());
+      financialServices={actions:new FinancialActions(uow,moneyPorts,origination,money,new FictionalSettlementService(uow,moneyPorts,origination,money)),applications:new LendingReads(uow),loans:new LoanReads(uow,moneyPorts)};
+    }
+    const loanReads=new LoanReads(uow),monitoring=new MonitoringService(uow,loanReads,config.CONNECTED_LENDING_ENABLED?new SupportLoanPositionProducer():undefined);
+    const reportReads=new LoanReads(uow,undefined,undefined,undefined,undefined,moneyPorts?{policy:(tx,loan,component)=>moneyPorts.reportPolicy(tx,loan,component)}:undefined);
+    const reconciliations=new ReconciliationService(new PostgresUnitOfWork(database,{isolation:'repeatable read'}),reportReads);
     const domains:MemberDomainPorts=memberDomains??{...unavailableMemberDomains,...(decisionServices?decisionMemberPorts(decisionServices.commands):{}),loans:tx=>loanReads.memberLoans(tx),support:tx=>monitoring.memberHistory(tx),supportPage:(tx,query)=>monitoring.memberHistoryPage(tx,query),requestSupport:(tx,data,key)=>monitoring.submit(tx,data,key)};
     const portal=new MemberPortalService(memberUow,new MemberApplicationsService(memberUow,config.PRIVACY_NOTICE_VERSION),config.PRIVACY_NOTICE_VERSION,domains);
-    @Module({controllers:[OriginationController,DecisionsController,PlatformController,MemberController,WorkflowController,ReconciliationController,MonitoringController,SupportFollowUpController],providers:[{provide:ORIGINATION,useValue:origination},{provide:DECISIONS,useValue:decisionServices},{provide:MONITORING,useValue:monitoring},{provide:RECONCILIATIONS,useValue:reconciliations},{provide:WORKFLOW,useValue:workflow},{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal,workflow}}]})
+    @Module({controllers:[FinancialController,OriginationController,DecisionsController,PlatformController,MemberController,WorkflowController,ReconciliationController,MonitoringController,SupportFollowUpController],providers:[{provide:FINANCIAL,useValue:financialServices},{provide:ORIGINATION,useValue:origination},{provide:DECISIONS,useValue:decisionServices},{provide:MONITORING,useValue:monitoring},{provide:RECONCILIATIONS,useValue:reconciliations},{provide:WORKFLOW,useValue:workflow},{provide:PLATFORM,useValue:services},{provide:MEMBER_PLATFORM,useValue:{config,identity,identityDatabase,portal,workflow}}]})
     class AppModule {}
     const app = await NestFactory.create<NestExpressApplication>(AppModule,{logger:false,bodyParser:false,abortOnError:false});
     app.set('trust proxy',false);

@@ -6,6 +6,7 @@ import { ServicingRepository } from './servicing.repository.js';
 import { MoneyRepository } from './money.repository.js';
 import { LoanWorkspaceSchema } from './money-context.js';
 import { inspectMoney, insist } from './money-rules.js';
+import { permission } from './command-rules.js';
 import { businessDay } from './command-rules.js';
 import { unavailableMoneyPorts, type MoneyPorts } from './money.service.js';
 import type { PrincipalReconciliationInput } from '../accounting/reconciliation.js';
@@ -14,7 +15,7 @@ import { inspectCommand } from './command-rules.js';
 /** Safe presentation proposal; no staff snapshots or provider evidence escape. */
 export class LoanReads {
   constructor(private readonly uow: UnitOfWork, private readonly ports: MoneyPorts = unavailableMoneyPorts,
-    private readonly origins = new ServicingRepository(), private readonly money = new MoneyRepository(), private readonly now = () => new Date()) {}
+    private readonly origins = new ServicingRepository(), private readonly money = new MoneyRepository(), private readonly now = () => new Date(),private readonly reportPolicy?:{policy(tx:TransactionContext,loanId:string,componentVersion:string):Promise<import('./money-context.js').PrincipalPolicy>}) {}
   async memberLoans(tx: MemberTransactionContext) {
     const day = businessDay(this.now().toISOString());
     const row = await tx.query('SELECT servicing.member_loans($1::date) AS data', [day]);
@@ -40,7 +41,16 @@ export class LoanReads {
         const due = loan.offer.payments.filter(p => p.date <= day).reduce((n, p) => n + BigInt(p.amountCentavos), 0n) - repaid;
         const pending = commands.filter(c => !['confirmed', 'failed'].includes(c.state)).length;
         const paidCount = dated.filter(e => e.kind === 'repayment').length;
-        return LoanWorkspaceSchema.parse({ loanId: id, organizationId: loan.organizationId, branchId: loan.branchId, memberLabel: `Member identifier: ${loan.memberId}`, commands,
+        let canPrepareRelease=false,releasePreparationMessage='Only an authorized cashier can prepare the current accepted release.';
+        if(!release&&commands.length===0&&actor.roles.includes('cashier')){
+          try{
+            const op=await this.ports.operation(tx,loan.applicationId);
+            const methods=op.authority.status==='configured'?op.authority.grants.filter(g=>g.userId===actor.userId&&g.actions.includes('prepare')).flatMap(g=>g.methods):[];
+            canPrepareRelease=methods.some(method=>{try{permission(actor,{authority:op.authority},loan,'prepare',this.now().toISOString(),loan.offer.principalCentavos,method);return true;}catch{return false;}});
+            releasePreparationMessage=canPrepareRelease?'Prepare only the exact accepted principal; this does not release funds.':'Current scoped preparation authority is unavailable.';
+          }catch(error){releasePreparationMessage=error instanceof Error?error.message:'Release preparation is unavailable.';}
+        }
+        return LoanWorkspaceSchema.parse({ loanId: id, organizationId: loan.organizationId, branchId: loan.branchId, origination:{applicationId:loan.applicationId,principalCentavos:loan.offer.principalCentavos,currency:'PHP',payments:loan.offer.payments},canPrepareRelease,releasePreparationMessage,memberLabel: `Member identifier: ${loan.memberId}`, commands,
           message: release ? 'Balances reflect posted events. Pending movements do not reduce debt.' : 'No posted release exists for this date. A pending loan is not active.',
           nextPayment: release && loan.offer.payments[paidCount] ? loan.offer.payments[paidCount] : null,
           position: release && principal !== null ? { loanId: id, applicationId: loan.applicationId, memberLabel: `Member identifier: ${loan.memberId}`, state: principal === 0n ? 'settled' : 'active',
@@ -86,7 +96,7 @@ export class LoanReads {
       if (events.some(e => e.id === c.businessEventId) || c.payload.effectiveDate < scope.fromDate || c.payload.effectiveDate > scope.throughDate) continue;
       if (row.recorded_at === null) return { state: 'unavailable' as const, reason: 'Historical command recording times are unavailable for this cutoff.' };
       // Resolve the explicit reviewed mapping even for unposted legacy events.
-      const policy = await this.ports.policy(tx, c.loanId);
+      const policy = this.reportPolicy?await this.reportPolicy.policy(tx,c.loanId,c.componentRuleVersionId):await this.ports.policy(tx, c.loanId);
       events.push({ organizationId: c.organizationId, currency: 'PHP', id: c.businessEventId, loanId: c.loanId, kind: 'disbursement', effectiveDate: c.payload.effectiveDate,
         recordedAt: (row.recorded_at as Date).toISOString(), amountCentavos: c.amountCentavos, state: c.observations.some(o => o.input.state === 'confirmed') ? 'confirmed_unposted' : c.state,
         postingRuleVersionId: policy.releaseRuleId, receiptId: null, journalId: null });

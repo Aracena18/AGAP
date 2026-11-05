@@ -10,11 +10,11 @@ import { IdentityService } from '../src/modules/identity/identity.service.js';
 import { assertConnectedLending, loadConfig } from '../src/platform/config.js';
 import { prepareDatabase, resetFixtures, closePools, owner, identityPool, config } from './database.js';
 import { memberFixture } from './member-fixtures.js';
-import { connectedLendingFixture } from './connected-lending-fixture.js';
+import { connectedLedgerFixture, connectedLendingFixture } from './connected-lending-fixture.js';
 
 let app:INestApplication,base:string,directory:string,previous:string|undefined,f:Awaited<ReturnType<typeof connectedLendingFixture>>;
 beforeAll(async()=>{await prepareDatabase();previous=process.env.DOCUMENT_DIRECTORY;directory=await mkdtemp(join(tmpdir(),'agap-cl2-http-'));process.env.DOCUMENT_DIRECTORY=directory;app=await createApp({...config,EVIDENCE_WORKFLOW_ENABLED:true,CONNECTED_LENDING_ENABLED:true});await app.listen(0,'127.0.0.1');base=await app.getUrl();});
-beforeEach(async()=>{await resetFixtures();f=await connectedLendingFixture();});
+beforeEach(async()=>{await resetFixtures();f=await connectedLendingFixture({sameDayFirstPayment:true});});
 afterAll(async()=>{await app?.close();await closePools();if(previous===undefined)delete process.env.DOCUMENT_DIRECTORY;else process.env.DOCUMENT_DIRECTORY=previous;if(directory)await rm(directory,{recursive:true,force:true});});
 async function request(path:string,token=f.officer.token,body?:unknown,version?:number,key=randomUUID()){
   const headers:Record<string,string>={Cookie:`agap_session=${token}`,Origin:config.PUBLIC_ORIGIN};
@@ -79,6 +79,55 @@ describe('CL2 authenticated HTTP and actual owner services',()=>{
     expect((await owner.query('SELECT count(*) FROM servicing.originations')).rows[0].count).toBe('1');
     expect((await owner.query('SELECT count(*) FROM servicing.postings')).rows[0].count).toBe('0');
     expect((await owner.query('SELECT count(*) FROM accounting.journals')).rows[0].count).toBe('0');
+    const loan=pendingReceipt.id,loanPath=`/loans/${loan}`,loanWorkspace=await json(`${loanPath}/workspaces/2026-11-05`,f.cashier.token);
+    expect(loanWorkspace).toMatchObject({position:null,canPrepareRelease:true,origination:{principalCentavos:100000}});
+    const releaseBody={loanId:loan,amountCentavos:100000,currency:'PHP',effectiveDate:'2026-11-05',method:'cash',instrumentReference:'FICTIONAL-CL4-HTTP',reason:'Fictional exact accepted release.'};
+    const prepared=await json(`${loanPath}/release-preparations`,f.cashier.token,releaseBody);
+    const commandPath=`${loanPath}/commands/${prepared.id}`,reason={reason:'Fictional separate financial authorization.'};
+    expect((await request(`${commandPath}/authorizations`,f.cashier.token,reason,1)).status).toBe(403);
+    const authorized=await json(`${commandPath}/authorizations`,f.authorizer.token,reason,1);expect(authorized.version).toBe(2);
+    await json(`${commandPath}/submission-intents`,f.cashier.token,{reason:'Commit one fictional submission intent before settlement.'},2);
+    expect((await request(`${commandPath}/simulated-settlements`,f.cashier.token,{reason:'Forged browser evidence.',verified:true},3)).status).toBe(422);
+    expect((await owner.query('SELECT count(*) FROM servicing.fictional_movements')).rows[0].count).toBe('0');
+    const settlementKey=randomUUID(),settlementReason={reason:'Record the server-produced fictional settlement.'};
+    const settlement=await request(`${commandPath}/simulated-settlements`,f.cashier.token,settlementReason,3,settlementKey);expect(settlement.status).toBe(201);const observed=await settlement.json();expect(observed.version).toBe(4);
+    expect(await(await request(`${commandPath}/simulated-settlements`,f.cashier.token,settlementReason,3,settlementKey)).json()).toEqual(observed);
+    expect((await owner.query('SELECT count(*) FROM servicing.fictional_movements')).rows[0].count).toBe('1');
+    expect(await json(`${loanPath}/workspaces/2026-11-05`,f.cashier.token)).toMatchObject({position:null,commands:[{state:'confirmed_unposted'}]});
+    const closed=await request(`${commandPath}/finalizations`,f.authorizer.token,{reason:'Fictional posting before an open period is configured.'},4);expect(closed.status).toBe(409);
+    expect((await owner.query('SELECT count(*) FROM servicing.fictional_movement_observations')).rows[0].count).toBe('1');
+    expect((await owner.query('SELECT count(*) FROM accounting.journals')).rows[0].count).toBe('0');
+    await connectedLedgerFixture(f);
+    const pendingReport=await json('/reconciliations',f.auditor.token,{fromDate:'2026-11-01',throughDate:'2026-11-30'});
+    expect(pendingReport.report.status,JSON.stringify(pendingReport.report)).toBe('discrepancy');expect(pendingReport.report.events).toHaveLength(1);expect(pendingReport.report.events[0].findings).toContainEqual(expect.objectContaining({code:'confirmed_unposted'}));
+
+    const posted=await json(`${commandPath}/finalizations`,f.authorizer.token,{reason:'Post the exact fictional movement to the actual test ledger.'},4);
+    expect(posted).toMatchObject({kind:'disbursement',amountCentavos:100000,principalAfterCentavos:100000,receiptId:null});
+    expect((await owner.query('SELECT count(*) FROM accounting.journals')).rows[0].count).toBe('1');
+    expect((await owner.query('SELECT count(*) FROM servicing.postings')).rows[0].count).toBe('1');
+    expect((await owner.query('SELECT count(*) FROM servicing.action_notes')).rows[0].count).toBe('4');
+    expect(await json(`${loanPath}/workspaces/2026-11-05`,f.authorizer.token)).toMatchObject({position:{principalCentavos:100000,state:'active'},commands:[{state:'confirmed'}]});
+    expect(await(await memberRequest('/loans')).json()).toMatchObject({state:'available',data:[{position:{principalCentavos:100000}}]});
+    const repaymentBody={...releaseBody,amountCentavos:50000,effectiveDate:f.policy.offers[0].payments[0].date,instrumentReference:'FICTIONAL-CL5-HTTP',reason:'Exact first scheduled fictional repayment.'};
+    expect((await request(`${loanPath}/repayment-preparations`,f.cashier.token,{...repaymentBody,amountCentavos:49999})).status).toBe(409);
+    const repayment=await json(`${loanPath}/repayment-preparations`,f.cashier.token,repaymentBody),repayPath=`${loanPath}/commands/${repayment.id}`;
+    await json(`${repayPath}/authorizations`,f.authorizer.token,{reason:'Separate fictional repayment authorization.'},1);
+    await json(`${repayPath}/submission-intents`,f.cashier.token,{reason:'Original committed fictional repayment intent.'},2);
+    const received=await json(`${repayPath}/simulated-settlements`,f.cashier.token,{reason:'Server-produced fictional repayment evidence.'},3);
+    const repaid=await json(`${repayPath}/finalizations`,f.authorizer.token,{reason:'Atomic principal repayment and test ledger posting.'},received.version);
+    expect(repaid).toMatchObject({kind:'repayment',amountCentavos:50000,principalAfterCentavos:50000});expect(repaid.receiptId).toBeTruthy();
+    expect(await(await memberRequest('/loans')).json()).toMatchObject({state:'available',data:[{position:{principalCentavos:50000},receipts:[{id:repaid.receiptId,amountCentavos:50000}]}]});
+    const report=await json('/reconciliations',f.auditor.token,{fromDate:'2026-11-01',throughDate:'2026-11-30'});
+    expect(report.report.status,JSON.stringify(report.report)).toBe('matched');expect(report.report.events).toHaveLength(2);
+    expect((await owner.query('SELECT count(*) FROM accounting.journals')).rows[0].count).toBe('2');
+    expect((await owner.query('SELECT count(*) FROM servicing.action_notes')).rows[0].count).toBe('8');
+    await owner.query("UPDATE accounting.periods SET state='closing' WHERE organization_id=$1",[f.org]);
+    await owner.query("UPDATE accounting.periods SET state='closed' WHERE organization_id=$1",[f.org]);
+    expect(await json(`${commandPath}/finalizations`,f.authorizer.token,{reason:'Recover the already committed posting under a new key.'},4)).toEqual(posted);
+    expect(await json(`${repayPath}/finalizations`,f.authorizer.token,{reason:'Recover the original repayment after period closure.'},received.version)).toEqual(repaid);
+    expect((await owner.query('SELECT count(*) FROM accounting.journals')).rows[0].count).toBe('2');
+
+
   });
   it('replays an already committed acceptance after a later review hold, but never after member-link revocation',async()=>{
     await ready();const path=`/applications/${f.appId}`,w=await json(`${path}/decision-workspace`);

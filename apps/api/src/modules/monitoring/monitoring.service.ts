@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { ActorContext,MemberTransactionContext,TransactionContext,UnitOfWork } from '../../../../../packages/contracts/src/ports.js';
-import { Id,MemberSupportCreateSchema,MemberSupportSchema,MemberSupportViewSchema,MemberSupportPageViewSchema,MemberSupportHistoryQuerySchema,SupportActionSchema,SupportActionPageSchema,SupportAssignmentSchema,SupportDetailSchema,SupportHistorySchema,SupportPageSchema,SupportResponseSchema,SupportSummarySchema,Version } from '../../../../../packages/contracts/src/schemas.js';
+import { Id,MemberSupportCreateSchema,MemberSupportSchema,MemberSupportViewSchema,MemberSupportPageViewSchema,MemberSupportHistoryQuerySchema,SupportActionSchema,SupportActionPageSchema,SupportAssignmentSchema,SupportFreshPositionViewSchema,SupportDetailSchema,SupportHistorySchema,SupportPageSchema,SupportResponseSchema,SupportSummarySchema,Version } from '../../../../../packages/contracts/src/schemas.js';
 import { command,recordEvent } from '../../platform/commands.js';
 import { memberCommand } from '../../platform/member-commands.js';
 import { ApiError,notFound } from '../../platform/errors.js';
@@ -12,9 +12,10 @@ function summary(row:Record<string,unknown>){return SupportSummarySchema.parse({
 const historyQuery=z.strictObject({cursor:Id.optional(),limit:z.coerce.number().int().min(1).max(100).default(25)});
 const responseReceipt=z.union([z.strictObject({version:Version}),z.strictObject({version:Version,projection:z.literal('staff-history-v1'),pageSize:z.number().int().min(1).max(100)})]);
 function action(row:Record<string,unknown>){return SupportActionSchema.parse({id:row.id,recordedAt:(row.recorded_at as Date).toISOString(),recordedBy:row.recorded_by,response:row.response,internalNote:row.internal_note,followUpDate:row.follow_up,version:Number(row.version)});}
+export interface SupportPositionProducer {position(tx:TransactionContext,requestId:string):Promise<z.output<typeof SupportFreshPositionViewSchema>>}
 export class MonitoringService {
  readonly followUps:SupportFollowUps;
- constructor(private readonly uow:UnitOfWork,private readonly loans:Pick<LoanReads,'memberLoans'>){this.followUps=new SupportFollowUps(uow);}
+ constructor(private readonly uow:UnitOfWork,private readonly loans:Pick<LoanReads,'memberLoans'>,private readonly supportPosition?:SupportPositionProducer){this.followUps=new SupportFollowUps(uow);}
  private async accessible(tx:TransactionContext,id:string,lock=false){
   if(lock)await tx.query('SELECT monitoring.lock_disclosure($1,false)',[id]);
   const row=(await tx.query('SELECT * FROM monitoring.requests WHERE organization_id=$1 AND id=$2',[tx.actor.organizationId,id])).rows[0];
@@ -28,7 +29,7 @@ export class MonitoringService {
  }
  private detailFields(row:Record<string,unknown>,privateRow:Record<string,unknown>){
   return {...summary(row),message:privateRow.message,contactPreference:privateRow.contact_preference,noticeVersion:privateRow.notice_version,checkIn:privateRow.check_in,position:privateRow.position,
-   positionMessage:privateRow.position?'Position captured when the member submitted this request. A fresh staff position is unavailable.':'No loan position was captured. This does not mean there is no debt.'};
+   positionMessage:privateRow.position?'Position captured when the member submitted this request. This saved snapshot does not change when later payments post.':'No loan position was captured. This does not mean there is no debt.'};
  }
  private async detail(tx:TransactionContext,id:string,throughVersion?:number){
   const {row,privateRow}=await this.disclosure(tx,id);
@@ -60,6 +61,13 @@ export class MonitoringService {
   });
  });}
  get(actor:ActorContext,id:unknown){return operation(async()=>{requireRoles(actor,['officer']);return this.uow.run(actor,tx=>this.detail(tx,Id.parse(id)));});}
+ freshPosition(actor:ActorContext,id:unknown){return operation(async()=>{
+  requireRoles(actor,['officer']);const request=Id.parse(id);
+  return this.uow.run(actor,async tx=>{
+   await this.disclosure(tx,request); // Current assignment is authorized even when the producer is unavailable.
+   return SupportFreshPositionViewSchema.parse(this.supportPosition?await this.supportPosition.position(tx,request):{state:'unavailable',message:'Fresh loan positions are not enabled. The captured position remains historical; unavailable does not mean zero debt.'});
+  });
+ });}
  history(actor:ActorContext,id:unknown){return operation(async()=>{requireRoles(actor,['officer']);return this.uow.run(actor,tx=>this.historyDetail(tx,Id.parse(id)));});}
  actions(actor:ActorContext,id:unknown,input:unknown){return operation(async()=>{
   requireRoles(actor,['officer']);const request=Id.parse(id),query=historyQuery.parse(input);

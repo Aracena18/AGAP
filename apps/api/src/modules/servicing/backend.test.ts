@@ -281,10 +281,10 @@ describe('Phase 4 durable simulation with real runtime-role database and fiction
   it('continues to enforce FORCE RLS with non-superuser/non-BYPASSRLS function owners', async () => {
     const role = 'agap_phase4_definer';
     await owner.query(`DO $$ BEGIN IF NOT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='${role}') THEN CREATE ROLE ${role} NOLOGIN NOSUPERUSER NOBYPASSRLS; END IF; END $$;
-      GRANT USAGE ON SCHEMA servicing,platform,identity,applications TO ${role};
+      GRANT USAGE ON SCHEMA servicing,platform,identity,applications,monitoring TO ${role};
       GRANT SELECT ON ALL TABLES IN SCHEMA servicing TO ${role};
       GRANT SELECT ON identity.staff_users,applications.applications TO ${role};
-      GRANT EXECUTE ON FUNCTION platform.current_organization(),platform.allowed_branch(uuid),platform.current_member(),servicing.staff_role(text) TO ${role};`);
+      GRANT EXECUTE ON FUNCTION platform.current_organization(),platform.allowed_branch(uuid),platform.current_member(),servicing.staff_role(text),monitoring.support_loan_scope(uuid,uuid,uuid) TO ${role};`);
     const functions = ['staff_role(text)', 'validate_origin()', 'validate_revision()', 'require_observation()', 'require_claim_revision()', 'validate_observation()', 'movement_conflict(text,uuid,uuid)', 'require_movement_evidence()'];
     try {
       for (const fn of functions) await owner.query(`ALTER FUNCTION servicing.${fn} OWNER TO ${role}`);

@@ -7,3 +7,8 @@
 .receipt dd { margin-left: 0; }
 @media (max-width: 767px) { .figures { grid-template-columns: 1fr; } }
 @media print { .page { display: block; } .receipt { border: 0; box-shadow: none; } .receipt article { padding: 0; color: black; } }
+
+.queue { display: grid; gap: var(--space-4); }
+.record { border-bottom: 1px solid var(--line); padding-bottom: var(--space-4); overflow-wrap: anywhere; }
+.record:last-child { border-bottom: 0; }
+.page { min-width: 0; overflow-wrap: anywhere; }

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
+import { FinancialCommandCreateSchema } from '../../../packages/contracts/src/schemas';
 import { LoanWorkspaceSchema } from '../../../apps/api/src/modules/servicing/money-context';
 import { ApiClientError } from '../../../packages/api-client/src/transport';
 import { useStaff, type StaffSession } from '../access/StaffContext';
@@ -26,10 +27,11 @@ export function StaffLoanWorkspace(props: { loanId: string; day: string; session
 }
 function Controller({ loanId, day, session, gateway = unavailableLoans }: { loanId: string; day: string; session: StaffSession; gateway?: LoanGateway }) {
   const [epoch, setEpoch] = useState(0), [resource, setResource] = useState<{ epoch: number; gateway: LoanGateway; value?: LoanWorkspace; error?: string }>();
+  const [reference, setReference] = useState(''), [effectiveDate, setEffectiveDate] = useState(day);
   const [reason, setReason] = useState(''), [selected, setSelected] = useState(''), [notice, setNotice] = useState(''), [denied, setDenied] = useState(false);
   const command = useCommand<Attempt, { recorded: true }>(), attempt = useRef<Attempt | null>(null), errorRef = useRef<HTMLDivElement>(null);
   const locked = command.saving || command.uncertain;
-  useUnsavedChanges(Boolean(reason) || locked, command.uncertain);
+  useUnsavedChanges(Boolean(reason || reference) || locked, command.uncertain);
   const current = resource?.epoch === epoch && resource.gateway === gateway;
   const view = current ? resource.value : undefined;
   useEffect(() => {
@@ -52,13 +54,20 @@ function Controller({ loanId, day, session, gateway = unavailableLoans }: { loan
   async function execute(action: MoneyAction, id: string | null, version: number | null) {
     if (!reason.trim() || locked && !command.uncertain) { setNotice('Record a reason before requesting a financial action.'); return; }
     setNotice('');
-    const body: Attempt = { loanId, csrf: session.csrfToken, input: { action, commandId: id, version, reason: reason.trim() } };
+    let payload: z.output<typeof FinancialCommandCreateSchema> | undefined;
+    if (!command.uncertain && (action === 'prepare_release' || action === 'prepare_repayment')) {
+      const amount = action === 'prepare_release' ? view?.origination?.principalCentavos : view?.nextPayment?.amountCentavos;
+      const parsed = FinancialCommandCreateSchema.safeParse({ loanId, amountCentavos: amount, currency: 'PHP', effectiveDate: action === 'prepare_repayment' ? view?.nextPayment?.date : effectiveDate, method: 'cash', instrumentReference: reference, reason: reason.trim() });
+      if (!parsed.success) { setNotice('Enter a valid effective date, fictional instrument reference and action reason. The amount must come from the displayed saved loan.'); return; }
+      payload = parsed.data;
+    }
+    const body: Attempt = { loanId, csrf: session.csrfToken, input: { action, commandId: id, version, reason: reason.trim(), ...(payload ? { payload } : {}) } };
     if (!command.uncertain) attempt.current = body;
     const result = await command.submit(attempt.current ?? body, async (saved, key) => {
       try { return Result.parse(await gateway.act(saved.loanId, saved.input, { csrfToken: saved.csrf, idempotencyKey: key })); }
       catch (error) { if (error instanceof ApiClientError && [401, 403].includes(error.status)) setDenied(true); throw error; }
     });
-    if (result) { setReason(''); setNotice('Action recorded. Refreshing the saved financial position.'); setEpoch(e => e + 1); }
+    if (result) { setReason(''); setReference(''); setNotice('Action recorded. Refreshing the saved financial position.'); setEpoch(e => e + 1); }
   }
   if (denied) return <div className="no-print"><Notice tone="danger" role="alert">Loan information is unavailable to the current account. Sign in again or contact the servicing owner.</Notice></div>;
   const cashier = session.user.roles.includes('cashier'), authorizer = session.user.roles.includes('financial_authorizer');
@@ -74,12 +83,14 @@ function Controller({ loanId, day, session, gateway = unavailableLoans }: { loan
     </div></section>
     <section className="panel no-print"><div className="panel-header"><h2>Financial actions</h2></div><div className={`panel-body ${styles.form}`}>
       {(cashier || authorizer) && <div className="field"><label htmlFor="payment-reason">Action reason</label><textarea id="payment-reason" value={reason} maxLength={2000} disabled={locked} onChange={e => setReason(e.target.value)}/></div>}
+      {cashier && (view.canPrepareRelease || view.nextPayment) && <div className="field"><label htmlFor="instrument-reference">Fictional instrument reference</label><input id="instrument-reference" value={reference} maxLength={160} disabled={locked} onChange={e => setReference(e.target.value)}/></div>}
+      {cashier && view.origination && !view.position && <section><h3>Prepare fictional release</h3><p>Accepted principal: <Money value={view.origination.principalCentavos}/>. Method: fictional cash.</p><p>{view.releasePreparationMessage}</p>{view.canPrepareRelease && <><div className="field"><label htmlFor="release-date">Release effective date</label><input id="release-date" type="date" value={effectiveDate} disabled={locked} onChange={e => setEffectiveDate(e.target.value)}/></div><Button disabled={locked} onClick={() => void execute('prepare_release', null, null)}>Prepare fictional release</Button></>}</section>}
       {view.commands.map(c => <section key={c.id}><h3>{c.kind === 'disbursement' ? 'Release' : 'Repayment'}</h3><p><Money value={c.amountCentavos}/> · {dateLabel(c.effectiveDate)} · <Badge tone={c.state === 'confirmed' ? 'success' : 'warning'}>{c.state === 'confirmed' ? 'Posted' : c.state.replaceAll('_', ' ')}</Badge></p><p className="small subtle">Command {c.id} · Version {c.version}</p><div className="actions">
-        {authorizer && c.state === 'prepared' && <Button disabled={locked} onClick={() => void execute('authorize', c.id, c.version)}>Authorize repayment</Button>}
+        {authorizer && c.state === 'prepared' && <Button disabled={locked} onClick={() => void execute('authorize', c.id, c.version)}>Authorize {c.kind === 'disbursement' ? 'release' : 'repayment'}</Button>}
         {(cashier || authorizer) && c.state === 'authorized' && <Button disabled={locked} onClick={() => void execute('submit', c.id, c.version)}>Record submission intent</Button>}
         {(cashier || authorizer) && c.state === 'submitted' && <><Notice>An intent does not establish receipt of money. The demonstration records explicitly simulated settlement through its authorized intake.</Notice><Button disabled={locked} onClick={() => void execute('record_simulation', c.id, c.version)}>Record simulated settlement</Button></>}
         {authorizer && c.state === 'confirmed_unposted' && <Button disabled={locked} onClick={() => void execute('finalize', c.id, c.version)}>Post recorded movement</Button>}
-        {c.state === 'unknown' && <Notice tone="warning">Reconcile this existing movement. Do not prepare another transfer.</Notice>}
+        {c.state === 'unknown' && <><Notice tone="warning">Reconcile this existing movement. Do not prepare another transfer.</Notice>{(cashier || authorizer) && <Button disabled={locked} onClick={() => void execute('check_simulation', c.id, c.version)}>Check existing simulated settlement</Button>}</>}
       </div></section>)}
       {cashier && view.nextPayment && <><p>Next supported scheduled payment: <Money value={view.nextPayment.amountCentavos}/> on {dateLabel(view.nextPayment.date)}.</p><Button disabled={locked} onClick={() => void execute('prepare_repayment', null, null)}>Prepare scheduled repayment</Button></>}
     </div></section>

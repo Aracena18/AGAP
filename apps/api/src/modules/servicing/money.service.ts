@@ -1,3 +1,4 @@
+import { actionReasonRequest, recordActionNote } from './action-note.js';
 import { randomUUID } from 'node:crypto';
 import type { ActorContext, PostingPort, TransactionContext, UnitOfWork } from '../../../../../packages/contracts/src/ports.js';
 import { FinancialCommandCreateSchema, Id, Version } from '../../../../../packages/contracts/src/schemas.js';
@@ -53,17 +54,17 @@ export class MoneyService {
       });
     });
   }
-  authorize(actor: ActorContext, id: string, version: number, key: unknown) { return this.transition(actor, id, version, key, 'authorize'); }
-  submitIntent(actor: ActorContext, id: string, version: number, key: unknown) { return this.transition(actor, id, version, key, 'submit'); }
-  observe(actor: ActorContext, id: string, input: unknown, version: number, key: unknown) { return this.transition(actor, id, version, key, 'observe', input); }
-  private transition(actor: ActorContext, commandId: string, version: number, key: unknown, action: 'authorize' | 'submit' | 'observe', input?: unknown) {
+  authorize(actor: ActorContext, id: string, version: number, key: unknown,reason?:string) { return this.transition(actor, id, version, key, 'authorize',undefined,reason); }
+  submitIntent(actor: ActorContext, id: string, version: number, key: unknown,reason?:string) { return this.transition(actor, id, version, key, 'submit',undefined,reason); }
+  observe(actor: ActorContext, id: string, input: unknown, version: number, key: unknown,reason?:string) { return this.transition(actor, id, version, key, 'observe', input,reason); }
+  private transition(actor: ActorContext, commandId: string, version: number, key: unknown, action: 'authorize' | 'submit' | 'observe', input?: unknown,reason?:string) {
     return servicingOperation(async () => {
       requireRoles(actor, action === 'authorize' ? ['financial_authorizer'] : ['cashier', 'financial_authorizer']);
       const id = Id.parse(commandId); Version.parse(version);
       return this.uow.run(actor, async tx => {
         const initial = await this.money.get(tx, id), loan = await this.origins.origin(tx, initial.loanId);
         await this.ports.authorize(tx, loan.applicationId);
-        return command(tx, `money.${action}:${id}`, key, { id, version, input: input ?? null }, async () => {
+        return command(tx, `money.${action}:${id}`, key, { id, version, input: input ?? null,...actionReasonRequest(reason) }, async () => {
           const guard = await this.ports.financial(tx, loan.applicationId);
           await this.origins.lockApplication(tx, loan.applicationId); await this.money.lockLoan(tx, loan.id);
           const c = await this.money.get(tx, id), at = this.now().toISOString();
@@ -76,7 +77,7 @@ export class MoneyService {
             if (observation.movementId && await this.money.claimMovement(tx, c, observation.producer, observation.movementId)) {
               next.conflicts = [...new Set([...next.conflicts, 'movement_conflict'])]; next.state = c.state;
             }
-            await this.money.append(tx, next); await recordEvent(tx, 'money.observation_recorded', id, next.version); return next;
+            await this.money.append(tx, next); await recordActionNote(tx,next,'money-v2','observe',reason); await recordEvent(tx, 'money.observation_recorded', id, next.version); return next;
           }
           insist(version === c.version, 'stale_version', 'Reload the current command version.');
           const policy = await this.policy(tx, loan, c.payload.effectiveDate);
@@ -90,19 +91,19 @@ export class MoneyService {
             originalAuthorizer(c, guard, at);
             next.submission = { id: randomUUID(), submittedBy: actor.userId, at, payloadHash: c.payloadHash, claimVersion: c.version + 1 }; next.state = 'submitted';
           }
-          next.version++; await this.money.append(tx, next); await recordEvent(tx, `money.${action}_recorded`, id, next.version); return inspectMoney(next);
+          next.version++; await this.money.append(tx, next); await recordActionNote(tx,next,'money-v2',action,reason); await recordEvent(tx, `money.${action}_recorded`, id, next.version); return inspectMoney(next);
         });
       });
     });
   }
-  finalize(actor: ActorContext, commandId: string, version: number, key: unknown) {
+  finalize(actor: ActorContext, commandId: string, version: number, key: unknown,reason?:string) {
     return servicingOperation(async () => {
       requireRoles(actor, ['financial_authorizer']); const id = Id.parse(commandId); Version.parse(version);
       return this.uow.run(actor, async tx => {
         const existing = await this.money.find(tx, id), legacy = existing ? null : await this.origins.command(tx, id);
         const loan = await this.origins.origin(tx, existing?.loanId ?? legacy!.loanId);
         await this.ports.authorize(tx, loan.applicationId);
-        return command(tx, `money.finalize:${id}`, key, { id, version }, async () => {
+        return command(tx, `money.finalize:${id}`, key, { id, version,...actionReasonRequest(reason) }, async () => {
           // Permanent business identity resolves retries even with a fresh HTTP key.
           const prior = await this.money.result(tx, id); if (prior) return prior;
           const date = existing?.payload.effectiveDate ?? legacy!.payload.effectiveDate;
@@ -150,6 +151,7 @@ export class MoneyService {
             principalAfterCentavos: Number(after), postingRuleVersionId };
           const next: MoneyCommand = { ...c, version: c.version + 1, state: 'confirmed', posting: posted };
           await this.money.append(tx, next); await this.money.insertPosted(tx, next, posted);
+          await recordActionNote(tx,next,'money-v2','finalize',reason);
           await recordEvent(tx, 'money.posted', id, next.version); return posted;
         });
       });

@@ -1,0 +1,12 @@
+# CL6 — connected support and complete fictional journey
+
+The user authorizes the remaining code contribution and previously requests parallel sessions. The integration owner retains shared contracts/factory/spec/tracker and financial backend; delegated AI implementation tasks own frontend lending, support feature and new recovery tests in this isolated task branch. This does not record named teammate or institutional acceptance.
+
+Propose separate `SupportFreshPositionView`: unavailable/message or available/data using LoanPosition. GET `/support-requests/{id}/loan-position` requires the actual currently assigned support officer, same organization/branch, request/member/loan linkage and support purpose on the caller transaction. A narrow purpose-checked producer reads actual posted positions without granting officer cashier roles or raw servicing access. Preserve captured submission-time position; label fresh position independently. Sharing, disclosures, history and followups retain their existing authorization, privacy and version/retry rules. No help request changes contract, eligibility or money.
+
+Verify complete fictional normal navigation through application, assessment, separate decision, exact member acceptance, origination, controlled release, scheduled repayment, receipt, independent reconciliation and payment-help/follow-up. Inspect phone/tablet/desktop/zoom-equivalent captures; run required combined check and browser suites. Record actual limitations, capability granularity and teammate handoff. CL7–CL8 institutional financial-policy breadth, real execution, model runtime and operational release require genuine external inputs and are not fabricated by this code delivery.
+
+
+## Implemented candidate
+
+The new purpose-scoped fresh support producer/controller/UI preserves the original capture and response drafts. Tests prove current assignment/member/branch authorization, no raw servicing grants or money effects, and operation with true non-superuser/non-BYPASSRLS ownership under FORCE RLS. The complete normal-route browser scenario captures100000 before repayment, displays50000 fresh after posting and shares only the member-safe response. Source, tests and exact pending verification/integration gates are recorded in the [handoff](HANDOFF.md). User-requested parallel AI implementation supplied isolated feature-file ownership, not fabricated named-owner review or institutional acceptance.

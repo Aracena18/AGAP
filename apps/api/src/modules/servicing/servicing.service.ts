@@ -1,3 +1,4 @@
+import { actionReasonRequest, recordActionNote } from './action-note.js';
 import { randomUUID } from 'node:crypto';
 import { z, ZodError } from 'zod';
 import type { ActorContext, UnitOfWork } from '../../../../../packages/contracts/src/ports.js';
@@ -69,35 +70,36 @@ export class ServicingService {
       });
     });
   }
-  authorize(actor: ActorContext, commandId: string, version: number, key: unknown) { return this.transition(actor, commandId, version, key, 'authorize'); }
-  submitIntent(actor: ActorContext, commandId: string, version: number, key: unknown) { return this.transition(actor, commandId, version, key, 'submit'); }
-  private transition(actor: ActorContext, commandId: string, version: number, key: unknown, action: 'authorize' | 'submit') {
+  authorize(actor: ActorContext, commandId: string, version: number, key: unknown, reason?:string) { return this.transition(actor, commandId, version, key, 'authorize',reason); }
+  submitIntent(actor: ActorContext, commandId: string, version: number, key: unknown, reason?:string) { return this.transition(actor, commandId, version, key, 'submit',reason); }
+  private transition(actor: ActorContext, commandId: string, version: number, key: unknown, action: 'authorize' | 'submit',reason?:string) {
     return operation(async () => {
       requireRoles(actor, action === 'authorize' ? ['financial_authorizer'] : ['cashier', 'financial_authorizer']);
       const id = Id.parse(commandId); Version.parse(version);
       return this.uow.run(actor, async tx => {
         const initial = await this.repository.command(tx, id);
         await this.ports.authorize(tx, initial.applicationId);
-        return command(tx, `servicing.${action}:${id}`, key, { id, version }, async () => {
+        return command(tx, `servicing.${action}:${id}`, key, { id, version,...actionReasonRequest(reason) }, async () => {
           const context = await this.ports.operation(tx, initial.applicationId);
           await this.repository.lockApplication(tx, initial.applicationId);
           const current = await this.repository.command(tx, id), request = { id, expectedVersion: version, at: this.now().toISOString() };
           const next = action === 'authorize' ? authorizeCommand(actor, context, current, request)
             : prepareSubmission(actor, context, current, { ...request, attemptId: randomUUID() });
           await this.repository.append(tx, next);
+          await recordActionNote(tx,next,'release-v1',action,reason);
           await recordEvent(tx, `servicing.${action}_recorded`, id, next.version);
           return next;
         });
       });
     });
   }
-  observe(actor: ActorContext, commandId: string, input: unknown, version: number, key: unknown) {
+  observe(actor: ActorContext, commandId: string, input: unknown, version: number, key: unknown,reason?:string) {
     return operation(async () => {
       requireRoles(actor, ['cashier', 'financial_authorizer']); const id = Id.parse(commandId), data = ObservationInputSchema.parse(input); Version.parse(version);
       return this.uow.run(actor, async tx => {
         const initial = await this.repository.command(tx, id);
         await this.ports.authorize(tx, initial.applicationId);
-        return command(tx, `servicing.observe:${id}`, key, { id, data, version }, async () => {
+        return command(tx, `servicing.observe:${id}`, key, { id, data, version,...actionReasonRequest(reason) }, async () => {
           // Known movement intake intentionally does not reload release/source prerequisites.
           const authority = await this.ports.observationAuthority(tx, initial.applicationId);
           await this.repository.lockApplication(tx, initial.applicationId);
@@ -109,6 +111,7 @@ export class ServicingService {
             if (conflict) result = recordObservation(actor, { authority }, current, { id, expectedVersion: version, at: this.now().toISOString(), observation: data, action: 'observe', movementClaimedElsewhere: true });
           }
           await this.repository.append(tx, result.command); await this.repository.insertObservation(tx, result.command);
+          await recordActionNote(tx,result.command,'release-v1','observe',reason);
           await recordEvent(tx, 'servicing.observation_recorded', id, result.command.version);
           return result;
         });

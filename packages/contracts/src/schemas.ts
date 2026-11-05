@@ -223,6 +223,23 @@ export const LoanPositionSchema = z.strictObject({
   loanId: Id, asOfDate: CalendarDay, principalCentavos: MoneyAmount, interestDueCentavos: MoneyAmount, feesDueCentavos: MoneyAmount,
   overdueCentavos: MoneyAmount, postedThrough: Instant, pendingMovementCount: z.number().int().nonnegative(),
 });
+export const PostedResultSchema = z.strictObject({ eventId: Id, commandId: Id, loanId: Id, kind: z.enum(['disbursement', 'repayment']),
+  amountCentavos: PositiveMoneyAmount, currency: Currency, effectiveDate: CalendarDay, postedAt: Instant,
+  journalId: Id, receiptId: Id.nullable(), principalAfterCentavos: MoneyAmount, postingRuleVersionId: Id });
+export const SafeMoneyCommandSchema = z.strictObject({ id: Id, kind: z.enum(['disbursement', 'repayment']), version: Version,
+  state: FinancialCommandSchema.shape.state, amountCentavos: PositiveMoneyAmount, effectiveDate: CalendarDay, legacy: z.boolean() });
+export const LoanViewSchema = z.strictObject({ loanId: Id, applicationId: Id, memberLabel: z.string(), state: z.enum(['active', 'settled']),
+  asOfDate: CalendarDay, principalCentavos: MoneyAmount, interestDueCentavos: z.literal(0), feesDueCentavos: z.literal(0),
+  overdueCentavos: MoneyAmount, postedThrough: Instant, pendingMovementCount: z.number().int().nonnegative(),
+  schedule: z.array(z.strictObject({ date: CalendarDay, amountCentavos: PositiveMoneyAmount })),
+  receipts: z.array(PostedResultSchema), commands: z.array(SafeMoneyCommandSchema) });
+export const LoanWorkspaceSchema = z.strictObject({ loanId: Id, organizationId: Id, branchId: Id, memberLabel: z.string(), position: LoanViewSchema.nullable(),
+  origination:z.strictObject({applicationId:Id,principalCentavos:PositiveMoneyAmount,currency:Currency,payments:z.array(z.strictObject({date:CalendarDay,amountCentavos:PositiveMoneyAmount}))}).optional(),
+  canPrepareRelease:z.boolean().optional(),releasePreparationMessage:z.string().optional(),
+  commands: z.array(SafeMoneyCommandSchema), message: z.string(), nextPayment: z.strictObject({ date: CalendarDay, amountCentavos: PositiveMoneyAmount }).nullable() });
+export const FinancialActionReasonSchema=z.strictObject({reason:Text});
+export const LendingApplicationSchema=z.strictObject({id:Id,memberLabel:Text,purpose:Text,principalCentavos:PositiveMoneyAmount,acceptanceRecorded:z.boolean(),loanId:Id.nullable(),recordedAt:Instant});
+export const LendingApplicationPageSchema=z.strictObject({items:z.array(LendingApplicationSchema).max(100),nextCursor:Id.nullable()});
 const ReviewResponse = z.enum(['yes', 'no', 'unavailable']);
 export const HealthReviewCreateSchema = z.strictObject({
   loanId: Id, reviewDate: CalendarDay, canMeetEssentials: ReviewResponse, borrowedToRepay: ReviewResponse,
@@ -271,6 +288,7 @@ export const SupportResponseSchema=z.strictObject({response:Text,internalNote:Te
 export const SupportSummarySchema=z.strictObject({id:Id,memberId:Id,branchId:Id,submittedAt:Instant,status:MemberSupportSchema.shape.status,version:Version,assignedOfficerId:Id.nullable()});
 export const SupportPageSchema=z.strictObject({items:z.array(SupportSummarySchema).max(100),nextCursor:Id.nullable()});
 export const SupportActionSchema=z.strictObject({id:Id,recordedAt:Instant,recordedBy:Id,response:Text,internalNote:Text,followUpDate:CalendarDay.nullable(),version:Version});
+export const SupportFreshPositionViewSchema=z.discriminatedUnion('state',[z.strictObject({state:z.literal('unavailable'),message:Text}),z.strictObject({state:z.literal('available'),data:LoanPositionSchema})]);
 export const SupportDetailSchema=SupportSummarySchema.extend({message:Text,contactPreference:z.enum(['portal','phone']),noticeVersion:Text,checkIn:SupportCheckInSchema,position:LoanPositionSchema.nullable(),positionMessage:Text,actions:z.array(SupportActionSchema).max(100)});
 export const SupportActionPageSchema=z.strictObject({items:z.array(SupportActionSchema).max(100),nextCursor:Id.nullable()});
 export const SupportHistorySchema=SupportDetailSchema.extend({actionsNextCursor:Id.nullable()});
@@ -297,6 +315,8 @@ export const MemberSupportPageViewSchema=serviceView(MemberSupportPageSchema);
 export const MemberSupportHistoryQuerySchema=z.strictObject({cursor:Id.optional(),limit:z.coerce.number().int().min(1).max(100).default(25)});
 
 export const schemas = {
+  SupportFreshPositionView:SupportFreshPositionViewSchema,
+  CalendarDay,PostedResult:PostedResultSchema,SafeMoneyCommand:SafeMoneyCommandSchema,StaffLoanView:LoanViewSchema,StaffLoanWorkspace:LoanWorkspaceSchema,FinancialActionReason:FinancialActionReasonSchema,LendingApplicationPage:LendingApplicationPageSchema,
   DecisionPreviewCreate:DecisionPreviewCreateSchema,DecisionPreview:DecisionPreviewSchema,DecisionRecordCreate:DecisionRecordCreateSchema,
   StaffDecisionWorkspace:StaffDecisionWorkspaceSchema,StaffDecisionHistoryPage:StaffDecisionHistoryPageSchema,StaffDecisionBrief:StaffDecisionBriefSchema,
   DecisionConflictCreate:DecisionConflictCreateSchema,DecisionReviewConfirm:DecisionReviewConfirmSchema,DecisionConcernCreate:DecisionConcernCreateSchema,

@@ -49,6 +49,14 @@ Within the existing member application, show the recorded decision and complete 
 
 The acknowledgment checkbox binds to the displayed document and application version. A refresh clears it; unavailable or changed terms disable a new acceptance without zero placeholders. Unknown submissions display a dedicated retry of the original acceptance even when a later read is unavailable. Successful acceptance is labeled separately from release or proof of funds. Preserve existing focus/navigation and unsaved-change recovery. Technical browser checks do not represent physical-device or member acceptance.
 
+## Connected financial and support views — CL4–CL6, 5 November 2026
+
+Use the existing staff shell and controls for Lending and payments. The queue separates approved principal, recorded acceptance and pending loan identity. The loan page shows posted position and original accepted schedule before financial actions and selected immutable receipts. Pending/unavailable positions never display a manufactured zero balance. Distinguish confirmed-unposted settlement from Posted, and label release authorization explicitly. Keep the fictional movement notice visible. Forms capture the original displayed financial request for recovery; unavailable or unauthorized operations do not fall back to browser persistence.
+
+Financial actions require a reason. Separate preparation, authorization, committed intent, fictional settlement/status and posting remain discoverable steps; an unknown outcome offers original-status checking, never replacement transfer. Keep long identifiers wrapped, amounts aligned, phone figures stacked, table overflow contained and consequential controls keyboard-accessible. Receipt print actions operate only on the selected saved posted event. Retain existing visual tokens, Google Sans and motion behavior without dependencies or a second design guide.
+
+Within an assigned support disclosure, retain Captured submission-time loan position and show Fresh posted loan position as a separate explicit read. A fresh read preserves response drafts and historical snapshots, labels its as-of/posting times and excludes pending movements from debt reduction. Recoverable failures identify stale fresh content; access denial clears the private workspace. No visual indicator implies a loan amendment or eligibility decision. Chromium captures/checks are technical evidence; representative-user and institutional acceptance remain separate.
+
 ## 1. Design principles
 
 - **Give each element a job.** Include information or controls that help staff understand the case, check a fact, compare an option, or complete the next action.
