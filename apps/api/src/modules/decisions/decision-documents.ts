@@ -15,7 +15,10 @@ export function decisionDocument(c: ReviewContext, request: z.output<typeof Prev
     `Application ${request.outcome === 'return' ? 'returned for clarification' : request.outcome === 'approve' ? 'approved by the reviewer' : 'declined by the reviewer'}.`,
     request.rationale,
     ...(selected && scenario ? [`Net proceeds ${money(selected.netReceivedCentavos)}; total repayment ${money(scenario.totalRepaymentCentavos)}; financing cost ${money(scenario.financingCostCentavos)}.`,
-      `For ${c.periodStart} to ${c.periodEnd}, monthly remaining ${money(scenario.monthlyRemainingCentavos)}; lowest dated balance ${money(scenario.lowestBalanceCentavos)}.`] : ['No complete approved terms are supplied.']),
+      ...('workflow' in scenario ? [
+        `For ${c.periodStart} to ${c.periodEnd}, full-horizon remaining ${money(scenario.workflow.horizonNetCentavos)}; lowest dated balance ${money(scenario.lowestBalanceCentavos)}.`,
+        ...scenario.workflow.months.map(m => `${m.month} reviewed calendar-month segment: ${money(m.remainingCentavos)} remaining.`),
+      ] : [`For ${c.periodStart} to ${c.periodEnd}, monthly remaining ${money(scenario.monthlyRemainingCentavos)}; lowest dated balance ${money(scenario.lowestBalanceCentavos)}.`])] : ['No complete approved terms are supplied.']),
     `Review date: ${request.reviewDate}. This record is not a guarantee of future affordability.`,
   ].join('\n');
   if (!Text.safeParse(explanation).success) throw new ApiError(422, 'explanation_too_long', 'Shorten the rationale so the complete reviewed explanation can be preserved.');
@@ -23,6 +26,7 @@ export function decisionDocument(c: ReviewContext, request: z.output<typeof Prev
     'AGAP — exact reviewed terms', `Member: ${c.application.memberName}`, `Purpose: ${c.application.purpose}`,
     explanation, `Principal: ${money(selected.principalCentavos)}. Term: ${selected.termMonths} months.`,
     `Separately paid fees: ${money(selected.feesPaidSeparatelyCentavos)}.`,
+    ...(c.workflowBasis?.policy.offers.find(o => o.id === selected.id)?.separateFees.map(f => `Separate fee ${f.date}: ${money(f.amountCentavos)}.`) ?? []),
     ...selected.payments.map(p => `${p.date}: ${money(p.amountCentavos)}`),
     'Acknowledgment records acceptance of this exact version. It does not release money.',
   ].join('\n') : null;

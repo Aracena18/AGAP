@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { Pool } from 'pg';
+import { lendingLockSql } from '../../platform/lending-transaction.js';
 import { z } from 'zod';
 import { Id,Text,Version } from '../../../../../packages/contracts/src/schemas.js';
 
@@ -11,7 +12,10 @@ const Input=z.discriminatedUnion('action',[
 export async function changeMemberLink(pool:Pool,trustedIssuer:string,input:unknown){
   const data=Input.parse(input),client=await pool.connect();
   try{
-    await client.query('BEGIN');
+    await client.query('BEGIN ISOLATION LEVEL READ COMMITTED');
+    const organizationId=data.action==='provision' ? data.organizationId : (await client.query('SELECT organization_id FROM identity.member_links WHERE id=$1',[data.linkId])).rows[0]?.organization_id;
+    if(!organizationId)throw new Error('Member link unavailable.');
+    await client.query("SET LOCAL lock_timeout='5s'");await client.query(lendingLockSql,[organizationId]);
     let id:string;
     if(data.action==='provision'){
       if(data.issuer!==trustedIssuer)throw new Error('Trusted issuer mismatch.');

@@ -1,4 +1,5 @@
 /** Fictional UI simulation only. Not an authoritative producer or application adapter. */
+import { CONTRACT_VERSION } from '../../../packages/contracts/src/schemas';
 import type { StaffSession } from '../access/StaffContext';
 import { createDemoCases } from '../../demo/cases';
 import { assessCase } from '../../domain/assessment';
@@ -19,7 +20,7 @@ export function staffUiFixture(requested = false) {
     closingBalanceCentavos: checked.closingBalance, shortageDates: checked.shortageDates, totalRepaymentCentavos: checked.totalRepayment,
     financingCostCentavos: checked.financingCost, policyChecks: checked.policyChecks.map(p => ({ policyId: p.policyId, passed: p.passed, detail: p.detail, overridable: true })) };
   const now = new Date().toISOString();
-  const session: StaffSession = { user: { id: testId(8), displayName: 'Fictional reviewer · UI simulation', organizationId: testId(1), branchIds: [testId(2)], branches: [{ id: testId(2), name: 'Fictional branch' }], roles: ['reviewer'] }, csrfToken: 'fictional-ui-test-csrf-not-a-live-token', expiresAt: new Date(Date.now() + 3600_000).toISOString(), privacyNoticeVersion: 'fictional-v1', contractVersion: '0.3.0' };
+  const session: StaffSession = { user: { id: testId(8), displayName: 'Fictional reviewer · UI simulation', organizationId: testId(1), branchIds: [testId(2)], branches: [{ id: testId(2), name: 'Fictional branch' }], roles: ['reviewer'] }, csrfToken: 'fictional-ui-test-csrf-not-a-live-token', expiresAt: new Date(Date.now() + 3600_000).toISOString(), privacyNoticeVersion: 'fictional-v1', contractVersion: CONTRACT_VERSION };
   const view: WorkspaceView = WorkspaceViewSchema.parse({ application: { id: testId(3), organizationId: testId(1), branchId: testId(2), memberId: testId(4), memberName: 'Fictional Ana · UI simulation', purpose: record.purpose,
     requestedPrincipalCentavos: offer.principalCentavos, requestedTermMonths: offer.termMonths, currency: 'PHP', status: 'recommended', version: 2, assessmentInputVersion: 1,
     assignedOfficerId: testId(7), createdAt: now, updatedAt: now }, basisHash: '1'.repeat(64), periodStart: record.periodStart, periodEnd: record.periodEnd,

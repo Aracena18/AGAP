@@ -4,6 +4,7 @@ import {
   Id, Instant, MemberAcceptanceSchema, MoneyAmount, OfferSchema,
   RecommendationCreateSchema, Role, SourceReferenceSchema, Text, Version,
 } from '../../../../../packages/contracts/src/schemas.js';
+import { WorkflowDecisionBasisSchema } from './workflow-basis.js';
 
 /** Module-local review proposals, not new shared API contracts. */
 export const Hash = z.string().regex(/^[a-f0-9]{64}$/);
@@ -47,6 +48,10 @@ export const ReviewContextSchema = z.strictObject({
     userId: Id, status: z.enum(['clear', 'restricted', 'unavailable']), reference: Text,
   })),
   recommendation: RecommendationSchema.nullable(),
+  // Absent for immutable historical v1 records; never default it during decoding.
+  workflowBasis: WorkflowDecisionBasisSchema.optional(),
+  integration: z.strictObject({format:z.literal('connected-review/v1'),configurationId:Id,
+    sourceReview:z.enum(['confirmed_statements_permitted','independent_support_required'])}).optional(),
 });
 export const DocumentSchema = z.strictObject({ id: Id, sha256: Hash });
 export const ExplanationSchema = z.strictObject({
@@ -61,9 +66,13 @@ export const DecisionPreparationSchema = z.strictObject({
   document: DocumentSchema.nullable(), explanation: ExplanationSchema,
 });
 export const DecisionSnapshotSchema = z.strictObject({
+  format: z.literal('decision-snapshot/v2').optional(),
   id: Id, recordedAt: Instant, reviewerId: Id, reviewerRoles: z.array(Role),
   input: DecisionCreateSchema, basis: ReviewContextSchema,
   document: DocumentSchema.nullable(), explanation: ExplanationSchema,
+}).superRefine((s, ctx) => {
+  if ((s.format === 'decision-snapshot/v2') !== !!s.basis.workflowBasis)
+    ctx.addIssue({code:'custom',message:'The decision snapshot format must match its evidence basis.'});
 });
 export const DecisionCandidateSchema = z.strictObject({ snapshot: DecisionSnapshotSchema, snapshotHash: Hash });
 export const AcceptancePreparationSchema = z.strictObject({

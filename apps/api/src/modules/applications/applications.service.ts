@@ -7,7 +7,7 @@ import { requireRoles,requireFreshMfa } from '../identity/identity.service.js';
 import { command,recordEvent } from '../../platform/commands.js';
 import { ApiError,notFound } from '../../platform/errors.js';
 
-function applicationView(row: Record<string,unknown>) {
+export function applicationView(row: Record<string,unknown>) {
   return ApplicationSchema.parse({ id: row.id, organizationId: row.organization_id, branchId: row.branch_id, memberId: row.member_id, memberName:row.member_name, purpose: row.purpose, requestedPrincipalCentavos: Number(row.requested_principal_centavos), requestedTermMonths: row.requested_term_months, currency: row.currency,status: row.status,version: Number(row.version),assessmentInputVersion: Number(row.assessment_input_version),assignedOfficerId: row.assigned_officer_id,createdAt: (row.created_at as Date).toISOString(),updatedAt: (row.updated_at as Date).toISOString() });
 }
 const readers = ['officer','verifier','reviewer','cashier','financial_authorizer','accountant','auditor','administrator'];

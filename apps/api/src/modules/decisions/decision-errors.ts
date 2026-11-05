@@ -14,6 +14,7 @@ export async function decisionOperation<T>(work: () => Promise<T>): Promise<T> {
     }
     const code = error && typeof error === 'object' && 'code' in error ? String(error.code) : '';
     if (code === 'AG403' || code === '42501') throw new ApiError(403, 'decision_forbidden', 'This action is not available to the current account.');
+    if (code === 'AG412') throw new ApiError(412,'stale_version','The application changed. Reload before a new submission.');
     if (code === 'AG409' || code === '23505') throw new ApiError(409, 'decision_conflict', 'The decision, acknowledgment or references changed. Reload before a new submission.');
     throw new ApiError(503, 'decision_backend_unavailable', 'The decision could not be recorded or verified. Retry the same submission if its result is uncertain.');
   }

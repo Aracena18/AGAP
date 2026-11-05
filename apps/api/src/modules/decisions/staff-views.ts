@@ -22,7 +22,7 @@ export const SavedBriefSchema = z.strictObject({
   considered: z.strictObject({ offer: OfferSchema, checked: ScenarioSchema }).nullable(),
   snapshotHash: z.string().regex(/^[a-f0-9]{64}$/),
   document: z.strictObject({ id: Id, sha256: z.string().regex(/^[a-f0-9]{64}$/) }).nullable(),
-  sources: z.array(z.strictObject({ sourceId: Id, sourceVersion: Version, verification: z.enum(['supported', 'mismatch', 'unavailable']), effectiveDates: z.array(CalendarDay) })),
+  sources: z.array(z.strictObject({ sourceId: Id, sourceVersion: Version, verification: z.enum(['not_checked', 'supported', 'mismatch', 'unavailable']), effectiveDates: z.array(CalendarDay) })),
 });
 export type WorkspaceView = z.output<typeof WorkspaceViewSchema>;
 export type HistoryPage = z.output<typeof HistoryPageSchema>;

@@ -1,3 +1,4 @@
+import { CheckedRemaining } from '../../shared/ui/CheckedRemaining';
 import { useEffect, useRef, useState } from 'react';
 import { CommandReceiptSchema, DecisionCreateSchema, DecisionSchema, RecommendationCreateSchema } from '../../../packages/contracts/src/schemas';
 import { ApiClientError } from '../../../packages/api-client/src/transport';
@@ -194,7 +195,7 @@ function DecisionController({ applicationId: app, session, gateway = unavailable
       {view.blockedReason && <Notice tone="warning">{view.blockedReason}</Notice>}
       {view.offers.map(o => <section key={o.offer.id}><h3>{o.offer.label}</h3><dl className={styles.figures}>
         <div><dt>Principal</dt><dd><Money value={o.offer.principalCentavos}/></dd></div><div><dt>Net proceeds</dt><dd><Money value={o.offer.netReceivedCentavos}/></dd></div><div><dt>Separately paid fees</dt><dd><Money value={o.offer.feesPaidSeparatelyCentavos}/></dd></div>
-        <div><dt>Monthly remaining</dt><dd>{o.checked ? <Money value={o.checked.monthlyRemainingCentavos}/> : 'Unavailable'}</dd></div><div><dt>Lowest dated balance</dt><dd>{o.checked ? <Money value={o.checked.lowestBalanceCentavos}/> : 'Unavailable'}</dd></div><div><dt>Total repayment</dt><dd>{o.checked ? <Money value={o.checked.totalRepaymentCentavos}/> : 'Unavailable'}</dd></div><div><dt>Financing cost</dt><dd>{o.checked ? <Money value={o.checked.financingCostCentavos}/> : 'Unavailable'}</dd></div>
+        {o.checked ? <CheckedRemaining scenario={o.checked}/> : <div><dt>Remaining</dt><dd>Unavailable</dd></div>}<div><dt>Lowest dated balance</dt><dd>{o.checked ? <Money value={o.checked.lowestBalanceCentavos}/> : 'Unavailable'}</dd></div><div><dt>Total repayment</dt><dd>{o.checked ? <Money value={o.checked.totalRepaymentCentavos}/> : 'Unavailable'}</dd></div><div><dt>Financing cost</dt><dd>{o.checked ? <Money value={o.checked.financingCostCentavos}/> : 'Unavailable'}</dd></div>
       </dl><p>Term {o.offer.termMonths} months. {o.offer.available ? 'Explicitly available offer.' : 'Offer unavailable.'}</p><div className="table-scroll"><table><caption>Checked payment schedule</caption><thead><tr><th scope="col">Due date</th><th scope="col">Amount</th></tr></thead><tbody>{o.offer.payments.map((p, i) => <tr key={i}><td>{dateLabel(p.date)}</td><td><Money value={p.amountCentavos}/></td></tr>)}</tbody></table></div>
       {o.checked?.shortageDates.length ? <Notice tone="warning">Modeled dated shortages: {o.checked.shortageDates.map(dateLabel).join('; ')}. A monthly surplus does not remove this timing gap.</Notice> : null}</section>)}
     </div></section>}

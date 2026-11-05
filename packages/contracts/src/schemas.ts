@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { RecordMode, VerificationSchema, CONTRACT_VERSION, Id, MoneyAmount, SignedMoney, PositiveMoneyAmount, CalendarDay, Instant, Version, Text, Currency, Role, FactValueSchema, PolicyCheckSchema, OfferSchema, SourceReferenceSchema, ModelArtifactSchema } from './common.js';
 export * from './common.js';
-import { workflowSchemas } from './workflow.js';
+import { workflowSchemas, WorkflowScenario } from './workflow.js';
 export * from './workflow.js';
 
 export const ApiErrorSchema = z.strictObject({
@@ -41,10 +41,23 @@ export const EvidenceCorrectionSchema = z.strictObject({
 });
 
 export const AssessmentCreateSchema = z.strictObject({ inputVersion: Version, offerVersionIds: z.array(Id).min(1).max(20), periodStart: CalendarDay, periodEnd: CalendarDay });
-export const ScenarioSchema = z.strictObject({
+export const LegacyScenarioSchema = z.strictObject({
   offerVersionId: Id, monthlyRemainingCentavos: SignedMoney, lowestBalanceCentavos: SignedMoney, closingBalanceCentavos: SignedMoney,
   totalRepaymentCentavos: MoneyAmount, financingCostCentavos: SignedMoney, shortageDates: z.array(CalendarDay), policyChecks: z.array(PolicyCheckSchema),
 });
+/** A horizon result is never converted into an average or a single monthly value. */
+export const DatedScenarioSchema = LegacyScenarioSchema.omit({ monthlyRemainingCentavos: true }).extend({
+  format: z.literal('dated-scenario/v1'), monthlyRemainingCentavos: z.null(), workflow: WorkflowScenario,
+}).superRefine((s, ctx) => {
+  const w = s.workflow;
+  const reject = () => ctx.addIssue({code:'custom',message:'The dated scenario projection differs from its saved assessment.'});
+  if (s.offerVersionId !== w.offerId || s.lowestBalanceCentavos !== w.lowestBalanceCentavos
+    || s.closingBalanceCentavos !== w.closingBalanceCentavos || s.totalRepaymentCentavos !== w.totalRepaymentCentavos
+    || s.financingCostCentavos !== w.financingCostCentavos || JSON.stringify(s.shortageDates) !== JSON.stringify(w.shortageDates)) reject();
+  if (s.policyChecks.length !== w.checks.length || s.policyChecks.some((p, i) =>
+    p.policyId !== w.checks[i].id || p.passed !== w.checks[i].passed || p.overridable)) reject();
+});
+export const ScenarioSchema = z.union([LegacyScenarioSchema, DatedScenarioSchema]);
 const AssessmentBasis = { id: Id, applicationId: Id, inputVersion: Version, engineVersion: Text, policyVersionId: Id, createdAt: Instant };
 export const AssessmentSchema = z.discriminatedUnion('status', [
   z.strictObject({ ...AssessmentBasis, status: z.literal('complete'), scenarios: z.array(ScenarioSchema).min(1), warnings: z.array(z.string()) }),

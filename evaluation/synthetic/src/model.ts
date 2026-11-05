@@ -1,13 +1,17 @@
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
 import {
-  CalendarDay, CONTRACT_VERSION, FactValueSchema, Id, ModelArtifactSchema,
+  CalendarDay, FactValueSchema, Id, ModelArtifactSchema,
   SourceReferenceSchema, Version,
 } from '../../../packages/contracts/src/schemas.js';
 
 const Key = z.string().regex(/^[a-z][a-z0-9_-]{0,99}$/);
 export const Sha256 = z.string().regex(/^[a-f0-9]{64}$/);
 const Nonempty = z.string().trim().min(1).max(4000);
+/** Frozen extraction interface, independent of later lending API additions.
+ * Advancing the application version must not relabel a corpus or change its hash.
+ */
+export const CORPUS_CONTRACT_VERSION = '0.3.0';
 export const FindingSchema = z.strictObject({
   field: Key,
   value: FactValueSchema,
@@ -31,7 +35,7 @@ const CaseSchema = z.strictObject({
   rationale: Nonempty,
 });
 export const CorpusSchema = z.strictObject({
-  schemaVersion: z.literal('eval-01-corpus/v1'), contractVersion: z.literal(CONTRACT_VERSION),
+  schemaVersion: z.literal('eval-01-corpus/v1'), contractVersion: z.literal(CORPUS_CONTRACT_VERSION),
   id: Key, version: Key, purpose: z.enum(['development', 'reserved_holdout']),
   provenance: z.strictObject({
     method: z.enum(['public_development_recipe', 'private_authored']),

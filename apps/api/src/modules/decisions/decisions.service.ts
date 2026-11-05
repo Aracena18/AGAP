@@ -10,7 +10,7 @@ import { MemberGuardSchema, PreviewRequestSchema, PreviewViewSchema, unavailable
 import { DecisionsRepository } from './decisions.repository.js';
 import { decisionOperation } from './decision-errors.js';
 import { decisionDocument, termsChecksum } from './decision-documents.js';
-import { prepareDecision, prepareRecommendation, reviewBasisHash, reviewChangeEffect } from './rules.js';
+import { prepareDecision, prepareRecommendation, reviewBasisHash, reviewSourceIds, reviewChangeEffect } from './rules.js';
 
 export class DecisionsService {
   constructor(private readonly uow: UnitOfWork, private readonly ports: DecisionBackendPorts = unavailableDecisionPorts,
@@ -50,7 +50,7 @@ export class DecisionsService {
         return command(tx, `decisions.preview:${app}`, key, { app, data, version }, async () => {
           const { c } = await this.basis(tx, app), at = this.now(), id = randomUUID(), decisionId = randomUUID();
           const { explanation, terms } = decisionDocument(c, data), documentId = terms === null ? null : randomUUID();
-          const explanationData = { origin: 'template' as const, text: explanation, basisHash: reviewBasisHash(c), sourceIds: c.sources.map(s => s.sourceId), reviewedBy: actor.userId };
+          const explanationData = { origin: 'template' as const, text: explanation, basisHash: reviewBasisHash(c), sourceIds: reviewSourceIds(c), reviewedBy: actor.userId };
           const anticipated = { ...data, explanationReviewed: true as const };
           // Validate a provisional candidate only. The preview is not a recorded decision or acknowledgment.
           prepareDecision(actor, c, { id: decisionId, at: at.toISOString(), expectedVersion: version, request: anticipated,

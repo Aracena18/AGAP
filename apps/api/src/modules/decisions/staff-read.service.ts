@@ -9,13 +9,13 @@ import { unavailableDecisionPorts, type DecisionBackendPorts } from './backend-c
 import { DecisionsRepository } from './decisions.repository.js';
 import { decisionOperation } from './decision-errors.js';
 import { termsChecksum } from './decision-documents.js';
-import { prepareDecision, prepareRecommendation, reviewBasisHash } from './rules.js';
+import { prepareDecision, prepareRecommendation, reviewBasisHash, reviewSourceIds } from './rules.js';
 import { HistoryPageSchema, SavedBriefSchema, WorkspaceViewSchema } from './staff-views.js';
 
 /** Advisory hints use the same pure guards as commands; they never authorize a write. */
 function availability(actor: ActorContext, c: ReviewContext, at: string) {
   const probeId = randomUUID(), hash = reviewBasisHash(c);
-  const currentAssessment = c.assessment?.status === 'complete' && c.assessment.inputVersion === c.application.assessmentInputVersion && c.assessment.policyVersionId === c.currentAssessmentPolicyVersionId;
+  const currentAssessment = c.assessment?.status === 'complete' && !c.workflowBasis?.assessment.stale && c.assessment.inputVersion === c.application.assessmentInputVersion && c.assessment.policyVersionId === c.currentAssessmentPolicyVersionId;
   const permits = (work: () => unknown) => { try { work(); return true; } catch { return false; } };
   const decision = (outcome: 'approve' | 'decline' | 'return', offerId: string | null) => permits(() => {
     const scenario = c.assessment?.status === 'complete' ? c.assessment.scenarios.find(s => s.offerVersionId === offerId) : undefined;
@@ -24,7 +24,7 @@ function availability(actor: ActorContext, c: ReviewContext, at: string) {
         offerVersionId: offerId, rationale: 'Availability probe only; no submitted decision.', departureReason: 'Availability probe only.',
         exceptions: outcome === 'approve' ? (scenario?.policyChecks.filter(p => !p.passed).map(p => ({ policyId: p.policyId, reason: 'Availability probe only.' })) ?? []) : [],
         reviewDate: c.periodEnd, explanationReviewed: true },
-      explanation: { origin: 'template', text: 'Availability probe only.', basisHash: hash, sourceIds: c.sources.map(s => s.sourceId), reviewedBy: actor.userId },
+      explanation: { origin: 'template', text: 'Availability probe only.', basisHash: hash, sourceIds: reviewSourceIds(c), reviewedBy: actor.userId },
       document: outcome === 'approve' ? { id: probeId, sha256: '0'.repeat(64) } : null });
   });
   return { canReturn: decision('return', null), offers: c.offers.map(offer => ({ offer,
@@ -50,7 +50,7 @@ export class DecisionStaffReads {
         const hints = availability(actor, c, this.now().toISOString());
         const { recommendation: r, assessment: a } = c;
         return WorkspaceViewSchema.parse({ application: c.application, basisHash: reviewBasisHash(c), periodStart: c.periodStart, periodEnd: c.periodEnd,
-          assessment: a ? { id: a.id, inputVersion: a.inputVersion, state: a.inputVersion !== c.application.assessmentInputVersion || a.policyVersionId !== c.currentAssessmentPolicyVersionId ? 'stale' : a.status, issues: a.status === 'incomplete' ? a.issues.map(i => i.message) : a.warnings } : null,
+          assessment: a ? { id: a.id, inputVersion: a.inputVersion, state: c.workflowBasis?.assessment.stale || a.inputVersion !== c.application.assessmentInputVersion || a.policyVersionId !== c.currentAssessmentPolicyVersionId ? 'stale' : a.status, issues: a.status === 'incomplete' ? a.issues.map(i => i.message) : a.warnings } : null,
           ...hints, recommendation: r ? { id: r.id, offerVersionId: r.offerVersionId, preparedBy: r.preparedBy, preparedAt: r.preparedAt, reason: r.reason } : null,
           blockedReason: hints.canReturn || hints.offers.some(o => o.recommend || o.outcomes.length) ? null : 'No decision action is currently permitted. Current evidence, assignment, authority or conflict review may be required. Contact the authorized review owner.',
           currentDecisionId: pointer?.decisionId ?? null });
@@ -89,7 +89,8 @@ export class DecisionStaffReads {
           recordedAt: s.recordedAt, reviewerId: s.reviewerId, outcome: s.input.outcome, explanation: s.explanation.text, origin: s.explanation.origin, reviewDate: s.input.reviewDate,
           periodStart: s.basis.periodStart, periodEnd: s.basis.periodEnd, snapshotHash, document: s.document,
           considered: offer && scenario ? { offer, checked: { ...scenario, policyChecks: scenario.policyChecks.map(p => ({ ...p, detail: p.passed ? 'Configured check passed.' : 'Discuss this concern with cooperative staff.' })) } } : null,
-          sources: s.basis.sources.map(source => ({ sourceId: source.sourceId, sourceVersion: source.sourceVersion, verification: source.verification,
+          sources: s.basis.workflowBasis ? s.basis.workflowBasis.sources.map(source => ({sourceId:source.sourceId,sourceVersion:source.sourceVersion,verification:source.verification,
+            effectiveDates:[...new Set(s.basis.workflowBasis!.facts.filter(f => f.sourceId === source.sourceId && f.sourceVersion === source.sourceVersion).map(f => f.input.effectiveDate))]})) : s.basis.sources.map(source => ({ sourceId: source.sourceId, sourceVersion: source.sourceVersion, verification: source.verification,
             effectiveDates: [...new Set(s.basis.facts.filter(f => f.sourceId === source.sourceId && f.sourceVersion === source.sourceVersion).map(f => f.effectiveDate))] })) });
       });
     });

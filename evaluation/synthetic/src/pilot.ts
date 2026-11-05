@@ -1,5 +1,4 @@
-import { CONTRACT_VERSION } from '../../../packages/contracts/src/schemas.js';
-import { sha256, stableId, validateCorpus, type Corpus, type CorpusCase, type Finding, type Source } from './model.js';
+import { CORPUS_CONTRACT_VERSION, sha256, stableId, validateCorpus, type Corpus, type CorpusCase, type Finding, type Source } from './model.js';
 
 /** Public development recipes only. Expected amounts below are authored constants, not finance-engine output. */
 export function developmentPilot(seed = 'eval-01-development-v1'): Corpus {
@@ -73,5 +72,5 @@ export function developmentPilot(seed = 'eval-01-development-v1'): Corpus {
   add('ev-12', ['current_repayment_no_reported_strain', 'no_inferred_zero'], [noStrain], [unknown('essential_expense_gap', 'No expense-gap amount is recorded; absence is not a numeric zero.', [[noStrain, 'No expense-gap amount or other wellbeing assessment is recorded.']], null, 'not_applicable', 'abstain')], 'The repayment observation matches ev-11; the explicit report differs. It supports no general healthy/unhealthy verdict.');
   for (const item of cases.slice(-2)) item.scenarioGroup = 'scenario-repayment-pair';
 
-  return validateCorpus({ schemaVersion: 'eval-01-corpus/v1', contractVersion: CONTRACT_VERSION, id: 'eval-01-development', version: 'v1', purpose: 'development', provenance: { method: 'public_development_recipe', seed, authoredOn: '2026-10-29' }, cases });
+  return validateCorpus({ schemaVersion: 'eval-01-corpus/v1', contractVersion: CORPUS_CONTRACT_VERSION, id: 'eval-01-development', version: 'v1', purpose: 'development', provenance: { method: 'public_development_recipe', seed, authoredOn: '2026-10-29' }, cases });
 }

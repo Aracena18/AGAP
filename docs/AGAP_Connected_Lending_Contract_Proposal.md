@@ -68,3 +68,10 @@ M1 may configure one explicitly fictional principal-only product and a fictional
 | Actual cooperative policy/accounting authority | Selected operational product, limits/quorum/validity/overrides, accounting/allocation/execution rules | Pending; fictional development can continue |
 
 Approval records must name the actual reviewer, date, exact commit/contract version, accepted scope and remaining changes. Neither authorship of this proposal nor an AI technical review supplies another person's acceptance. No messages were sent to teammates and no institutional sign-off is claimed.
+
+
+## CL1 technical adoption candidate — 5 November 2026
+
+The user's subsequent request authorizes sequential implementation. The [CL1 candidate](tasks/production/connected-lending-cl1/IMPLEMENTATION.md) adopts the proposed lossless `workflow-decision-basis/v1` and `decision-snapshot/v2` identifiers, with canonical candidate 0.4.0. It retains the original v1 decoder and hashes. The dated scenario keeps common checked totals but explicitly nulls the legacy monthly figure, attaches the full original workflow scenario, and verifies aliases against that original. The private basis commits full saved inputs/facts/policy, bounded source commitments and actual confirmation provenance; it does not split cash dates or copy OCR pages into member terms.
+
+The AI technical implementation/review is recorded against the isolated CL1 branch. It is not Robert/Aaron/Benedict/Earl's receiving-owner approval; those rows above remain pending until the named people actually review the version. New public DTO/route adoption, consequential review-readiness and normal-navigation gates remain CL2–CL6 work. The first configuration format is explicitly fictional/principal-only/simulation-only and cannot be represented as the later approved operational product. The documented coarse organization fence is an M1 correctness protocol requiring consistent registration and later throughput verification, not a measured production scaling claim.
