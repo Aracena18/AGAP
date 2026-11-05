@@ -31,10 +31,32 @@ Aaron first supplies the codebook/cohort/feature proposal for protocol review, t
 
 Report sample/exclusion counts, class balance and measured results with uncertainty and explicit design limitations. Use the predeclared weighting/calibration/threshold protocol. Small or absent subgroups remain insufficient evidence. A weak/null result or an EBM that offers no reliable gain remains a valid outcome; explainability does not establish predictive usefulness or causation.
 
-The research evaluator and metric tests follow once the actual codebook and artifact interface are available. No placeholder metric is zero, and a synthetic harness test cannot substantiate a survey finding.
+### Normalized prediction evaluator proposal — 5 November 2026
+
+The coordinated expansion supplies an offline, evaluation-local normalized interface while the actual codebook and trained artifacts remain pending. It accepts independently exported row-aligned probabilities from both fixed models; it does not infer survey codes or execute a trainer. Aaron and Earl still review the source mapping, cohort, split, features, weighting, calibration bins, validation-selected threshold and subgroup minimum before a research run. Hashes bind normalized cohort, protocol and prediction artifacts; supplied review references are provenance assertions, not automatic approval or proof of independence. Robert reviews registration in the existing evaluation checks. Synthetic harness runs are labeled as such and cannot substantiate survey findings.
 
 ## Boundary and handoff
 
 The output is an offline research report with dataset/protocol/model versions, source attribution, measured comparisons, error examples and limits. It has no operational endpoint, member score or route into assessments, approvals, goals or support ranking. Any later operational predictive use requires its own reviewed target, relevant data, authorization and architecture.
 
 The initial handoff is this reviewable protocol and the required-data/artifact contract above. Actual source-term/codebook evidence, agreed mappings/splits, returned artifacts and final independent metrics remain receiving-owner inputs, recorded in the [Earl task brief](../../docs/tasks/production/04-accounting-monitoring.md). Assignment.md remains the task/status tracker.
+
+## Running the export evaluator
+
+Use Node 24 and the existing locked dependencies:
+
+```sh
+npx tsx evaluation/explainable/cli.ts --protocol /approved/protocol.json --cohort /private/holdout.json --ebm /private/ebm.json --logistic /private/logistic.json --out /private/new-report.json
+```
+
+These example paths are placeholders, not supplied approved inputs. Keep raw/normalized survey rows, labels, prediction exports and reports in approved private storage outside Git. Output files must be new; the CLI refuses overwrites. The canonical strict schemas and `hashResearch` function are exported by [evaluate.ts](evaluate.ts); use `hashResearch(value)` for all normalized JSON bindings, reusing the existing evaluator's `serialize`/SHA-256 convention. A byte hash of an artifact file remains a byte hash; do not substitute a filename or hash of its label.
+
+| Input | Required normalized content |
+| --- | --- |
+| Cohort | `partition: "holdout"`; rows with unique stable `id`, reviewed binary `label` 0/1 or explicit null, finite positive `weight`, and declared `subgroup` |
+| Protocol | `version: "research-eval-v1"`; `origin` harness/research; normalized cohort hash, source dataset/codebook/split/feature-manifest hashes, source-term/review references, distinct positive/negative class meanings, validation-selected threshold and source, strictly increasing calibration edges spanning 0–1, subgroup minimum and selection-freeze timestamp |
+| Each model export | Fixed `model` ebm/logistic; protocol/artifact/preprocessing/environment hashes; `classOrder: [0,1]`; one positive-class probability for every cohort ID, including unknown-label rows. Both models use the same frozen normalized preprocessing and distinct model artifacts |
+
+The evaluator rejects missing/duplicate/extra IDs, changed cohort/protocol bindings, incompatible class order/preprocessing, and invalid probabilities/weights. Unknown labels are excluded explicitly from measured denominators. It reports weighted and unweighted Brier error, tie-aware ROC AUC, validation-threshold confusion/precision/recall and declared-bin calibration. Probability equal to threshold is positive; bins are lower-inclusive/upper-exclusive except the final bin includes one. Weighted AUC compares positive/negative weight pairs with half credit for equal probabilities. Empty denominators and empty calibration bins remain null. Subgroups below the supplied labeled-row minimum return insufficient with no subgroup metrics or counts. Resampling confidence intervals remain unavailable until a reviewed survey-design method is implemented. No threshold, cohort selection, response-code mapping, approval or model winner is inferred from holdout results.
+
+`npm run typecheck:evaluation` and `npm run test:evaluation` include this candidate through the existing evaluation registration. Harness arithmetic fixtures are fictional, never research findings. The tool evaluates supplied exports, not the authenticity of independent model execution; review data access, source terms, training lineage, threshold selection and artifact execution evidence separately before accepting a research result.
