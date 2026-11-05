@@ -1,0 +1,40 @@
+{
+  "branch": "feat/earl-accounting-monitoring-expansion",
+  "base": "f393537",
+  "capturedAt": "2026-11-05T06:57:47.592Z",
+  "records": "Fictional isolated API/browser fixtures only",
+  "command": "npm run test:e2e -- tests/accounting-support-expansion.spec.ts; final capture: 3 passed after full suite: 116 passed, 4 existing presentation-only skips",
+  "fullPage": true,
+  "viewports": {
+    "desktop": {
+      "width": 1366,
+      "height": 768
+    },
+    "mobile": {
+      "width": 320,
+      "height": 800
+    }
+  },
+  "files": {
+    "check-in-summary-320.png": {
+      "sha256": "4a1e3b56796fe7ad3288e00673712a5159cb65b616c2d409433c8062035748e7",
+      "width": 320,
+      "height": 2339
+    },
+    "check-in-summary-desktop.png": {
+      "sha256": "f37ab0e3a176703fd7e24bd478f139feb596caa582af7be5569ab8eadf30405e",
+      "width": 1366,
+      "height": 1720
+    },
+    "trial-balance-320.png": {
+      "sha256": "8a375c3c46d9e99dd7681c37b2649ff1da8d89e53ab170e72af78912440394f0",
+      "width": 320,
+      "height": 2079
+    },
+    "trial-balance-desktop.png": {
+      "sha256": "ffce801be326ea0e423df721c19c53cccc11da85acc6b8c5de7c8b5e1d3ad3d2",
+      "width": 1366,
+      "height": 1498
+    }
+  }
+}
