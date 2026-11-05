@@ -7,6 +7,7 @@
   "branch": "feat/earl-support-completion",
   "initialBaseCommit": "44a9b57",
   "baseCommit": "64b3cea",
+  "documentationIntegrationCommit": "7decaa0",
   "recordMode": "fictional",
   "capturedAt": "2026-11-05T13:17:28.000Z",
   "test": "tests/support-corrections.spec.ts",

@@ -8,7 +8,7 @@ My requests → **Review or correct request** opens one owned source, including 
 
 An additive LF-pinned `008-correction-source.sql` installs only a bounded own-member read function with explicit organization/member checks and no new raw grants. Existing financial/snapshot/history meanings are preserved. An optional recovery-only port reconciles exact already-committed corrections after a notice change; new old-notice commands cannot call the loan reader or writer, and generic receipts remain ID-only. The ordinary writer now validates the public loan projection and matching position before recording a selected loan.
 
-Final verification integrates main `64b3cea`, preserving its staff callback recovery and both existing guidance/assisted fixtures. Actual database/API cases and browser journeys cover private-source boundaries, malformed/foreign links, sources beyond 100 records, exact/competing retries, notice changes, safe posted-loan snapshots, unchanged original follow-ups, draft preservation, later denial, old-account reads and phone accessibility.
+Final application verification integrates main `64b3cea`, preserving its staff callback recovery and both existing guidance/assisted fixtures. The subsequent documentation-only main update `7decaa0` is also preserved; the tested application source is unchanged. Actual database/API cases and browser journeys cover private-source boundaries, malformed/foreign links, sources beyond 100 records, exact/competing retries, notice changes, safe posted-loan snapshots, unchanged original follow-ups, draft preservation, later denial, old-account reads and phone accessibility.
 
 | Candidate verification | Observed result |
 | --- | --- |
