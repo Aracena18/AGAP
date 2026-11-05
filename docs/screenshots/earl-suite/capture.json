@@ -1,0 +1,23 @@
+{
+    "task":  "ACC-01 / HLT-01 / EVAL-01",
+    "branch":  "feat/earl-accounting-monitoring-evaluation",
+    "base":  "59351ce",
+    "collectedAt":  "2026-11-05T02:34:28.4825709Z",
+    "source":  "Final passing isolated PostgreSQL/API Chromium support-position journey; fictional posted loan and preserved unsent response",
+    "environment":  "Node 24.22.2, Debian 12, PostgreSQL 18, Chromium",
+    "viewports":  {
+                      "desktop":  {
+                                      "height":  768,
+                                      "width":  1366
+                                  },
+                      "mobile":  {
+                                     "height":  800,
+                                     "width":  320
+                                 }
+                  },
+    "visualReview":  "Desktop and 320px layout inspected; posted fields, freshness and refresh control remain readable. Reflow, draft preservation, denial clearing and automated accessibility pass.",
+    "sha256":  {
+                   "support-position-320.png":  "1718fbb5169322dbe8072bd245abd6f75154ecaef06d085bdd8cae4e5a205a53",
+                   "support-position-desktop.png":  "d5318e69688b2085fbc7d4e0a48b06491ad2089295a005056d30b11c38ff1f8b"
+               }
+}

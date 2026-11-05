@@ -69,6 +69,16 @@ The pack includes the unchanged compatible `development/` bundle, `coverage.json
 
 The exporter refuses reserved holdouts before creating output. Verification checks the exact inventory, refuses symlinks, regenerates the pending pack from its corpus and detects edited documents/worksheets/manifests or added files. Checksums establish consistency, not authentic review or trusted authorship. Actual independent label/interface review, training lineage, protected holdout arrangements and agreed measures/regression limits still precede freezing. Public development examples are already visible to trainers and cannot be relabeled as untouched holdout evidence.
 
+### Review declaration readiness
+
+Copy the worksheet outside the immutable pack, retain its corpus hash, and record `accepted`, `changes_requested` or `pending` decisions. Changes requested require a comment. Accepted open questions also require an evidence/reference comment. Set `status` to `reviewed` and supply the actual reviewer names and calendar date only after those reviews occur. All case/field/question identities must match the pack exactly, without omissions or duplicates.
+
+```sh
+npx tsx evaluation/synthetic/src/cli.ts review-readiness --pack evaluation/synthetic/reviews/development-v1 --worksheet SEPARATE_WORKSHEET_FILE --out NEW_READINESS_REPORT_FILE
+```
+
+The command verifies the original pack, validates the separate worksheet and reports pending decisions, corrections and missing metadata. A fully populated worksheet yields `declarations_complete`, never release approval. `releaseReady` remains false: reviewer identity/independence, semantic truth, sufficient coverage, protected holdout and separate hash-bound release approval still require actual evidence. The report contains paths/codes rather than copying reviewer comments or private test data. Files are never overwritten.
+
 ## Reviewed release and holdout protocol
 
 Before training, agree the task/input formats, labels, split counts and primary improvement/regression criteria with the receiving owners. Size splits by independent groups, not individual rendered pages. The tool joins shared household/scenario families and identical normalized source content, then deterministically partitions whole connected groups. It rejects cross-partition identities/content; private holdout templates must also be absent from development. Human review still checks near-duplicates, undisclosed relationships and meaningful template novelty.
@@ -148,7 +158,7 @@ npx tsc -p evaluation/synthetic/tsconfig.json --noEmit
 npx eslint evaluation/synthetic
 ```
 
-The repository's existing test/typecheck discovery excludes `evaluation/`. Robert must register these focused commands in the shared check/CI flow before integration; this task does not edit his configuration. Continue the contributor-required `npm run check` and `npm run test:e2e` checks on the integration environment. Exact observed results and remaining dependencies belong in [Earl's handoff](../../docs/tasks/production/04-accounting-monitoring.md).
+The repository's `npm run check` already registers evaluation tests and typecheck through `test:evaluation` and `typecheck:evaluation`; the focused commands remain useful during development. Continue the contributor-required `npm run check` and `npm run test:e2e` checks on the integration environment. Exact observed results and remaining dependencies belong in [Earl's handoff](../../docs/tasks/production/04-accounting-monitoring.md).
 
 - Robert: review the candidate formats and shared-schema compatibility; register focused test/typecheck checks and update the central tracker from PR evidence.
 - Benedict: review the concrete inputs/targets/schema and document format; confirm the loader and artifact interface before tuning. Consume only an agreed release and retain its hashes.
