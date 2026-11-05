@@ -224,6 +224,7 @@ export const CheckInSummaryQuerySchema=z.strictObject({fromDate:CalendarDay,thro
 const answerCounts=z.strictObject({yes:z.number().int().nonnegative(),no:z.number().int().nonnegative(),declined:z.number().int().nonnegative(),unavailable:z.number().int().nonnegative()});
 export const CheckInSummarySchema=z.strictObject({fromDate:CalendarDay,throughDate:CalendarDay,cutoffAt:Instant,scope:z.literal('currently-assigned-submissions'),state:z.enum(['available','unavailable']),message:Text,submissionCount:z.number().int().min(0).max(1000).nullable(),answers:z.strictObject({canMeetEssentials:answerCounts,borrowedToRepay:answerCounts,financialStrain:z.strictObject({reported:z.number().int().nonnegative(),not_reported:z.number().int().nonnegative(),declined:z.number().int().nonnegative(),unavailable:z.number().int().nonnegative()})}).nullable()}).superRefine((v,ctx)=>{if(v.state==='unavailable'){if(v.submissionCount!==null||v.answers!==null)ctx.addIssue({code:'custom',message:'Unavailable is not a partial count.'});}else if(v.submissionCount===null||!v.answers||Object.values(v.answers).some(counts=>Object.values(counts).reduce((a,b)=>a+b,0)!==v.submissionCount))ctx.addIssue({code:'custom',message:'Answer counts must cover every submission.'});});
 export const MemberSupportSchema = z.strictObject({id:Id,submittedAt:Instant,status:z.enum(['submitted','assigned','reviewed']),message:Text,response:Text.nullable(),checkIn:SupportCheckInSchema.optional(),loanId:Id.nullable().optional()});
+export const SupportCorrectionSourceSchema=z.strictObject({request:MemberSupportSchema.required({checkIn:true,loanId:true}),contactPreference:MemberSupportCreateSchema.shape.contactPreference,links:SupportCorrectionLinkSchema,reason:Text.nullable(),sharingNoticeVersion:Text});
 export const SupportAssignmentSchema=z.strictObject({officerId:Id,reason:Text});
 export const SupportResponseSchema=z.strictObject({response:Text,internalNote:Text,followUpDate:CalendarDay.nullable()});
 export const SupportSummarySchema=z.strictObject({id:Id,memberId:Id,branchId:Id,submittedAt:Instant,status:MemberSupportSchema.shape.status,version:Version,assignedOfficerId:Id.nullable()});
@@ -275,5 +276,6 @@ export const schemas = {
   SupportCorrectionCreate:SupportCorrectionCreateSchema,SupportCorrectionLink:SupportCorrectionLinkSchema,CheckInSummaryQuery:CheckInSummaryQuerySchema,CheckInSummary:CheckInSummarySchema,
   AssistedCheckInContent:AssistedCheckInContentSchema,AssistedCheckIn:AssistedCheckInSchema,AssistedCheckInPage:AssistedCheckInPageSchema,AssistedCheckInQuery:AssistedCheckInQuerySchema,AssistedCheckInReceipt:AssistedCheckInReceiptSchema,AssistedCheckInConfirm:AssistedCheckInConfirmSchema,AssistedCheckInWithdraw:AssistedCheckInWithdrawSchema,AssistedCheckInDecline:AssistedCheckInDeclineSchema,
   SupportPositionView:SupportPositionViewSchema,
+  SupportCorrectionSource:SupportCorrectionSourceSchema,
 } as const;
 export type SchemaName = keyof typeof schemas;

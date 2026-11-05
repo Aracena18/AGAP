@@ -1,5 +1,15 @@
 # Earl (D): accounting, financial health and independent model evaluation
 
+## Member support completion candidate — 5 November 2026
+
+Purpose: complete the fictional member correction journey without rewriting confirmed support history. The user authorizes this coordinated HLT-01/MOB-01/FND-03 batch on `feat/earl-support-completion`, base `44a9b57`. The [module proposal](../../../apps/api/src/modules/monitoring/README.md#member-correction-completion-proposal--5-november-2026) precedes shared/member edits; Robert retains consuming-owner review. No institution-dependent accounting, goals/5C or retention rules are invented.
+
+My requests → **Review or correct request** opens one owned source, including original contact/check-in/loan fields, public response and adjacent replacement links. The member edits, supplies a reason, previews and confirms sharing. A new unassigned request awaits ordinary administrator assignment; original disclosures, published replies, private staff actions and follow-ups stay intact. Previous/newer records open individually even when outside the loaded 25-item history page. Real-record browser actions remain unavailable.
+
+An additive LF-pinned `008-correction-source.sql` installs only a bounded own-member read function with explicit organization/member checks and no new raw grants. Existing financial/snapshot/history meanings are preserved. An optional recovery-only port reconciles exact already-committed corrections after a notice change; new old-notice commands cannot call the loan reader or writer, and generic receipts remain ID-only. The ordinary writer now validates the public loan projection and matching position before recording a selected loan.
+
+Verification is in progress. Actual database/API cases and browser journeys cover private-source boundaries, malformed/foreign links, sources beyond 100 records, exact/competing retries, notice changes, safe posted-loan snapshots, unchanged original follow-ups, draft preservation, later denial, old-account reads and phone accessibility. Final required checks and screenshots will be recorded here before publication. Development services/data remain untouched; `graft` and `graphify` are unavailable.
+
 ## Fictional assisted check-in candidate — 5 November 2026
 
 Purpose: let an assigned officer help prepare a check-in without representing unconfirmed words as the member's statement. The user authorizes this fictional prototype while postponing institution-dependent answers. The [module proposal](../../../apps/api/src/modules/monitoring/README.md#fictional-assisted-check-in-proposal--5-november-2026) precedes coordinated shared/member edits on `feat/earl-accounting-health-workflows`, base `5efc99a`; Robert retains consuming-owner review of contracts/client, root wiring and member UI. This does not transfer ongoing member ownership.

@@ -122,4 +122,5 @@ export class AgapClient extends ClientTransport {
   getMemberAssistedCheckIn(id: string, options: RequestOptions = {}) { return this.request('GET', `/member/assisted-check-ins/${encodeURIComponent(id)}`, undefined, schemas.AssistedCheckIn, options); }
   confirmMemberAssistedCheckIn(id: string, body: z.input<typeof schemas.AssistedCheckInConfirm>, options: RequestOptions = {}) { return this.request('POST', `/member/assisted-check-ins/${encodeURIComponent(id)}/confirmations`, body, schemas.AssistedCheckInReceipt, options); }
   declineMemberAssistedCheckIn(id: string, body: z.input<typeof schemas.AssistedCheckInDecline>, options: RequestOptions = {}) { return this.request('POST', `/member/assisted-check-ins/${encodeURIComponent(id)}/declines`, body, schemas.AssistedCheckInReceipt, options); }
+  getMemberSupportCorrectionSource(id: string, options: RequestOptions = {}) { return this.request('GET', `/member/support-requests/${encodeURIComponent(id)}/correction-source`, undefined, schemas.SupportCorrectionSource, options); }
 }

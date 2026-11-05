@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CheckInSummaryQuerySchema, CheckInSummarySchema, Id, MemberSupportSchema, SupportCheckInSchema, SupportCorrectionCreateSchema, SupportCorrectionLinkSchema } from '../../../../../packages/contracts/src/schemas.js';
+import { CheckInSummaryQuerySchema, CheckInSummarySchema, Id, MemberSupportSchema, MemberLoansViewSchema, SupportCheckInSchema, SupportCorrectionCreateSchema, SupportCorrectionLinkSchema, SupportCorrectionSourceSchema } from '../../../../../packages/contracts/src/schemas.js';
 import type { ActorContext, MemberTransactionContext, UnitOfWork } from '../../../../../packages/contracts/src/ports.js';
 import { memberCommand } from '../../platform/member-commands.js';
 import { ApiError, notFound } from '../../platform/errors.js';
@@ -9,20 +9,34 @@ import { supportOperation } from './monitoring.errors.js';
 export class SupportCorrections {
     constructor(private readonly loans: Pick<LoanReads, 'memberLoans'>) { }
     link(tx: MemberTransactionContext, id: string) { return supportOperation(async () => SupportCorrectionLinkSchema.parse((await tx.query('SELECT monitoring.correction_link($1) AS body', [Id.parse(id)])).rows[0].body)); }
+    source(tx:MemberTransactionContext,id:string){return supportOperation(async()=>{
+        const request=Id.parse(id),raw=(await tx.query('SELECT monitoring.correction_source($1) AS body',[request])).rows[0]?.body;
+        const result=SupportCorrectionSourceSchema.omit({sharingNoticeVersion:true}).safeParse(raw);
+        if(!result.success||result.data.request.id!==request||result.data.links.requestId!==request||(result.data.links.replacesId!==null)!==(result.data.reason!==null))throw new ApiError(503,'support_source_unavailable','This request could not be displayed safely. Retry the read.');
+        return result.data;
+    });}
     correct(tx: MemberTransactionContext, id: string, input: unknown, key: string) {
+        return this.saveCorrection(tx,id,input,key,true);
+    }
+    recover(tx:MemberTransactionContext,id:string,input:unknown,key:string){return this.saveCorrection(tx,id,input,key,false);}
+    private saveCorrection(tx:MemberTransactionContext,id:string,input:unknown,key:string,allowNew:boolean){
         return supportOperation(async () => {
             const prior = Id.parse(id), data = SupportCorrectionCreateSchema.parse(input);
             // Own-record visibility is rechecked before command replay; no cross-member ID oracle.
             await this.link(tx, prior);
             const receipt = await memberCommand(tx, 'support.correct', key, { prior, ...data }, async () => {
+                if(!allowNew)throw new ApiError(409,'notice_changed','Review the current sharing notice before sending a new correction.');
                 let position: unknown = null;
                 if (data.loanId) {
-                    const inventory = await this.loans.memberLoans(tx);
+                    const checked=MemberLoansViewSchema.safeParse(await this.loans.memberLoans(tx));
+                    if(!checked.success)throw new ApiError(503,'support_loan_unavailable','The linked loan information could not be validated.');
+                    const inventory = checked.data;
                     if (inventory.state !== 'available')
                         throw new ApiError(501, 'module_not_available', 'The linked loan cannot be checked yet.');
                     const loan = inventory.data.find(l => l.id === data.loanId);
                     if (!loan)
                         throw notFound();
+                    if(loan.position.loanId!==loan.id)throw new ApiError(503,'support_loan_unavailable','The linked loan position could not be validated.');
                     position = loan.position;
                 }
                 const result = await tx.query('SELECT monitoring.correct_support($1,$2::jsonb,$3::jsonb,$4) AS id', [prior, JSON.stringify(data), position === null ? null : JSON.stringify(position), tx.actor.correlationId]);
