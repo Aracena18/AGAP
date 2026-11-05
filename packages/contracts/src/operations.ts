@@ -1,5 +1,6 @@
 import type { SchemaName } from './schemas.js';
 import { lifecycleOperations } from './lifecycle.js';
+import {connectedMoneyOperations} from './connected-money.js';
 
 export interface Operation {
   id: string; method: 'GET' | 'POST' | 'PATCH'; path: string; response: SchemaName;
@@ -127,4 +128,5 @@ export const operations = [
   {id:'confirmMemberAssistedCheckIn',method:'POST',path:'/member/assisted-check-ins/{id}/confirmations',request:'AssistedCheckInConfirm',response:'AssistedCheckInReceipt',owner:'Earl',implemented:true,idempotent:true,versioned:true,principal:'member'},
   {id:'declineMemberAssistedCheckIn',method:'POST',path:'/member/assisted-check-ins/{id}/declines',request:'AssistedCheckInDecline',response:'AssistedCheckInReceipt',owner:'Earl',implemented:true,idempotent:true,versioned:true,principal:'member'},
   {id:'getMemberSupportCorrectionSource',method:'GET',path:'/member/support-requests/{id}/correction-source',response:'SupportCorrectionSource',owner:'Earl',implemented:true,principal:'member'},
+  ...connectedMoneyOperations,
 ] satisfies Operation[];

@@ -13,7 +13,7 @@ import { owner, runtimePool, config } from './database.js';
 import { memberFixture } from './member-fixtures.js';
 
 /** Separate fictional organization: never replaces historical product/offer fixtures. */
-export async function connectedLendingFixture(){
+export async function connectedLendingFixture(paymentDates:readonly [string,string]=['2026-11-25','2026-12-25']){
   const org=randomUUID(),branch=randomUUID();
   await owner.query('INSERT INTO platform.organizations VALUES($1,$2)',[org,'Fictional connected-lending tests']);
   await owner.query('INSERT INTO platform.branches VALUES($1,$2,$3)',[branch,org,'Fictional connected branch']);
@@ -23,11 +23,11 @@ export async function connectedLendingFixture(){
     await owner.query("INSERT INTO identity.sessions(id,token_hash,user_id,authenticated_at,methods,expires_at) VALUES($1,$2,$3,now(),ARRAY['mfa'],now()+interval '30 minutes')",[sessionId,tokenHash(token),userId]);
     const actor:ActorContext={userId,organizationId:org,branchIds:[branch],roles:[role],sessionId,authenticatedAt:new Date(),authenticationMethods:['mfa'],correlationId:randomUUID()};return {actor,token};
   }
-  const officer=await staff('officer'),reviewer=await staff('reviewer'),administrator=await staff('administrator'),cashier=await staff('cashier'),authorizer=await staff('financial_authorizer');
+  const officer=await staff('officer'),reviewer=await staff('reviewer'),administrator=await staff('administrator'),cashier=await staff('cashier'),authorizer=await staff('financial_authorizer'),auditor=await staff('auditor');
   const member=await memberFixture(officer.actor),uow=new PostgresUnitOfWork(runtimePool,{lendingGuard:true}),muow=new PostgresMemberUnitOfWork(runtimePool,{lendingGuard:true});
   const app=await new ApplicationsService(uow,new MembersService(uow,config.PRIVACY_NOTICE_VERSION)).create(officer.actor,{memberId:member.record.id,purpose:'Fictional connected lending journey',requestedPrincipalCentavos:100000,requestedTermMonths:2,currency:'PHP'},randomUUID());
   const policy=WorkflowPolicy.parse({id:randomUUID(),label:'Fictional connected principal-only product',status:'fictional',approvalReference:null,effectiveFrom:'2026-01-01',effectiveThrough:'2026-12-31',loanProceedsTreatment:'reserved_for_purpose',remainingRuleBasis:'each_reviewed_calendar_month_segment',minimumRemainingCentavos:0,minimumBalanceCentavos:0,
-    offers:[{id:randomUUID(),productVersionId:randomUUID(),label:'Fictional principal-only two-month offer',principalCentavos:100000,netReceivedCentavos:100000,feesPaidSeparatelyCentavos:0,termMonths:2,available:true,payments:[{date:'2026-11-25',amountCentavos:50000},{date:'2026-12-25',amountCentavos:50000}],separateFees:[]}]});
+    offers:[{id:randomUUID(),productVersionId:randomUUID(),label:'Fictional principal-only two-month offer',principalCentavos:100000,netReceivedCentavos:100000,feesPaidSeparatelyCentavos:0,termMonths:2,available:true,payments:[{date:paymentDates[0],amountCentavos:50000},{date:paymentDates[1],amountCentavos:50000}],separateFees:[]}]});
   await owner.query('INSERT INTO credit.policies(id,organization_id,body) VALUES($1,$2,$3)',[policy.id,org,JSON.stringify(policy)]);
   const workflow=new WorkflowService(uow,muow,false,true);
   let version=app.version;
@@ -41,5 +41,5 @@ export async function connectedLendingFixture(){
     financialAuthority:{status:'configured',versionId:id,organizationId:org,branchId:branch,productVersionId:policy.offers[0].productVersionId,effectiveFrom:'2026-01-01',effectiveThrough:'2026-12-31',mfaMaxAgeSeconds:900,grants:[{userId:cashier.actor.userId,actions:['prepare','submit','observe','reconcile'],methods:['cash'],maximumCentavos:100000},{userId:authorizer.actor.userId,actions:['authorize','submit','observe','reconcile'],methods:['cash'],maximumCentavos:100000}]},
     principalPolicy:{format:'principal-only-v1',versionId:id,organizationId:org,productVersionId:policy.offers[0].productVersionId,effectiveFrom:'2026-01-01',effectiveThrough:'2026-12-31',interestCentavos:0,feesCentavos:0,graceDays:0,allocation:'scheduled-exact',cashAccountId:randomUUID(),principalAccountId:randomUUID(),releaseRuleId:randomUUID(),repaymentRuleId:randomUUID()},execution:{status:'configured',mode:'simulation',componentRuleVersionId:id}});
   const client=await owner.connect();try{await client.query('BEGIN');await client.query(lendingLockSql,[org]);await client.query('INSERT INTO decisions.lending_configurations(id,organization_id,branch_id,product_version_id,body) VALUES($1,$2,$3,$4,$5)',[id,org,branch,configuration.productVersionId,JSON.stringify(configuration)]);await client.query('COMMIT');}catch(e){await client.query('ROLLBACK');throw e;}finally{client.release();}
-  return {org,branch,officer,reviewer,administrator,cashier,authorizer,member,appId:app.id,offerId:policy.offers[0].id,policy,configuration};
+  return {org,branch,officer,reviewer,administrator,cashier,authorizer,auditor,member,appId:app.id,offerId:policy.offers[0].id,policy,configuration};
 }

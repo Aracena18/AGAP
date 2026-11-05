@@ -6,6 +6,8 @@ import { workflowSchemas, WorkflowScenario } from './workflow.js';
 import { modelReviewSchemas } from './model-review.js';
 import { priorityReviewSchemas } from './priority-review.js';
 import { lifecycleSchemas } from './lifecycle.js';
+import {connectedMoneySchemas} from './connected-money.js';
+export * from './connected-money.js';
 export * from './model-review.js';
 export * from './priority-review.js';
 export * from './lifecycle.js';
@@ -18,7 +20,7 @@ export const ApiErrorSchema = z.strictObject({
 });
 export const SessionSchema = z.strictObject({
   user: z.strictObject({ id: Id, displayName: z.string(), organizationId: Id, branchIds: z.array(Id), branches: z.array(z.strictObject({id:Id,name:z.string()})), roles: z.array(Role) }),
-  csrfToken: z.string(), expiresAt: Instant, privacyNoticeVersion: z.string(), contractVersion: z.literal(CONTRACT_VERSION), recordMode:RecordMode.optional(),fictionalPilot:z.boolean().optional(),
+  csrfToken: z.string(), expiresAt: Instant, privacyNoticeVersion: z.string(), contractVersion: z.literal(CONTRACT_VERSION), recordMode:RecordMode.optional(),fictionalPilot:z.boolean().optional(),connectedLending:z.literal(true).optional(),
 });
 export const StaffSchema = z.strictObject({ id: Id, displayName: z.string(), branchIds: z.array(Id), roles: z.array(Role), active: z.boolean(), version: Version });
 export const StaffPageSchema = z.strictObject({ items: z.array(StaffSchema), nextCursor: Id.nullable() });
@@ -353,5 +355,6 @@ export const schemas = {
   AssistedCheckInContent:AssistedCheckInContentSchema,AssistedCheckIn:AssistedCheckInSchema,AssistedCheckInPage:AssistedCheckInPageSchema,AssistedCheckInQuery:AssistedCheckInQuerySchema,AssistedCheckInReceipt:AssistedCheckInReceiptSchema,AssistedCheckInConfirm:AssistedCheckInConfirmSchema,AssistedCheckInWithdraw:AssistedCheckInWithdrawSchema,AssistedCheckInDecline:AssistedCheckInDeclineSchema,
   SupportPositionView:SupportPositionViewSchema,
   SupportCorrectionSource:SupportCorrectionSourceSchema,
+  ...connectedMoneySchemas,
 } as const;
 export type SchemaName = keyof typeof schemas;
