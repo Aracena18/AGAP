@@ -14,6 +14,8 @@ The [UI/UX design system](design.md) defines the user's Google-inspired visual d
 
 ## Start locally
 
+For the disposable fictional backup/restore check, run `npm.cmd run ops:drill` after selecting Node 24 and starting Docker Desktop's Linux engine. It creates its own databases and verifies restored financial records, private documents and access controls; see the [recovery guide](docs/AGAP_Platform_Foundation.md#verify-and-recover). It does not use your development database or authorize production recovery.
+
 Install/select Node 24, open Docker Desktop with its Linux engine, then run these from the repository folder (use `npm` instead of `npm.cmd` outside Windows):
 
 ```powershell

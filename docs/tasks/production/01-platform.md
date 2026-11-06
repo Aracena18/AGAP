@@ -1,5 +1,11 @@
 # Robert (A): platform, member portal and integration
 
+## Recovery verification — 6 November 2026
+
+The user authorizes Earl's coordinated OPS-01 recovery slice on `chore/earl-recovery-verification`, based on merged main `00de236` (PR #42). The [pre-edit proposal and operator behavior](../../AGAP_Platform_Foundation.md#recovery-verification-proposal--6-november-2026) cover disposable clusters, Windows-safe Docker volumes, restored financial projections, original/derived files and database security verification. The candidate changes root tooling and test fixtures only; no financial rules, migrations, contracts or product UI change. Robert retains consuming-owner review. Full Keycloak/offsite/cutover recovery and independent institutional/RPO/RTO approval remain pending; OPS-01 stays In progress.
+
+Recovery verification passes after integration with main `4dc9c5d`: [evidence](../../AGAP_Recovery_Verification.json) records the actual Windows encrypted restore, 56 migrations, financial/document/access/sequence assertions and scoped cleanup. Required `check` and browser suites pass (19 local-tooling, 5 recovery, 278 UI/domain, 845 backend/contracts, 109 evaluation; 149 normal browser plus 4 presentation cases separately). Windows recovery tests and final typecheck/focused lint also pass. The 593-file tested fingerprint is retained; dated evidence and development services are unchanged. Screenshots are N/A for CLI tooling; `graft`/`graphify` are unavailable. Robert's review, full institutional/identity/offsite/key/cutover recovery and RPO/RTO acceptance remain pending.
+
 ## Local startup tooling — 6 November 2026
 
 The user authorizes Earl's coordinated OPS-01/SHOW-01 local-tooling slice on `chore/earl-local-dev-workflow` from `e869591`, after merging PR #41. The [pre-edit proposal, command behavior and verification](../../AGAP_Platform_Foundation.md#local-development-workflow--6-november-2026) cover root scripts, read-only configuration/migration inspection, configured Compose bindings and owned API/frontend supervision. Robert retains consuming-owner review; package statuses, budgets, production controls and model/financial acceptance are unchanged.
