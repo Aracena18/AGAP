@@ -1,5 +1,9 @@
 # Robert (A): platform, member portal and integration
 
+## Recovery verification — 6 November 2026
+
+The user authorizes Earl's coordinated OPS-01 recovery slice on `chore/earl-recovery-verification`, based on merged main `00de236` (PR #42). The [pre-edit proposal and operator behavior](../../AGAP_Platform_Foundation.md#recovery-verification-proposal--6-november-2026) cover disposable clusters, Windows-safe Docker volumes, restored financial projections, original/derived files and database security verification. The candidate changes root tooling and test fixtures only; no financial rules, migrations, contracts or product UI change. Robert retains consuming-owner review. Full Keycloak/offsite/cutover recovery and independent institutional/RPO/RTO approval remain pending; OPS-01 stays In progress.
+
 ## Local startup tooling — 6 November 2026
 
 The user authorizes Earl's coordinated OPS-01/SHOW-01 local-tooling slice on `chore/earl-local-dev-workflow` from `e869591`, after merging PR #41. The [pre-edit proposal, command behavior and verification](../../AGAP_Platform_Foundation.md#local-development-workflow--6-november-2026) cover root scripts, read-only configuration/migration inspection, configured Compose bindings and owned API/frontend supervision. Robert retains consuming-owner review; package statuses, budgets, production controls and model/financial acceptance are unchanged.
