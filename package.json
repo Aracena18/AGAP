@@ -47,7 +47,12 @@
     "security:check": "npm audit --omit=dev --audit-level=high",
     "test:build-context": "node infra/scripts/verify-build-context.mjs",
     "model:schemas": "tsx models/qwen/service/generate-review-schema.ts",
-    "pilot:configure": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/src/modules/pilot/operator.ts"
+    "pilot:configure": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/src/modules/pilot/operator.ts",
+    "recording:prepare": "tsx --tsconfig tsconfig.platform.json --env-file=.env apps/api/scripts/prepare-recording.ts",
+    "recording:start": "node infra/scripts/recording-start.mjs",
+    "recording:enroll": "node infra/scripts/recording-enroll.mjs",
+    "recording:code": "node infra/scripts/recording-code.mjs",
+    "recording:rehearse": "node infra/scripts/recording-walkthrough.mjs"
   },
   "dependencies": {
     "@azure/identity": "4.14.1",

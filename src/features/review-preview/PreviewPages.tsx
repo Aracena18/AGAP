@@ -13,6 +13,7 @@ import { Description,FindInPage } from '../../shared/icons';
 import { QueueHeading,QueueGuide,QueueStatus,QueueLink,QueueDate,queueTimestamp } from '../reviews/QueuePresentation';
 import queueStyles from '../reviews/queue.module.css';
 import { buildReview,compareAttention,defaultAssumptions,materialBasis,priorityLabel,type Assumptions,type View,type Review } from './analysis';
+import { PreparedReviewReport } from './PreparedReview';
 import { HouseholdForm } from './HouseholdForm';
 import { ScenarioForm,ReviewReport } from './ReviewReport';
 import { usePreview } from './PreviewContext';
@@ -23,8 +24,8 @@ export function MemberPreviewPage(){const {id}=useParams(),{session,client}=useM
 export function StaffPreviewPage(){const {id}=useParams(),{session,client}=useStaff();if(!session||session.recordMode==='real'||!session.user.roles.some(r=>['officer','reviewer','auditor'].includes(r)))return <Notice>Demonstration analysis requires authorized lending-review access in the fictional environment.</Notice>;return <PreviewWorkspace key={`${id}:${session.user.id}`} id={id!} member={false} client={client} csrf={session.csrfToken} actor={{id:session.user.id,name:session.user.displayName,roles:session.user.roles}}/>;}
 function Disclosure(){return <p className={styles.disclosure}><Badge tone="neutral">Demonstration preview</Badge><span>Calculated using your saved household cash flow and loan terms.</span></p>;}
 function PreviewWorkspace({id,member,client,csrf,actor}:{id:string;member:boolean;client:AgapClient;csrf:string;actor?:{id:string;name:string;roles:string[]}}){
- const load=useCallback(async(signal:AbortSignal)=>{const [application,view]=await Promise.all([member?client.getMemberApplication(id,{signal}):client.getApplication(id,{signal}),member?client.getMemberWorkflow(id,{signal}):client.getStaffWorkflow(id,{signal})]);return {application,view};},[client,id,member]);
- const read=useResource(load),[blocked,setBlocked]=useState(false);
+ const load=useCallback(async(signal:AbortSignal)=>{const [application,view,prepared]=await Promise.all([member?client.getMemberApplication(id,{signal}):client.getApplication(id,{signal}),member?client.getMemberWorkflow(id,{signal}):client.getStaffWorkflow(id,{signal}),member?client.getMemberPreparedReview(id,{signal}):client.getPreparedReview(id,{signal})]);return {application,view:prepared.state==='ready'?prepared.workflow:view,prepared};},[client,id,member]);
+ const read=useResource(load,null,true),[blocked,setBlocked]=useState(false);
  const base=member?`/member/applications/${id}`:`/staff/applications/${id}/evidence`;
  return <div className="stack">
   <div className={styles.topRow}>
@@ -41,10 +42,12 @@ function PreviewWorkspace({id,member,client,csrf,actor}:{id:string;member:boolea
    </div>
    <Badge tone="neutral">{member?'Your application':'Authorized staff view'}</Badge>
   </header>
-  <Disclosure/>
+  {read.data?.prepared.state==='absent'&&<Disclosure/>}
   {read.loading&&<p role="status">Opening authorized application information…</p>}
   {read.error&&<Notice tone="warning" role="alert">{read.error}</Notice>}
-  {read.data&&<WorkspaceData key={materialBasis(read.data.view)} view={read.data.view} purpose={read.data.application.purpose} requested={read.data.application.requestedPrincipalCentavos} term={read.data.application.requestedTermMonths} member={member} client={client} csrf={csrf} refresh={read.refresh} onBlocked={setBlocked} officer={actor&&(actor.roles.includes('reviewer')||actor.roles.includes('officer')&&'assignedOfficerId' in read.data.application&&read.data.application.assignedOfficerId===actor.id)?actor.name:undefined}/>}
+  {read.data?.prepared.state==='stale'&&<Notice tone="warning" role="alert">{read.data.prepared.message}</Notice>}
+  {read.data?.prepared.state==='ready'&&<PreparedReviewReport key={materialBasis(read.data.view)} data={read.data.prepared} member={member} client={client} csrf={csrf} refresh={read.refreshKeepingData} onBusy={setBlocked} officer={actor?.roles.includes('officer')&&'assignedOfficerId' in read.data.application&&read.data.application.assignedOfficerId===actor.id?actor.name:undefined}/>}
+  {read.data?.prepared.state==='absent'&&<WorkspaceData key={materialBasis(read.data.view)} view={read.data.view} purpose={read.data.application.purpose} requested={read.data.application.requestedPrincipalCentavos} term={read.data.application.requestedTermMonths} member={member} client={client} csrf={csrf} refresh={read.refresh} onBlocked={setBlocked} officer={actor&&(actor.roles.includes('reviewer')||actor.roles.includes('officer')&&'assignedOfficerId' in read.data.application&&read.data.application.assignedOfficerId===actor.id)?actor.name:undefined}/>}
  </div>;
 }
 function WorkspaceData({view,purpose,requested,term,member,client,csrf,refresh,officer,onBlocked}:{view:View;purpose:string;requested:number;term:number;member:boolean;client:AgapClient;csrf:string;refresh:()=>void;officer?:string;onBlocked:(value:boolean)=>void}){
@@ -104,7 +107,7 @@ function Queue({client}:{client:AgapClient}){
  useEffect(()=>{const abort=new AbortController();let disposed=false;
   async function load(){try{const applications:z.output<typeof ApplicationSchema>[]=[];let cursor:string|undefined;const seen=new Set<string>();do{const page=await client.listApplications({signal:abort.signal,...(cursor?{cursor}:{})});applications.push(...page.items);if(applications.length>500)throw new Error('This preview supports at most 500 applications. Use the ordinary application workspace.');cursor=page.nextCursor??undefined;if(cursor&&seen.has(cursor))throw new Error('The application list changed. Refresh the queue.');if(cursor)seen.add(cursor);}while(cursor);
    const results:Row[]=[];const active=applications.filter(a=>a.status!=='draft'&&a.status!=='decision_recorded');
-   for(let i=0;i<active.length;i+=4){const batch=await Promise.all(active.slice(i,i+4).map(async application=>{try{const view=await client.getStaffWorkflow(application.id,{signal:abort.signal});return {application,view,review:buildReview(view,shared.get(application.id,materialBasis(view))??defaultAssumptions(view))};}catch(problem){if(problem instanceof ApiClientError&&[403,404].includes(problem.status))return {application,view:null,review:null};throw problem;}}));results.push(...batch);}
+   for(let i=0;i<active.length;i+=4){const batch=await Promise.all(active.slice(i,i+4).map(async application=>{try{const [view,prepared]=await Promise.all([client.getStaffWorkflow(application.id,{signal:abort.signal}),client.getPreparedReview(application.id,{signal:abort.signal})]);const review=buildReview(view,shared.get(application.id,materialBasis(view))??defaultAssumptions(view));if(prepared.state==='ready'){review.priority=prepared.attention;review.reason=prepared.reason+(prepared.packet.suggestedOfferId!==prepared.packet.requestedOfferId&&prepared.comparisons.find(c=>c.offer.id===prepared.packet.suggestedOfferId)?.passes?' Alternative passes the supplied scenario checks.':'');}else if(prepared.state==='stale'){review.priority='clarification';review.reason=prepared.message;}return {application,view,review};}catch(problem){if(problem instanceof ApiClientError&&[403,404].includes(problem.status))return {application,view:null,review:null};throw problem;}}));results.push(...batch);}
    results.sort((a,b)=>a.review&&b.review?compareAttention({review:a.review,createdAt:a.application.createdAt,id:a.application.id},{review:b.review,createdAt:b.application.createdAt,id:b.application.id}):a.review?-1:b.review?1:a.application.id.localeCompare(b.application.id));
    if(!disposed){setRows(results);setAsOf(new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'}));}
   }catch(problem){if(!disposed&&!abort.signal.aborted)setError(problem instanceof Error?problem.message:'The queue could not be loaded.');}}

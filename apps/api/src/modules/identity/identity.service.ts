@@ -29,8 +29,8 @@ export class LoginRecoveryError extends ApiError {
 export class IdentityService {
   private discoveries=new Map<string,Promise<oidc.Configuration>>();
   constructor(private readonly pool: Pool, private readonly config: Config) {}
-  private configuration(audience:'staff'|'member') {
-    const preview=audience==='staff'&&this.config.LOCAL_PREVIEW_PASSWORD_ONLY;
+  private configuration() {
+    const preview=this.config.LOCAL_PREVIEW_PASSWORD_ONLY;
     const id=preview?'agap-local-preview':this.config.OIDC_CLIENT_ID;
     let discovery=this.discoveries.get(id);
     if(!discovery){
@@ -44,10 +44,10 @@ export class IdentityService {
   async beginLogin(audience:'staff'|'member'='staff',input:unknown={}): Promise<{ cookie: string; url: string }> {
     const options=z.strictObject({assurance:z.literal('mfa').optional(),returnTo:z.string().max(240).optional()}).parse(input);
     const returnTo=audience==='member'?'/member':options.returnTo??'/staff';
-    if(audience==='staff'&&!/^\/(?:staff(?:\/(?:members|applications(?:\/[0-9a-f-]{36}\/(?:evidence|review|lifecycle))?|review-queue|review-notices|money|support-requests|reconciliations|access))?|applications(?:\/[A-Za-z0-9_-]{1,80}\/(?:evidence|comparison|decision))?)(?:#source-[A-Za-z0-9_-]{1,80})?$/.test(returnTo))throw new ApiError(422,'invalid_return_path','Choose a staff or review page.');
-    const requiredAcr=audience==='staff'?(this.config.LOCAL_PREVIEW_PASSWORD_ONLY&&options.assurance!=='mfa'?'1':'2'):null;
+    if(audience==='staff'&&!/^\/(?:staff(?:\/(?:members|applications(?:\/[0-9a-f-]{36}\/(?:evidence|review|lifecycle|analysis))?|analysis-queue|review-queue|review-notices|money|support-requests|reconciliations|access))?|applications(?:\/[A-Za-z0-9_-]{1,80}\/(?:evidence|comparison|decision))?)(?:#source-[A-Za-z0-9_-]{1,80})?$/.test(returnTo))throw new ApiError(422,'invalid_return_path','Choose a staff or review page.');
+    const requiredAcr=audience==='staff'?(this.config.LOCAL_PREVIEW_PASSWORD_ONLY&&options.assurance!=='mfa'?'1':'2'):this.config.LOCAL_PREVIEW_PASSWORD_ONLY?'1':null;
     let client:oidc.Configuration;
-    try{client=await this.configuration(audience);}catch{throw new ApiError(503,'identity_unavailable','Sign-in is temporarily unavailable. Try again shortly.');}
+    try{client=await this.configuration();}catch{throw new ApiError(503,'identity_unavailable','Sign-in is temporarily unavailable. Try again shortly.');}
     const verifier = oidc.randomPKCECodeVerifier();
     const state = oidc.randomState();
     const nonce = oidc.randomNonce();
@@ -70,7 +70,7 @@ export class IdentityService {
     try {
       // Request fresh authentication, but allow factor enrollment to finish
       // within the ten-minute, browser-bound login window.
-      const response = await oidc.authorizationCodeGrant(await this.configuration(audience), callback, { expectedState: saved.rows[0].state, expectedNonce: saved.rows[0].nonce, pkceCodeVerifier: saved.rows[0].verifier, maxAge: 600 });
+      const response = await oidc.authorizationCodeGrant(await this.configuration(), callback, { expectedState: saved.rows[0].state, expectedNonce: saved.rows[0].nonce, pkceCodeVerifier: saved.rows[0].verifier, maxAge: 600 });
       claims = response.claims();
     } catch(error) {
       const reason=error&&typeof error==='object'&&'code' in error&&typeof error.code==='string'&&/^[A-Z_]{1,80}$/.test(error.code)?error.code:'verification_failed';

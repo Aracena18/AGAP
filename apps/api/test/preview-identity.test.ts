@@ -1,3 +1,4 @@
+import { memberFixture } from './member-fixtures.js';
 import { randomUUID } from 'node:crypto';
 import type { INestApplication } from '@nestjs/common';
 import { afterAll,beforeAll,beforeEach,describe,expect,it } from 'vitest';
@@ -49,9 +50,18 @@ describe('guarded password-only staff preview and explicit MFA step-up',()=>{
     const response=await fetch(`${base}/api/v1/auth/login?${new URLSearchParams({returnTo:path})}`,{redirect:'manual'});expect(response.status).toBe(422);
     expect((await owner.query('SELECT count(*) FROM identity.oauth_states')).rows[0].count).toBe('0');
   });
-  it('ignores callback navigation/assurance tampering and keeps member login on the existing client',async()=>{
+  it('ignores callback navigation/assurance tampering and uses the guarded client for member sign-in',async()=>{
     const flow=await begin();flow.callback.searchParams.set('returnTo','https://example.invalid');flow.callback.searchParams.set('assurance','mfa');
     const result=await complete(flow);expect(result.response.headers.get('location')).toBe(`${base}/#/applications`);expect((await owner.query('SELECT methods FROM identity.sessions')).rows[0].methods).toEqual(['single_factor']);
-    const member=await fetch(`${base}/api/v1/member/auth/login`,{redirect:'manual'});expect(new URL(member.headers.get('location')!).searchParams.get('client_id')).toBe('agap-staff');
+    const member=await fetch(`${base}/api/v1/member/auth/login`,{redirect:'manual'});expect(new URL(member.headers.get('location')!).searchParams.get('client_id')).toBe('agap-local-preview');
   });
+});
+
+it('issues an own-member single-factor session without granting staff access or accepting a missing assurance',async()=>{
+ await owner.query("INSERT INTO identity.sessions(id,token_hash,user_id,authenticated_at,methods,expires_at) VALUES($1,repeat('b',64),$2,now(),ARRAY['mfa'],now()+interval '5 minutes')",[fixture.officer.actor.sessionId,fixture.officer.actor.userId]);
+ const member=await memberFixture(fixture.officer.actor,provider.issuer);await owner.query('DELETE FROM identity.sessions');provider.behavior.subject=member.subject;
+ async function memberLogin(){const login=await fetch(`${base}/api/v1/member/auth/login`,{redirect:'manual'});expect(login.status).toBe(302);const authorize=new URL(login.headers.get('location')!);expect(authorize.searchParams.get('client_id')).toBe('agap-local-preview');expect(authorize.searchParams.get('acr_values')).toBe('1');const cookie=login.headers.getSetCookie().find(value=>value.startsWith('agap_member_login='))!.split(';')[0];const response=await fetch(authorize,{redirect:'manual'});return {callback:new URL(response.headers.get('location')!),cookie};}
+ const flow=await memberLogin(),response=await fetch(flow.callback,{headers:{Cookie:flow.cookie},redirect:'manual'});expect(response.headers.get('location')).toBe(`${base}/#/member`);const cookie=response.headers.getSetCookie().find(value=>value.startsWith('agap_member_session='))!.split(';')[0];
+ const own=await fetch(`${base}/api/v1/member/session`,{headers:{Cookie:cookie}});expect(await own.json()).toMatchObject({principal:{kind:'member',memberId:member.record.id}});expect((await fetch(`${base}/api/v1/session`,{headers:{Cookie:cookie}})).status).toBe(401);
+ provider.behavior.acr=null;const missing=await memberLogin(),rejected=await fetch(missing.callback,{headers:{Cookie:missing.cookie},redirect:'manual'});expect(rejected.headers.getSetCookie().some(value=>value.startsWith('agap_member_session='))).toBe(false);
 });
