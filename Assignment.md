@@ -26,13 +26,15 @@ Each module owner maintains its migrations and tests. Robert owns shared contrac
 | Qwen | Experiment D evidence, F import/service candidate, and actual offline CPU compatibility execution supplied | Actual compatible-GPU inference, reproducibility gaps, independent evaluation, and promotion decision |
 | Explainable research | EBM/logistic training/evaluation protocol documented | Verified survey/codebook mapping, fixed artifacts, and measured independent results |
 | Evaluation | Synthetic development packs, integrity/scoring tools, and normalized EBM/logistic export evaluator supplied | Actual label review, protected holdout, approved release, and final model comparisons |
-| Deployment/recovery | Local application checks and deployment preparation supplied | GPU quota/eligibility, fresh credit evidence before future allocation, deployed processing, full identity/offsite restore, and institutional release |
+| Deployment/recovery | Local application checks, deployment preparation, and public Vercel frontend supplied | Hosted API/identity connection, GPU quota/eligibility, fresh credit evidence before future allocation, deployed processing, full identity/offsite restore, and institutional release |
 
 These states describe supplied candidates, not completed work packages or a production release. Historical work remains in progress where review or external evidence is missing. Publication alone records no independent acceptance.
 
 ## Latest integrated demonstration
 
 The current checkout also includes local startup diagnostics/supervision, connected staff review/member acceptance and money workspaces, and a prepared two-minute recording with actual persisted officer recommendation/member refresh. Its local password-only option records actual single-factor assurance and preserves privileged MFA. Scripted preview ratings and authored recording findings are not validated predictive results. The student-credit CPU model experiment completed and its temporary resource group was removed; operational serving and independent model acceptance remain pending.
+
+**OPS-01 / SHOW-01 — 6 November 2026:** the user requested Vercel deployment and completed account verification. GitHub `main` revision `9930fe4` deployed successfully to [agap-eight.vercel.app](https://agap-eight.vercel.app/) in project `aracena18s-projects/agap`. The public landing is also verified at [www.agap.software](https://www.agap.software/), with both custom domains valid and the root redirecting to `www`; member/staff workflows still require a hosted API and identity service. [Deployment evidence](docs/AGAP_Verification.md#vercel-frontend-deployment--6-november-2026) records the deployment identity, checks, screenshot and remaining boundaries. No application behavior, other-owner source, model promotion or institutional acceptance changes.
 
 ## Planned extensions
 

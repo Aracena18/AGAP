@@ -1,6 +1,6 @@
 # AGAP verification and limitations
 
-**Submission reference: 6 November 2026, Asia/Manila.** Application results below were recorded during earlier implementation work. The documentation cleanup does not rerun application, database, browser, cloud, or GPU tests and records no new institutional or independent model acceptance.
+**Submission reference: 6 November 2026, Asia/Manila.** Historical application results retain their original implementation dates. The documentation cleanup did not rerun application, database, browser, cloud, or GPU tests. The subsequent Vercel deployment has its own evidence below; it records no institutional or independent model acceptance.
 
 ## Latest recorded application verification — 6 November 2026
 
@@ -11,6 +11,23 @@ Actual local Keycloak member/officer sign-ins used separate browser contexts and
 The earlier MFA recording rehearsal completed the continuous path in **109.28 seconds**, preserved exact retry after deliberately discarding a committed response, and retained source/policy/material-currentness checks. [Timed receipt](tasks/production/two-minute-recording/walkthrough-rehearsal-final.json) and [retry receipt](tasks/production/two-minute-recording/walkthrough-rehearsal-retry.json) remain unchanged. Maya's PHP 30,000 example compares requested minimum **minus PHP 6,000**, stressed **minus PHP 8,000**, and six-installment minimum **PHP 8,000**, stressed **PHP 6,000**, with zero financing charge. These are separate prepared fixtures, not replacements for Ana's original arithmetic.
 
 Newer integrated work includes connected staff/member decision and acceptance, money/reconciliation workspaces, normalized research-export evaluation, immutable trial balances, member-confirmed assisted check-ins, linked support corrections, structured partial clarification, and guarded local startup tooling. They retain their fictional data, explicit missingness, authorization, immutable-history, and institutional-acceptance boundaries. [Local tooling evidence](AGAP_Local_Development_Verification.json) records the startup checks.
+
+## Vercel frontend deployment — 6 November 2026
+
+**Purpose: user-requested OPS-01 / SHOW-01 deployment.** Work is isolated on `codex/vercel-deployment`. The user completed Vercel account verification and initiated the GitHub import. Vercel built the Vite frontend from `main` commit `9930fe4d5b91470030cd0a39b12f88de35e4103e` (`docs: prepare AGAP documentation for judging`) and reported **Ready / Production**. This source has the same executable application/configuration as the previously checked `4dc9c5d`; the intervening commit changes documentation and design-tool references only.
+
+- Public site: [agap-eight.vercel.app](https://agap-eight.vercel.app/).
+- Project: [aracena18s-projects/agap](https://vercel.com/aracena18s-projects/agap).
+- Deployment: [`dpl_7TTHH4kJ9Ef2DBW4E1W4pwExFqsp`](https://vercel.com/aracena18s-projects/agap/7TTHH4kJ9Ef2DBW4E1W4pwExFqsp); immutable hostname `agap-r6bpxckw8-aracena18s-projects.vercel.app`.
+- Vercel's `npm run build` completed in the successful 40-second deployment. Install/configuration warnings were nonfatal. The project identifies `main` as its production branch and says pushes update production.
+- Actual public HTTP checks: `/`, `/manifest.webmanifest`, and `/landing/evidence.webp` return 200. The browser renders the landing and the Cash flow demo tab with no broken loaded images or observed error-level console messages.
+- Captures: [live landing](screenshots/vercel-2026-11-06/landing.png) [Vercel Ready status](screenshots/vercel-2026-11-06/project-ready.png), and [member backend unavailable](screenshots/vercel-2026-11-06/member-backend-unavailable.png), inspected during deployment verification.
+
+**Frontend only:** `/api/v1/health` returns 404. No hosted API rewrite, Keycloak service, database, document worker/scanner/OCR, or inference service was provisioned or connected by this deployment. Member entry visibly reports “Your account could not be opened” with Try again; no fake session is created. Member/staff sign-in, authenticated review and persisted workflows remain unavailable until that backend is hosted and connected with the correct origin/callback/session configuration. Existing localhost-only password/presentation modes are not enabled publicly. Real records, funds, model promotion and institutional release remain outside this deployment.
+
+Fresh `npm run check` passed: 19 local-tooling, 278 frontend/domain, 845 platform/backend and 109 evaluation tests, lint, generated contracts, frontend/API builds and evaluation typecheck. The final serial `npm run test:e2e` passed **149 Chromium tests**, with the four existing presentation-only cases skipped (4.7 minutes). The dedicated fictional test databases were started explicitly. Earlier browser attempts were discarded: one lacked the test database and another overlapped the backend suite's database fixtures; the final browser run began after the full check completed. These local fixture results do not establish deployed API/identity behavior. Documentation links/anchors and `git diff --check` pass. No executable source changed, so no graph refresh was needed.
+
+The user added and configured `agap.software` (308 redirect to `www.agap.software`) and `www.agap.software` (Production), saving the Name.com records themselves after agent guidance. Vercel specifies root A `216.198.79.1` and `www` CNAME `55180da0529d814e.vercel-dns-017.com.`; Name.com uses a blank root Host. Vercel now reports **Valid Configuration** for both domains. An actual HTTPS browser load of [www.agap.software](https://www.agap.software/) renders the landing, and an HTTPS root request returns 308 to that hostname. A public resolver returns the correct CNAME while the local resolver initially retained an older negative response. Captures: [valid domain configuration](screenshots/vercel-2026-11-06/custom-domain-valid.png) and [custom-domain landing](screenshots/vercel-2026-11-06/custom-domain-landing.png). No registrar record was edited by the agent; the backend limitation remains unchanged.
 
 ## Earlier application verification — 5 November 2026
 
