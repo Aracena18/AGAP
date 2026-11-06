@@ -1,8 +1,8 @@
-# Policy clarification and ongoing-work amendment
+# Policy clarification register
 
-**Date:** 2 November 2026, Asia/Manila. **Scope:** user-authorized refinement of existing tasks after reviewing the supplied loan guide, cash-flow workbook and meeting draft. This records questions and acceptance inputs; it does not activate institutional rules, change executable contracts or add a feature package.
+**Source review:** 2 November 2026, Asia/Manila. This register summarizes unresolved questions from a privately supplied loan guide, cash-flow workbook, and meeting draft. This records questions and acceptance inputs; it does not activate institutional rules, change executable contracts or add a feature package.
 
-[Product requirements](AGAP_Product_Solution.md) govern behavior, [delivery](AGAP_Delivery_Plan.md#9-policy-source-amendment-and-ongoing-work-checkpoint) governs scope and ownership, and [Assignment.md](../Assignment.md) alone records task progress. UI refinements follow [design.md](../design.md#14-planned-policy-and-cash-flow-review-refinement). Preserve ongoing branches, the existing engine/fixtures, human decision snapshots and the separate model-training objectives.
+[Product requirements](AGAP_Product_Solution.md) govern behavior, [delivery](AGAP_Delivery_Plan.md#inputs-required-before-live-use) governs scope and ownership, and [Assignment.md](../Assignment.md) alone records task progress. UI refinements follow [design.md](../design.md#14-planned-policy-and-cash-flow-review-refinement). Preserve the shared engine, fictional oracles, decision history, and separate model-training/evaluation boundaries.
 
 ## Source boundaries
 
@@ -52,24 +52,8 @@ The following are observations of the supplied workbook, not established AGAP de
 
 Schedule tests should conserve principal and reconcile final centavos under the approved method rather than repeat rounded displayed installments. Canonical Ana/Ben/Cora inputs and independent arithmetic remain in the [historical freeze](AGAP_Product_Freeze.md#5-the-fictional-demonstration); do not create another baseline fixture registry here.
 
-## Ongoing-work checkpoint
+## Resolution and activation
 
-Each owner supplies the following at the next integration checkpoint, without resetting or rebasing another worker's branch:
+Record the applicable institution/product/operation, authoritative source/version/effective date, approved interpretation, calculation method, and accountable policy authority before configuration. Aaron owns evidence/credit answers, Benedict decisions/servicing, Earl accounting implications, and Robert shared version/registration. Review affected contracts and independent financial expectations before integrating a change.
 
-1. Current task ID, branch/base, changed owned paths, implemented slice and remaining dependencies, supported by existing PR/handoff evidence.
-2. Which P/W entries affect that slice; what is already covered; the smallest proposed change and independent acceptance evidence.
-3. Whether existing reviewed contracts suffice. Robert records any additive/backward-compatible proposal and consuming-owner agreement before canonical edits or dependent integration.
-4. Remaining effort, capacity impact and an explicit disposition: include in the existing slice, schedule after the current handoff, or estimate as later scope. Pending effort is not zero and is not silently absorbed into the 64-unit baseline.
-
-No owner agreement or institutional answer has been received merely because this checkpoint is written. Robert records actual responses and updates the sole tracker. Unreported progress remains a confirmation item rather than evidence that a team member is idle.
-
-## Owner amendments within existing tasks
-
-| Owner | Immediate refinement | Preserved boundary |
-| --- | --- | --- |
-| Robert — FND-03/MOB-01/SHOW-01 | Reconcile existing delivery evidence; coordinate policy-source/version and amount-basis requirements with consuming owners. Adopt a compatible field/checklist refinement only after impact review; retain recoverable unavailable states. | All shared contracts/client/wiring and member UI remain Robert's. No executable version or UI is changed by this document. Draft foundation registration PR #18 remains separate. |
-| Aaron — EVD-01/CRD-01/AI-01 | Continue the merged evidence/readiness work; map applicable requirements and the financial basis to existing structures, identify W01–W06 coverage and independently checked missing/zero/period/deduction/rounding behavior. | One engine and one AI adapter. Policy conflicts stay unresolved; no automatic authenticity, eligibility or numerical rubric inference. XAI-01 stays offline. |
-| Benedict — DEC-01/PAY-01/QWN-01 | Preserve ongoing authority, payment and training work. Review policy/result references and stale-review handling at the existing handoff; consume approved checked values through agreed ports. | Keep current extraction/expense training objectives and grouped releases. Policy configuration changes alone do not order a retraining run. Full reloan/restructuring/extension and new 5C adaptation require their existing stage/capacity gates. |
-| Earl — GL-01/ACC-01/EVAL-01 | Continue merged posting, principal-comparison and paired-evaluation tools. Add independent fictional expectations only for agreed affected behavior; review fee/component mappings and actual PAY-01 projections before integration. | Preserve ledger and independent holdout design. New examples follow versioned corpus/review/release rules; never silently mutate an already frozen release or import supplied named records. Actual model/participant results remain pending. |
-
-Continue unaffected work while clarification is collected. Supporting all ten products, full reloan automation, SRV-01 amendments, member goals and numerical 5C scoring are not added to the first-demo commitment by this amendment. The supplied sources do not establish approval weights, a production release or improved borrower outcomes.
+All questions above remain unresolved unless supported by an actual recorded institutional answer. Numerical 5C scoring, all-ten-product support, full reloan automation, contractual amendments, and member goals retain separate scope and acceptance. The supplied sources establish no approval weights, production release, or improved borrower outcomes.

@@ -8,7 +8,7 @@
     "product": "../PRODUCT.md",
     "browserContracts": "../docs/AGAP_Frontend_Spec.md",
     "taskStatus": "../Assignment.md",
-    "verification": "../docs/AGAP_Landing_Verification.md"
+    "verification": "../docs/AGAP_Verification.md"
   },
   "scope": {
     "task": "UI-07",
@@ -86,7 +86,7 @@
       "selector": "[data-agap-workspace]",
       "surfaceBrief": "surfaces/workspaces.md",
       "styles": "../src/app/workspace.css",
-      "evidence": "../docs/AGAP_UI_Review_Verification.md",
+      "evidence": "../docs/AGAP_Verification.md",
       "boundary": "Public landing implementation is unchanged; preserve existing operational behavior and source authority."
     }
   },

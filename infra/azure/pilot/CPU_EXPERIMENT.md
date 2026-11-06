@@ -1,11 +1,11 @@
 # Student-credit CPU compatibility experiment
 
-This is a separate, explicitly unapproved model-execution experiment. The user
+This is a separate, explicitly unapproved model-execution experiment. The 5 November run executed the pinned base and Experiment F offline, verified extraction/review switching parity, and exported both failures and successful results. The temporary resource group was then removed. See [recorded results and limits](../../../docs/AGAP_Verification.md#cpu-model-execution--5-november-2026). The user
 authorized a free route or existing student-credit billing after the A100 block.
 No subscription upgrade is permitted. The original CUDA/BF16 service and release
 gates remain unchanged.
 
-The exact planned host is Standard_B4as_v2 in Korea Central: four CPUs,16 GB RAM,
+The recorded experiment used Standard_B4as_v2 in Korea Central: four CPUs, 16 GB RAM,
 no GPU. Live preflight requires the student offer, spending limit On, exact SKU,
 family/total quota and allowed-region policy. At the observed USD0.187 compute
 hourly rate, two hours plus USD8 reserved for disk/network forecasts USD8.374.
@@ -31,7 +31,7 @@ python3 -m venv /home/agappilot/agap-cpu-venv
 ```
 
 Run cpu_probe with --allow-unapproved-fictional-cpu and exact manifest/candidate
-checksums. Use a systemd unit as agappilot with MemoryMax=13G,MemorySwapMax=0,
+checksums. Use a systemd unit as agappilot with MemoryMax=13G, MemorySwapMax=0,
 RuntimeMaxSec=1800. The probe uses at most four threads and 600 seconds per
 generation. Its outer unit bounds loading and readiness probes as well. It
 loads unquantized float32 values, retaining the same base/F weights, source

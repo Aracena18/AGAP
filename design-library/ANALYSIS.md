@@ -1,4 +1,7 @@
-# Gabay material analysis and rebranding handoff
+# Historical Gabay design-material analysis
+
+> Historical inspection of supplied reference assets and specimens, 3 November 2026. Later landing/workspace adoption is described in [the library guide](README.md) and [design.md](../design.md); proposed work and findings below retain their original reference-material scope.
+
 
 3 November 2026, Asia/Manila. UI-05, Robert. Starting application/main revision: `d0e0e6e193b70bd3d50f8a89dce7343a46c306f3`. Synchronized application/main revision: `63371c5bd3b06f57cb1b565c4f8b1f4288f59d69`. Asset commit: `9ff66a3b8e0614d09adc14bb52261084c6c95be7`. The user requests synchronization and analysis first, followed by a cleaner, responsive member/staff rebrand with the same underlying system.
 
@@ -36,7 +39,7 @@ Gabay can support welcome, missing information, saved drafts, actual review stat
 
 ## 3. Newly synchronized features and instructions
 
-The [delivery record](../docs/AGAP_Evidence_Workflow_Delivery.md), [contract proposal](../docs/AGAP_Evidence_Assessment_Contract_Proposal.md) and design.md section 15 describe the new implemented candidate at `63371c5`:
+The [delivery record](../docs/AGAP_Production_Architecture.md), [current architecture](../docs/AGAP_Production_Architecture.md) and design.md section 15 describe the new implemented candidate at `63371c5`:
 
 - **Member and staff workspaces:** authenticated staff review evidence from Applications; members review only their own application. The member projection retains its legacy fallback when the workflow is unavailable. Feature activation defaults off; the redesign must cover enabled and unavailable states.
 - **Documents and processing:** private upload intents accept PDF/JPEG/PNG up to 10 MiB. Quarantine, safety clearance, reading text, suggestions, failure and manual entry are distinct states. Cleared downloads, source text/page/version and provenance remain inspectable. File safety clearance is separate from verification of financial claims.

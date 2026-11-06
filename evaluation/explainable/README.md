@@ -39,7 +39,7 @@ The coordinated expansion supplies an offline, evaluation-local normalized inter
 
 The output is an offline research report with dataset/protocol/model versions, source attribution, measured comparisons, error examples and limits. It has no operational endpoint, member score or route into assessments, approvals, goals or support ranking. Any later operational predictive use requires its own reviewed target, relevant data, authorization and architecture.
 
-The initial handoff is this reviewable protocol and the required-data/artifact contract above. Actual source-term/codebook evidence, agreed mappings/splits, returned artifacts and final independent metrics remain receiving-owner inputs, recorded in the [Earl task brief](../../docs/tasks/production/04-accounting-monitoring.md). Assignment.md remains the task/status tracker.
+The initial handoff is this reviewable protocol and the required-data/artifact contract above. Actual source-term/codebook evidence, agreed mappings/splits, returned artifacts and final independent metrics remain receiving-owner inputs, recorded in the [verification summary](../../docs/AGAP_Verification.md). Assignment.md remains the task/status tracker.
 
 ## Running the export evaluator
 

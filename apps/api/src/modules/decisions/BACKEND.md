@@ -1,6 +1,6 @@
-# DEC-01 Phase 2 — decision backend candidate
+# Decision backend and exact-term acceptance
 
-**Owner:** Benedict. **Implemented:** 2 November 2026. This specifies the owned persistence/service candidate built on the [Phase 1 rules](README.md), following the [Phase 2 plan](../../../../../docs/tasks/production/benedict-phase2/PLAN.md). The [implementation evidence and owner handoff](../../../../../docs/tasks/production/benedict-phase2/IMPLEMENTATION.md) distinguish executed tests from pending connected integration. Canonical contracts remain 0.2.0; module-local proposals are not new public endpoints.
+This guide describes the persisted decision service built on the [rules](README.md). The gated 0.4.0 [fictional pilot](../pilot/configure.ts) supplies current-source, readiness, authority, and member-acceptance integration. Historical 0.2/0.3 records remain readable; general institutional policy and receiving-owner acceptance remain pending.
 
 ## Service boundary
 
@@ -70,4 +70,4 @@ Canonical errors pass through. Local schema errors map to 422; stale versions to
 
 5 November continuation: the member facade now authorizes own-record access and delegates to the actual command without a current-decision read preflight. An actual HTTP/database regression confirms replay after changed terms, rejection of new attempts and denial after linkage revocation. The authoritative service retains all current-term checks for new commands. Default production decision ports and financial routes remain unavailable; this replay correction does not register them.
 
-No endpoint/provider/migration/capability/client registration, staff/member screen, authority/conflict administration, external AI inference, loan, release or accounting operation is activated by this candidate. Real Robert/Aaron adapters, contract/security review and cooperative settings remain prerequisites. See the [implementation record](../../../../../docs/tasks/production/benedict-phase2/IMPLEMENTATION.md) for actual verification and the remaining handoff.
+No endpoint/provider/migration/capability/client registration, staff/member screen, authority/conflict administration, external AI inference, loan, release or accounting operation is activated by this candidate. Real Robert/Aaron adapters, contract/security review and cooperative settings remain prerequisites. See the [verification summary](../../../../../docs/AGAP_Verification.md) for actual verification and the remaining handoff.

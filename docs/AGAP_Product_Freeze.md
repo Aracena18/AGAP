@@ -1,4 +1,4 @@
-# AGAP product freeze
+# AGAP historical product freeze
 
 **Date:** 20 October 2026, Asia/Manila  
 **Team:** FinVerse, University of Mindanao, Team ID 53  
@@ -182,8 +182,8 @@ The public event dates are **4–6 November 2026**, giving 15 calendar days from
 
 ### Source record
 
-- Meeting recording: https://drive.google.com/file/d/10Kl1eMc7QQFbWZNbFgjkzHYDTBR6DRVn/view
-- Local rough transcript: `/home/robert_jhon/Downloads/Transcripts/MacArthur Highway transcript.txt`.
+- [Meeting recording](https://drive.google.com/file/d/10Kl1eMc7QQFbWZNbFgjkzHYDTBR6DRVn/view) (source access may be restricted).
+- Rough transcript: privately supplied MacArthur Highway meeting transcript (not bundled).
 - Historical team brief: [AGAP_Partner_Validation_Brief.md](AGAP_Partner_Validation_Brief.md).
 - Current team direction: prioritize the problem, permit an AGAP pivot, use confirmed partner issues, and freeze a buildable hackathon product.
 - External primary sources linked above were checked on 20 October 2026. Advertised competitor features establish overlap, not comparative performance.

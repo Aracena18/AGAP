@@ -1,6 +1,6 @@
-# PAY-01 Phase 5 — atomic principal-only simulation candidate
+# Atomic principal-only simulated servicing
 
-Implemented on `feat/benedict-pay-01-phase5` from local prerequisite checkpoint `b4f86ae`. This extends the [Phase 4 foundation](BACKEND.md) under the [Phase 5 plan](../../../../../docs/tasks/production/benedict-phase5/PLAN.md). [Implementation evidence](../../../../../docs/tasks/production/benedict-phase5/IMPLEMENTATION.md) separates real PostgreSQL/GL results, fictional producer adapters, UI simulation and pending shared integration. Canonical contracts remain 0.2.0; no new endpoint or capability is registered.
+This guide describes the versioned principal-only posted-money path. The 0.4.0 fictional pilot connects it to current decisions, exact-term member acceptance, actual database GL, safe member reads, and HTTP/browser journeys. All settlement evidence is server-generated simulation; independent/production acceptance remains pending.
 
 ## Supported path and explicit components
 
@@ -64,10 +64,9 @@ Register platform and accounting migrations first, then all servicing migrations
 
 The Phase 4 repository now reads its scoped staff origination view. Deploy matching code/migrations together before enabling consumers. Robert must review ownership/grants/startup schema checks, canonical DTOs/client, routes/capabilities and actual producer wiring. Private v2 command/results are not automatically public HTTP responses.
 
-The owned staff loan page and receipt component use shared controls/tokens, real `useStaff` by default, exact uncertain-command retry, safe scope-validated projections and selected immutable receipt printing. Session identity/organization/branches/roles/CSRF changes remount the controller; stale reads/selected receipts disappear. The gateway is unavailable by default and invents no endpoint URL. Its simulated-settlement action sends only command/version/reason; a future development adapter must establish trusted simulated evidence server-side. It must never become a public way to assert real verification.
+The owned staff loan page and receipt component use shared controls/tokens, real `useStaff` by default, exact uncertain-command retry, safe scope-validated projections and selected immutable receipt printing. Session identity/organization/branches/roles/CSRF changes remount the controller; stale reads/selected receipts disappear. The gateway is unavailable by default and invents no endpoint URL. Its simulated-settlement action sends only command/version/reason; the pilot adapter establishes simulated evidence server-side. It must never become a public way to assert real verification.
 
-The feature-local preview, fixture and browser-check script are labeled fictional presentation evidence. They do not authenticate, post financial effects or form application routes. Shared route/client/app/worker/member integration, representative UI acceptance and production controls remain pending. See the [handoff evidence](../../../../../docs/tasks/production/benedict-phase5/IMPLEMENTATION.md) for actual checks, screenshots and remaining cases.
-
+The feature-local preview, fixture and browser-check script are labeled fictional presentation evidence. They do not authenticate, post financial effects or form application routes. The fictional pilot supplies separate shared route/client/app/member integration; this preview remains isolated. Representative UI acceptance and production controls remain pending. See the [verification summary](../../../../../docs/AGAP_Verification.md) for actual checks, screenshots and remaining cases.
 
 ## Dated projection correction — 5 November 2026
 

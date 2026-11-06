@@ -7,7 +7,7 @@ Scope: owned `models/qwen/data-preparation/` plus Benedict's handoff note. No ap
 ## Checks
 
 - `python3 build.py`: 60 tasks / 12 families, deterministic build; generated review HTML and artifact manifest.
-- `python3 validate.py --source-root /home/johnbenedict/CODECOWD/WEB/AGAP`: passed. Verified all eight original file hashes, unique task/family IDs, exact visible source spans, lexical money/date anchors, explicit missingness, complete five-heading draft shape, source verification limits, review-sheet hashes and artifact hashes.
+- `python3 validate.py --source-root /path/to/private-source-root`: passed. Verified all eight original file hashes, unique task/family IDs, exact visible source spans, lexical money/date anchors, explicit missingness, complete five-heading draft shape, source verification limits, review-sheet hashes and artifact hashes.
 - `python3 -m unittest discover -s tests -v`: 17 passed. Includes negative cases for invented integer amounts, float money, future-answer leakage, fabricated spans, model-assigned verification, missing headings, automatic decision fields, trainer-created holdout and premature training eligibility.
 - Local Markdown link existence and CSV column-width checks: passed. Generated HTML has no JavaScript, remote resources or external uploads; it is a review document, not an application UI.
 - Deterministic rebuild and `git diff --check`: passed. Main working tree's pre-existing untracked cooperative originals were preserved.

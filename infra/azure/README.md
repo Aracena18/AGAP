@@ -1,6 +1,6 @@
-# Azure / Vercel deployment preparation — no provisioning authorized
+# Azure and Vercel deployment preparation
 
-Read the [cost proposal](../../docs/AGAP_Hosting_Cost_Proposal.md) and [release evidence](../../docs/AGAP_Evidence_Workflow_Delivery.md) first. No paid deployment, upgrade, DNS change or real-record activation has occurred. Kubernetes is excluded.
+This guide prepares the institutional hosting design in the [architecture](../../docs/AGAP_Production_Architecture.md). The separate [credit-only fictional pilot](pilot/README.md) has its own bounded configuration and eligibility/cost guards. [Recorded verification](../../docs/AGAP_Verification.md) establishes no provisioned pilot or live institutional release. Obtain current costs, quota/offer eligibility, and an approved budget before provisioning. Kubernetes is excluded.
 
 ## Build and configure
 
@@ -25,7 +25,7 @@ Roll back API/worker to the retained image digest and disable new writes if a mi
 
 ## CI
 
-The inspected GitHub run [41478042808](https://github.com/Aracena18/AGAP/actions/runs/41478042808) reports `startup_failure`, synthetic path `BuildFailed`, zero jobs and no check-run annotations. Actions are enabled; all referenced `v7` action tags exist. This is not an application-test failure and its cause is not disclosed by the available API. Account/repository Actions diagnostics or GitHub support are required; no automatic production releases rely on it. Local complete checks remain required. Do not weaken tests to hide the remote startup failure.
+The historically inspected GitHub run [41478042808](https://github.com/Aracena18/AGAP/actions/runs/41478042808) reports `startup_failure`, synthetic path `BuildFailed`, zero jobs and no check-run annotations. Actions are enabled; all referenced `v7` action tags exist. This is not an application-test failure and its cause is not disclosed by the available API. Account/repository Actions diagnostics or GitHub support are required; no automatic production releases rely on it. Local complete checks remain required. Do not weaken tests to hide the remote startup failure.
 
 ## Retention execution
 

@@ -1,6 +1,6 @@
-# QWN-01 Phase 7 model verification
+# Qwen public-development verification tools
 
-Offline, text-only public-development preparation and inference tooling. This is Benedict's model code, not Aaron's application inference adapter or Earl's evaluation service. It adds no API, frontend, provider registration, reviewed corpus, holdout or model promotion. See the [plan](../../../docs/tasks/production/benedict-phase7/PLAN.md) and [actual results](../../../docs/tasks/production/benedict-phase7/IMPLEMENTATION.md).
+This module provides offline, text-only public-development preparation and inference tools. It is separate from the application inference adapter and independent evaluation service. It does not establish independent model acceptance or activate lending inference. See the [model plan](../../../docs/AGAP_Model_Training_Plan.md), [delivery responsibilities](../../../docs/AGAP_Delivery_Plan.md), and [verification](../../../docs/AGAP_Verification.md) for current status and boundaries.
 
 ## What is verified
 

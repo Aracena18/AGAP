@@ -1,8 +1,23 @@
-# Robert's platform foundation
+# AGAP local setup and platform guide
+
+This guide runs the fictional member/staff application, support workflows, and authenticated browser review demo. All seeded credentials and records are public development fixtures. The current shared contract is 0.4.0; [architecture](AGAP_Production_Architecture.md) explains module boundaries and [verification](AGAP_Verification.md) records dated checks and outstanding release evidence.
+
+## Capability configuration
+
+| Configuration | Behavior |
+| --- | --- |
+| Default `.env.example` | Member/staff intake, own-record access/preferences, support, and browser review demo; unconfigured domain reads stay unavailable |
+| `EVIDENCE_WORKFLOW_ENABLED=true` | Enables evidence/credit; requires private storage, scanner/OCR prerequisites, configured policy/authority, and an organization-scoped worker. Missing model configuration retains manual entry |
+| `CONNECTED_LENDING_ENABLED=true` | Enables the alternate connected staff/member decision, acceptance, and pending-origination path; requires fictional non-production evidence and cannot coexist with the pilot |
+| `FICTIONAL_PILOT_ENABLED=true` | Adds review/escalation, exact-term acceptance, principal-only simulated release/repayment, accounting, and safe loan projections; requires enabled evidence, fictional development/test, signed identity, required privileged MFA, and reviewed pilot configuration |
+| `LOCAL_PREVIEW_PASSWORD_ONLY=true` | Optional loopback staff sign-in convenience; sensitive actions still require MFA |
+| `LOCAL_PRESENTATION_MODE=true` | Optional local automatic fictional entry; it never supplies MFA or lending authority |
+
+Both convenience flags default off. Automatic presentation mode is incompatible with the lifecycle pilot; the explicitly guarded local recording path may use password-only OIDC without asserting MFA. Sensitive operations still require their existing fresh-MFA authority. See the [prepared demo walkthrough](AGAP_Demo_Walkthrough.md) for named recording takes and temporary local password-only setup. See the [private pilot guide](../infra/azure/pilot/README.md) for its operator/configuration requirements and the [model service guide](../models/qwen/service/README.md) for actual inference prerequisites. Default local startup does not activate those services or seed institutional financial policy.
 
 ## Local development workflow — 6 November 2026
 
-The user authorizes coordinated OPS-01/SHOW-01 tooling on `chore/earl-local-dev-workflow`, based on merged main `e869591`. The proposal recorded before root script edits adds `local:doctor` for read-only configuration/dependency/service/migration diagnostics and `local:dev` for foreground API/frontend supervision. The candidate reuses the existing application configuration, migration registry, migration/seed commands and Compose services; no dependency or business rule is added. Robert retains consuming-owner review.
+Use `local:doctor` for read-only configuration/dependency/service/migration diagnostics and `local:dev` for foreground API/frontend supervision. These commands reuse the existing configuration, migrator, seed, and Compose services; they activate no lending or model capability.
 
 Application/operator commands use Node 24 from the current executable or the existing `node_modules/.cache/agap-gl01` runtime, without downloading a runtime or changing PATH. Local fictional settings come from `.env`; existing contents and configured ports are preserved. A temporary Compose override replaces the base ports using `!override`, which requires [Compose 2.24.4 or later](https://docs.docker.com/reference/compose-file/merge/). A running project with different/non-loopback bindings is refused before Compose startup. No volume reset, credential changes, unrelated process termination, authentication-mode change or lending/model activation is introduced. Diagnostics display non-secret endpoints/status, never dump `.env`, and withhold raw configuration/database errors. Server output redacts PostgreSQL credentials and bearer tokens.
 
@@ -33,43 +48,13 @@ Read-only Windows/Docker checks select the existing Node 24 under the system Nod
 
 All **576 listed runtime/test/SQL/contract/model/infrastructure/config inputs** match the final passing runner, with LF-normalized fingerprint `0c7e36f0102cf4e19b473a36dbe8ce490e0f135346916dae3d34e846db64aa49`. No dependencies, canonical types/tokens/fixtures, financial contracts, earlier migrations, model schemas, authentication controls or browser appearance are changed. The four ownership-verified disposable test containers are removed after evidence collection; development database/identity containers remain running. `graft`/`graphify` are unavailable, so no graph update is claimed. Robert's consuming-owner/representative review and actual production release remain separate; task statuses/budgets are unchanged. Verified source/evidence `de801e7` is normally pushed in [PR #42](https://github.com/Aracena18/AGAP/pull/42), open/unmerged and reported mergeable/clean against `e869591`. The [PR run](https://github.com/Aracena18/AGAP/actions/runs/42091699592) and [push run](https://github.com/Aracena18/AGAP/actions/runs/42091603458) conclude `startup_failure`; the actual PR jobs response is empty. Remote CI has not passed. The earlier user-confirmed account billing/spending-limit blocker remains unresolved and requires account-owner action; local passing tests do not repair it or supply production acceptance.
 
-## HLT-01 integration candidate — 3 November 2026
-
-The [monitoring candidate](../apps/api/src/modules/monitoring/README.md) adds actual confirmed member support submission/history, branch-scoped assignment and assigned-officer response history. The startup member adapter also consumes servicing's existing safe posted-loan projection; a complete empty loan list is now available rather than an unimplemented default. Optional linked loans produce a preserved submission-time position, with fresh staff positions still explicitly unavailable. Other unavailable domain defaults and financial-command restrictions remain in effect. The staff route is `/#/staff/support-requests`; the existing `/#/member/help` uses the new service. Apply new module migrations with the existing `npm run db:migrate`. This candidate does not establish institutional permission/retention approval or complete monitoring/financial capabilities. The sections below preserve the dated foundation baseline; their original all-unavailable descriptions do not describe these newly supplied adapters.
-
-26 October 2026 candidate: `feat/robert-member-platform`, built from the published plan and Robert's earlier foundation candidate. Contract **0.2.0 is for review**, not consuming-owner agreement or a production release. [Assignment.md](../Assignment.md) is the task tracker. Historical [PR #10](https://github.com/Aracena18/AGAP/pull/10) and its [21 October verification](AGAP_Robert_Verification.md) remain intact; no PR merge is authorized by this guide.
-
-This checkout supplies real Nest/PostgreSQL staff/member intake, separate member linkage/session, reminder preferences and member-portal screens/facade. Source verification, trained inference, checked production assessments, decisions, loans, ledger and support records require their owners. Known financial operations return `501 module_not_available`; member domain reads explicitly return unavailable. [Capabilities](../packages/contracts/src/operations.ts) identify the facade, not completed downstream services. [Current verification](AGAP_Robert_Member_Verification.md) distinguishes real integration from labeled simulations.
-
-## Current member and domain handoff
-
-- Robert owns all phone-facing UI, member identity/access/facade, shared schemas/client and registration. The [written 0.2.0 proposal](AGAP_Member_Contract_Proposal.md) precedes canonical changes. `MemberDomainPorts` uses a separate member transaction/actor; members never impersonate officers.
-- Aaron supplies evidence/CI/cleared-file lifecycle, confirmed facts, checked options and one AI adapter. Benedict supplies current decisions/acceptance and posted loans/receipts; Earl supplies confirmed support and staff responses. Their default ports remain unavailable. Qwen/EBM training and independent evaluation stay with the existing owners; no weights/runtime are supplied.
-- Append-only migrations 008–010 add member links, separate OAuth/session audience, own-record RLS/commands/preferences/events and narrow locked login lookup. Identity runtime can look up/recheck a link but cannot grant or revoke it. Existing migrations and historical evidence are preserved.
-- The original assessment engine was extracted once to `packages/finance/src/assessment.ts`; demo imports use the compatibility re-export. Arithmetic is unchanged; Aaron owns further finance work.
-- Independent owner review/base agreement, full domain integration and OPS identity/offsite/cutover evidence remain required. First-demo reminders are in-portal and support requests never change terms.
-
-## Foundation review registration — 30 October 2026
-
-The [FND-03/SHOW-01 technical review](AGAP_Foundation_Contract_Review.md) covers current main `266379a`, including the merged GL-01/EVAL-01 and fictional-browser evidence slices. Contract 0.2.0 still needs actual consuming-owner agreement. Robert's integration branch registers the three existing accounting migrations after platform migrations in the same checksum-checked migrator. It adds no live chart, rule or period configuration, posting HTTP route, payment orchestrator or financial capability flag.
-
-`npm run check` now also runs `npm run typecheck:evaluation` and `npm run test:evaluation`, using Earl's existing local evaluation configuration. The current CI workflow already calls `npm run check`; no second runner, provider, corpus or schema is introduced. The module README's original registration requests describe its earlier handoff; the shared commands/registry and this current review record describe the integration proposal.
-
-Verification uses an isolated fictional `agap_test` instance. The normal migration path must install the ledger, preserve history on replay and reject a changed applied ledger checksum. Keep the module's full transaction/permission checks and the contributor-required browser checks. A development corpus preview is not an accepted training release or model result; [the review record](AGAP_Foundation_Contract_Review.md#verification) records observed results and pending owners.
-
-## Production baseline registration — 2 November 2026
-
-The next FND-03/SHOW-01 technical step registers the already supplied decision and servicing migrations in the default checksum-checked migration path: platform → accounting 001–003 → decisions 001–005 → servicing 001–007. All module-owned SQL remains unchanged. The existing module tests' temporary registration describes their original isolated handoff; a normal fresh installation and an installation with the earlier platform/accounting history must now discover the same delivered schemas without a test shim.
-
-The migration regression verifies scoped/immutable decision/payment storage, safe read projections, deferred money-command completeness, unchanged applied history on replay and refusal of changed accounting/decision/servicing checksums. This is database preparation. Business routes, member-domain providers, public schemas/client and financial capability defaults remain unchanged; test-only upstream producers and fictional policy are not registered. Full domain integration, accepted interfaces and operational policy remain pending. [Current verification](AGAP_Foundation_Contract_Review.md#production-baseline-and-database-registration--2-november-2026) and the [production sequence](../Assignment.md#production-completion-sequence--2-november-2026) record scope and next work.
-
 ## Run the local staff workspace
 
 Use Node 24, npm and Docker Compose. The commands below use a POSIX shell; [Windows PowerShell startup](#windows-powershell-startup) is documented separately. All supplied credentials, organizations and identities are public fictional development fixtures. The database and Keycloak listen on loopback. Initial image downloads require network access.
 
 ```sh
 npm ci
-cp .env.example .env
+[ -f .env ] || cp .env.example .env
 docker compose -f infra/compose.yml --profile identity up -d --wait
 npm run db:migrate
 npm run db:seed
@@ -85,6 +70,8 @@ npm run api:dev
 npm run dev -- --port 5174 --strictPort
 ```
 
+Wait for Keycloak discovery at `http://127.0.0.1:58080/realms/agap/.well-known/openid-configuration` before signing in; Compose waits for the database, while initial identity startup can take longer.
+
 Open `http://127.0.0.1:5174/#/member` as the seeded fictional `member`, or `http://127.0.0.1:5174/#/staff` for staff. The member uses the same public development password below and enrolls an authenticator if requested. It is explicitly linked to the fictional portal member, with no staff role. Sign in as `officer`, `auditor` or `administrator`, password `Fictional-training-123!`. Enroll an authenticator when Keycloak requests it. Its client includes `basic` (subject/authentication-time claims) and `acr`; see the [Keycloak claim-scope change](https://www.keycloak.org/docs/26.2.5/upgrading/index.html). Its import binds a password/OTP flow to LoA 2; AGAP requests a fresh sign-in and accepts MFA only from signed `acr=2`. The local realm is in [infra/keycloak/agap-realm.json](../infra/keycloak/agap-realm.json). Existing realms are not overwritten on restart; changing an imported realm requires an explicit local migration/reset, never deletion of a real identity database.
 
 The fresh-authentication request permits completion within the browser-bound ten-minute login window; older authentication is rejected (subject to the OIDC library's clock tolerance). The [real Keycloak walkthrough](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/AGAP_Robert_Identity_Walkthrough.json) passed. With the local API/web/Keycloak running, `npm run test:keycloak` repeats this development-only check: it temporarily enrolls the fictional administrator, checks the signed MFA/self-revocation guard and logout, then removes its temporary OTP credential so the developer can enroll their own authenticator. No OTP secret or token is written to test artifacts. This is separate from the default CI suite and never runs against a production realm.
@@ -93,7 +80,7 @@ The Keycloak admin console is `http://127.0.0.1:58080`, with `local-admin` / `de
 
 The API listens on `127.0.0.1:4100`; Vite proxies `/api` without changing the public Origin. The application never accepts caller-supplied actor/organization fields. API bundles are built with `npm run api:build` and started with `npm run api:start` from the repository root. OpenAPI remains available at `/api/v1/openapi.json`.
 
-`npm run worker:dev` starts a worker for the explicitly configured organization. The initial consumer registry is empty: it reports `awaiting_module_handlers` and leaves events pending. Owners register reviewed consumers through Robert; the bootstrap never silently acknowledges an event or invents a notification/payment adapter.
+`npm run worker:dev` starts a worker for the explicitly configured organization. With evidence disabled, the general consumer registry is empty: it reports `awaiting_module_handlers` and leaves events pending. With evidence enabled, the worker also runs private scan/text/model processing through `EvidenceWorker`. The general outbox never silently acknowledges unknown events or invents notification/payment delivery.
 
 ### Windows PowerShell startup
 
@@ -185,7 +172,7 @@ Reload the browser after Vite is ready. This resolved the observed missing `moti
 | [generated client](../packages/api-client/src/index.ts) | Typed methods and runtime response validation |
 | [migrate.ts](../apps/api/src/platform/migrate.ts) | Owner-operated, checksum-checked migration registry |
 
-Run `npm run contracts:generate` after an approved canonical change. `contracts:check` rejects generated drift. Robert edits shared contracts/registration; other owners propose changes in their brief/PR. Existing `src/domain/types.ts` remains the demo/domain type authority. Production DTOs describe normalized commands, not another browser `CaseRecord`; money/calendar aliases refer to those shared types. No copied calculator or fixture registry was introduced.
+Run `npm run contracts:generate` after an approved canonical change. `contracts:check` rejects generated drift. Robert edits shared contracts/registration; other owners propose changes for review before integration. Existing `src/domain/types.ts` remains the demo/domain type authority. Production DTOs describe normalized commands, not another browser `CaseRecord`; money/calendar aliases refer to those shared types. No copied calculator or fixture registry was introduced.
 
 | Implemented boundary | Behavior |
 | --- | --- |
@@ -205,8 +192,8 @@ The staff UI supports member creation/contact correction, draft application crea
 2. Submit safe integer centavos, explicit PHP and real calendar dates. No decimal currency, unsafe coercion, actor fields or computed financial totals. `unavailable` has an explicit reason; zero is a recorded value. Database bigints are bounded before Number conversion.
 3. Creation/consequential commands require an `Idempotency-Key` (16–128 safe characters). Retain the same request/key across an uncertain result. The claim, hash, saved result, aggregate write, revision, audit and outbox share one transaction. Concurrent duplicates wait and replay the committed response; different bodies with the same key return 409. No idempotency expiry is enabled yet.
 4. Updates also require `If-Match: "<version>"`: missing is 428, stale is 412. Changing request terms increments aggregate and assessment-input versions; changing assignment increments only aggregate version. Intake updates stop after review has progressed. Later modules must use explicit amendment/review commands and preserve saved decisions.
-5. Call module ports with the **same** `TransactionContext`. Only the appropriate staff/member unit of work starts/commits/rolls back/releases the command connection. Member domain services use the supplied `MemberTransactionContext`, not a nested staff transaction. Services must not open nested connections for part of a financial posting. Future financial operations follow identity checks, accounting-period lock, affected loans in sorted ID order, then financial-command lock. Period close uses the conflicting period lock. C/D must verify this with their actual tables; this foundation does not claim ledger or close-race coverage.
-6. Transport idempotency is separate from permanent financial-event uniqueness. `PostingPort` supplies the latter boundary; Earl implements/enforces it. Provider timeouts are `unknown`, requiring status reconciliation under Benedict's durable command, never an automatic new transfer.
+5. Call module ports with the **same** `TransactionContext`. Only the appropriate staff/member unit of work starts/commits/rolls back/releases the command connection. Member domain services use the supplied `MemberTransactionContext`, not a nested staff transaction. Services must not open nested connections for part of a financial posting. Financial operations must preserve the module lock/transaction contract. The small fictional pilot additionally takes an organization-material guard after identity checks and before financial/application locks; this is not a scalable production or period-close acceptance claim.
+6. Transport idempotency is separate from permanent financial-event uniqueness. `PostingPort` and the accounting module enforce the latter boundary in the configured fictional pilot. Provider timeouts are `unknown`, requiring status reconciliation under Benedict's durable command, never an automatic new transfer.
 
 Runtime/API credentials cannot be superusers, table owners, members of table-owner roles or `BYPASSRLS`. Financial module services receive normal runtime credentials; migration/operator credentials are never loaded by the API. Organization/branch RLS is a second control, not permission to skip service authorization. Members/application history and audit are append-only for runtime roles.
 
@@ -216,13 +203,13 @@ Origin and CSRF token are required for writes; the API enables no cross-origin a
 
 ## Integrating another module
 
-1. Review the candidate schemas/ports and record the agreed version/base in your owner brief. Propose missing fields before implementation; registration is not financial-policy approval.
+1. Review the candidate schemas/ports and record the agreed version/base in the integration evidence. Propose missing fields before implementation; registration is not financial-policy approval.
 2. Work only in your module/feature paths. Export a public application service; use its port rather than writing another owner's tables. Submit route/provider/migration registration to Robert.
 3. Add append-only module migrations, in dependency order through `migrationDirectories`. The migration owner uses a dedicated connection and advisory lock. Applied files are checksummed; changes fail rather than silently modifying an existing database.
 4. Use `recordEvent` in the aggregate transaction. Envelopes carry stable IDs and minimal payloads; consumers reload authorized projections. Jobs/outbox handlers use row locks and `SKIP LOCKED`, commit database effects on the supplied connection, delay failures, and stop after five attempts. Unknown kinds remain pending. Do not make irreversible provider calls inside these handlers; use the durable provider command/inbox design.
-5. Add real database/permission/transaction tests for your invariants. The financial posting/release ports are intentionally unimplemented until their owners supply the services.
+5. Add real database/permission/transaction tests for your invariants. Financial posting/release services are registered only in the configured fictional pilot; test producers never become production authority.
 
-`PrivateDocumentStore` stores exact bytes under generated UUID keys with SHA-256, 0700 directory/0600 files, bounded streaming, atomic immutable publication and traversal/symlink defenses. Successful writes are still quarantined. Aaron owns file metadata, authorization, content-type checks, malware scanning, cleared/blocked states, download access/audit and retention/holds. The member facade exposes bounded upload/download delegation, but its default evidence port is unavailable and stores/serves no file. Enable it only with Aaron's reviewed lifecycle, authorization and durable metadata/deduplication service. Successful extraction never establishes authenticity. The adapter's remove method is infrastructure only; it must sit behind an authorized retention/hold decision.
+`PrivateDocumentStore` stores exact bytes under generated UUID keys with SHA-256, 0700 directory/0600 files, bounded streaming, atomic immutable publication and traversal/symlink defenses. Successful writes are still quarantined. Aaron owns file metadata, authorization, content-type checks, malware scanning, cleared/blocked states, download access/audit and retention/holds. The member facade exposes bounded upload/download delegation. With the evidence workflow disabled it remains unavailable; enabled evidence uses the source lifecycle, authorization, durable metadata, and deduplication service. Successful extraction never establishes authenticity. The adapter's remove method is infrastructure only; it must sit behind an authorized retention/hold decision.
 
 ## Staff provisioning
 
@@ -247,9 +234,10 @@ Run `npm run staff:provision -- /private/path/staff.json` using operator-only mi
 
 ```sh
 npm run test:db
+export AGAP_TEST_DATABASE_URL=postgresql://agap_owner:development-owner@127.0.0.1:55433/agap_test
 npm run check
 npx playwright install chromium
-npm run test:e2e
+npm run test:e2e -- --workers=1 --trace off
 npm run ops:drill
 ```
 
@@ -257,9 +245,9 @@ Run these sequentially: platform/browser suites reset the **dedicated fictional 
 
 The drill reads fictional persisted browser-test records, encrypts a custom PostgreSQL dump and private-file fixture in Restic, checks repository data, removes the plaintext staging source, restores into a new isolated PostgreSQL container, and compares table fingerprints/file hashes. It writes fresh [member restore evidence](AGAP_Member_Restore_Drill.json), enumerating all current user tables and rejecting source changes during the dump. The original [21 October restore evidence](AGAP_Robert_Restore_Drill.json) is retained unchanged. Local artifacts/recovery key are private and gitignored under `.backups`; keep or remove the generated drill directory deliberately. No existing database is overwritten.
 
-This is not the production backup system. The remaining OPS-01 acceptance includes a quiesced/consistent backup of the application **and Keycloak database**, all document versions and configuration, independently recoverable keys, offsite copies, retention/monitoring, approved recovery objectives, and an integrated opening-balance/cutover reconciliation with C/D's ledger. Source data, accountant-approved totals and the other modules do not exist in this slice. Keep OPS-01 in progress until those dependencies are implemented and exercised.
+This is not the production backup system. The remaining OPS-01 acceptance includes a quiesced/consistent backup of the application **and Keycloak database**, all document versions and configuration, independently recoverable keys, offsite copies, retention/monitoring, approved recovery objectives, and an integrated opening-balance/cutover reconciliation with C/D's ledger. Approved live source balances, accounting mappings, and complete financial cutover evidence remain institution-specific inputs. Keep OPS-01 in progress until those dependencies are implemented and exercised.
 
-Implementation critique, exact check results and deployment limitations are recorded in [Robert's verification record](https://github.com/Aracena18/AGAP/blob/19674ea8544e8401e7b2c8ed2903f4c84adb6e35/docs/AGAP_Robert_Verification.md).
+Implementation critique, exact check results and deployment limitations are recorded in [verification](AGAP_Verification.md).
 
 ## Member enrollment, revocation and local verification
 
@@ -287,7 +275,7 @@ With the fictional API/web/provider running, `npm run test:keycloak:member` veri
 
 ## Shared local administrator preview
 
-The user-approved UI cleanup reuses the seeded `administrator` and real staff session for review-demo access. Its account menu now signs out; simulated role/reset controls live under Demo tools. Staff and demo routes share session state; member sessions remain separate.
+The local preview reuses the seeded `administrator` and real staff session for review-demo access. Its account menu now signs out; simulated role/reset controls live under Demo tools. Staff and demo routes share session state; member sessions remain separate.
 
 For the explicitly fictional loopback setup, set this in the existing private `.env`:
 
@@ -312,6 +300,6 @@ With the local preview/API/provider running, `npm run test:keycloak:preview` che
 
 ## Temporary automatic presentation entry
 
-For the current fictional local presentation, set `LOCAL_PRESENTATION_MODE=true` in the private local environment and restart the API with `PUBLIC_ORIGIN` matching the frontend origin. Both member and staff/review open automatically using their existing seeded fictional accounts. The flag defaults false in `.env.example` and refuses non-loopback API/origin/database, another identity realm, non-development mode, real records or a non-fictional notice. It creates no accounts or access grants and never claims fresh MFA. Sign-in/account controls are hidden with a Presentation mode label; domain unavailable states remain truthful.
+For a fictional local presentation, set `LOCAL_PRESENTATION_MODE=true` in the private local environment and restart the API with `PUBLIC_ORIGIN` matching the frontend origin. Both member and staff/review open automatically using their existing seeded fictional accounts. The flag defaults false in `.env.example` and refuses non-loopback API/origin/database, another identity realm, non-development mode, real records or a non-fictional notice. It creates no accounts or access grants and never claims fresh MFA. Sign-in/account controls are hidden with a Presentation mode label; domain unavailable states remain truthful.
 
-To restore passwords, set `LOCAL_PRESENTATION_MODE=false` and restart the API; reload the workspace. Presentation cookies are then refused and the original OIDC/password/MFA flow returns. Existing ordinary authenticated sessions still follow their normal expiry/logout rules. No Keycloak credential, realm flow, database record or browser demo snapshot is deleted. See [verification and screenshots](AGAP_UI_Review_Verification.md#temporary-presentation-mode--3-november-2026).
+To restore passwords, set `LOCAL_PRESENTATION_MODE=false` and restart the API; reload the workspace. Presentation cookies are then refused and the original OIDC/password/MFA flow returns. Existing ordinary authenticated sessions still follow their normal expiry/logout rules. No Keycloak credential, realm flow, database record or browser demo snapshot is deleted. See [verification and screenshots](AGAP_Verification.md).

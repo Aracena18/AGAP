@@ -1,6 +1,6 @@
-# PAY-01 Phase 4 — persistent simulation foundation
+# Persistent servicing simulation
 
-This is Benedict's owned continuation of the [Phase 4 plan](../../../../../docs/tasks/production/benedict-phase4/PLAN.md). Canonical contracts remain 0.2.0. The public API, capability flags and central migration registry are unchanged. The application does not register this candidate automatically. Current status stays in [Assignment.md](../../../../../Assignment.md); this file specifies implemented behavior and integration requirements.
+This guide describes preparation, authorization, durable submission intent, settlement observations, and recovery. The [atomic money path](MONEY.md) adds posting; the 0.4.0 [fictional pilot](../pilot/configure.ts) supplies reviewed-source/authority and accounting wiring. Simulation evidence never establishes real fund movement.
 
 ## Service operations
 
@@ -31,7 +31,7 @@ Default ports return `501 module_not_available`. No browser can supply its own a
 
 Phase 4 order is current identity → authorized producer/source guards → servicing application advisory lock → command append/claim → movement evidence. The database additionally serializes revision insertion by command. Competing first-release commands cannot escape through aliases because SQL enforces both application-to-origination uniqueness and origination-to-release uniqueness. This does not establish another owner's actual writer/guard protocol; the tests exercise a labeled stand-in.
 
-Phase 5 must agree its accounting-period pre-lock **before** loan/command locks and integrate the actual `PostingPort` in the same coordinator. Do not invoke a nested decision unit of work, call a provider under a database transaction, or attach a blind money-submission handler to ordinary outbox retries. The current canonical `ReleaseAuthorizationPort` is not registered by this module; its accepted mapping/adapter remains an integration handoff.
+Phase 5 must agree its accounting-period pre-lock **before** loan/command locks and integrate the actual `PostingPort` in the same coordinator. Do not invoke a nested decision unit of work, call a provider under a database transaction, or attach a blind money-submission handler to ordinary outbox retries. The legacy canonical `ReleaseAuthorizationPort` is not registered by this isolated foundation; the pilot composes its explicit producer/guard adapter separately.
 
 ## Storage and access
 
@@ -63,4 +63,4 @@ Posting/period failures cannot roll back an **earlier committed** observation. A
 
 Robert/Aaron/Benedict review producer contracts, resource/version/lock semantics and a real current-authorizer projection; cooperative settings remain unconfirmed. Robert publishes approved public projections/operations/client changes, registers all migrations and providers, and enables capabilities only after combined HTTP/browser evidence. Current module exports must not be wired directly to an HTTP body.
 
-Benedict supplies the eventual release-port adapter on the accepted mapping and contributes combined source/policy/revocation/replay tests. Earl/Aaron/Robert/Benedict agree exact principal/interest/fee components and Phase 5 posting/reconciliation boundaries. There are no money-path screens, loan positions, repayment allocations, posted receipts, provider dispatch, amendments or model changes in this continuation.
+Benedict supplies the eventual release-port adapter on the accepted mapping and contributes combined source/policy/revocation/replay tests. Earl/Aaron/Robert/Benedict agree exact principal/interest/fee components and Phase 5 posting/reconciliation boundaries. This foundation is extended by the atomic-money and pilot layers; real provider dispatch, contractual amendments, and production operating acceptance remain separate.

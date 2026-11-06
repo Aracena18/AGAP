@@ -1,6 +1,6 @@
-# DEC-01 Phase 3 — staff feature and read-service candidate
+# Decision staff views and printing
 
-Implemented on Benedict's isolated `feat/benedict-dec-01-phase3` branch, based on Phase 2 `036bf5893af943654b6d0e37f83d44037c62f8b4` and planning checkpoint `165c86a`. This extends the [Phase 2 service specification](BACKEND.md) within existing ownership. The [implementation evidence](../../../../../docs/tasks/production/benedict-phase3/IMPLEMENTATION.md) distinguishes actual checks from pending shared integration. Canonical contract remains 0.2.0; consuming-owner acceptance is not fabricated.
+This guide describes the module read boundary and injectable staff component built on the [backend](BACKEND.md). Its default gateway remains unavailable without an explicit consumer. The current 0.4.0 fictional pilot has separately registered routes/client integration; no legacy preview or injected session object is authentication. See [verification](../../../../../docs/AGAP_Verification.md) for checked behavior and limits.
 
 ## Implemented read boundary
 

@@ -1,10 +1,10 @@
 # QWN-01 offline handoff tools
 
-This standard-library Python 3.10+ tool audits supplied evidence and packages an evaluator candidate. It never trains, downloads, loads, scores, uploads or promotes a model. See the [implementation plan](../../../docs/tasks/production/benedict-phase6/PLAN.md) and [execution report](../../../docs/tasks/production/benedict-phase6/IMPLEMENTATION.md).
+This standard-library Python 3.10+ tool audits supplied evidence and packages an evaluator candidate. It never trains, downloads, loads, scores, uploads, or promotes a model. It does not establish independent model acceptance or activate lending inference. See the [model plan](../../../docs/AGAP_Model_Training_Plan.md), [delivery responsibilities](../../../docs/AGAP_Delivery_Plan.md), and [verification](../../../docs/AGAP_Verification.md) for current status and boundaries.
 
 ## Supplied Experiment D export
 
-The actual supplied package uses `unsloth/Qwen3.5-2B` and an inspected Unsloth regex target configuration. Both are now supported without substituting the base repository or running arbitrary configuration regexes. The following **research-only** path preserves this export's actual development status. It does not relax the reviewed-release requirements of `audit`/`package` below. See the current [handoff](../../../docs/tasks/production/benedict-phase6/HANDOFF.md).
+The actual supplied package uses `unsloth/Qwen3.5-2B` and an inspected Unsloth regex target configuration. Both are now supported without substituting the base repository or running arbitrary configuration regexes. The following **research-only** path preserves this export's actual development status. It does not relax the reviewed-release requirements of `audit`/`package` below. See [current status and verification](../../../docs/AGAP_Verification.md).
 
 ```bash
 python3 -m models.qwen.handoff audit-export --root /absolute/models/qwen \

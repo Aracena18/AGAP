@@ -1,12 +1,12 @@
 # AGAP model training and evaluation plan
 
-**5C extension:** 29 October 2026. QWN-03/EVAL-03 separately evaluate rubric-grounded evidence analysis, explanations and handoff; no model-generated percentage is treated as a probability.
+This plan defines training, reproducibility, evaluation, and promotion requirements. The [team reference](../Assignment.md) records ownership/status; [verification](AGAP_Verification.md) separates supplied artifacts and tools from actual inference and independent acceptance.
 
-**Goal-guidance extension:** 29 October 2026. QWN-02/EVAL-02 add a separately evaluated use of the same Qwen family. QWN-01 document/clarification training, its first-demo estimate and all existing statuses remain unchanged.
+## Current artifact status
 
-**Direction:** 25 October 2026. This is a planned implementation specification, not a trained model, measured result or deployment approval. [Assignment.md](../Assignment.md) alone records tasks/status; [delivery](AGAP_Delivery_Plan.md) defines exclusive paths and staged workload. This plan supplements the [product](AGAP_Product_Solution.md) and [architecture](AGAP_Production_Architecture.md).
+Experiment D retains its original [manifest](../models/qwen/model_manifest.json) and [local instructions](../models/qwen/README_LOCAL.md). [Experiment F](../models/qwen/experiment_f/README.md) supplies a verified qualitative-review LoRA import and private service candidate, distinct from pretrained financial extraction. Its original development comparison is not independent acceptance. Large weights remain outside Git; the repository does not provide an approved live model endpoint.
 
-The user assigns **Qwen training to Benedict** and **explainable-model training to Aaron**. Two main model families are planned, with logistic regression trained as a comparison baseline. Training and evaluation are required work packages; a tuned model is not automatically eligible for runtime use.
+Actual GPU execution/parity, compatible runtime evidence, missing training provenance, independent comparisons, and promotion remain required. Numerical 5C review and goal guidance are separately evaluated planned extensions. EBM/logistic survey research has no operational lending API.
 
 ## 1. Selected models and purpose
 
@@ -36,7 +36,7 @@ Benedict's sequence in `models/qwen/`:
 4. Fine-tune on the reviewed training split; choose checkpoint/prompt/hyperparameters using validation only. Save resumable checkpoints outside Git and record actual failed/interrupted runs as well as successful ones.
 5. Return the artifact manifest, adapter/config, pinned base-model and tokenizer/processor revisions, code/environment versions, seed, dataset/split hashes, license/provenance, training logs and reproducible evaluation/inference instructions. Keep large weights/checkpoints in an approved artifact location with checksums; no secrets or raw real member records in Git.
 
-The [Unsloth Qwen3.5 training guide](https://unsloth.ai/docs/models/qwen3.5/fine-tune) supplies model-specific LoRA/Colab instructions and currently advises against 4-bit QLoRA for this family. Pin a tested environment during implementation; do not assume every free GPU supports the same precision or memory configuration. [Colab's FAQ](https://research.google.com/colaboratory/faq.html) states that free resources and limits are not guaranteed. Colab is a training option, not a guaranteed always-on application inference service. If resources fail, record QWN-01 as unfinished/blocked with evidence; the manual/checklist or evaluated pretrained path remains available without a claim of completed fine-tuning.
+The [Unsloth Qwen3.5 training guide](https://unsloth.ai/docs/models/qwen3.5/fine-tune) supplies model-specific LoRA/Colab instructions and, when checked, advised against 4-bit QLoRA for this family. Pin a tested environment during implementation; do not assume every free GPU supports the same precision or memory configuration. [Colab's FAQ](https://research.google.com/colaboratory/faq.html) states that free resources and limits are not guaranteed. Colab is a training option, not a guaranteed always-on application inference service. If resources fail, record QWN-01 as unfinished/blocked with evidence; the manual/checklist or evaluated pretrained path remains available without a claim of completed fine-tuning.
 
 ## 3. Explainable research data and workflow
 
@@ -73,13 +73,13 @@ The same rule applies to XAI conclusions: report a weak/null result when the EBM
 
 Training notebooks run offline from AGAP's loan API/database. Approved Qwen inference uses Aaron's single adapter; the configured endpoint/runtime is selected and wired through Robert after evaluation, without exposing browser keys. Cleared minimum document inputs produce untrusted drafts; member/staff confirmation precedes assessment inputs, independent verification remains separate, and the existing deterministic engine alone calculates financial results. Templates/manual entry remain available.
 
-FND-03 proposes base/artifact/checksum, prompt/schema/dataset/evaluation versions and runtime limits in the next shared contract review. This document changes no executable contract, generated client, migration or dependency. A notebook output/prerecorded response is labeled as such, not a live tuned-model call. Keep EBM/logistic research reports outside operational lending/member APIs.
+Canonical artifact/provenance contracts bind base/adapter checksums, prompt/schema/dataset/evaluation versions, and runtime limits. The implemented extraction/review transports remain subject to their separate release or fictional-candidate gates. A notebook output/prerecorded response is labeled as such, not a live tuned-model call. Keep EBM/logistic research reports outside operational lending/member APIs.
 
-The 16-unit-per-owner allocation includes model/data preparation, testing/review and integration. It expands total estimated effort; it does not guarantee a date or free hosted inference. The first demo retains the controlled money path and payment-help queue, while Benedict's first authorized contractual amendment and the remaining SRV-01 lifecycle remain assigned to stage 2. Full lending/accounting/operational obligations are preserved.
+The historical 16-unit-per-owner allocation covered first-demo preparation/testing/integration; it does not guarantee a date, complete product, or free hosted inference. The first demo retains the controlled money path and payment-help queue, while Benedict's first authorized contractual amendment and the remaining SRV-01 lifecycle remain assigned to stage 2. Full lending/accounting/operational obligations are preserved.
 
 ## 6. Goal-guidance training extension (29 October 2026)
 
-The user requests personalized saving/investment suggestions and emergency, travel, leisure or other member-chosen goals. The [product scope](AGAP_Product_Solution.md#member-goals-savings-and-cooperative-product-guidance), [architecture](AGAP_Production_Architecture.md#goal-guidance-flow-and-proposed-fnd-04-boundary) and [design](../design.md#11-planned-goals-savings-and-product-guidance-29-october-2026) govern the future workflow. This is a new task/release target, not a claim that an extraction-trained model can already advise safely. It adds no new model family or provider adapter. EBM/logistic research has no role in an individual's contribution, investment readiness, product suitability or guidance priority.
+The planned extension covers personalized saving/investment suggestions and emergency, travel, leisure or other member-chosen goals. The [product scope](AGAP_Product_Solution.md#member-goals-savings-and-cooperative-product-guidance), [architecture](AGAP_Production_Architecture.md#8-models-research-and-planned-extensions) and [design](../design.md#11-planned-goals-savings-and-product-guidance-29-october-2026) govern the future workflow. This is a new task/release target, not a claim that an extraction-trained model can already advise safely. It adds no new model family or provider adapter. EBM/logistic research has no role in an individual's contribution, investment readiness, product suitability or guidance priority.
 
 ### Task, corpus and independent ownership
 

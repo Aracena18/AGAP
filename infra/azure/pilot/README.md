@@ -98,7 +98,7 @@ python3 infra/azure/pilot/pilot.py tunnel
 ```
 
 Open `http://127.0.0.1:5286/#/staff/review-queue` or `/#/member`. The second forward
-is the exact loopback identity issuer on port59080. If either port is occupied,
+is the exact loopback identity issuer on port 59080. If either port is occupied,
 stop and resolve the collision; do not stop an unrelated application. Verify SSH
 host fingerprints through the Azure/operator channel before accepting them.
 
@@ -108,7 +108,7 @@ Run the real scanner/OCR and model smoke/comparison tools and the connected
 fictional browser journey. Preserve raw model evaluation separately from fake
 HTTP protocol tests; a successful citation guard is not independent semantic
 acceptance. Exercise failed model/scanner states, worker restart, stale inputs,
-same-key retries and atomic GL rollback. Inspect desktop and320px screenshots.
+same-key retries and atomic GL rollback. Inspect desktop and 320px screenshots.
 
 Before export, stop API, worker and identity writes. Back up both PostgreSQL
 databases, private document volume and the generated realm/secrets as one private

@@ -1,6 +1,6 @@
 # EVAL-01 synthetic corpus and evaluation tools
 
-Offline implementation candidate for Earl's [EVAL-01 assignment](../../Assignment.md#earl), governed by the [training/evaluation specification](../../docs/AGAP_Model_Training_Plan.md). The first deliverable is a data/protocol handoff; final comparisons depend on returned artifacts and independent holdout execution.
+Offline implementation candidate for Earl's [EVAL-01 assignment](../../Assignment.md#ownership), governed by the [training/evaluation specification](../../docs/AGAP_Model_Training_Plan.md). The first deliverable is a data/protocol handoff; final comparisons depend on returned artifacts and independent holdout execution.
 
 ## Supplied development data
 
@@ -162,7 +162,7 @@ npx tsc -p evaluation/synthetic/tsconfig.json --noEmit
 npx eslint evaluation/synthetic
 ```
 
-The repository's `npm run check` already registers evaluation tests and typecheck through `test:evaluation` and `typecheck:evaluation`; the focused commands remain useful during development. Continue the contributor-required `npm run check` and `npm run test:e2e` checks on the integration environment. Exact observed results and remaining dependencies belong in [Earl's handoff](../../docs/tasks/production/04-accounting-monitoring.md).
+The repository's `npm run check` already registers evaluation tests and typecheck through `test:evaluation` and `typecheck:evaluation`; the focused commands remain useful during development. Continue the contributor-required `npm run check` and `npm run test:e2e` checks on the integration environment. Exact observed results and remaining dependencies belong in [Earl's handoff](../../docs/AGAP_Delivery_Plan.md).
 
 - Robert: review the candidate formats and shared-schema compatibility; register focused test/typecheck checks and update the central tracker from PR evidence.
 - Benedict: review the concrete inputs/targets/schema and document format; confirm the loader and artifact interface before tuning. Consume only an agreed release and retain its hashes.

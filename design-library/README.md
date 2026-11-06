@@ -1,18 +1,18 @@
-# Gabay & AGAP design library — archive handoff
+# Gabay and AGAP design library
 
-This folder records the user-reviewed design direction developed in ChatGPT through 3 November 2026. It is a **design-asset archive**, not a production UI change. No existing application components, canonical tokens, or lending behavior are modified.
+This folder preserves accepted character artwork, source manifests, and design specimens. The application uses selected Gabay assets; component galleries and concept screens remain reference material. [design.md](../design.md) governs the implemented interface.
 
-**3 November verified handoff:** all 50 supplied source files are committed in `9ff66a3b8e0614d09adc14bb52261084c6c95be7` and independently verified from Git blobs. See the [file manifest](manifest.json), [analysis and adoption plan](ANALYSIS.md), and [planned canonical design requirements](../design.md#16-planned-gabay-rebranding--3-november-2026). This delivery covers synchronization, asset publication and analysis; application rebranding is the next implementation slice.
+**Source inventory, 3 November 2026:** all 50 supplied source files are committed in `9ff66a3b8e0614d09adc14bb52261084c6c95be7` and independently verified from Git blobs. See the [file manifest](manifest.json), [analysis and adoption plan](ANALYSIS.md), and [canonical design requirements](../design.md#16-planned-gabay-rebranding--3-november-2026). The landing and workspace adoption are now implemented; this archive retains the original source bytes and design-review limitations.
 
 ## Accepted direction
 
 - **Mascot:** Gabay, a friendly firefly, using the refined **3D** rendering with yellow/cream face, soft green/translucent wings, glowing antennae/abdomen, dark green head, and AGAP kerchief.
 - **Format:** individual high-resolution transparent WebP assets preferred for reusable character/illustration scenes; no flat crop of an entire presentation board in place of individual exports.
-- **Brand palette:** green, white, and yellow; minimal, professional and warm. The proposed component prototype uses green `#176347`, forest `#123D2D`, leaf `#4D9B6F`, yellow `#E4BD52`, canvas `#F7F9F6`. These are **proposed**, not yet merged into canonical app tokens.
+- **Brand palette:** green, white, and yellow; minimal, professional and warm. The proposed component prototype uses green `#176347`, forest `#123D2D`, leaf `#4D9B6F`, yellow `#E4BD52`, canvas `#F7F9F6`. These are reference-kit values; current application values come from the canonical scoped tokens.
 - **Personality:** supportive and expressive, but calm for financial risks. Never imply approval, debt safety, or amended terms based on mascot emotion.
 - **Member vs staff:** expressive Gabay on member-facing educational/onboarding/empty states; focused information-dense professional staff workspace.
 
-## Asset inventory prepared in the conversation
+## Asset inventory
 
 | Collection | Expected deliverable | Notes |
 | --- | --- | --- |
@@ -40,7 +40,7 @@ The source ZIP and original extracted folder are preserved locally. Repository p
 
 ## Source and asset status
 
-**Important:** The high-resolution WebP binary files and interactive prototype archives originate as files in the ChatGPT conversation. The GitHub archive must only mark a binary as uploaded after its exact file is committed and independently verified in the tree. A complete visual asset package is not established merely by this document.
+Source artwork and prototype files were supplied by the team. The manifests bind their exact committed bytes, dimensions, transparency, and repository paths. Source specimens remain unchanged, including their creation-time README/decision text; current implementation status is described here and in the main documentation.
 
 The corrected transparent empty-state package should supersede the first low-resolution, opaque cropped package. Old illustrations and superseded palette boards are historical references, not selected production assets.
 
@@ -55,7 +55,7 @@ The corrected transparent empty-state package should supersede the first low-res
 
 ## Additional synchronized design references
 
-GitHub main `8effecc` also carries optimized WebP derivatives, a second portable component gallery, React candidates and two design comparisons. They are preserved alongside the exact original files. The [original manifest](manifest.json) maps all 50 source files; the separate [optimized-transfer manifest](source-manifests/optimized-transfer-2026-11-03.json) preserves the incoming file/blob inventory. Neither candidate token set is active in the application.
+GitHub main `8effecc` also carries optimized WebP derivatives, a second portable component gallery, React candidates and two design comparisons. They are preserved alongside the exact original files. The [original manifest](manifest.json) maps all 50 source files; the separate [optimized-transfer manifest](source-manifests/optimized-transfer-2026-11-03.json) preserves the incoming file/blob inventory. The reference kits are not imported as parallel token/component systems; the application uses the canonical tokens and shared UI.
 
 Review the [member/staff brand comparison](prototypes/brand-adoption-preview.html), [portable component gallery](prototypes/component-library/index.html), [React candidate](react-candidate/README.md) and [motion prototype](prototypes/gabay-motion.html). The original 1024px master is also present at the incoming master path; optimized delivery files do not replace source-quality originals. No animated sprite/layer pack is supplied.
 
@@ -67,8 +67,14 @@ Controls remain local to the open HTML document: they do not authenticate, persi
 
 **Original transfer verification:** GitHub file write and read-back succeeded; the artifact was checked for all six screen IDs, referenced approved Gabay filenames, truthful unavailable/simulated states, focus styling, reduced-motion and 320px support, and absence of remote scripts. These are structural checks **only**: interactive browser testing, contrast/zoom review, keyboard/screen-reader testing, screenshots, representative-member comprehension, and visual sign-off are still pending. This is supporting context for existing **MOB-01**, not a new production feature or accepted design. Subsequent UI-05 browser/visual findings are recorded in the [analysis](ANALYSIS.md); full interaction, assistive-technology, zoom and representative-member acceptance remain pending.
 
-## Next work
+## Adoption and review
 
-Review the [analysis](ANALYSIS.md) and `design.md` section 16, then implement UI-06 as a visual-only migration using the existing system. Preserve the source files and adopt components through the current shared UI rather than importing a parallel kit. Publication follows the user's authorized direct-main workflow after relevant checks; no PR is required for this handoff. Application acceptance still requires its full checks and representative review.
+Preserve original files and manifests. Adopt reference patterns through the existing shared UI and scoped tokens, following [design.md](../design.md). The [historical analysis](ANALYSIS.md) retains inspection findings for the supplied specimens; these are not findings about every current application screen. Representative-user, assistive-technology, and production acceptance remain separate from archive verification.
 
-*Maintained as a design-context handoff; the precise inventory is based on the user's accepted conversation direction.*
+## Landing artwork provenance
+
+`design-library/assets/gabay/turnaround/gabay_front.webp` is copied unchanged from the user-supplied `AGAP_Accepted_Design_Archive_2026-11-03/gabay/turnaround/gabay_front.webp`: 1600×1600, native alpha, SHA-256 `91e1e4d01fdbfd8e64e0085b0cb654c1dff2e638afc114bc42503aa390e82b3c`. The source archive remains untouched and untracked. It is existing accepted artwork, not generated for the landing implementation.
+
+The synchronized library already contains that exact original, so the library does not duplicate it. [Landing asset inventory](assets/gabay/landing-assets.json) records 400/800/1600px responsive derivatives, dimensions, native transparency, bytes and hashes. The 1600px display copy is about 181KB versus the 826KB original; smaller displays receive the corresponding 27KB/73KB file. Matching responsive preload makes the image discoverable in the HTML. Static/mobile/reduced-motion clients do not fetch the desktop Motion module. Original source pixels/metadata remain unchanged; origin sidecars accompany WebP derivatives and public screenshots. PNG icons and review captures carry embedded origin metadata.
+
+`scripts/capture-landing.mjs` captures four 1366×850 screenshots from the actual canonical fictional Ana workflow, using only the loopback browser-test server and its short-lived fictional staff session. It resolves income through the existing correction UI, checks the unchanged monthly/timing results, selects the permitted after-payday option, records a recommendation, switches the simulated review role, and records the template-reviewed decision. It introduces no second calculator or fixture registry. The script requires the isolated test API, frontend and `.platform-test/browser.json`; never run it against a real environment. Review captions and full-size links identify the images as fictional examples.

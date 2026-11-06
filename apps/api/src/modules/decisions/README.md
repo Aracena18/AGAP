@@ -1,13 +1,6 @@
-# DEC-01 — decision rules and connected review candidate
+# Decision rules and immutable review basis
 
-## Current connected candidate — CL2, 5 November 2026
-
-The [CL2 record](../../../../../docs/tasks/production/connected-lending-cl2/IMPLEMENTATION.md) supersedes historical implementation-availability statements below. The module now supplies actual PostgreSQL persistence, authoritative workflow producers, default-off authenticated staff routes, generated-client navigation and immutable review/escalation/notice/currentness controls. Connected fictional review uses `connected-review/v2` and the lossless `decision-snapshot/v2`; older formats remain decoded unchanged. Recording requires an explicit preview proof envelope and exact unchanged explanation/terms before expiry. Staff-assisted acceptance is still unavailable; member facade connection and money transport follow CL3–CL6.
-
-The following Phase 1 sections retain their original scope/history. They do not override the later canonical schemas, migrations, implementation record or current frontend specification. Technical tests do not supply receiving-owner or institutional acceptance.
-
-
-This module implements the standalone rule/immutable-basis slice of Benedict's [assignment](../../../../../docs/tasks/production/03-decisions-servicing.md). It is not a database service, authenticated endpoint, approved DCCPEC policy, model integration or completed DEC-01 feature. The existing fictional browser review remains unchanged.
+This guide describes the pure rule layer. The [backend service](BACKEND.md) supplies persistence and [staff views](STAFF.md) describe the injectable UI. The 0.4.0 fictional pilot composes current evidence/authority guards with decision and acceptance services; default capability flags do not enable live lending.
 
 ## Public functions
 
@@ -19,7 +12,7 @@ This module implements the standalone rule/immutable-basis slice of Benedict's [
 | `reviewChangeEffect(saved, context, loanStage)` | Checks saved snapshot integrity and current material basis, recommendation and participant conflict clearance. Indicates renewed review/hold for an unreleased loan or preserved-contract referral for a released loan. This is not release authorization |
 | `prepareMemberAcceptance(memberActor, context, saved, preparation)` | Validates own-member scope, current decision/version, unchanged reviewed basis, approved exact published document/checksum and explicit acknowledgment. Returns a frozen acceptance candidate; it never releases money |
 
-`context.ts` composes the existing canonical schemas and types. Additional context, authority, conflict, source-checksum, saved-explanation and snapshot fields are **module-local proposals for Robert/Aaron/Earl review**, not a parallel shared API contract. No generated client, route, capability, dependency, migration or public schema was modified.
+`context.ts` composes the existing canonical schemas and types. Additional context, authority, conflict, source-checksum, saved-explanation and snapshot fields are **module-local proposals for Robert/Aaron/Earl review**, not a parallel shared API contract. These module-local types are not a second public wire contract; consumers use the canonical generated schemas/client.
 
 ## Trusted caller boundary
 
@@ -78,4 +71,13 @@ npm run lint
 
 These rule tests require no database, model, cooperative record or external service. Existing demo regression tests remain in the frontend suite. Actual financial/server integration still requires the relevant DB/permission tests, `npm run check` and `npm run test:e2e` on the agreed base; passing pure tests does not mark DEC-01 integrated.
 
-Exact branch/base, verification results and next-phase handoffs are in [Benedict's Phase 1 verification](../../../../../docs/tasks/production/03-benedict-phase1-verification.md).
+Dated integrated results and remaining acceptance are in [verification](../../../../../docs/AGAP_Verification.md).
+
+## Current connected candidate — CL2, 5 November 2026
+
+The [CL2 record](../../../../../docs/AGAP_Verification.md) supersedes historical implementation-availability statements below. The module now supplies actual PostgreSQL persistence, authoritative workflow producers, default-off authenticated staff routes, generated-client navigation and immutable review/escalation/notice/currentness controls. Connected fictional review uses `connected-review/v2` and the lossless `decision-snapshot/v2`; older formats remain decoded unchanged. Recording requires an explicit preview proof envelope and exact unchanged explanation/terms before expiry. Staff-assisted acceptance is still unavailable; member facade connection and money transport follow CL3–CL6.
+
+The following Phase 1 sections retain their original scope/history. They do not override the later canonical schemas, migrations, implementation record or current frontend specification. Technical tests do not supply receiving-owner or institutional acceptance.
+
+
+This module implements the standalone rule/immutable-basis slice of Benedict's [assignment](../../../../../docs/AGAP_Verification.md). It is not a database service, authenticated endpoint, approved DCCPEC policy, model integration or completed DEC-01 feature. The existing fictional browser review remains unchanged.

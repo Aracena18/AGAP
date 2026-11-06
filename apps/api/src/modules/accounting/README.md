@@ -1,44 +1,16 @@
-# Accounting module candidates
+# Accounting, posting and reconciliation
 
-## Accounting expansion proposal — 5 November 2026
+The accounting module supplies atomic balanced journals and principal-only reconciliation. The gated fictional lifecycle pilot connects actual database postings to simulated release/repayment; it does not execute real transfers or establish institutional accounting approval. [Verification](../../../../../docs/AGAP_Verification.md) records dated evidence and remaining release gates.
 
-The user-approved expansion branch starts with an additive immutable trial-balance report over actual posted journal lines. Propose `POST/GET /accounting/trial-balances` and `GET /accounting/trial-balances/{id}`, canonical strict DTOs/generated client and an auditor staff screen. Reuse complete organization auditor authorization, REPEATABLE READ, exact command replay and transactional audit/outbox. Show opening debit/credit, period movements, closing debit/credit, account status, explicit dates/cutoff and aggregate source counts. Include inactive accounts with history. Use SQL numeric/BigInt and explicit unavailable results on unsafe amounts or more than 5000 accounts; the request span is technically bounded to 366 inclusive days. A balanced report describes posted-ledger arithmetic only; institutional opening migration and bank reconciliation remain separate evidence.
+## Runtime reporting
 
-Existing APIs/migrations/financial writes stay intact. New reporting tables/functions are accounting-owned and append-only. Robert retains shared schema/client/registration review. Later financial statements need approved versioned classifications; bank, capital, adjustments/close and goals require their source/authority contracts and rules. Missing inputs are not institutional defaults. This proposal precedes coordinated shared edits and asserts no external or receiving-owner acceptance.
+`ReconciliationService` compares servicing's public `LoanReads.inventory` with actual GL rows/lines and independently configured principal reporting mappings. `POST /reconciliations` uses an idempotency key/date range; list/detail operations expose immutable saved reports through the generated client. Organization, cutoff, snapshot identity, evidence hash, mapping versions, and results are server-owned. Only current organization-wide auditors are authorized; a single-branch grant or administrator role is insufficient. Access is rechecked before create/replay/list/detail.
 
-Latest-main compatibility: the expansion retains the 0.4.0 pilot/review contracts and configured public loan reader. Its reporting coordinators honor the existing fictional-pilot material guard when enabled. Query argument generation is opt-in for the new check-in summary; existing query-schema metadata and client option signatures stay intact. This adds no decision/servicing producer or financial write.
+Both inventories are read inside one REPEATABLE READ transaction, with at most three bounded whole-transaction retries for serialization/deadlock failure. Isolation is set before identity queries. Each source collection uses pages of 250 and a 5000-record budget; union/results remain bounded to 5000 events. The requested range is at most 31 days. Missing/incomplete/over-budget sources yield unavailable, never a truncated clean report. No HTTP cursor carries a database snapshot across transactions.
 
-Integration-test proposal: the latest pilot browser harness needs a separate guarded fictional database, but its hard-coded port was absent from shared test Compose. Supply that second test service on configurable port 55436, an optional explicit pilot test URL, and a pre-reset endpoint-isolation check in the harness. Robert reviews these test-only configuration changes; ordinary development services and application database settings are unaffected.
+Enumerate both sources independently, including orphan journals; do not derive the ledger inventory only from servicing IDs. Reporting mappings reference approved account/rule versions and are never inferred from observed journals. Persist result, evidence hashes, audit/outbox, and retry receipt atomically. Saved results describe the captured snapshot/cutoff, not arbitrary historic reconstruction.
 
-## Bounded inventory extension proposal — 5 November 2026
-
-The coordinated accounting/monitoring/evaluation branch extends Earl's reporting consumer and Benedict's servicing read producer under the user-approved implementation plan. Add source-owned bounded pages, retaining the legacy inventory interface, whole-transaction REPEATABLE READ, independent source enumeration, scope/cutoff validation and immutable report replay. Use pages of 250 and an explicit 5000-record budget per source collection; the union of report event IDs also remains bounded to the existing 5000-result contract. Crossing any budget yields unavailable, never a truncated clean result. No HTTP cursor carries a database snapshot between transactions. Robert retains shared contract/wiring review and Benedict retains servicing ownership; implementation is not receiving-owner acceptance. Financial commands, mapping policy, the 31-day report range and existing applied migrations remain unchanged.
-
-## ACC-01 runtime integration proposal — 3 November 2026
-
-This implementation proposes additive shared reconciliation DTOs and staff operations: `POST /reconciliations` with an idempotency key and date range, `GET /reconciliations` with cursor pagination, and `GET /reconciliations/{id}`. Organization, cutoff, snapshot identity, evidence hash and results are server-owned. The existing checker input moves to the canonical schema module without changing its meaning; accounting retains a compatibility export. This proposal precedes shared edits and records no receiving-owner or institutional approval.
-
-Use the existing PostgreSQL coordinator with an explicitly configured REPEATABLE READ mode and bounded whole-transaction serialization retries. Set isolation before identity/scope queries; preserve existing actor/session locks and defaults for other callers. Compare actual GL rows/lines with Benedict's public `LoanReads.inventory` inside that same transaction. Keep the existing organization-wide auditor restriction. Report create/replay/list/detail must recheck current access; neither administrator membership nor a single-branch grant authorizes an organization report.
-
-Add accounting-owned, operator-managed principal reporting mappings referencing existing rule/account versions; never infer expected mappings from observed journals or seed an institutional policy. Persist immutable reconciliation results, mapping versions and evidence hashes through a bounded write function with audit/outbox in the same transaction. Existing applied migrations remain unchanged. The already registered accounting directory discovers the new migration. Dates are bounded to 31 days and result inventories are bounded; incomplete/unsupported inputs do not become clean reports. Report data describes records visible in its captured database snapshot with the recorded cutoff, not arbitrary historic commit-time reconstruction.
-
-The staff page uses the generated client and existing controls/command retry behavior. Shared schemas, snapshot support and app registration are a reviewed implementation candidate under this proposal; publication and code do not fabricate Robert/Benedict acceptance. No report repairs balances, retries a money movement, supplies unapproved fee/interest rules or completes full bank/capital/close accounting.
-
-The original GL-01 posting candidate implemented the 0.2.0 `PostingPort`; the current 0.3.0 shared candidate retains its financial posting shapes. All configuration and examples used in tests are fictional. No financial-command HTTP route or institutional accounting policy is activated. ACC-01 adds the separate reporting candidate described here.
-
-### Supplied runtime candidate
-
-The branch implementation extends the existing 0.3.0 shared candidate additively under the proposal above; financial posting shapes retain their earlier meaning. `ReconciliationService` reuses `LoanReads.inventory`, `LedgerReader` and the original checker inside the explicitly configured platform REPEATABLE READ coordinator. Other coordinator callers retain their original behavior; only reporting mode retries serialization/deadlock failures, at most three whole attempts. Current identity and complete auditor scope are rechecked before report creation, replay, listing or reading.
-
-Migration `004-reconciliation.sql` adds `reconciliation_mappings` and `reconciliation_runs`, forced scoped policies, immutable history and a bounded save function that records audit/outbox atomically. It is discovered by the existing accounting migration registration. Runtime credentials have no direct report or mapping write grants. Operator-created mappings must reference the organization/rule/accounts and include an actual review reference. No institution mapping or reporting permission is seeded by application startup; the test fixtures are explicitly fictional.
-
-The report's evidence hash commits its validated input, actual database snapshot identifier, checker version and mapping version references. Results describe evidence visible in that snapshot, filtered by effective dates and the recorded cutoff; they do not reconstruct arbitrary historical commit visibility. An identical transport retry returns its preserved result, even if later postings exist. A new report requires a new key. Source authorization/database failures are not converted to an empty report; a specifically unconfigured producer is recorded as unavailable. Unknown legacy recording times remain unavailable through the servicing projection.
-
-The ledger reader enumerates actual journal headers and lines, including unmatched journals, without reconstructing actual amounts from saved request JSON. Reviewed reporting mappings are independent configuration. Inclusive date ranges remain limited to 31 days. The source-owned reader now uses 250-record pages in one reporting transaction, with a 5000-record budget per inventory collection and a 5000-event union/result budget. Posted, pending and legacy servicing stages must all finish with monotone cursors and the same snapshot identity. Ledger headers and their actual lines are read per page independently of servicing IDs. Injected legacy producers retain the reviewed 1000-record bound. No incomplete or over-budget collection is declared complete.
-
-The staff candidate is `/#/staff/reconciliations`: current full-organization auditors can run, list and reopen preserved results, filter event statuses, and inspect references/expected amounts. It uses the generated client, shared controls, command retry key and unsaved-change guard. Canceled reads are ignored; access denial clears cached findings; uncertain report creation keeps the original request/key. This screen is independent of the still-unregistered financial-command UI.
-
-For a fictional local installation, apply the additive migration with `npm run db:migrate`, start the API/web, and sign in with an auditor authorized for all current organization branches. Populate only reviewed operator mappings before expecting posted principal comparisons to be available. The reporting API accepts `{fromDate,throughDate}` only; list supports an optional UUID cursor and limit 1–20. Snapshot, cutoff, actor, organization and report body are server-owned. No report changes a payment or balance. Full bank/provider reconciliation, opening-balance proof, capital/report/close workflows and nonprincipal/reversal support remain pending.
+The staff route `/#/staff/reconciliations` runs, lists, and reopens reports, with inspectable event statuses and expected/actual values. It preserves exact uncertain retries and unsaved-change guards. Canceled reads are ignored; access denial clears cached findings. A report never repairs balances, retries a transfer, supplies missing fees/interest rules, or completes bank/capital/report/close accounting.
 
 ## Public boundary
 
@@ -59,14 +31,11 @@ Servicing owns authority, confirmed provider/manual movements, allocations and p
 
 Accounts, rule definitions/mappings and periods are operator-managed configuration with no runtime table write grants. Their real-world configuration, scoped reporting permissions and financial authorization require the consuming owners' institutional review. The posting service exposes no financial-command HTTP endpoints; the separate reporting endpoints are described above.
 
-## Registration proposal for Robert
+## Registration and configuration
 
-This records the original GL-01 handoff. The current base already registers the accounting migration directory; the runtime candidate above adds its next migration without a second migrator.
+The central checksum-checked migrator discovers accounting migrations before decision/servicing dependencies. Use the normal migration command with operator credentials. The fictional pilot composes `AccountingService` with servicing in the same transaction; default capability flags do not activate live financial commands.
 
-1. After reviewing the base/interface, append `apps/api/src/modules/accounting/migrations` to the shared `migrationDirectories`, after platform migrations. Apply module-owned `001-ledger.sql`, `002-posting.sql` and `003-configuration-locks.sql` in order. Never rewrite an integrated/applied migration.
-2. Register `AccountingService` as the implementation of the existing posting port in financial orchestration; retain unavailable HTTP/capability defaults until the authorized PAY-01 path is actually integrated.
-3. Review the pre-lock helper with Benedict so the order remains identity → accounting period → sorted loans → command/event locks. No canonical schema change or extra calculator/provider client is needed for this slice.
-4. Repeat module/financial integration, permission and full contributor checks on the accepted base. No main merge or push is authorized by this handoff.
+Posting and reporting configuration are operator-managed and organization/version bound. No institutional chart, policy, or mappings are inferred from test fixtures. Full period-close prerequisites, nonprincipal/reversal treatment, capital, external reconciliation, reports, and receiving-owner/institutional acceptance remain pending.
 
 ## Verification commands
 
@@ -80,13 +49,13 @@ npm run test:e2e
 
 The original GL-01 module test temporarily registers its directory in memory with the existing migrator. Runtime integration tests exercise the current shared registration; neither creates a second migrator. The suites reset fictional fixtures. Do not run them concurrently with the platform/browser suites against the same database.
 
-Current runtime results and receiving-owner dependencies are recorded in [Earl's task brief](../../../../../docs/tasks/production/04-accounting-monitoring.md#acc-01-runtime-integration-candidate--3-november-2026); its earlier sections preserve the original slice's verification.
+Current runtime results and receiving-owner dependencies are recorded in [verification summary](../../../../../docs/AGAP_Verification.md); its earlier sections preserve the original slice's verification.
 
 ## ACC-01 principal reconciliation candidate
 
 [reconciliation.ts](reconciliation.ts) supplies the pure `reconcilePrincipalMovements(input)` comparison. Its originally accounting-local input now lives in the canonical shared schema module with a compatibility export. It covers principal-only disbursements and repayments using integer centavos and independent dated account mappings. The function itself does not query a database, post money, change a loan, persist a report or expose an HTTP route/UI. The runtime service above supplies reporting integration around it.
 
-### Proposed evidence input
+### Evidence input
 
 | Input | Required evidence |
 | --- | --- |
@@ -100,7 +69,7 @@ Current runtime results and receiving-owner dependencies are recorded in [Earl's
 
 The evidence format reuses canonical IDs, money, currency, calendar dates, instants, posting requests and command states. Its runtime canonicalization does not replace the existing `PostingPort`/`LoanPositionPort`. A current balance or the member receipt projection alone cannot supply complete event/allocation/journal linkage. Missing allocation components fail validation; zero components must be explicitly supplied.
 
-The caller must authorize the organization and applicable reporting scope, obtain complete owner-published read projections, and establish a genuinely consistent snapshot through the existing platform coordinator. Matching `snapshotId` strings and `complete: true` are assertions, not authentication, proof of completeness or transaction isolation. No reporting role/branch policy is introduced by this pure function. Robert must agree how the authorized reporting scope maps to GL events before a reader/endpoint is enabled.
+The caller must authorize the organization and applicable reporting scope, obtain complete owner-published read projections, and establish a genuinely consistent snapshot through the existing platform coordinator. Matching `snapshotId` strings and `complete: true` are assertions, not authentication, proof of completeness or transaction isolation. No reporting role/branch policy is introduced by this pure function. The runtime reporting service enforces organization-wide auditor access before reading GL/source events; a pure checker call supplies no authorization.
 
 Both source inventories must include unmatched records in the requested scope. Do not start from servicing event IDs and fetch only their journals: that would hide orphan journals. Finish all pages under the agreed snapshot before declaring completeness. Exclude records recorded after the cutoff while retaining late-recorded events in later runs; filter effective dates consistently across sources. Supplied out-of-scope or future-recorded evidence fails validation rather than being silently discarded. Organization mismatch also fails validation, but this check is not a substitute for server/database authorization.
 
@@ -118,14 +87,22 @@ Report and event statuses are:
 
 When findings coexist, `unavailable` takes precedence over `discrepancy`, then `pending`; every event/finding remains inspectable. Unavailable/incomplete source inventories return no event-level conclusion. Findings contain stable codes, record references through their event row, and expected/actual centavos where applicable. Reconciliation never repairs records or initiates a payment retry. Full linked-reversal/netting, interest/fee policies, opening-balance proof, reports/close and external bank/provider reconciliation remain later scope. Supplied unsupported journal kinds do not receive a clean result; the runtime reader includes relevant corrections rather than silently filtering them away.
 
-### Receiving-owner handoff and runtime follow-up
+## Remaining acceptance
 
-- Benedict: the runtime candidate consumes the supplied public inventory. Review its completeness/cutoff semantics, older unconfigured producers and larger-cohort limits alongside approved principal mappings. Financial workflow fixtures remain fictional and establish no institutional approval.
-- Robert: review the implemented shared DTOs, reporting coordinator, access policy, generated client and registration against the proposal above. `Assignment.md` is unchanged; reconcile the tracker from reviewed implementation evidence. No owner acceptance is fabricated by shared code changes.
-- Earl: retain the tested ledger reader, preserved runs and staff page; complete receiving-owner acceptance and retained bank/capital/report/close work. The original pure checker remains independently usable; the runtime candidate does not certify production readiness.
+Review servicing inventory completeness/cutoff semantics, approved principal mappings, shared DTO/access/registration, and larger-cohort limits with the consuming owners. Preserve independent checker use, immutable reports, and the retained bank/capital/report/close scope. Supplied code and fictional tests do not certify production readiness.
 
-Run the database-independent candidate tests with:
+Run database-independent comparison tests with:
 
 ```sh
 npx vitest run --config vitest.platform.config.ts apps/api/src/modules/accounting/reconciliation.test.ts
 ```
+
+## Trial-balance reporting
+
+The module supplies immutable trial-balance reports over actual posted journal lines. Operations are `POST/GET /accounting/trial-balances` and `GET /accounting/trial-balances/{id}`, canonical strict DTOs/generated client and an auditor staff screen. Reuse complete organization auditor authorization, REPEATABLE READ, exact command replay and transactional audit/outbox. Show opening debit/credit, period movements, closing debit/credit, account status, explicit dates/cutoff and aggregate source counts. Include inactive accounts with history. Use SQL numeric/BigInt and explicit unavailable results on unsafe amounts or more than 5000 accounts; the request span is technically bounded to 366 inclusive days. A balanced report describes posted-ledger arithmetic only; institutional opening migration and bank reconciliation remain separate evidence.
+
+Existing APIs/migrations/financial writes stay intact. New reporting tables/functions are accounting-owned and append-only. Robert retains shared schema/client/registration review. Later financial statements need approved versioned classifications; bank, capital, adjustments/close and goals require their source/authority contracts and rules. Missing inputs are not institutional defaults. This proposal precedes coordinated shared edits and asserts no external or receiving-owner acceptance.
+
+Latest-main compatibility: the expansion retains the 0.4.0 pilot/review contracts and configured public loan reader. Its reporting coordinators honor the existing fictional-pilot material guard when enabled. Query argument generation is opt-in for the new check-in summary; existing query-schema metadata and client option signatures stay intact. This adds no decision/servicing producer or financial write.
+
+Integration-test proposal: the latest pilot browser harness needs a separate guarded fictional database, but its hard-coded port was absent from shared test Compose. Supply that second test service on configurable port 55436, an optional explicit pilot test URL, and a pre-reset endpoint-isolation check in the harness. Robert reviews these test-only configuration changes; ordinary development services and application database settings are unaffected.

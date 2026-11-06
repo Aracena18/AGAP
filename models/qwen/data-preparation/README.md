@@ -6,7 +6,7 @@ This package turns the supplied blank cooperative forms into a source inventory 
 
 Start with [the cooperative review guide](review/COOPERATIVE_REVIEW.md), then open [the printable casebook](review/CASEBOOK.html) in a browser. Record task-specific corrections in [the review sheet](review/annotation_sheet.csv). The [field dictionary](spec/field_dictionary.csv), [5C proposal](spec/FIVE_C_PROTOCOL.md), [gap register](review/gaps.csv) and [policy questions](review/policy_questions.csv) make the unresolved requirements explicit. The [dataset card](DATASET_CARD.md) explains suitability and exclusions.
 
-The authoritative [model plan](../../../docs/AGAP_Model_Training_Plan.md) still assigns Earl the accepted corpus, grouped splits and independent evaluation. The user has now asked Benedict to perform acquisition/preparation as well. This folder is a handoff candidate within Benedict's owned path; it does not write Earl's directories or replace his independent evaluation. Robert's shared schemas, application code and `Assignment.md` are unchanged.
+The authoritative [model plan](../../../docs/AGAP_Model_Training_Plan.md) still assigns Earl the accepted corpus, grouped splits and independent evaluation. Benedict supplies this preparation candidate; Earl retains independent review, split, and release authority. Preparation does not establish accepted labels or an untouched evaluation set.
 
 ## Reproduce and check locally
 
@@ -22,7 +22,7 @@ python3 -m unittest discover -s tests -v
 To verify the original cooperative source hashes as well, pass the root that actually contains the user-provided folder. The originals are not bundled into this task branch:
 
 ```bash
-python3 validate.py --source-root /home/johnbenedict/CODECOWD/WEB/AGAP
+python3 validate.py --source-root /path/to/private-source-root
 ```
 
 `build.py` rebuilds the cases and HTML deterministically and **preserves** an existing annotation sheet. If source labels change, the validator detects stale review hashes. Retain the old review evidence and create a versioned corrected review sheet rather than silently attaching old sign-offs to new data.

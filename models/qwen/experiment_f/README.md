@@ -1,6 +1,6 @@
 # Experiment F fictional review pilot
 
-5 November 2026. QWN-01 / AI-01 / SHOW-01. The [coordinated proposal](../../../docs/AGAP_Experiment_F_Pilot_Contract_Proposal.md) precedes these additive contracts. This is an explicitly **unapproved fictional candidate**. It preserves Experiment D and the original pinned pretrained extraction baseline. No model output creates a financial fact, verifies authenticity, calculates affordability or makes a lending decision.
+5 November 2026. QWN-01 / AI-01 / SHOW-01. The [architecture](../../../docs/AGAP_Production_Architecture.md) describes the additive integration boundary. This is an explicitly **unapproved fictional candidate**. It preserves Experiment D and the original pinned pretrained extraction baseline. No model output creates a financial fact, verifies authenticity, calculates affordability or makes a lending decision.
 
 ## Imported identity
 
@@ -14,12 +14,14 @@ The importer uses only Python's standard library. It validates nested member pat
 
 ```bash
 python3 -m models.qwen.import_f import \
-  --bundle '/home/robert_jhon/Downloads/NEW TRAINING (11-04-26)-20261104T174659Z-1-002.zip' \
-  --bundle '/home/robert_jhon/Downloads/NEW TRAINING (11-04-26)-20261104T174659Z-1-003.zip' \
-  --weights '/home/robert_jhon/Downloads/model.safetensors-00001-of-00001-001-001.safetensors' \
+  --bundle '/path/to/integration-bundle-part-002.zip' \
+  --bundle '/path/to/integration-bundle-part-003.zip' \
+  --weights '/path/to/model.safetensors-00001-of-00001.safetensors' \
   --destination models/qwen/artifacts/experiment-f-v1
 python3 -m models.qwen.import_f candidate --directory models/qwen/artifacts/experiment-f-v1
 ```
+
+Replace the example paths with the two supplied package parts and exact pinned base file; renaming paths does not relax hash checks.
 
 The imported directory contains `base_model/`, `adapter/`, inert `upstream/`, the chosen `environment_versions.json`, an artifact manifest, import report and `fictional-candidate.json`. Everything in `models/qwen/artifacts/` remains ignored. The importer excludes foreign compiled bytecode. Original training records, targets and private evaluation packets are not imported.
 
