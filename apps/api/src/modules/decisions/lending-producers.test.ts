@@ -265,6 +265,15 @@ describe('CL1 real owner producers under PostgreSQL runtime authorization',()=>{
     expect(await muow.run(member.actor,tx=>decisions.memberDecision(tx,app))).toMatchObject({state:'unavailable'});
     await expect(new ServicingService(uow,moneyPorts).originate(cashier,app,{method:'cash'},key())).rejects.toMatchObject({code:'renewed_review_required'});
   });
+  it.each([['2027-01-01','2027-12-31'],['2025-01-01','2025-12-31']])('ignores an inapplicable later policy at member acceptance and release: %s',async(effectiveFrom,effectiveThrough)=>{
+    const r=await approved(false),before=(await owner.query('SELECT snapshot_text,snapshot_hash FROM decisions.records WHERE id=$1',[r.d.id])).rows[0];
+    const next={...policy,id:key(),effectiveFrom,effectiveThrough};
+    await owner.query('INSERT INTO credit.policies(id,organization_id,body) VALUES($1,$2,$3)',[next.id,f.org,JSON.stringify(next)]);
+    expect((await workflow.view(f.officer.actor,app)).latestAssessment?.stale).toBe(false);
+    expect(await muow.run(member.actor,tx=>decisions.memberAccept(tx,app,r.input,r.v,r.acceptKey))).toMatchObject({id:expect.any(String)});
+    expect(await new ServicingService(uow,moneyPorts).originate(cashier,app,{method:'cash'},key())).toMatchObject({applicationId:app});
+    expect((await owner.query('SELECT snapshot_text,snapshot_hash FROM decisions.records WHERE id=$1',[r.d.id])).rows[0]).toEqual(before);
+  });
   it('holds release after actual reviewer revocation while preserving the immutable decision and receipt',async()=>{
     const r=await approved(),before=(await owner.query('SELECT snapshot_text,snapshot_hash FROM decisions.records WHERE id=$1',[r.d.id])).rows[0];
     await new StaffService(new PostgresUnitOfWork(identityPool,{lendingGuard:true})).revoke(f.administrator.actor,reviewer.userId,{reason:'Fictional revocation/currentness regression.'},1,key());

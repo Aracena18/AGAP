@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import type { z } from 'zod';
 import type { ActorContext, MemberActorContext, TransactionContext, MemberTransactionContext, UnitOfWork, MemberUnitOfWork } from '../../../../../packages/contracts/src/ports.js';
 import { WorkflowView, WorkflowFact, WorkflowFactInput, WorkflowDraftReview, WorkflowAssessment, WorkflowPolicy } from '../../../../../packages/contracts/src/workflow.js';
-import { AssessmentCreateSchema, VerificationSchema, EvidenceCorrectionSchema, DraftConfirmationSchema, Id } from '../../../../../packages/contracts/src/schemas.js';
+import { AssessmentCreateSchema, VerificationSchema, EvidenceCorrectionSchema, DraftConfirmationSchema, Id, CalendarDay } from '../../../../../packages/contracts/src/schemas.js';
 import { assessWorkflow } from '../../../../../packages/finance/src/workflow-assessment.js';
 import { command, recordEvent } from '../../platform/commands.js';
 import { memberCommand, memberEvent } from '../../platform/member-commands.js';
@@ -37,20 +37,28 @@ export class WorkflowService {
       throw e;
     }
   }
-  async policy(tx: Tx) {
-    const rows = (await tx.query('SELECT body FROM credit.policies WHERE organization_id=$1 ORDER BY published_at DESC,id', [tx.actor.organizationId])).rows;
-    return rows.map(row => WorkflowPolicy.parse(row.body)).find(p => p.status === 'approved' && !!p.approvalReference || this.allowFictional && p.status === 'fictional') ?? null;
+  async policy(tx: Tx, reviewStart: string | null) {
+    if(reviewStart===null)return null;
+    CalendarDay.parse(reviewStart);
+    const row=(await tx.query('SELECT credit.policy_for_review($1,$2::date,$3) AS body',[tx.actor.organizationId,reviewStart,this.allowFictional])).rows[0];
+    return row?.body ? WorkflowPolicy.parse(row.body) : null;
   }
   view(actor: WorkflowActor, id: string) { return this.run(actor, tx => this.viewIn(tx, id)); }
-  async viewIn(tx: Tx, id: string) {
-    const a = await this.access(tx, id), policy = await this.policy(tx);
+  async viewIn(tx: Tx, id: string) { return (await this.readIn(tx,id)).view; }
+  private async readIn(tx: Tx, id: string, reviewStart?: string) {
+    const a = await this.access(tx, id);
     const sources = (await tx.query(`SELECT s.*,s.source_date::text AS calendar_source_date,p.state,p.stage,p.message,p.pages,p.text_version_id,EXISTS(SELECT 1 FROM evidence.retirements r WHERE r.source_id=s.id) AS retired,
       (SELECT v.outcome FROM evidence.verification_outcomes v WHERE v.source_id=s.id ORDER BY v.recorded_at DESC,v.id DESC LIMIT 1) AS verification
       FROM evidence.sources s LEFT JOIN evidence.processing p ON p.source_id=s.id WHERE s.application_id=$1 ORDER BY s.created_at,s.id`, [id])).rows;
     const facts = (await tx.query('SELECT DISTINCT ON(id) body FROM evidence.facts WHERE application_id=$1 ORDER BY id,revision DESC', [id])).rows.map(row => WorkflowFact.parse(row.body));
     const drafts = (await tx.query(`SELECT d.body,COALESCE(r.state,'suggested') AS state FROM evidence.drafts d LEFT JOIN evidence.draft_reviews r ON r.draft_id=d.id WHERE d.application_id=$1 ORDER BY d.created_at,d.id`, [id])).rows.map(row => ({ ...(row.body as object), state: row.state }));
     const result = (await tx.query('SELECT body FROM credit.assessment_views WHERE application_id=$1 ORDER BY created_at DESC,id DESC LIMIT 1', [id])).rows[0];
-    return WorkflowView.parse({ applicationId: id, version: Number(a.version), inputVersion: Number(a.assessment_input_version),
+    const saved=result?WorkflowAssessment.parse(result.body):null;
+    const opening=facts.filter(f=>f.input.relevance==='included'&&f.input.category==='opening');
+    const provisional=opening.length===0 ? new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Manila',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())
+      : opening.length===1&&opening[0].input.cashDates.length===1 ? opening[0].input.cashDates[0] : null;
+    const policy=await this.policy(tx,reviewStart??saved?.periodStart??provisional);
+    const view=WorkflowView.parse({ applicationId: id, version: Number(a.version), inputVersion: Number(a.assessment_input_version),
       sources: sources.map(s => ({ id: s.id, version: Number(s.version), textVersionId:s.text_version_id??null, kind: s.kind, label: s.label,
         date: s.calendar_source_date, state: s.retired?'blocked':s.kind === 'statement' ? 'cleared' : s.state,
         processing: s.retired?'manual':s.kind === 'statement' ? 'manual' : s.stage, message: s.retired?'This document is unavailable under a recorded retention decision.':s.message ?? null,
@@ -59,6 +67,7 @@ export class WorkflowService {
       latestAssessment: result ? { ...(result.body as object), stale: (result.body as { inputVersion: number }).inputVersion !== Number(a.assessment_input_version) || (result.body as {policyVersionId:string|null}).policyVersionId!==(policy?.id??null) || facts.some(f=>f.input.relevance==='included'&&!sources.some(s=>s.id===f.sourceId&&!s.retired&&(s.kind==='statement'||s.state==='cleared'))) } : null,
       aiAvailable: this.aiAvailable,
     });
+    return {view,policy};
   }
   async memberEvidence(actor:MemberActorContext,id:string){const view=await this.view(actor,id);return {state:'available' as const,data:{sources:view.sources.map(s=>({id:s.id,fileName:s.label,version:s.version,state:s.state,verification:s.verification})),drafts:view.drafts.filter(d=>d.state==='suggested'&&view.sources.some(s=>s.id===d.source.sourceId&&s.state==='cleared')).map(d=>({id:d.id,origin:d.origin,provenance:d.provenance,source:d.source,value:d.suggestion.value,question:d.suggestion.category==='income'?`Does this amount describe your take-home income for ${d.suggestion.label}?`:`Does ${d.suggestion.label} apply to your household?`,state:'suggested' as const}))}};}
   saveFact(actor: WorkflowActor, id: string, input: unknown, version: number, key: unknown) {
@@ -129,7 +138,7 @@ export class WorkflowService {
       return this.cache(tx, `workflow.assess:${id}`, key, { data, version }, async () => {
         await this.access(tx,id);
         await tx.query('SELECT id FROM applications.applications WHERE id=$1 FOR UPDATE',[id]);
-        const current = await this.viewIn(tx, id), policy = await this.policy(tx);
+        const {view:current,policy} = await this.readIn(tx, id, data.periodStart);
         if (current.inputVersion !== data.inputVersion) throw new ApiError(412, 'stale_inputs', 'The evidence changed. Reload before assessing.');
         const a=await this.access(tx,id);
         if(policy)policy.offers=policy.offers.map(o=>({...o,available:o.available&&o.principalCentavos===Number(a.requested_principal_centavos)}));
@@ -160,7 +169,7 @@ export class WorkflowService {
     return this.run(actor, async tx => {
       const a = await this.access(tx, id);
       return { verifications:(await tx.query('SELECT body,recorded_by,recorded_at FROM evidence.staff_verifications WHERE application_id=$1 ORDER BY recorded_at,id',[id])).rows.map(r=>({verification:VerificationSchema.parse(r.body),actorId:r.recorded_by,recordedAt:new Date(r.recorded_at as string).toISOString()})), facts: (await tx.query('SELECT body FROM evidence.facts WHERE application_id=$1 ORDER BY recorded_at,id,revision', [id])).rows.map(r => WorkflowFact.parse(r.body)),
-        assessments: (await tx.query('SELECT body FROM credit.assessment_views WHERE application_id=$1 ORDER BY created_at,id', [id])).rows.map(r => WorkflowAssessment.parse({ ...(r.body as object), stale: (r.body as { inputVersion: number }).inputVersion !== Number(a.assessment_input_version) })) };
+        assessments: (await tx.query("SELECT body,credit.policy_for_review(organization_id,(body->>'periodStart')::date,$2)->>'id' AS current_policy_id FROM credit.assessment_views WHERE application_id=$1 ORDER BY created_at,id", [id,this.allowFictional])).rows.map(r => WorkflowAssessment.parse({ ...(r.body as object), stale: (r.body as { inputVersion: number }).inputVersion !== Number(a.assessment_input_version) || (r.body as {policyVersionId:string|null}).policyVersionId!==(r.current_policy_id??null) })) };
     });
   }
 }
