@@ -17,6 +17,16 @@ This guide prepares the institutional hosting design in the [architecture](../..
 
 ## Before traffic / rollback
 
+### Login proxy configuration
+
+Keep `LOGIN_TRUSTED_PROXY_CIDRS` empty until the actual request path is established. For Vercel → Azure ingress → API, record which gateways authenticate the forwarding path and overwrite/append headers, and whether the API hostname is reachable through another route. An IP list alone is insufficient where a gateway/address is shared with untrusted tenants. Verify gateway provenance or isolate/authenticate the route; do not copy a generic private-network range or fixed hop count. Global Express proxy trust stays disabled; the explicit allowlist affects only login limiting, not Host/protocol, redirects or cookies.
+
+Supply at most 32 comma-separated gateway IPs or nonzero IPv4/IPv6 CIDRs. The limiter walks `X-Forwarded-For` from the trusted socket peer right to left, stopping at the first untrusted hop; missing, malformed or all-gateway chains return 503. Untrusted direct peers' forwarding headers are ignored. `LOGIN_RATE_LIMIT_MAX=120` and `LOGIN_RATE_LIMIT_WINDOW_SECONDS=300` preserve the current shared staff/member fixed window. All API replicas must share these values and the session secret. Select actual limits after observing legitimate office/mobile/NAT traffic; network identity does not establish a unique person. 429 includes the remaining `Retry-After`. Keycloak password-attempt and recovery rules remain separately required.
+
+Before enabling trust, demonstrate in staging: distinct clients behind each real gateway, same-client enforcement across replicas/audiences, IPv4/IPv6 normalization, forged/multiple headers, omitted/malformed headers, direct/alternate API access, window recovery and unchanged signed sign-in/MFA/callback/session/CSRF behavior. Local protocol/HTTP tests do not establish this deployment evidence. No gateway list is enabled by this source change.
+
+Apply the complete migration batch before starting a new API revision: decision migration `010-policy-selection.sql` references the selector installed later in that batch by evidence migration `009-policy-selection.sql`; pilot migration `002-policy-selection.sql` then updates its guard. Keep traffic and workers quiesced during migration/cutover. All previous migration bytes/checksums remain unchanged.
+
 Use fictional records for an actual deployed sign-in, member/staff cross-access denial, revoked-session check, 10 MiB file forwarding, unavailable-scanner test, OCR/model failure fallback, lost response replay, worker termination/lease recovery and persistence across restart. Record evidence and responsible-user acceptance. No real records until all gates pass.
 
 Take and restore a consistent PostgreSQL + Blob + Keycloak + key/secret backup into an isolated environment; verify hashes, historical assessments and sign-in after restoration. Approve retention, legal holds, deletion/erasure procedure, RPO/RTO and offsite recovery before real mode. The source/assessment metadata history remains immutable; file deletion requires a separately approved retention decision. No automatic retention duration is invented here.

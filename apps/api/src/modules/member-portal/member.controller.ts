@@ -4,7 +4,7 @@ import type { Config } from '../../platform/config.js';
 import { expectedVersion } from '../../platform/commands.js';
 import { ApiError } from '../../platform/errors.js';
 import { IdentityService,cookieValue } from '../identity/identity.service.js';
-import { limitLogin } from '../identity/login-limit.js';
+import { limitLoginRequest } from '../identity/login-limit.js';
 import type { Pool } from 'pg';
 import { CONTRACT_VERSION } from '../../../../../packages/contracts/src/schemas.js';
 import { sendDocument,uploadMetadata,type WorkflowServices } from '../evidence/workflow.controller.js';
@@ -20,7 +20,7 @@ export class MemberController {
   @Get('support-requests/:id/correction-link') correctionLink(@Req()r:MemberRequest,@Param('id')id:string){return this.services.portal.supportCorrectionLink(actor(r),id);}
   @Get('support-requests/:id/correction-source') correctionSource(@Req()r:MemberRequest,@Param('id')id:string){return this.services.portal.supportCorrectionSource(actor(r),id);}
   @Get('auth/login') async login(@Req() request:MemberRequest,@Res() response:Response){
-    await limitLogin(this.services.identityDatabase,this.services.config.SESSION_SECRET,request.socket.remoteAddress??'unknown');
+    await limitLoginRequest(this.services.identityDatabase,this.services.config,request);
     const result=await this.services.identity.beginLogin('member');
     response.cookie('agap_member_login',result.cookie,{httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax',path:'/api/v1/member/auth',maxAge:600_000});response.redirect(302,result.url);
   }

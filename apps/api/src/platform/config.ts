@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { RecordMode } from '../../../../packages/contracts/src/common.js';
+import { parseTrustedLoginProxies } from '../modules/identity/login-source.js';
 
 const Env = z.object({
   FICTIONAL_PILOT_ENABLED:z.enum(['true','false']).default('false').transform(v=>v==='true'),
@@ -13,6 +14,9 @@ const Env = z.object({
   DATABASE_URL: z.string().min(1), IDENTITY_DATABASE_URL: z.string().min(1),
   PUBLIC_ORIGIN: z.url().default('http://127.0.0.1:5174'), API_PORT: z.coerce.number().int().min(1).max(65535).default(4100),
   SESSION_SECRET: z.string().min(32), SESSION_TTL_SECONDS: z.coerce.number().int().min(60).max(3600).default(1800),
+  LOGIN_TRUSTED_PROXY_CIDRS: z.string().default('').transform(parseTrustedLoginProxies),
+  LOGIN_RATE_LIMIT_MAX: z.coerce.number().int().min(1).max(10000).default(120),
+  LOGIN_RATE_LIMIT_WINDOW_SECONDS: z.coerce.number().int().min(1).max(3600).default(300),
   PRIVACY_NOTICE_VERSION: z.string().min(1).max(80).default('fictional-development-v1'),
   OIDC_ISSUER: z.url().default('http://127.0.0.1:58080/realms/agap'), OIDC_CLIENT_ID: z.string().default('agap-staff'), OIDC_CLIENT_SECRET: z.string().min(1),
 });

@@ -38,7 +38,7 @@ export class WorkflowDecisionProducer {
     const raw=(await tx.query('SELECT credit.staff_decision_input($1) AS data',[applicationId])).rows[0]?.data;
     if (!raw) throw new ApiError(409,'assessment_basis_unavailable','Save an authoritative assessment before opening the decision workspace.');
     const saved=z.object({assessment:WorkflowAssessment,input:SavedInput,confirmations:WorkflowDecisionBasisSchema.shape.confirmations}).parse(raw);
-    const policy=await this.workflow.policy(tx), application=await this.workflow.access(tx,applicationId);
+    const policy=await this.workflow.policy(tx,saved.assessment.periodStart), application=await this.workflow.access(tx,applicationId);
     const applicablePolicy=policy ? {...policy,offers:policy.offers.map(o => ({...o,available:o.available && o.principalCentavos===Number(application.requested_principal_centavos)}))} : null;
     const currentPolicyId=applicablePolicy?.id??null;
     const rows=(await tx.query(`SELECT s.id,s.version,s.kind,s.source_date::text AS source_date,s.sha256,s.statement,p.state,p.text_version_id,p.text_sha256,

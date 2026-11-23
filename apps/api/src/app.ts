@@ -18,7 +18,7 @@ import { IdentityService, LoginRecoveryError, cookieValue } from './modules/iden
 import { MembersService } from './modules/members/members.service.js';
 import { ApplicationsService } from './modules/applications/applications.service.js';
 import { StaffService } from './modules/identity/staff.service.js';
-import { limitLogin } from './modules/identity/login-limit.js';
+import { limitLoginRequest, LoginRateLimitError } from './modules/identity/login-limit.js';
 import { createPresentationSession } from './modules/identity/local-presentation.js';
 import { PostgresMemberUnitOfWork } from './platform/member-database.js';
 import { MemberApplicationsService } from './modules/applications/member-applications.service.js';
@@ -79,6 +79,7 @@ class ErrorFilter implements ExceptionFilter {
     else if (error && typeof error === 'object' && 'status' in error && error.status === 400) safe = new ApiError(400,'invalid_json','Send a valid JSON object.');
     else if (error && typeof error === 'object' && 'status' in error && error.status === 413) safe = new ApiError(413,'request_too_large','The submitted request exceeds the supported size.');
     if (safe.status >= 500) process.stderr.write(`${JSON.stringify({level:'error',code:safe.code,correlationId:request.correlationId})}\n`);
+    if (safe instanceof LoginRateLimitError) response.setHeader('Retry-After',safe.retryAfterSeconds);
     response.status(safe.status).json({error:{code:safe.code,message:safe.message,correlationId:request.correlationId ?? randomUUID(),...(safe.fields?{fields:safe.fields}:{})}});
   }
 }
@@ -92,7 +93,7 @@ class PlatformController {
     return {contractVersion:CONTRACT_VERSION,modules:[{name:'servicing.connected_money',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'platform',owner:'Robert',state:'available'},{name:'identity',owner:'Robert',state:'available'},{name:'members',owner:'Robert',state:'available'},{name:'applications',owner:'Robert',state:'available'},{name:'member_portal',owner:'Robert',state:'available'},{name:'evidence',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'credit',owner:'Aaron',state:this.services.config.EVIDENCE_WORKFLOW_ENABLED?'available':'contract_only'},{name:'decisions.staff_review',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'decisions.member_acceptance',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'servicing.pending_origination',owner:'Benedict',state:this.services.config.CONNECTED_LENDING_ENABLED?'available':'contract_only'},{name:'decisions',owner:'Benedict',state:this.services.config.FICTIONAL_PILOT_ENABLED?'available':'contract_only'},{name:'servicing',owner:'Benedict',state:this.services.config.FICTIONAL_PILOT_ENABLED?'available':'contract_only'},{name:'accounting',owner:'Earl',state:this.services.config.FICTIONAL_PILOT_ENABLED?'available':'contract_only'},{name:'monitoring',owner:'Earl',state:'available'},{name:'priority_review',owner:'Aaron',state:this.services.config.FICTIONAL_PILOT_ENABLED?'available':'contract_only'},{name:'servicing.member_loan_reads',owner:'Benedict',state:'available'},{name:'accounting.principal_reconciliation',owner:'Earl',state:'available'},{name:'monitoring.payment_help',owner:'Earl',state:'available'},{name:'monitoring.follow_ups',owner:'Earl',state:'available'}]};
   }
   @Get('auth/login') async login(@Req() request:StaffRequest,@Res() response: Response) {
-    await limitLogin(this.services.identityDatabase,this.services.config.SESSION_SECRET,request.socket.remoteAddress??'unknown');
+    await limitLoginRequest(this.services.identityDatabase,this.services.config,request);
     const result = await this.services.identity.beginLogin('staff',request.query);
     response.cookie('agap_login',result.cookie,{httpOnly:true,secure:this.services.config.NODE_ENV==='production',sameSite:'lax',path:'/api/v1/auth',maxAge:600_000});
     response.redirect(302,result.url);
@@ -193,7 +194,7 @@ export async function createApp(config: Config,memberDomains?:MemberDomainPorts)
           const authenticate=async()=>{if(isMember)request.member=await identity.authenticateMember(token,request.correlationId);else request.staff=await identity.authenticate(token,request.correlationId);};
           try{await authenticate();}catch(error){
             if(!(config.LOCAL_PRESENTATION_MODE&&sessionRead&&error instanceof ApiError&&error.status===401))throw error;
-            await limitLogin(identityDatabase,config.SESSION_SECRET,request.socket.remoteAddress??'unknown');
+            await limitLoginRequest(identityDatabase,config,request);
             token=await createPresentationSession(identityDatabase,config,isMember?'member':'staff');
             await authenticate();
             response.cookie(cookieName,token,{httpOnly:true,secure:false,sameSite:'lax',path:isMember?'/api/v1/member':'/',maxAge:config.SESSION_TTL_SECONDS*1000});
@@ -206,6 +207,7 @@ export async function createApp(config: Config,memberDomains?:MemberDomainPorts)
       } catch (error) {
         // Middleware errors must use the same public shape as controller errors.
         const safe = error instanceof ApiError ? error : new ApiError(503,'identity_unavailable','The sign-in service is temporarily unavailable.');
+        if (safe instanceof LoginRateLimitError) response.setHeader('Retry-After',safe.retryAfterSeconds);
         response.status(safe.status).json({error:{code:safe.code,message:safe.message,correlationId:request.correlationId}});
       }
     });
